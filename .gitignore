@@ -107,3 +107,11 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Project-specific
+/ProfilerCaptures/
+*_BurstDebugInformation_DoNotShip/
+/.vscode/
+*.apk
+*.aab
+.DS_Store
