@@ -24,6 +24,20 @@ namespace RoadBuilderGame.UI
         // even if the user pops again before the exit animation finished.
         private readonly HashSet<UIScreen> _covered = new HashSet<UIScreen>();
 
+        private void Awake()
+        {
+            // Screens that already sit in the scene under the root are used as they are (nothing is spawned for them).
+            var parent = root != null ? root : (RectTransform)transform;
+            foreach (Transform child in parent)
+            {
+                var screen = child.GetComponent<UIScreen>();
+                if (screen == null || _instances.ContainsKey(screen.GetType())) continue;
+                screen.Stack = this;
+                screen.gameObject.SetActive(false);
+                _instances[screen.GetType()] = screen;
+            }
+        }
+
         public UIScreen Top => _stack.Count > 0 ? _stack[_stack.Count - 1] : null;
         public int Depth => _stack.Count;
 

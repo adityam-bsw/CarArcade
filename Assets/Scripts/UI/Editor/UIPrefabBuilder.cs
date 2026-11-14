@@ -45,8 +45,8 @@ namespace RoadBuilderGame.UI.Editor
                 var cardPrefab = SaveComponent<CollectionCard>(BuildCard(), "CollectionCard");
                 var tabPrefab = SaveComponent<CollectionTab>(BuildTab(), "CollectionTab");
                 Save(BuildHome(), "HomeScreen");
-                Save(BuildWorlds(), "WorldsScreen");
-                Save(BuildGarage(), "GarageScreen");
+                Save(BuildWorlds(cardPrefab), "WorldsScreen");
+                Save(BuildGarage(cardPrefab), "GarageScreen");
                 Save(BuildHud(), "HudScreen");
                 Save(BuildResult(), "ResultScreen");
                 Save(BuildSettings(), "SettingsScreen");
@@ -88,130 +88,480 @@ namespace RoadBuilderGame.UI.Editor
         {
             var root = ScreenRoot<HomeScreen>("HomeScreen", ShowStyle.Fade, out var c);
 
-            var title = Label(c, "Title", "ROAD BUILDER RACER", TextStyle.Title);
-            Place(title.rectTransform, TC, TC, new Vector2(0, -150), new Vector2(1500, 120));
+            WallBackdrop(c, true);
+            Props(c, PropMode.Full);
 
-            CoinPill(c, TL, TL, new Vector2(40, -40), out var coinsText);
+            // Grouped by area; every element keeps its own edge anchor.
+            var hdrL = Group(c, "HeaderLeft");
+            var hdrC = Group(c, "HeaderCenter");
+            var hdrR = Group(c, "HeaderRight");
+            var controls = Group(c, "Controls");
 
-            var settings = MakeButton(c, "SettingsButton", "", ColorToken.SurfaceAlt, ColorToken.TextPrimary, TR, TR, new Vector2(-40, -40), new Vector2(96, 96));
-            var gear = Icon(settings.rt, "Gear", _gear, new Vector2(54, 54), ColorToken.TextPrimary);
-            Place(gear.rectTransform, C, C, new Vector2(0, 5), new Vector2(54, 54));
+            // Title plate hangs from chains across the top.
+            var titlePlate = ArtImg(hdrC, "TitlePlate", SpriteSlot.PlateTitle, TC, TC, new Vector2(0, 0), new Vector2(1000, 200));
+            var title = Label(titlePlate.transform, "Title", "ROAD BUILDER RACER", TextStyle.Title, ColorToken.TextPrimary, 68);
+            title.enableAutoSizing = true; title.fontSizeMin = 36; title.fontSizeMax = 68;
+            Place(title.rectTransform, C, C, new Vector2(0, -2), new Vector2(820, 84));
 
-            var bestPill = Img(c, "BestPill", SpriteSlot.Pill, ColorToken.SurfaceAlt);
-            Place(bestPill.rectTransform, TR, TR, new Vector2(-156, -40), new Vector2(340, 84));
-            var best = Label(bestPill.transform, "BestText", "BEST 0 m", TextStyle.Number);
-            Stretch(best.rectTransform);
+            // Left: stamped coin counter. Right: settings badge and the best-distance license plate.
+            var counter = ArtImg(hdrL, "CoinCounter", SpriteSlot.PlateCounter, TL, TL, new Vector2(36, -44), new Vector2(360, 104));
+            var coinsText = Label(counter.transform, "CoinsText", "0", TextStyle.Number, ColorToken.Coin, 52, TextAlignmentOptions.MidlineRight);
+            Place(coinsText.rectTransform, C, C, new Vector2(52, 2), new Vector2(210, 70));
 
-            var podium = new GameObject("Podium", typeof(RectTransform), typeof(Image));
-            podium.transform.SetParent(c, false);
-            var pimg = podium.GetComponent<Image>();
-            pimg.sprite = _podium; pimg.raycastTarget = false;
-            Place((RectTransform)podium.transform, new Vector2(0.5f, 0.35f), C, new Vector2(0, -20), new Vector2(520, 90));
+            var settings = ArtButton(hdrR, "SettingsButton", SpriteSlot.BadgeHex, SpriteSlot.BadgeHex, SpriteSlot.BadgeHex, "", 0, ColorToken.TextPrimary,
+                TR, TR, new Vector2(-40, -40), new Vector2(120, 120), 0f);
+            var bestPlate = ArtImg(hdrR, "BestPlate", SpriteSlot.PlateLicense, TR, TR, new Vector2(-30, -176), new Vector2(400, 104), 3f);
+            var best = Label(bestPlate.transform, "BestText", "BEST 0 m", TextStyle.Number, ColorToken.TextOnAccent, 46);
+            best.enableAutoSizing = true; best.fontSizeMin = 28; best.fontSizeMax = 46;
+            Place(best.rectTransform, C, C, new Vector2(0, -6), new Vector2(300, 56));
 
-            var play = MakeButton(c, "PlayButton", "START RACE!", ColorToken.Primary, ColorToken.TextPrimary, new Vector2(0.5f, 0.13f), C, Vector2.zero, new Vector2(440, 140), 52);
-            var garage = MakeButton(c, "GarageButton", "GARAGE", ColorToken.Accent, ColorToken.TextOnAccent, new Vector2(0.5f, 0.13f), C, new Vector2(-430, 0), new Vector2(300, 110), 38);
-            var worlds = MakeButton(c, "WorldsButton", "WORLDS", ColorToken.Secondary, ColorToken.TextPrimary, new Vector2(0.5f, 0.13f), C, new Vector2(430, 0), new Vector2(300, 110), 38);
+            // Controls on the garage floor: one big arcade button flanked by two steel tabs, tilted the other way.
+            var play = ArtButton(controls, "PlayButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled, "START RACE",
+                56, ColorToken.TextOnAccent, BC, BC, new Vector2(0, 54), new Vector2(560, 218), 0f, new Vector4(96, 40, 34, 36));
+            var garage = ArtButton(controls, "GarageButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "GARAGE",
+                44, ColorToken.TextPrimary, BC, BC, new Vector2(-560, 70), new Vector2(360, 134), 3f, new Vector4(30, 30, 30, 30));
+            var worlds = ArtButton(controls, "WorldsButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "WORLDS",
+                44, ColorToken.TextPrimary, BC, BC, new Vector2(560, 70), new Vector2(360, 134), -3f, new Vector4(30, 30, 30, 30));
+
+            // Hand-stuck details that overlap the plates (never tappable).
+            ArtImg(hdrL, "TapeCounter", SpriteSlot.DecoTape, TL, TL, new Vector2(300, -26), new Vector2(130, 40), -9f);
+            ArtImg(hdrR, "TapeBest", SpriteSlot.DecoTape, TR, TR, new Vector2(-270, -158), new Vector2(130, 40), 11f);
+            ArtImg(controls, "StickerStar", SpriteSlot.DecoSticker, BC, BC, new Vector2(250, 214), new Vector2(104, 104), 12f);
 
             var s = root.GetComponent<HomeScreen>();
             Ref(s, "coinsText", coinsText); Ref(s, "bestText", best);
             Ref(s, "playButton", play.button); Ref(s, "garageButton", garage.button);
             Ref(s, "worldsButton", worlds.button); Ref(s, "settingsButton", settings.button);
+            Ref(s, "titlePlate", titlePlate.rectTransform);
+            Refs(s, "popIns", new Object[] { counter.rectTransform, settings.rt, bestPlate.rectTransform, garage.rt, play.rt, worlds.rt });
             return root;
         }
 
-        private static GameObject BuildWorlds()
+        private enum PropMode { Full, Light, Lamps }
+
+        // name, sprite id, x, y (top-left on the 384x216 grid), pivot x, pivot y, which modes show it (F full, L light, A lamps only)
+        private static readonly (string name, string id, float x, float y, float px, float py, string modes)[] PropTable =
+        {
+            ("Glow0", "lamp_glow", -4, 33, 0.5f, 0.5f, "FA"), ("Glow1", "lamp_glow", 288, 33, 0.5f, 0.5f, "FA"),
+            ("Pegboard", "pegboard", 14, 42, 0.5f, 0.5f, "F"), ("Wrench", "wrench", 17, 47, 0.5f, 0.5f, "F"),
+            ("Hammer", "hammer", 61, 45, 0.5f, 0.5f, "F"), ("Screwdriver", "screwdriver", 17, 69, 0.5f, 0.5f, "F"),
+            ("Saw", "saw", 49, 83, 0.5f, 0.5f, "F"), ("Gear", "gear", 19, 93, 0.5f, 0.5f, "F"), ("Toolbox", "toolbox", 47, 108, 0.5f, 0.5f, "F"),
+            ("Shelf", "shelf", 289, 117, 0.5f, 0.5f, "F"), ("RobotBody", "robot_body", 295, 57, 0.5f, 0.5f, "F"),
+            ("RobotArmL", "robot_arm", 292, 84, 0.5f, 0.95f, "F"), ("RobotArmR", "robot_arm", 333, 84, 0.5f, 0.95f, "F"),
+            ("RobotEyes", "robot_eyes", 310, 71, 0.5f, 0.5f, "F"), ("RobotAntenna", "robot_antenna", 314, 51, 0.4f, 0.1f, "F"),
+            ("CanRed", "can_red", 342, 102, 0.5f, 0.1f, "F"), ("CanOrange", "can_orange", 353, 102, 0.5f, 0.1f, "F"), ("CanTeal", "can_teal", 364, 102, 0.5f, 0.1f, "F"),
+            ("Tyre0", "tyre", 293, 134, 0.5f, 0.5f, "FL"), ("Tyre1", "tyre", 293, 146, 0.5f, 0.5f, "FL"), ("Drum", "drum", 343, 128, 0.5f, 0.5f, "FL"),
+            ("Lamp0", "lamp", 33, 10, 0.48f, 1f, "FA"), ("Lamp1", "lamp", 325, 10, 0.48f, 1f, "FA"),
+            ("ClockFace", "clock_face", 352, 40, 0.5f, 0.5f, "FA"),
+        };
+
+        // Props are grouped by what they are: lights, the pegboard with its tools, the shelf, the robot, the tyre stack...
+        // Left groups hang from the left screen edge, right groups from the right edge, so each group moves as one thing.
+        private static readonly (string group, bool right, string[] items)[] PropGroups =
+        {
+            ("LightLeft", false, new[] { "Glow0", "Lamp0" }),
+            ("LightRight", true, new[] { "Glow1", "Lamp1" }),
+            ("PegboardTools", false, new[] { "Pegboard", "Wrench", "Hammer", "Screwdriver", "Saw", "Gear", "Toolbox" }),
+            ("ShelfAndCans", true, new[] { "Shelf", "CanRed", "CanOrange", "CanTeal" }),
+            ("Robot", true, new[] { "RobotBody", "RobotArmL", "RobotArmR", "RobotEyes", "RobotAntenna" }),
+            ("TyreStack", true, new[] { "Tyre0", "Tyre1" }),
+            ("OilDrum", true, new[] { "Drum" }),
+            ("Clock", true, new[] { "ClockFace" }),
+        };
+
+        /// <summary>
+        /// Stand-alone pixel props (5 px per art pixel), each its own Image so WorkshopProps can animate it, arranged as
+        /// Props / Left or Right edge / group / prop. Full: the whole garage. Light: tyres and drum. Lamps: lamps, glows and clock.
+        /// </summary>
+        private static void Props(Transform c, PropMode mode)
+        {
+            var set = AssetDatabase.LoadAssetAtPath<WorkshopPropSet>("Assets/Resources/UI/WorkshopProps.asset");
+            if (set == null) { Debug.LogError("[UIPrefabBuilder] WorkshopProps.asset missing: run Create Default Theme"); return; }
+
+            // Full width, 1080 high, centred; the two edge holders pin their groups to the left or right screen edge.
+            var holder = Rect("Props", c);
+            holder.anchorMin = new Vector2(0, 0.5f); holder.anchorMax = new Vector2(1, 0.5f);
+            holder.pivot = new Vector2(0.5f, 0.5f); holder.sizeDelta = new Vector2(0, 1080); holder.anchoredPosition = Vector2.zero;
+            holder.gameObject.AddComponent<WorkshopProps>();
+            var left = Rect("LeftEdge", holder);
+            left.anchorMin = new Vector2(0, 0); left.anchorMax = new Vector2(0, 1); left.pivot = new Vector2(0, 0.5f);
+            left.sizeDelta = new Vector2(960, 0); left.anchoredPosition = Vector2.zero;
+            var right = Rect("RightEdge", holder);
+            right.anchorMin = new Vector2(1, 0); right.anchorMax = new Vector2(1, 1); right.pivot = new Vector2(1, 0.5f);
+            right.sizeDelta = new Vector2(960, 0); right.anchoredPosition = Vector2.zero;
+
+            char key = mode == PropMode.Full ? 'F' : (mode == PropMode.Light ? 'L' : 'A');
+            foreach (var g in PropGroups)
+            {
+                // The group's box is the union of its props that this mode shows.
+                var members = new System.Collections.Generic.List<(string name, string id, float x, float y, float px, float py, Sprite sprite)>();
+                float minX = float.MaxValue, minY = float.MaxValue, maxX = float.MinValue, maxY = float.MinValue;
+                foreach (var item in g.items)
+                {
+                    foreach (var e in PropTable)
+                    {
+                        if (e.name != item || e.modes.IndexOf(key) < 0) continue;
+                        var sprite = set.Get(e.id);
+                        if (sprite == null) { Debug.LogWarning("[UIPrefabBuilder] No prop sprite " + e.id); continue; }
+                        members.Add((e.name, e.id, e.x, e.y, e.px, e.py, sprite));
+                        minX = Mathf.Min(minX, e.x); minY = Mathf.Min(minY, e.y);
+                        maxX = Mathf.Max(maxX, e.x + sprite.rect.width); maxY = Mathf.Max(maxY, e.y + sprite.rect.height);
+                    }
+                }
+                if (members.Count == 0) continue;
+
+                var side = g.right ? right : left;
+                var grp = Rect(g.group, side);
+                grp.anchorMin = grp.anchorMax = new Vector2(g.right ? 1f : 0f, 1f);
+                grp.pivot = new Vector2(g.right ? 1f : 0f, 1f);
+                grp.sizeDelta = new Vector2(maxX - minX, maxY - minY) * 5f;
+                grp.anchoredPosition = new Vector2(g.right ? maxX * 5f - 1920f : minX * 5f, -minY * 5f);
+
+                foreach (var m in members)
+                {
+                    var go = new GameObject(m.name, typeof(RectTransform), typeof(Image));
+                    go.transform.SetParent(grp, false);
+                    var img = go.GetComponent<Image>();
+                    img.sprite = m.sprite; img.raycastTarget = false; img.preserveAspect = true;
+                    var size = m.sprite.rect.size * 5f;
+                    var rt = (RectTransform)go.transform;
+                    rt.anchorMin = rt.anchorMax = new Vector2(0, 1);
+                    rt.pivot = new Vector2(m.px, m.py);
+                    rt.sizeDelta = size;
+                    // Position by the sprite's top-left corner inside its group, whatever the pivot is.
+                    rt.anchoredPosition = new Vector2((m.x - minX) * 5f + size.x * m.px, -(m.y - minY) * 5f - size.y * (1f - m.py));
+                }
+            }
+
+            // Clock hands hang off the face so they turn about its centre.
+            RectTransform face = null;
+            foreach (var r in holder.GetComponentsInChildren<RectTransform>(true)) if (r.name == "ClockFace") face = r;
+            if (face != null)
+            {
+                foreach (var h in new[] { ("ClockMinute", "clock_hand_minute"), ("ClockHour", "clock_hand_hour") })
+                {
+                    var sprite = set.Get(h.Item2);
+                    var go = new GameObject(h.Item1, typeof(RectTransform), typeof(Image));
+                    go.transform.SetParent(face, false);
+                    var img = go.GetComponent<Image>();
+                    img.sprite = sprite; img.raycastTarget = false;
+                    var rt = (RectTransform)go.transform;
+                    rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+                    rt.pivot = new Vector2(0.5f, 0f);
+                    rt.sizeDelta = sprite.rect.size * 5f;
+                    rt.anchoredPosition = Vector2.zero;
+                }
+            }
+        }
+
+        /// <summary>A stretch container that only groups its children; they keep their own edge anchors.</summary>
+        private static RectTransform Group(Transform parent, string name)
+        {
+            var rt = Rect(name, parent);
+            Stretch(rt);
+            return rt;
+        }
+
+        // ---- Retro Arcade Workshop building blocks -------------------------------------------------------------
+        private static Sprite ThemeSprite(SpriteSlot slot)
+            => AssetDatabase.LoadAssetAtPath<UITheme>("Assets/Resources/UI/UITheme_Default.asset").GetSprite(slot);
+
+        /// <summary>Plain image with a sprite from the theme, for pieces a script swaps itself (pips, hearts, needle, toggle).</summary>
+        private static Image RawImg(Transform parent, string name, SpriteSlot slot, Vector2 anchor, Vector2 pivot, Vector2 pos, Vector2 size)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(parent, false);
+            var img = go.GetComponent<Image>();
+            img.sprite = ThemeSprite(slot);
+            img.raycastTarget = false; img.preserveAspect = true;
+            Place((RectTransform)go.transform, anchor, pivot, pos, size);
+            return img;
+        }
+
+        /// <summary>
+        /// Garage background built from separate parts so it fits any screen shape: tiles repeat sideways (wall, floor,
+        /// hazard line, ceiling beam), the door sits in the centre, and ink / floor-coloured fills cover anything taller than
+        /// 1080. It bleeds past the safe area on purpose.
+        /// </summary>
+        private static void WallBackdrop(Transform c, bool door)
+        {
+            var back = Rect("Background", c);
+            Stretch(back, -400, -400, -400, -400);
+
+            var top = Img(back, "FillTop", SpriteSlot.None, ColorToken.Background);
+            // The fills only cover what lies above and below the 1080-high stage, so the door's opening stays see-through.
+            top.rectTransform.anchorMin = new Vector2(0, 0.5f); top.rectTransform.anchorMax = Vector2.one;
+            top.rectTransform.offsetMin = new Vector2(0, 540); top.rectTransform.offsetMax = Vector2.zero;
+            var bottom = Img(back, "FillBottom", SpriteSlot.None, ColorToken.Surface);
+            bottom.rectTransform.anchorMin = Vector2.zero; bottom.rectTransform.anchorMax = new Vector2(1, 0.5f);
+            bottom.rectTransform.offsetMin = Vector2.zero; bottom.rectTransform.offsetMax = new Vector2(0, -540);
+
+            // A 1080-high stage, full width, centred: everything below is placed in 5-pixel art units from its top.
+            var stage = Rect("Stage", back);
+            stage.anchorMin = new Vector2(0, 0.5f); stage.anchorMax = new Vector2(1, 0.5f);
+            stage.pivot = new Vector2(0.5f, 0.5f); stage.sizeDelta = new Vector2(0, 1080); stage.anchoredPosition = Vector2.zero;
+
+            // ONE wall pattern for the whole background. Around the door it is shown through three clipped windows that all
+            // use the same tile origin, so the planks line up across the joins (no seams) and the door opening stays see-through.
+            if (door)
+            {
+                WallWindow(stage, "WallTop", 0f, 1f, 0f, 1f, new Vector4(0, 810, 0, 50));      // above the door
+                WallWindow(stage, "WallLeft", 0f, 0.5f, 0f, 2f, new Vector4(0, 330, 470, 270)); // left of the door
+                WallWindow(stage, "WallRight", 0.5f, 1f, -1f, 1f, new Vector4(470, 330, 0, 270)); // right of the door
+            }
+            else WallWindow(stage, "Wall", 0f, 1f, 0f, 1f, new Vector4(0, 330, 0, 50));
+            TileStrip(stage, "Floor", SpriteSlot.BgFloorTile, 750, 330);
+            TileStrip(stage, "HazardLine", SpriteSlot.BgHazardTile, 740, 20);
+            TileStrip(stage, "Beam", SpriteSlot.BgBeamTile, 0, 50);
+            if (door) ArtImg(stage, "Door", SpriteSlot.BgDoor, TC, TC, new Vector2(0, -270), new Vector2(940, 510));
+        }
+
+        /// <summary>
+        /// A clipped view onto the one shared wall: the container is the half or the whole stage (so its width follows the
+        /// screen), the wall image inside spans the full stage width from the same left edge, and the clip padding picks the part to show.
+        /// </summary>
+        private static void WallWindow(Transform stage, string name, float cxMin, float cxMax, float childXMin, float childXMax, Vector4 padding)
+        {
+            var clip = Rect(name, stage);
+            clip.anchorMin = new Vector2(cxMin, 0); clip.anchorMax = new Vector2(cxMax, 1);
+            clip.offsetMin = clip.offsetMax = Vector2.zero;
+            clip.gameObject.AddComponent<RectMask2D>().padding = padding;
+
+            var go = new GameObject("Planks", typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(clip, false);
+            var img = go.GetComponent<Image>();
+            img.sprite = ThemeSprite(SpriteSlot.BgWallTile);
+            img.type = Image.Type.Tiled;
+            img.raycastTarget = false;
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = new Vector2(childXMin, 0); rt.anchorMax = new Vector2(childXMax, 1);
+            rt.offsetMin = new Vector2(0, 330); rt.offsetMax = new Vector2(0, -50);   // wall band: 50 px below the stage top down to 750
+        }
+
+        private static void TileStrip(Transform stage, string name, SpriteSlot slot, float top, float height,
+            float xMin = 0f, float xMax = 1f, float leftInset = 0f, float rightInset = 0f)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(stage, false);
+            var img = go.GetComponent<Image>();
+            img.sprite = ThemeSprite(slot);
+            img.type = Image.Type.Tiled;
+            img.raycastTarget = false;
+            var rt = (RectTransform)go.transform;
+            rt.anchorMin = new Vector2(xMin, 1); rt.anchorMax = new Vector2(xMax, 1);
+            rt.pivot = new Vector2(0.5f, 1);
+            rt.offsetMin = new Vector2(leftInset, -top - height);
+            rt.offsetMax = new Vector2(rightInset, -top);
+        }
+
+        private static Image SmallTitle(Transform c, string text, out TextMeshProUGUI label)
+        {
+            var plate = ArtImg(c, "TitlePlate", SpriteSlot.PlateTitleSmall, TC, TC, Vector2.zero, new Vector2(640, 160));
+            label = Label(plate.transform, "Title", text, TextStyle.Title, ColorToken.TextPrimary, 58);
+            label.enableAutoSizing = true; label.fontSizeMin = 32; label.fontSizeMax = 58;
+            Place(label.rectTransform, C, C, new Vector2(0, -4), new Vector2(470, 66));
+            return plate;
+        }
+
+        private static Btn BackBadge(Transform c)
+            => ArtButton(c, "BackButton", SpriteSlot.BadgeHexBack, SpriteSlot.BadgeHexBack, SpriteSlot.BadgeHexBack, "", 0, ColorToken.TextPrimary,
+                TL, TL, new Vector2(40, -36), new Vector2(120, 120), 0f);
+
+        private static Image CoinCounter(Transform c, Vector2 anchor, Vector2 pivot, Vector2 pos, out TextMeshProUGUI text)
+        {
+            var plate = ArtImg(c, "CoinCounter", SpriteSlot.PlateCounter, anchor, pivot, pos, new Vector2(360, 104));
+            text = Label(plate.transform, "CoinsText", "0", TextStyle.Number, ColorToken.Coin, 52, TextAlignmentOptions.MidlineRight);
+            Place(text.rectTransform, C, C, new Vector2(52, 2), new Vector2(210, 70));
+            return plate;
+        }
+
+        /// <summary>Illustrated, non-tinted image from a theme slot at its designed aspect. Never takes taps.</summary>
+        private static Image ArtImg(Transform parent, string name, SpriteSlot slot, Vector2 anchor, Vector2 pivot, Vector2 pos, Vector2 size, float rotZ = 0f)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(ThemedImage));
+            go.transform.SetParent(parent, false);
+            var ti = go.GetComponent<ThemedImage>();
+            ti.slot = slot; ti.colorToken = ColorToken.Tint; ti.tint = false;
+            ti.Apply();
+            var img = go.GetComponent<Image>();
+            img.raycastTarget = false; img.preserveAspect = true; img.type = Image.Type.Simple;
+            Place((RectTransform)go.transform, anchor, pivot, pos, size);
+            go.transform.localEulerAngles = new Vector3(0, 0, rotZ);
+            return img;
+        }
+
+        /// <summary>
+        /// A button made of artwork. Normal/pressed/disabled sprites come from theme slots, the label is TextMeshPro placed
+        /// by <paramref name="pad"/> (left, bottom, right, top). The hit area is the whole image (at least 96 px).
+        /// </summary>
+        private static Btn ArtButton(Transform parent, string name, SpriteSlot normal, SpriteSlot pressed, SpriteSlot disabled, string label,
+            float fontSize, ColorToken fg, Vector2 anchor, Vector2 pivot, Vector2 pos, Vector2 size, float rotZ, Vector4 pad = default)
+        {
+            var theme = AssetDatabase.LoadAssetAtPath<UITheme>("Assets/Resources/UI/UITheme_Default.asset");
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(ThemedImage), typeof(Button), typeof(PressFeedback));
+            go.transform.SetParent(parent, false);
+            var rt = (RectTransform)go.transform;
+            Place(rt, anchor, pivot, pos, size);
+            go.transform.localEulerAngles = new Vector3(0, 0, rotZ);
+
+            var ti = go.GetComponent<ThemedImage>();
+            ti.slot = normal; ti.colorToken = ColorToken.Tint; ti.tint = false; ti.Apply();
+            var img = go.GetComponent<Image>();
+            img.preserveAspect = true; img.type = Image.Type.Simple; img.raycastTarget = true;
+
+            var btn = go.GetComponent<Button>();
+            btn.targetGraphic = img;
+            btn.transition = Selectable.Transition.SpriteSwap;
+            btn.spriteState = new SpriteState { pressedSprite = theme.GetSprite(pressed), highlightedSprite = theme.GetSprite(normal),
+                selectedSprite = theme.GetSprite(normal), disabledSprite = theme.GetSprite(disabled) };
+
+            TextMeshProUGUI lab = null;
+            if (!string.IsNullOrEmpty(label))
+            {
+                lab = Label(go.transform, "Label", label, TextStyle.Button, fg, fontSize);
+                lab.enableAutoSizing = true; lab.fontSizeMin = fontSize * 0.6f; lab.fontSizeMax = fontSize;
+                Stretch(lab.rectTransform, pad.x, pad.y, pad.z, pad.w);
+            }
+            return new Btn { button = btn, image = img, label = lab, rt = rt };
+        }
+
+        /// <summary>A horizontal scroll strip for CollectionCards. Returns the CardRail on it.</summary>
+        private static CardRail BuildRail(Transform parent, string name, CollectionCard cardPrefab, Vector2 anchor, Vector2 pivot, Vector2 pos, Vector2 size)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(ScrollRect), typeof(CardRail));
+            go.transform.SetParent(parent, false);
+            Place((RectTransform)go.transform, anchor, pivot, pos, size);
+
+            var viewport = Rect("Viewport", (RectTransform)go.transform);
+            Stretch(viewport);
+            viewport.gameObject.AddComponent<RectMask2D>();
+            var vpImg = viewport.gameObject.AddComponent<Image>();
+            vpImg.color = new Color(0, 0, 0, 0);
+
+            var content = Rect("Content", viewport);
+            content.anchorMin = new Vector2(0, 0); content.anchorMax = new Vector2(0, 1); content.pivot = new Vector2(0, 0.5f);
+            content.offsetMin = Vector2.zero; content.offsetMax = Vector2.zero;
+            var row = content.gameObject.AddComponent<HorizontalLayoutGroup>();
+            row.spacing = 22; row.padding = new RectOffset(40, 40, 10, 10); row.childAlignment = TextAnchor.MiddleLeft;
+            row.childControlWidth = false; row.childControlHeight = false;
+            row.childForceExpandWidth = false; row.childForceExpandHeight = false;
+            var fitter = content.gameObject.AddComponent<ContentSizeFitter>();
+            fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            var scroll = go.GetComponent<ScrollRect>();
+            scroll.viewport = viewport; scroll.content = content;
+            scroll.horizontal = true; scroll.vertical = false;
+            scroll.movementType = ScrollRect.MovementType.Elastic; scroll.scrollSensitivity = 30f;
+            scroll.decelerationRate = 0.12f;
+
+            var rail = go.GetComponent<CardRail>();
+            Ref(rail, "scroll", scroll); Ref(rail, "content", content); Ref(rail, "cardPrefab", cardPrefab);
+            return rail;
+        }
+
+
+        private static GameObject BuildWorlds(CollectionCard cardPrefab)
         {
             var root = ScreenRoot<WorldsScreen>("WorldsScreen", ShowStyle.SlideUp, out var c);
-            Dim(root.transform, ColorToken.Background, 0.92f, 0);
+            WallBackdrop(c, true);
+            Props(c, PropMode.Lamps);
 
-            var title = Label(c, "Title", "WORLDS", TextStyle.Heading);
-            Place(title.rectTransform, TC, TC, new Vector2(0, -50), new Vector2(700, 100));
-            var back = MakeButton(c, "BackButton", "< BACK", ColorToken.Secondary, ColorToken.TextPrimary, TL, TL, new Vector2(40, -40), new Vector2(260, 90), 34);
+            // Grouped by area; every element keeps its own edge anchor.
+            var header = Group(c, "Header");
+            var tabs = Group(c, "Tabs");
+            var rightPanel = Group(c, "RightPanel");
 
-            var card = Img(c, "Card", SpriteSlot.Card, ColorToken.Surface);
-            Place(card.rectTransform, C, C, new Vector2(0, -20), new Vector2(900, 640));
+            SmallTitle(header, "WORLDS", out _);
+            var back = BackBadge(header);
 
-            var previewGo = new GameObject("Preview", typeof(RectTransform), typeof(Image));
-            previewGo.transform.SetParent(card.transform, false);
-            var preview = previewGo.GetComponent<Image>();
-            preview.preserveAspect = true; preview.raycastTarget = false;
-            Place((RectTransform)previewGo.transform, TC, TC, new Vector2(0, -30), new Vector2(760, 360));
+            // Left wall: two big tabs choose what the rail below shows. They also say what is picked now.
+            var worldTab = ArtButton(tabs, "WorldTab", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcade, "WORLD",
+                34, ColorToken.TextOnAccent, TL, TL, new Vector2(40, -200), new Vector2(430, 168), 0f, new Vector4(80, 34, 30, 30));
+            var roadTab = ArtButton(tabs, "RoadTab", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "ROAD",
+                34, ColorToken.TextPrimary, TL, TL, new Vector2(40, -390), new Vector2(430, 168), 0f, new Vector4(40, 30, 30, 30));
+            worldTab.button.transition = Selectable.Transition.None;
+            roadTab.button.transition = Selectable.Transition.None;
 
-            var wTitle = Label(card.transform, "WorldTitle", "COUNTRYSIDE HILLS", TextStyle.Heading, ColorToken.Accent, 46);
-            Place(wTitle.rectTransform, TC, TC, new Vector2(0, -420), new Vector2(820, 70));
-            var wDesc = Label(card.transform, "WorldDescription", "", TextStyle.Body, null, 30);
-            Place(wDesc.rectTransform, TC, TC, new Vector2(0, -500), new Vector2(780, 110));
+            // Right wall: the picked combination and the way out to a race.
+            var plate = ArtImg(rightPanel, "SummaryPlate", SpriteSlot.PlateName, TR, TR, new Vector2(-34, -200), new Vector2(480, 90));
+            var summary = Label(plate.transform, "Summary", "", TextStyle.Body, ColorToken.TextPrimary, 30);
+            summary.enableAutoSizing = true; summary.fontSizeMin = 16; summary.fontSizeMax = 30;
+            Place(summary.rectTransform, C, C, new Vector2(0, -2), new Vector2(400, 56));
+            var race = ArtButton(rightPanel, "RaceButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
+                "RACE!", 52, ColorToken.TextOnAccent, TR, TR, new Vector2(-40, -310), new Vector2(480, 187), 0f, new Vector4(100, 40, 40, 34));
+            ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -296), new Vector2(84, 84), 14f);
 
-            var prev = MakeButton(c, "PrevButton", "<", ColorToken.Secondary, ColorToken.TextPrimary, C, C, new Vector2(-610, -20), new Vector2(130, 130), 60);
-            var next = MakeButton(c, "NextButton", ">", ColorToken.Secondary, ColorToken.TextPrimary, C, C, new Vector2(610, -20), new Vector2(130, 130), 60);
-            var road = MakeButton(c, "RoadButton", "ROAD: ASPHALT HIGHWAY", ColorToken.Accent, ColorToken.TextOnAccent, BC, BC, new Vector2(0, 70), new Vector2(760, 100), 36);
-            var allWorlds = MakeButton(c, "AllWorldsButton", "ALL WORLDS", ColorToken.Secondary, ColorToken.TextPrimary, BC, BC, new Vector2(-640, 70), new Vector2(340, 100), 34);
-            var allSurfaces = MakeButton(c, "AllSurfacesButton", "ALL SURFACES", ColorToken.Secondary, ColorToken.TextPrimary, BC, BC, new Vector2(640, 70), new Vector2(340, 100), 34);
+            var rail = BuildRail(c, "Rail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 310));
+            var hint = Label(c, "Hint", "", TextStyle.Body, ColorToken.TextPrimary, 30);
+            hint.enableAutoSizing = true; hint.fontSizeMin = 18; hint.fontSizeMax = 30;
+            Place(hint.rectTransform, BC, BC, new Vector2(0, 322), new Vector2(1500, 50));
 
             var s = root.GetComponent<WorldsScreen>();
-            Ref(s, "preview", preview); Ref(s, "titleText", wTitle); Ref(s, "descriptionText", wDesc);
-            Ref(s, "roadLabel", road.label); Ref(s, "prevButton", prev.button); Ref(s, "nextButton", next.button);
-            Ref(s, "roadButton", road.button); Ref(s, "backButton", back.button);
-            Ref(s, "allWorldsButton", allWorlds.button); Ref(s, "allSurfacesButton", allSurfaces.button);
+            Ref(s, "rail", rail);
+            Ref(s, "worldTab", worldTab.button); Ref(s, "roadTab", roadTab.button);
+            Ref(s, "worldTabImage", worldTab.image); Ref(s, "roadTabImage", roadTab.image);
+            Ref(s, "worldTabLabel", worldTab.label); Ref(s, "roadTabLabel", roadTab.label);
+            Ref(s, "raceButton", race.button); Ref(s, "summaryText", summary);
+            Ref(s, "hintText", hint); Ref(s, "backButton", back.button);
             return root;
         }
 
-        private static GameObject BuildGarage()
+        private static GameObject BuildGarage(CollectionCard cardPrefab)
         {
             var root = ScreenRoot<GarageScreen>("GarageScreen", ShowStyle.Fade, out var c);
+            WallBackdrop(c, true);
+            // No floor props here: the plates and the vehicle rail use that space.
 
-            // Top and bottom bars leave the middle free so the showcase car stays visible.
-            var top = Img(c, "TopBar", SpriteSlot.None, ColorToken.Background, 0.88f);
-            top.rectTransform.anchorMin = TL; top.rectTransform.anchorMax = TR; top.rectTransform.pivot = TC;
-            top.rectTransform.offsetMin = new Vector2(-300, -320); top.rectTransform.offsetMax = new Vector2(300, 0);
-            var bottom = Img(c, "BottomBar", SpriteSlot.None, ColorToken.Background, 0.9f);
-            bottom.rectTransform.anchorMin = Vector2.zero; bottom.rectTransform.anchorMax = BR; bottom.rectTransform.pivot = BC;
-            bottom.rectTransform.offsetMin = new Vector2(-300, 0); bottom.rectTransform.offsetMax = new Vector2(300, 420);
+            // Grouped by area; every element keeps its own edge anchor.
+            var header = Group(c, "Header");
+            var upgrades = Group(c, "UpgradePlates");
+            var rightPanel = Group(c, "RightPanel");
 
-            var back = MakeButton(c, "BackButton", "< BACK", ColorToken.Secondary, ColorToken.TextPrimary, TL, TL, new Vector2(40, -40), new Vector2(260, 90), 34);
-            var title = Label(c, "Title", "GARAGE", TextStyle.Heading);
-            Place(title.rectTransform, TC, TC, new Vector2(0, -50), new Vector2(600, 100));
-            CoinPill(c, TR, TR, new Vector2(-40, -40), out var coinsText);
-            var allVehicles = MakeButton(c, "AllVehiclesButton", "ALL VEHICLES", ColorToken.Secondary, ColorToken.TextPrimary, TR, TR, new Vector2(-40, -140), new Vector2(300, 84), 30);
+            SmallTitle(header, "GARAGE", out _);
+            var back = BackBadge(header);
+            CoinCounter(header, TR, TR, new Vector2(-36, -40), out var coinsText);
 
-            var prev = MakeButton(c, "PrevButton", "<", ColorToken.Secondary, ColorToken.TextPrimary, TC, C, new Vector2(-470, -235), new Vector2(120, 110), 56);
-            var next = MakeButton(c, "NextButton", ">", ColorToken.Secondary, ColorToken.TextPrimary, TC, C, new Vector2(470, -235), new Vector2(120, 110), 56);
-            var carName = Label(c, "CarName", "CLASSIC RUNNER", TextStyle.Heading, ColorToken.Accent, 56);
-            Place(carName.rectTransform, TC, C, new Vector2(0, -235), new Vector2(760, 100));
-            var action = MakeButton(c, "ActionButton", "EQUIPPED", ColorToken.Success, ColorToken.TextPrimary, TC, C, new Vector2(0, -395), new Vector2(480, 100), 40);
-
+            // Workshop plates for the three upgrades on the left wall; the door in the middle shows the showcase car.
             var g = root.GetComponent<GarageScreen>();
-            Ref(g, "allVehiclesButton", allVehicles.button);
-            Ref(g, "coinsText", coinsText); Ref(g, "carNameText", carName); Ref(g, "actionLabel", action.label);
-            Ref(g, "actionImage", action.image); Ref(g, "actionButton", action.button);
-            Ref(g, "prevButton", prev.button); Ref(g, "nextButton", next.button); Ref(g, "backButton", back.button);
-
             string[] names = { "ENGINE", "SUSPENSION", "INK TANK" };
-            float[] xs = { -580f, 0f, 580f };
             for (int i = 0; i < 3; i++)
             {
-                var card = Img(c, "Upgrade_" + names[i], SpriteSlot.Card, ColorToken.Surface);
-                Place(card.rectTransform, BC, BC, new Vector2(xs[i], 40), new Vector2(540, 340));
-
-                var t = Label(card.transform, "Title", names[i], TextStyle.Heading, null, 40);
-                Place(t.rectTransform, TC, TC, new Vector2(0, -26), new Vector2(500, 56));
-                var h = Label(card.transform, "Hint", "", TextStyle.Caption, null, 26);
-                Place(h.rectTransform, TC, TC, new Vector2(0, -86), new Vector2(500, 40));
+                var plate = ArtImg(upgrades, "Upgrade_" + names[i], SpriteSlot.PlateUpgrade, TL, TL, new Vector2(34, -150 - i * 204), new Vector2(400, 194));
+                var t = Label(plate.transform, "Title", names[i], TextStyle.Button, ColorToken.TextPrimary, 32, TextAlignmentOptions.MidlineLeft);
+                t.enableAutoSizing = true; t.fontSizeMin = 18; t.fontSizeMax = 32;
+                Place(t.rectTransform, TL, TL, new Vector2(30, -22), new Vector2(200, 42));
+                var h = Label(plate.transform, "Hint", "", TextStyle.Caption, ColorToken.Accent, 20, TextAlignmentOptions.MidlineRight);
+                Place(h.rectTransform, TL, TL, new Vector2(196, -26), new Vector2(176, 34));
 
                 var pips = new Image[5];
                 for (int p = 0; p < 5; p++)
-                {
-                    pips[p] = Img(card.transform, "Pip" + p, SpriteSlot.Pill, ColorToken.SurfaceAlt);
-                    Place(pips[p].rectTransform, C, C, new Vector2((p - 2) * 84, 8), new Vector2(72, 24));
-                }
+                    pips[p] = RawImg(plate.transform, "Pip" + p, SpriteSlot.PipOff, TL, C, new Vector2(200 + (p - 2) * 62, -87), new Vector2(40, 24));
 
-                var up = MakeButton(card.transform, "UpgradeButton", "UPGRADE", ColorToken.Accent, ColorToken.TextOnAccent, BC, BC, new Vector2(0, 28), new Vector2(460, 100), 36);
+                var up = ArtButton(plate.transform, "UpgradeButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
+                    "UPGRADE", 30, ColorToken.TextOnAccent, BC, BC, new Vector2(0, -16), new Vector2(262, 102), 0f, new Vector4(52, 22, 20, 18));
 
                 string row = "rows.Array.data[" + i + "]";
                 Ref(g, row + ".title", t); Ref(g, row + ".hint", h); Ref(g, row + ".cost", up.label);
                 Ref(g, row + ".button", up.button); Ref(g, row + ".buttonImage", up.image);
                 Refs(g, row + ".pips", pips);
             }
+
+            // Right wall: the name plate and the main action (equip / unlock).
+            var namePlate = ArtImg(rightPanel, "NamePlate", SpriteSlot.PlateName, TR, TR, new Vector2(-34, -170), new Vector2(480, 90));
+            var carName = Label(namePlate.transform, "CarName", "", TextStyle.Heading, ColorToken.Accent, 38);
+            carName.enableAutoSizing = true; carName.fontSizeMin = 22; carName.fontSizeMax = 38;
+            Place(carName.rectTransform, C, C, new Vector2(0, -2), new Vector2(380, 56));
+            var action = ArtButton(rightPanel, "ActionButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
+                "EQUIP", 48, ColorToken.TextOnAccent, TR, TR, new Vector2(-40, -276), new Vector2(480, 187), 0f, new Vector4(100, 40, 40, 34));
+            ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -262), new Vector2(84, 84), 14f);
+
+            // The vehicle rail runs along the floor.
+            var rail = BuildRail(c, "VehicleRail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 290));
+
+            Ref(g, "rail", rail);
+            Ref(g, "coinsText", coinsText); Ref(g, "carNameText", carName); Ref(g, "actionLabel", action.label);
+            Ref(g, "actionImage", action.image); Ref(g, "actionButton", action.button);
+            Ref(g, "backButton", back.button);
             return root;
         }
 
@@ -219,73 +569,91 @@ namespace RoadBuilderGame.UI.Editor
         {
             var root = ScreenRoot<HudScreen>("HudScreen", ShowStyle.Fade, out var c);
 
-            var distance = Label(c, "Distance", "0 m", TextStyle.Title, null, 84, TextAlignmentOptions.TopLeft);
-            Place(distance.rectTransform, TL, TL, new Vector2(50, -30), new Vector2(560, 100));
-            var speed = Label(c, "Speed", "0 km/h", TextStyle.Caption, ColorToken.TextPrimary, 30, TextAlignmentOptions.TopLeft);
-            Place(speed.rectTransform, TL, TL, new Vector2(54, -130), new Vector2(400, 44));
+            // Grouped by corner so each cluster moves as one thing; every element keeps its own edge anchor.
+            var topLeft = Group(c, "TopLeft"); var topCenter = Group(c, "TopCenter"); var topRight = Group(c, "TopRight");
+            var bottomLeft = Group(c, "BottomLeft"); var bottomCenter = Group(c, "BottomCenter"); var bottomRight = Group(c, "BottomRight");
 
+            // Top left: three heart badges. Top centre: the odometer. Top right: the stamped coin counter.
             var hearts = new Image[3];
             for (int i = 0; i < 3; i++)
-            {
-                var h = new GameObject("Heart" + i, typeof(RectTransform), typeof(Image));
-                h.transform.SetParent(c, false);
-                hearts[i] = h.GetComponent<Image>();
-                hearts[i].sprite = _heart; hearts[i].raycastTarget = false;
-                Place((RectTransform)h.transform, TL, TL, new Vector2(54 + i * 66, -184), new Vector2(56, 56));
-            }
+                hearts[i] = RawImg(topLeft, "Heart" + i, SpriteSlot.HeartOn, TL, TL, new Vector2(40 + i * 84, -36), new Vector2(76, 76));
 
-            CoinPill(c, TR, TR, new Vector2(-40, -40), out var coinsText);
+            var odo = ArtImg(topCenter, "Odometer", SpriteSlot.HudOdometer, TC, TC, new Vector2(0, -24), new Vector2(380, 124));
+            var distance = Label(odo.transform, "Distance", "0 m", TextStyle.Number, ColorToken.TextPrimary, 60);
+            distance.enableAutoSizing = true; distance.fontSizeMin = 30; distance.fontSizeMax = 60;
+            Place(distance.rectTransform, C, C, new Vector2(0, 4), new Vector2(320, 70));
+            var counterPlate = CoinCounter(topRight, TR, TR, new Vector2(-36, -34), out var coinsText);
 
-            var inkBg = Img(c, "InkBar", SpriteSlot.BarBackground, ColorToken.Outline);
-            Place(inkBg.rectTransform, BC, BC, new Vector2(0, 46), new Vector2(760, 50));
-            var fill = Img(inkBg.transform, "Fill", SpriteSlot.BarFill, ColorToken.Ink);
+            // Bottom left: the speedometer with a needle. Bottom centre: the ink gauge. Bottom right: boost.
+            var speedo = ArtImg(bottomLeft, "Speedometer", SpriteSlot.HudSpeedo, BC, BL(), new Vector2(40, 36), new Vector2(240, 240));
+            speedo.rectTransform.anchorMin = speedo.rectTransform.anchorMax = Vector2.zero;
+            speedo.rectTransform.pivot = Vector2.zero; speedo.rectTransform.anchoredPosition = new Vector2(40, 36);
+            var needle = RawImg(speedo.transform, "Needle", SpriteSlot.HudNeedle, C, new Vector2(0.5f, 0.1f), new Vector2(0, -2), new Vector2(18, 92));
+            RawImg(speedo.transform, "Hub", SpriteSlot.HudHub, C, C, new Vector2(0, -8), new Vector2(40, 40));
+            var speed = Label(speedo.transform, "Speed", "0", TextStyle.Number, ColorToken.TextPrimary, 38);
+            Place(speed.rectTransform, C, C, new Vector2(0, -60), new Vector2(160, 46));
+            var unit = Label(speedo.transform, "Unit", "KM/H", TextStyle.Caption, ColorToken.Accent, 18);
+            Place(unit.rectTransform, C, C, new Vector2(0, -92), new Vector2(120, 26));
+
+            var inkFrame = ArtImg(bottomCenter, "InkFrame", SpriteSlot.InkFrame, BC, BC, new Vector2(0, 30), new Vector2(640, 72));
+            var inkBar = Rect("InkBar", inkFrame.transform);
+            Place(inkBar, TL, TL, new Vector2(20, -18), new Vector2(600, 30));
+            var fill = RawImg(inkBar, "Fill", SpriteSlot.InkFill, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            fill.preserveAspect = false;
             fill.rectTransform.anchorMin = Vector2.zero; fill.rectTransform.anchorMax = Vector2.one;
-            fill.rectTransform.offsetMin = new Vector2(4, 4); fill.rectTransform.offsetMax = new Vector2(-4, -4);
-            var inkLabel = Label(inkBg.transform, "InkLabel", "ROAD INK 100%", TextStyle.Caption, ColorToken.TextPrimary, 26);
+            fill.rectTransform.offsetMin = Vector2.zero; fill.rectTransform.offsetMax = Vector2.zero;
+            var inkLabel = Label(inkBar, "InkLabel", "INK 100%", TextStyle.Caption, ColorToken.TextPrimary, 22);
             Stretch(inkLabel.rectTransform);
 
-            var boost = MakeButton(c, "BoostButton", "BOOST", ColorToken.Accent, ColorToken.TextOnAccent, BR, BR, new Vector2(-50, 40), new Vector2(300, 100), 40);
+            var boost = ArtButton(bottomRight, "BoostButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
+                "BOOST", 44, ColorToken.TextOnAccent, BR, BR, new Vector2(-40, 36), new Vector2(320, 125), 0f, new Vector4(66, 26, 26, 22));
 
             var s = root.GetComponent<HudScreen>();
             Ref(s, "distanceText", distance); Ref(s, "speedText", speed); Ref(s, "coinsText", coinsText);
-            Refs(s, "hearts", hearts); Ref(s, "inkBar", inkBg.rectTransform); Ref(s, "inkFill", fill.rectTransform);
-            Ref(s, "inkLabel", inkLabel); Ref(s, "boostButton", boost.button);
+            Refs(s, "hearts", hearts); Ref(s, "inkBar", inkBar); Ref(s, "inkFill", fill.rectTransform);
+            Ref(s, "inkLabel", inkLabel); Ref(s, "boostButton", boost.button); Ref(s, "needle", needle.rectTransform);
             return root;
         }
+
+        private static Vector2 BL() => Vector2.zero;
 
         private static GameObject BuildResult()
         {
             var root = ScreenRoot<ResultScreen>("ResultScreen", ShowStyle.Pop, out var c);
-            Dim(root.transform, ColorToken.Background, 0.9f, 0);
+            WallBackdrop(c, false);
 
-            var reason = Label(c, "Reason", "FELL INTO THE CHASM!", TextStyle.Heading, ColorToken.Danger, 60);
-            Place(reason.rectTransform, new Vector2(0.5f, 0.82f), C, Vector2.zero, new Vector2(1400, 100));
-            var cap = Label(c, "DistanceCaption", "DISTANCE", TextStyle.Caption, null, 30);
-            Place(cap.rectTransform, new Vector2(0.5f, 0.70f), C, Vector2.zero, new Vector2(600, 44));
-            var dist = Label(c, "Distance", "0 m", TextStyle.Title, null, 150);
-            Place(dist.rectTransform, new Vector2(0.5f, 0.60f), C, Vector2.zero, new Vector2(1200, 190));
+            var actions = Group(c, "Actions");
+            Props(c, PropMode.Lamps);
+
+            // An award certificate on the wall, with the verdict on its red banner and a wax seal at the bottom.
+            var cert = ArtImg(c, "Certificate", SpriteSlot.CertPaper, C, C, new Vector2(0, 76), new Vector2(920, 640), -1.5f);
+            var reason = Label(cert.transform, "Reason", "FELL INTO THE CHASM!", TextStyle.Heading, ColorToken.TextPrimary, 40);
+            reason.enableAutoSizing = true; reason.fontSizeMin = 22; reason.fontSizeMax = 40;
+            Place(reason.rectTransform, C, C, new Vector2(0, 220), new Vector2(370, 64));
+            var cap = Label(cert.transform, "DistanceCaption", "DISTANCE", TextStyle.Caption, ColorToken.TextOnAccent, 30);
+            Place(cap.rectTransform, C, C, new Vector2(0, 124), new Vector2(500, 40));
+            var dist = Label(cert.transform, "Distance", "0 m", TextStyle.Title, ColorToken.TextOnAccent, 140);
+            dist.enableAutoSizing = true; dist.fontSizeMin = 60; dist.fontSizeMax = 140;
+            Place(dist.rectTransform, C, C, new Vector2(0, 30), new Vector2(760, 170));
 
             var badge = new GameObject("NewBestBadge", typeof(RectTransform));
-            badge.transform.SetParent(c, false);
-            Place((RectTransform)badge.transform, new Vector2(0.5f, 0.47f), C, Vector2.zero, new Vector2(700, 90));
-            var star = Icon(badge.transform, "Star", _star, new Vector2(70, 70), ColorToken.Accent);
-            Place(star.rectTransform, C, C, new Vector2(-230, 0), new Vector2(70, 70));
-            var bt = Label(badge.transform, "BadgeText", "NEW BEST!", TextStyle.Heading, ColorToken.Accent, 56);
-            Place(bt.rectTransform, C, C, new Vector2(20, 0), new Vector2(420, 90));
-            var star2 = Icon(badge.transform, "Star2", _star, new Vector2(70, 70), ColorToken.Accent);
-            Place(star2.rectTransform, C, C, new Vector2(270, 0), new Vector2(70, 70));
+            badge.transform.SetParent(cert.transform, false);
+            Place((RectTransform)badge.transform, C, C, new Vector2(250, 36), new Vector2(340, 120));
+            badge.transform.localEulerAngles = new Vector3(0, 0, -10f);
+            ArtImg(badge.transform, "Stamp", SpriteSlot.StampRecord, C, C, Vector2.zero, new Vector2(340, 120));
+            var bt = Label(badge.transform, "BadgeText", "NEW BEST!", TextStyle.Heading, ColorToken.Danger, 46);
+            Place(bt.rectTransform, C, C, new Vector2(0, -2), new Vector2(290, 70));
 
-            var pill = Img(c, "CoinsPill", SpriteSlot.Pill, ColorToken.SurfaceAlt);
-            Place(pill.rectTransform, new Vector2(0.5f, 0.36f), C, Vector2.zero, new Vector2(340, 90));
-            var coin = Icon(pill.transform, "CoinIcon", _coin, new Vector2(58, 58), ColorToken.Coin, tint: false);
-            Place(coin.rectTransform, C, C, new Vector2(-110, 0), new Vector2(58, 58));
-            var won = Label(pill.transform, "CoinsWon", "+0", TextStyle.Number, ColorToken.Coin, 48, TextAlignmentOptions.MidlineLeft);
-            Place(won.rectTransform, C, C, new Vector2(40, 0), new Vector2(220, 80));
-            var total = Label(c, "Total", "TOTAL 0", TextStyle.Caption, null, 28);
-            Place(total.rectTransform, new Vector2(0.5f, 0.29f), C, Vector2.zero, new Vector2(500, 44));
+            var counter = ArtImg(cert.transform, "CoinsPlate", SpriteSlot.PlateCounter, C, C, new Vector2(40, -170), new Vector2(360, 104));
+            var won = Label(counter.transform, "CoinsWon", "+0", TextStyle.Number, ColorToken.Coin, 52, TextAlignmentOptions.MidlineRight);
+            Place(won.rectTransform, C, C, new Vector2(52, 2), new Vector2(210, 70));
+            var total = Label(cert.transform, "Total", "TOTAL 0", TextStyle.Caption, ColorToken.TextOnAccent, 28);
+            Place(total.rectTransform, C, C, new Vector2(40, -240), new Vector2(400, 40));
 
-            var retry = MakeButton(c, "RetryButton", "PLAY AGAIN", ColorToken.Primary, ColorToken.TextPrimary, new Vector2(0.5f, 0.15f), C, new Vector2(-260, 0), new Vector2(480, 150), 52);
-            var menu = MakeButton(c, "MenuButton", "MENU", ColorToken.Secondary, ColorToken.TextPrimary, new Vector2(0.5f, 0.15f), C, new Vector2(300, 0), new Vector2(320, 110), 40);
+            var retry = ArtButton(actions, "RetryButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
+                "PLAY AGAIN", 48, ColorToken.TextOnAccent, BC, BC, new Vector2(-250, 30), new Vector2(480, 187), 0f, new Vector4(100, 40, 40, 34));
+            var menu = ArtButton(actions, "MenuButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate,
+                "MENU", 42, ColorToken.TextPrimary, BC, BC, new Vector2(330, 50), new Vector2(340, 127), -3f, new Vector4(30, 30, 30, 30));
 
             var s = root.GetComponent<ResultScreen>();
             Ref(s, "reasonText", reason); Ref(s, "distanceText", dist); Ref(s, "newBestBadge", badge);
@@ -297,17 +665,25 @@ namespace RoadBuilderGame.UI.Editor
         private static GameObject BuildSettings()
         {
             var root = ScreenRoot<SettingsScreen>("SettingsScreen", ShowStyle.Pop, out var c);
-            Dim(root.transform, ColorToken.Outline, 0.65f, 0);
+            Dim(root.transform, ColorToken.Outline, 0.7f, 0);
 
-            var panel = Img(c, "Panel", SpriteSlot.Popup, ColorToken.Surface);
-            Place(panel.rectTransform, C, C, Vector2.zero, new Vector2(780, 560));
+            // A workshop control board with a hanging title plate and one big switch.
+            var board = ArtImg(c, "Board", SpriteSlot.PanelBoard, C, C, Vector2.zero, new Vector2(860, 520));
+            var plate = ArtImg(board.transform, "TitlePlate", SpriteSlot.PlateTitleSmall, TC, TC, new Vector2(0, 52), new Vector2(480, 120));
+            var title = Label(plate.transform, "Title", "SETTINGS", TextStyle.Title, ColorToken.TextPrimary, 48);
+            title.enableAutoSizing = true; title.fontSizeMin = 28; title.fontSizeMax = 48;
+            Place(title.rectTransform, C, C, new Vector2(0, -3), new Vector2(350, 56));
 
-            var title = Label(panel.transform, "Title", "SETTINGS", TextStyle.Heading);
-            Place(title.rectTransform, TC, TC, new Vector2(0, -40), new Vector2(600, 90));
-            var sound = MakeButton(panel.transform, "SoundButton", "SOUND  ON", ColorToken.Success, ColorToken.TextPrimary, C, C, new Vector2(0, 40), new Vector2(560, 110), 42);
-            var close = MakeButton(panel.transform, "CloseButton", "DONE", ColorToken.Secondary, ColorToken.TextPrimary, BC, BC, new Vector2(0, 80), new Vector2(320, 100), 40);
-            var credits = Label(panel.transform, "Credits", "Fonts: Lilita One and Baloo 2 (SIL OFL 1.1)", TextStyle.Caption, null, 22);
-            Place(credits.rectTransform, BC, BC, new Vector2(0, 24), new Vector2(700, 36));
+            var soundLabelStatic = Label(board.transform, "SoundCaption", "SOUND", TextStyle.Heading, ColorToken.TextPrimary, 48, TextAlignmentOptions.MidlineLeft);
+            Place(soundLabelStatic.rectTransform, C, C, new Vector2(-230, 50), new Vector2(300, 70));
+            var sound = ArtButton(board.transform, "SoundButton", SpriteSlot.ToggleOn, SpriteSlot.ToggleOn, SpriteSlot.ToggleOff, "ON", 36,
+                ColorToken.TextPrimary, C, C, new Vector2(150, 50), new Vector2(210, 104), 0f, new Vector4(24, 20, 100, 20));
+            sound.button.transition = Selectable.Transition.None;
+            sound.label.alignment = TextAlignmentOptions.MidlineLeft;
+            var close = ArtButton(board.transform, "CloseButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
+                "DONE", 44, ColorToken.TextOnAccent, BC, BC, new Vector2(0, 30), new Vector2(330, 128), 0f, new Vector4(70, 30, 30, 26));
+            var credits = Label(board.transform, "Credits", "Fonts: Lilita One and Baloo 2 (SIL OFL 1.1)", TextStyle.Caption, ColorToken.TextSecondary, 22);
+            Place(credits.rectTransform, C, C, new Vector2(0, -62), new Vector2(700, 36));
 
             var s = root.GetComponent<SettingsScreen>();
             Ref(s, "soundButton", sound.button); Ref(s, "soundButtonImage", sound.image); Ref(s, "soundLabel", sound.label);
@@ -315,42 +691,35 @@ namespace RoadBuilderGame.UI.Editor
             return root;
         }
 
-        // ======================================================================== COLLECTION
-        private static void Sliced(Image img, SpriteSlot slot)
-        {
-            var theme = UIThemeManager.Current;
-            var sprite = theme != null ? theme.GetSprite(slot) : null;
-            if (sprite != null) { img.sprite = sprite; img.type = Image.Type.Sliced; }
-        }
-
         private static GameObject BuildCard()
         {
             var go = new GameObject("CollectionCard", typeof(RectTransform), typeof(Image), typeof(Button), typeof(PressFeedback), typeof(CollectionCard));
             SceneManager.MoveGameObjectToScene(go, _scene);
-            ((RectTransform)go.transform).sizeDelta = new Vector2(230, 280);
-            var bg = go.GetComponent<Image>();
-            Sliced(bg, SpriteSlot.Card);
+            ((RectTransform)go.transform).sizeDelta = new Vector2(300, 224);
+            var hit = go.GetComponent<Image>();
+            hit.color = new Color(0, 0, 0, 0);                         // invisible, but takes the tap
             var btn = go.GetComponent<Button>();
-            btn.targetGraphic = bg;
+            btn.targetGraphic = hit;
             btn.transition = Selectable.Transition.None;
 
-            var previewBack = Img(go.transform, "PreviewBack", SpriteSlot.Panel, ColorToken.Background, 0.55f);
-            Place(previewBack.rectTransform, TC, TC, new Vector2(0, -14), new Vector2(206, 160));
-            var pv = new GameObject("Preview", typeof(RectTransform), typeof(Image));
-            pv.transform.SetParent(previewBack.transform, false);
-            Stretch((RectTransform)pv.transform, 8, 8, 8, 8);
-            var preview = pv.GetComponent<Image>();
-            preview.preserveAspect = true; preview.raycastTarget = false;
-
-            var name = Label(go.transform, "Name", "Name", TextStyle.Body, ColorToken.TextPrimary, 24);
-            name.enableAutoSizing = true; name.fontSizeMin = 16; name.fontSizeMax = 24;
-            Place(name.rectTransform, TC, TC, new Vector2(0, -184), new Vector2(210, 60));
-            var badge = Label(go.transform, "Badge", "", TextStyle.Caption, ColorToken.Accent, 20);
-            Place(badge.rectTransform, BC, BC, new Vector2(0, 12), new Vector2(210, 30));
+            // Everything visible lives in 'Visual' so the selected card can lift without fighting the layout.
+            var visual = Rect("Visual", go.transform);
+            Place(visual, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(300, 224));
+            var bg = RawImg(visual, "Background", SpriteSlot.CardVehicle, C, C, Vector2.zero, new Vector2(300, 224));
+            Stretch(bg.rectTransform);
+            bg.preserveAspect = false;
+            var pv = RawImg(visual, "Preview", SpriteSlot.None, TL, TL, Vector2.zero, new Vector2(200, 100));
+            pv.sprite = null;
+            var name = Label(visual, "Name", "Name", TextStyle.Button, ColorToken.TextOnAccent, 26);
+            name.enableAutoSizing = true; name.fontSizeMin = 16; name.fontSizeMax = 26;
+            var badge = Label(visual, "Badge", "", TextStyle.Button, ColorToken.Secondary, 20);
+            badge.enableAutoSizing = true; badge.fontSizeMin = 12; badge.fontSizeMax = 20;
+            var frame = RawImg(visual, "Frame", SpriteSlot.FrameVehicle, C, C, Vector2.zero, new Vector2(316, 240));
+            var lockTag = RawImg(visual, "LockTag", SpriteSlot.LockTag, TR, C, Vector2.zero, new Vector2(54, 70));
 
             var c = go.GetComponent<CollectionCard>();
-            Ref(c, "background", bg); Ref(c, "preview", preview); Ref(c, "nameText", name);
-            Ref(c, "badgeText", badge); Ref(c, "button", btn);
+            Ref(c, "visual", visual); Ref(c, "background", bg); Ref(c, "preview", pv); Ref(c, "nameText", name);
+            Ref(c, "badgeText", badge); Ref(c, "frame", frame); Ref(c, "lockTag", lockTag); Ref(c, "button", btn);
             return go;
         }
 
@@ -358,16 +727,16 @@ namespace RoadBuilderGame.UI.Editor
         {
             var go = new GameObject("CollectionTab", typeof(RectTransform), typeof(Image), typeof(Button), typeof(PressFeedback), typeof(CollectionTab));
             SceneManager.MoveGameObjectToScene(go, _scene);
-            ((RectTransform)go.transform).sizeDelta = new Vector2(220, 72);
+            ((RectTransform)go.transform).sizeDelta = new Vector2(230, 88);
             var bg = go.GetComponent<Image>();
-            Sliced(bg, SpriteSlot.Button);
+            bg.sprite = ThemeSprite(SpriteSlot.TabNormal); bg.preserveAspect = true;
             var btn = go.GetComponent<Button>();
             btn.targetGraphic = bg;
             btn.transition = Selectable.Transition.None;
 
             var label = Label(go.transform, "Label", "ALL", TextStyle.Button, ColorToken.TextPrimary, 28);
             label.enableAutoSizing = true; label.fontSizeMin = 16; label.fontSizeMax = 28;
-            Stretch(label.rectTransform, 8, 10, 8, 0);
+            Stretch(label.rectTransform, 14, 8, 14, 4);
 
             var t = go.GetComponent<CollectionTab>();
             Ref(t, "background", bg); Ref(t, "label", label); Ref(t, "button", btn);
@@ -377,12 +746,13 @@ namespace RoadBuilderGame.UI.Editor
         private static GameObject BuildCollection(CollectionCard cardPrefab, CollectionTab tabPrefab)
         {
             var root = ScreenRoot<CollectionScreen>("CollectionScreen", ShowStyle.Fade, out var c);
-            Dim(root.transform, ColorToken.Background, 0.95f, 0);
+            WallBackdrop(c, false);
+            Props(c, PropMode.Lamps);
 
-            var back = MakeButton(c, "BackButton", "< BACK", ColorToken.Secondary, ColorToken.TextPrimary, TL, TL, new Vector2(40, -40), new Vector2(260, 90), 34);
-            var title = Label(c, "Title", "VEHICLES", TextStyle.Heading);
-            Place(title.rectTransform, TC, TC, new Vector2(0, -50), new Vector2(700, 100));
-            var count = Label(c, "Count", "0 items", TextStyle.Caption, null, 28, TextAlignmentOptions.MidlineRight);
+            var header = Group(c, "Header");
+            var back = BackBadge(header);
+            SmallTitle(header, "VEHICLES", out var title);
+            var count = Label(header, "Count", "0 items", TextStyle.Caption, ColorToken.TextSecondary, 28, TextAlignmentOptions.MidlineRight);
             Place(count.rectTransform, TR, TR, new Vector2(-50, -62), new Vector2(360, 50));
 
             // Group tabs
@@ -422,7 +792,7 @@ namespace RoadBuilderGame.UI.Editor
             scroll.movementType = ScrollRect.MovementType.Elastic; scroll.scrollSensitivity = 30f;
 
             // Detail panel
-            var detail = Img(c, "Detail", SpriteSlot.Card, ColorToken.Surface);
+            var detail = Img(c, "Detail", SpriteSlot.PanelBoard, ColorToken.Tint);
             detail.rectTransform.anchorMin = new Vector2(1, 0); detail.rectTransform.anchorMax = new Vector2(1, 1);
             detail.rectTransform.pivot = new Vector2(1, 0.5f);
             detail.rectTransform.offsetMin = new Vector2(-600, 40); detail.rectTransform.offsetMax = new Vector2(-40, -260);
@@ -448,7 +818,8 @@ namespace RoadBuilderGame.UI.Editor
             Place(dNote.rectTransform, TC, TC, new Vector2(0, -460), new Vector2(520, 112));
             var dFoot = Label(detail.transform, "Footnote", "", TextStyle.Caption, null, 22);
             Place(dFoot.rectTransform, BC, BC, new Vector2(0, 142), new Vector2(520, 56));
-            var select = MakeButton(detail.transform, "SelectButton", "SELECT", ColorToken.Primary, ColorToken.TextPrimary, BC, BC, new Vector2(0, 36), new Vector2(480, 100), 40);
+            var select = ArtButton(detail.transform, "SelectButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled, "SELECT", 40, ColorToken.TextOnAccent, BC, BC, new Vector2(0, 34), new Vector2(440, 172), 0f, new Vector4(90, 36, 34, 32));
+            select.button.transition = Selectable.Transition.None;
 
             var s = root.GetComponent<CollectionScreen>();
             Ref(s, "titleText", title); Ref(s, "countText", count); Ref(s, "backButton", back.button);

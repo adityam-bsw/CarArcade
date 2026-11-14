@@ -38,8 +38,8 @@ namespace RoadBuilderGame.UI
         private void Refresh()
         {
             bool on = GameServices.Model.SoundEnabled;
-            soundLabel.SetText(on ? "SOUND  ON" : "SOUND  OFF");
-            soundButtonImage.color = UIThemeManager.Current.GetColor(on ? ColorToken.Success : ColorToken.SurfaceAlt);
+            soundLabel.SetText(on ? "ON" : "OFF");
+            soundButtonImage.sprite = UIThemeManager.Current.GetSprite(on ? SpriteSlot.ToggleOn : SpriteSlot.ToggleOff);
         }
     }
 }

@@ -26,7 +26,8 @@ namespace RoadBuilderGame.UI
         public void SetActive(bool active)
         {
             var theme = UIThemeManager.Current;
-            background.color = theme.GetColor(active ? ColorToken.Accent : ColorToken.SurfaceAlt);
+            background.sprite = theme.GetSprite(active ? SpriteSlot.TabSelected : SpriteSlot.TabNormal);
+            background.color = Color.white;
             label.color = theme.GetColor(active ? ColorToken.TextOnAccent : ColorToken.TextPrimary);
         }
     }

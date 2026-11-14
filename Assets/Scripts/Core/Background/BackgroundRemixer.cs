@@ -93,6 +93,20 @@ namespace RoadBuilderGame
             return r;
         }
 
+        /// <summary>A recipe that shows one scene exactly as drawn: no mixing, mirroring or tint.</summary>
+        public static BackgroundRecipe FromSkin(BackgroundSkin skin)
+        {
+            var r = new BackgroundRecipe { baseSkin = skin, time = TimeOfDay.Day, label = skin.displayName };
+            for (int l = 0; l < BackgroundSkin.LayerCount; l++)
+            {
+                r.sprites[l] = skin.Layer(l);
+                r.scroll[l] = skin.Scroll(l);
+                r.tint[l] = Color.white;
+            }
+            r.fill = SampleFill(r.sprites[3]);
+            return r;
+        }
+
         private static BackgroundSkin[] Pool(Mood mood)
         {
             var list = new System.Collections.Generic.List<BackgroundSkin>();

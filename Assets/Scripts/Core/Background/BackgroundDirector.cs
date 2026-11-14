@@ -34,6 +34,7 @@ namespace RoadBuilderGame
         private bool _anchorPending = true;
         private float _anchorX, _nextAt, _fadeStart;
         private bool _fading;
+        private bool _locked;   // a single scene shown as drawn: no remix, no cross-fade
         private static Sprite _whiteSprite;
 
         public EnvironmentTheme CurrentTheme { get; private set; } = EnvironmentTheme.Country;
@@ -48,6 +49,7 @@ namespace RoadBuilderGame
         /// <summary>Start a fresh remix for this world. Called when the world is picked and at the start of every run.</summary>
         public void ApplyTheme(EnvironmentTheme theme)
         {
+            _locked = false;
             CurrentTheme = theme;
             _rng = new System.Random(unchecked(System.Environment.TickCount * 397 + (int)theme));
 
@@ -61,6 +63,22 @@ namespace RoadBuilderGame
             _fading = false;
             _anchorPending = true;
 
+            var cam = Camera.main;
+            if (cam != null) cam.backgroundColor = recipe.fill;
+        }
+
+        /// <summary>Show one scene exactly as drawn for the whole run (worlds that have no remix pool).</summary>
+        public void ApplySkin(BackgroundSkin skin)
+        {
+            if (skin == null) return;
+            var recipe = BackgroundRemixer.FromSkin(skin);
+            _locked = true;
+            Assign(_a, recipe);
+            _a.alpha = 1f;
+            _b.alpha = 0f;
+            _b.recipe = null;
+            _fading = false;
+            _anchorPending = true;
             var cam = Camera.main;
             if (cam != null) cam.backgroundColor = recipe.fill;
         }
@@ -85,6 +103,7 @@ namespace RoadBuilderGame
         // ------------------------------------------------------------------ regions and fading
         private void Advance(float progress)
         {
+            if (_locked) return;
             if (!_fading && progress >= _nextAt)
             {
                 var next = BackgroundRemixer.Make(CurrentTheme, _rng, _a.recipe);

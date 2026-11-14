@@ -8,7 +8,9 @@ namespace RoadBuilderGame.UI
     public enum ColorToken
     {
         Background, Surface, SurfaceAlt, Primary, Secondary, Accent, Success, Danger,
-        TextPrimary, TextSecondary, TextOnAccent, Coin, Ink, Outline
+        TextPrimary, TextSecondary, TextOnAccent, Coin, Ink, Outline,
+        /// <summary>White: for illustrated artwork that keeps its own colours.</summary>
+        Tint
     }
 
     public enum FontRole { Display, Body }
@@ -17,7 +19,18 @@ namespace RoadBuilderGame.UI
     public enum TextStyle { Title, Heading, Body, Caption, Number, Button }
 
     /// <summary>Named sprite slots (9-sliced). A theme can swap the whole look by swapping these.</summary>
-    public enum SpriteSlot { None, Button, Panel, Popup, Pill, BarBackground, BarFill, Card }
+    public enum SpriteSlot
+    {
+        None, Button, Panel, Popup, Pill, BarBackground, BarFill, Card,
+        // Retro Arcade Workshop artwork (illustrated, keeps its own colours: use ColorToken.Tint)
+        ButtonArcade, ButtonArcadePressed, ButtonArcadeDisabled, ButtonPlate, ButtonPlatePressed, BadgeHex,
+        PlateTitle, PlateCounter, PlateLicense, DecoTape, DecoSticker, BackdropHome,
+        PlateTitleSmall, BadgeHexBack, PlateUpgrade, PipOn, PipOff, PlateName,
+        CardVehicle, CardWorld, CardRoad, FrameVehicle, FrameWorld, FrameRoad, LockTag, CertPaper, StampRecord, PanelBoard, ToggleOn, ToggleOff,
+        HudOdometer, HudSpeedo, HudNeedle, HudHub, HeartOn, HeartOff, InkFrame, InkFill, TabNormal, TabSelected, BackdropGarage, BackdropWall,
+        // Garage background as separate parts: tiles repeat sideways to fill any screen, the door is one centred sprite
+        BgWallTile, BgFloorTile, BgHazardTile, BgBeamTile, BgDoor
+    }
 
     [Serializable]
     public class TextStyleDef

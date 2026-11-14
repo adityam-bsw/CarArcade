@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f252442cd0bc64044a649d6571afe92a, type: 3}
+  m_Name: WorkshopProps
+  m_EditorClassIdentifier: RB.UI::RoadBuilderGame.UI.WorkshopPropSet
+  props:
+  - id: can_orange
+    sprite: {fileID: 21300000, guid: 5c5cce776d9e1432695c0d7eabe0ca76, type: 3}
+  - id: can_red
+    sprite: {fileID: 21300000, guid: 65d339fc18bd645fdb76d8f991dc64c1, type: 3}
+  - id: can_teal
+    sprite: {fileID: 21300000, guid: 9a63d5304ae384ee7b73de7ad1a5f124, type: 3}
+  - id: clock_face
+    sprite: {fileID: 21300000, guid: 9716d6af567444b198ab8ef889bc0e6a, type: 3}
+  - id: clock_hand_hour
+    sprite: {fileID: 21300000, guid: fb472da08824e4a4793a6e4738060cff, type: 3}
+  - id: clock_hand_minute
+    sprite: {fileID: 21300000, guid: dd13e5a373d3e40ffa209769ebb1b26f, type: 3}
+  - id: drum
+    sprite: {fileID: 21300000, guid: 441876e268003450aa2e33662c615212, type: 3}
+  - id: gear
+    sprite: {fileID: 21300000, guid: de41bc990431741d9a4ba2791e9e86c9, type: 3}
+  - id: hammer
+    sprite: {fileID: 21300000, guid: 33dd45f5567364e9c95432ffb2774481, type: 3}
+  - id: lamp
+    sprite: {fileID: 21300000, guid: 0d5599ddbd9b845d68626c7a66b12406, type: 3}
+  - id: lamp_glow
+    sprite: {fileID: 21300000, guid: dd0d5909638cd4a8896bdb1c6a8c10fb, type: 3}
+  - id: pegboard
+    sprite: {fileID: 21300000, guid: 6bb095fcf6b064f29b5eda58232ed709, type: 3}
+  - id: robot_antenna
+    sprite: {fileID: 21300000, guid: 4090bbb5a7c3146769ede0e031a61884, type: 3}
+  - id: robot_arm
+    sprite: {fileID: 21300000, guid: 37d61478f239a48dfac3da129ff889a3, type: 3}
+  - id: robot_body
+    sprite: {fileID: 21300000, guid: bc215335db56e413ab914e8759b4907d, type: 3}
+  - id: robot_eyes
+    sprite: {fileID: 21300000, guid: d85b805bb1aa14722b9d3a7c6b71018f, type: 3}
+  - id: saw
+    sprite: {fileID: 21300000, guid: 150cecb3780d94d5c87b937184438729, type: 3}
+  - id: screwdriver
+    sprite: {fileID: 21300000, guid: b46e5f73a4ef0452a9f12eb9023a88f6, type: 3}
+  - id: shelf
+    sprite: {fileID: 21300000, guid: dd41bec1fac50464aa40cbd58ac16771, type: 3}
+  - id: toolbox
+    sprite: {fileID: 21300000, guid: 33b0f2d155fef48f594f255b7db7f1eb, type: 3}
+  - id: tyre
+    sprite: {fileID: 21300000, guid: e066ae889ae634ddb8029a1a5a8e0185, type: 3}
+  - id: wrench
+    sprite: {fileID: 21300000, guid: 8009436de4ff245bb8bd444e57dc6cab, type: 3}

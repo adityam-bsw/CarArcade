@@ -1,6 +1,6 @@
 # Asset catalogue and the Collection screen
 
-Status: vehicles and surfaces are wired into gameplay and verified in Play mode; worlds are still stored only.
+Status: vehicles, surfaces and worlds are wired into gameplay and verified in Play mode.
 
 ## What it is
 Every vehicle, surface and world that exists as art in the project is listed in one `AssetCatalog` asset and can be
@@ -21,7 +21,8 @@ status, notes, SELECT). Selecting stores the pick in the save file only.
 - **Surfaces:** a `RoadSkin` is created at run time from the strip (2 curb + 4 body + 20 skirt rows, 128 px wide) and the
   road material friction and bounce are set per surface (`friction` and `bounce` on the entry). Asphalt, dirt and neon map
   to the original road styles. The road changes at once, also in the Garage showcase. Sea water and lava crust have no strip.
-- **Worlds:** still only remembered (`BackgroundSkin` per world is the remaining step).
+- **Worlds:** rolling hills, desert and night city play with the original remix of their mood; the other worlds with four layers show that one scene as drawn (`BackgroundDirector.ApplySkin`). Underwater has no layers yet.
+- **Screens:** Garage and Worlds use swipeable `CardRail`s (cards = `CollectionCard`) instead of arrows. Tap equips owned or free items; locked vehicles are focused and the button unlocks. A fresh profile gets car, asphalt and the world of its saved theme. The live world shows behind translucent bands.
 - All tuning (class numbers, costs, friction) lives in the catalogue asset, filled by `CatalogBuilder.FillPlayData`.
 
 ## The catalogue pipeline (re-run whenever assets change)

@@ -38,6 +38,9 @@ namespace RoadBuilderGame
         [Tooltip("Surface: road atlas strip (2 curb + 4 body + 20 skirt rows), or a legacy RoadStyle (-1 = use the strip).")]
         public Texture2D strip;
         public int roadStyle = -1;
+        [Tooltip("World: four layers back to front (sky, far, mid, near), or a legacy EnvironmentTheme with remix (-1 = use the layers).")]
+        public Sprite[] layers;
+        public int themeIndex = -1;
         public float friction = 1.25f;
         public float bounce = 0f;
 

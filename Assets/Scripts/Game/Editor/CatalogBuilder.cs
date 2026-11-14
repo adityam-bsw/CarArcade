@@ -128,7 +128,66 @@ namespace RoadBuilderGame.Editor
                 }
                 else e.playNote = "Needs a road strip made from this art first.";
             }
-            else e.playNote = "Worlds are remembered but not shown on the track yet.";
+            else FillWorld(e);
+        }
+
+        private static readonly Dictionary<string, string> VistaScene = new Dictionary<string, string>
+        {
+            { "world-rolling-hills", "downs" }, { "world-coast", "leeward" }, { "world-desert", "mesa" }, { "world-volcano", "kiln" },
+            { "world-winter", "tundra" }, { "world-arctic", "cairn" }, { "world-jungle", "canopy" }, { "world-night-city", "sodium" },
+            { "world-industrial", "flue" },
+        };
+        // Worlds that play with the original remix of their mood: Country, Desert, CyberNight.
+        private static readonly Dictionary<string, int> RemixTheme = new Dictionary<string, int>
+        {
+            { "world-rolling-hills", 0 }, { "world-desert", 1 }, { "world-night-city", 2 },
+        };
+
+        private static void FillWorld(CatalogEntry e)
+        {
+            e.layers = null; e.themeIndex = -1;
+            if (RemixTheme.TryGetValue(e.id, out int theme)) { e.themeIndex = theme; e.playable = true; return; }
+
+            var sprites = new Sprite[4];
+            string[] names = { "sky", "far", "mid", "near" };
+            if (VistaScene.TryGetValue(e.id, out string scene))
+            {
+                var skin = AssetDatabase.LoadAssetAtPath<BackgroundSkin>("Assets/Resources/Backgrounds/" + scene + ".asset");
+                if (skin != null) for (int i = 0; i < 4; i++) sprites[i] = skin.Layer(i);
+            }
+            else
+            {
+                string key = e.id.Substring("world-".Length);
+                for (int i = 0; i < 4; i++)
+                {
+                    string path = "Assets/Art/Worlds/Forged/" + e.id + "/" + key + "_" + i + "_" + names[i] + ".png";
+                    ConfigureWorldLayer(path);
+                    sprites[i] = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                }
+            }
+            bool ok = true;
+            foreach (var s in sprites) if (s == null) ok = false;
+            if (ok) { e.layers = sprites; e.playable = true; }
+            else e.playNote = "Needs its four scenery layers first.";
+        }
+
+        private static void ConfigureWorldLayer(string path)
+        {
+            var imp = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (imp == null) return;
+            imp.textureType = TextureImporterType.Sprite;
+            imp.spriteImportMode = SpriteImportMode.Single;
+            imp.spritePixelsPerUnit = 16f;
+            imp.filterMode = FilterMode.Point;
+            imp.wrapMode = TextureWrapMode.Repeat;
+            imp.mipmapEnabled = false;
+            imp.alphaIsTransparency = true;
+            imp.textureCompression = TextureImporterCompression.Uncompressed;
+            var settings = new TextureImporterSettings();
+            imp.ReadTextureSettings(settings);
+            settings.spriteMeshType = SpriteMeshType.FullRect;
+            imp.SetTextureSettings(settings);
+            imp.SaveAndReimport();
         }
 
         private static string NeedFor(string id)

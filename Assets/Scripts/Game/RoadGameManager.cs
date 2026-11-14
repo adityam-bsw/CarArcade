@@ -50,6 +50,7 @@ namespace RoadBuilderGame
         private bool _soundEnabled = true;
         private string _selVehicleId = "", _selSurfaceId = "", _selWorldId = "";
         private readonly HashSet<string> _unlockedVehicleIds = new HashSet<string>();
+        private readonly Dictionary<string, BackgroundSkin> _worldSkins = new Dictionary<string, BackgroundSkin>();
         private readonly Dictionary<string, RoadSkin> _surfaceSkins = new Dictionary<string, RoadSkin>();
 
         private RoadCar _car;
@@ -163,7 +164,7 @@ namespace RoadBuilderGame
             _cameraRig = new GameCameraRig(_cam, _background);
 
             LoadPlayerData();
-            _background.ApplyTheme(SelectedTheme);
+            ApplyWorld();
             ApplySurface();
 
             GameServices.Actions = this;
@@ -225,6 +226,17 @@ namespace RoadBuilderGame
             _selWorldId = _profile.selectedWorldId ?? "";
             _unlockedVehicleIds.Clear();
             if (_profile.unlockedVehicleIds != null) foreach (var id in _profile.unlockedVehicleIds) _unlockedVehicleIds.Add(id);
+            // Starter cars bought before the collection existed carry over.
+            if (sportUnlocked) _unlockedVehicleIds.Add("vehicle-sports-car");
+            if (truckUnlocked) _unlockedVehicleIds.Add("vehicle-monster-truck");
+            // Always have a pick, so the rails show something equipped. Valid only if it exists in the catalogue.
+            // A saved pick that is locked or no longer playable falls back to the free starter car.
+            var pickedVehicle = AssetCatalog.Load()?.Find(_selVehicleId);
+            if (string.IsNullOrEmpty(_selVehicleId) || pickedVehicle == null || !pickedVehicle.playable
+                || (pickedVehicle.cost > 0 && !_unlockedVehicleIds.Contains(_selVehicleId)))
+                _selVehicleId = "vehicle-car";
+            if (string.IsNullOrEmpty(_selSurfaceId)) _selSurfaceId = "surface-asphalt";
+            if (string.IsNullOrEmpty(_selWorldId)) _selWorldId = SelectedTheme == EnvironmentTheme.Desert ? "world-desert" : (SelectedTheme == EnvironmentTheme.CyberNight ? "world-night-city" : "world-rolling-hills");
             AudioListener.volume = _soundEnabled ? 1f : 0f;
         }
 
@@ -263,6 +275,7 @@ namespace RoadBuilderGame
                     break;
 
                 case ScreenState.StageSelect:
+                    SetupShowcaseCar();   // the door shows the live world and road with the showcase car
                     SyncModel();
                     break;
 
@@ -311,7 +324,7 @@ namespace RoadBuilderGame
             _car = CreateSelectedCar(new Vector2(0f, 1.2f));
             _car.MotorOn = false;
 
-            _cam.transform.position = new Vector3(0f, 1.8f, -10f);
+            _cam.transform.position = new Vector3(0f, 2.35f, -10f);
             _background.Follow(_cam);
         }
 
@@ -319,7 +332,7 @@ namespace RoadBuilderGame
         {
             CleanupAllCars();
 
-            _background.ApplyTheme(SelectedTheme);
+            ApplyWorld();
             ApplySurface();
             _road.ResetRoad(-20f, 12f, 0f);
 
@@ -451,7 +464,7 @@ namespace RoadBuilderGame
 
         private void LateUpdate()
         {
-            _cameraRig.Tick(_car, _state == ScreenState.Playing);
+            _cameraRig?.Tick(_car, _state == ScreenState.Playing);
         }
 
         public void OnCollectItem(Collectible item)
@@ -549,7 +562,8 @@ namespace RoadBuilderGame
         {
             int total = System.Enum.GetValues(typeof(EnvironmentTheme)).Length;
             SelectedTheme = (EnvironmentTheme)(((int)SelectedTheme + dir + total) % total);
-            _background.ApplyTheme(SelectedTheme);
+            _selWorldId = "";
+            ApplyWorld();
             SavePlayerData();
             SyncModel();
         }
@@ -632,7 +646,7 @@ namespace RoadBuilderGame
         {
             id = id ?? "";
             var entry = AssetCatalog.Load()?.Find(id);
-            if (entry != null && kind != CatalogKind.World && !entry.playable)
+            if (entry != null && !entry.playable)
             {
                 if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
                 return;
@@ -662,7 +676,11 @@ namespace RoadBuilderGame
                 _selSurfaceId = id;
                 ApplySurface();
             }
-            else _selWorldId = id;
+            else
+            {
+                _selWorldId = id;
+                ApplyWorld();
+            }
             if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
             SavePlayerData();
             SyncModel();
@@ -671,7 +689,6 @@ namespace RoadBuilderGame
         // ---------------------------------------------------------------- catalogue vehicles and surfaces
         private CatalogEntry CatalogVehicle()
         {
-            if (string.IsNullOrEmpty(_selVehicleId)) return null;
             var e = AssetCatalog.Load()?.Find(_selVehicleId);
             if (e == null || e.kind != CatalogKind.Vehicle || !e.playable || e.preview == null) return null;
             if (e.cost > 0 && !_unlockedVehicleIds.Contains(e.id)) return null;
@@ -686,6 +703,34 @@ namespace RoadBuilderGame
             {
                 id = e.id, body = e.preview, width = e.widthUnits, mass = e.mass, torque = e.torque, speedMultiplier = e.speed
             });
+        }
+
+        /// <summary>The scenery for the current world pick: a remix of its mood, or one scene shown as drawn.</summary>
+        private void ApplyWorld()
+        {
+            var e = AssetCatalog.Load()?.Find(_selWorldId);
+            if (e != null && e.kind == CatalogKind.World && e.playable)
+            {
+                if (e.themeIndex >= 0)
+                {
+                    SelectedTheme = (EnvironmentTheme)e.themeIndex;
+                    _background.ApplyTheme(SelectedTheme);
+                    return;
+                }
+                if (e.layers != null && e.layers.Length == BackgroundSkin.LayerCount)
+                {
+                    if (!_worldSkins.TryGetValue(e.id, out var skin) || skin == null)
+                    {
+                        skin = ScriptableObject.CreateInstance<BackgroundSkin>();
+                        skin.displayName = e.displayName;
+                        skin.sky = e.layers[0]; skin.far = e.layers[1]; skin.mid = e.layers[2]; skin.near = e.layers[3];
+                        _worldSkins[e.id] = skin;
+                    }
+                    _background.ApplySkin(skin);
+                    return;
+                }
+            }
+            _background.ApplyTheme(SelectedTheme);
         }
 
         /// <summary>Road skin and grip for the current surface pick (or the legacy road style). Looks and friction only.</summary>

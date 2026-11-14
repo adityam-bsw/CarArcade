@@ -31,6 +31,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-dune-buggy
@@ -51,6 +53,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-golf-cart
@@ -67,12 +71,14 @@ MonoBehaviour:
     playable: 1
     playNote: 
     cost: 0
-    widthUnits: 2.5
+    widthUnits: 2.2857144
     mass: 1.3
     torque: 36
     speed: 1.05
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-police-car
@@ -93,6 +99,8 @@ MonoBehaviour:
     speed: 1.15
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-race-car
@@ -113,6 +121,8 @@ MonoBehaviour:
     speed: 1.15
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-sports-car
@@ -133,6 +143,8 @@ MonoBehaviour:
     speed: 1.15
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-taxi
@@ -153,6 +165,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-tuk-tuk
@@ -169,12 +183,14 @@ MonoBehaviour:
     playable: 1
     playNote: 
     cost: 150
-    widthUnits: 2.5714285
+    widthUnits: 2.357143
     mass: 1.3
     torque: 36
     speed: 1.05
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-bus
@@ -195,6 +211,8 @@ MonoBehaviour:
     speed: 0.85
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-camper
@@ -215,6 +233,8 @@ MonoBehaviour:
     speed: 0.95
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-fire-truck
@@ -235,6 +255,8 @@ MonoBehaviour:
     speed: 0.85
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-monster-truck
@@ -251,12 +273,14 @@ MonoBehaviour:
     playable: 1
     playNote: 
     cost: 450
-    widthUnits: 3
+    widthUnits: 2.857143
     mass: 2
     torque: 52
     speed: 0.95
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-pickup
@@ -277,6 +301,8 @@ MonoBehaviour:
     speed: 0.95
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-semi-truck
@@ -297,6 +323,8 @@ MonoBehaviour:
     speed: 0.85
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-tank
@@ -319,6 +347,8 @@ MonoBehaviour:
     speed: 0.85
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-tractor
@@ -339,6 +369,8 @@ MonoBehaviour:
     speed: 0.95
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-bicycle
@@ -360,6 +392,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-motorcycle
@@ -380,6 +414,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-quad-atv
@@ -401,6 +437,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-scooter
@@ -421,6 +459,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-hovercraft
@@ -443,6 +483,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-jet-ski
@@ -465,6 +507,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-speedboat
@@ -487,6 +531,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-sled
@@ -507,6 +553,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-snowboard
@@ -528,6 +576,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-snowmobile
@@ -549,6 +599,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-toboggan
@@ -570,6 +622,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-handcar
@@ -592,6 +646,8 @@ MonoBehaviour:
     speed: 1.05
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-moon-rover
@@ -613,6 +669,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-rocket-sled
@@ -634,6 +692,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: vehicle-shopping-cart
@@ -650,12 +710,14 @@ MonoBehaviour:
     playable: 1
     playNote: 
     cost: 100
-    widthUnits: 2.2857144
+    widthUnits: 2
     mass: 0.9
     torque: 26
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: surface-asphalt
@@ -676,6 +738,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: 0
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: surface-cobblestone
@@ -697,6 +761,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 2800000, guid: 02d6dad2b1b724d62bf1dbeac0b93164, type: 3}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.1
     bounce: 0
   - id: surface-dirt
@@ -717,6 +783,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: 1
+    layers: []
+    themeIndex: -1
     friction: 1
     bounce: 0
   - id: surface-glass
@@ -738,6 +806,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 2800000, guid: 97a5de04c3dba4629ac748d0d5c1b0da, type: 3}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 0.5
     bounce: 0
   - id: surface-gravel
@@ -759,6 +829,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 2800000, guid: fbbeda4034189407696c8c755f523615, type: 3}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 0.9
     bounce: 0
   - id: surface-mud
@@ -780,6 +852,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 2800000, guid: 4ad613698160d4bc089d11d5e9ed6bc2, type: 3}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.6
     bounce: 0
   - id: surface-neon-grid
@@ -800,6 +874,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: 2
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: surface-rail-track
@@ -821,6 +897,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 2800000, guid: a889d68e827e649f29a7def3d501696d, type: 3}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.3
     bounce: 0
   - id: surface-moon-dust
@@ -842,6 +920,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 2800000, guid: 30371f09b8a354541a3b6f28de4b6bdf, type: 3}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 0.8
     bounce: 0
   - id: surface-salt-flat
@@ -863,6 +943,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 2800000, guid: 12e69d9abb89b4d17b75173b6803d610, type: 3}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 0.9
     bounce: 0
   - id: surface-sea-water
@@ -883,6 +965,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: surface-lava-crust
@@ -903,6 +987,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: surface-magma-bridge
@@ -924,6 +1010,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 2800000, guid: f021b88b923ad4775a67f89e9042dd56, type: 3}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.2
     bounce: 0
   - id: world-autumn-leaves
@@ -936,8 +1024,8 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 2e8075e921ac8413f923e97e2bf1e24a, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -945,6 +1033,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 42cab87bc96e14576a2649da690bcefe, type: 3}
+    - {fileID: 21300000, guid: 238f59265029b488f97572cfd6c9b8c0, type: 3}
+    - {fileID: 21300000, guid: cd532b32f898a487fae7dc44a835401d, type: 3}
+    - {fileID: 21300000, guid: 5e5e6bb61ba2b47a687ad689894fd295, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-christmas
@@ -957,8 +1051,8 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 7e11f08805a5b4cae97f1375fe390fbc, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -966,6 +1060,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 8ddc71ab8d8014bbbacde628d61bf48e, type: 3}
+    - {fileID: 21300000, guid: ab30ba90010b6465aaf910e991113d90, type: 3}
+    - {fileID: 21300000, guid: bf6b7411b173144418601c3496b31ea2, type: 3}
+    - {fileID: 21300000, guid: e2579557c7cf7424681b6005f28b6981, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-winter
@@ -977,8 +1077,8 @@ MonoBehaviour:
     note: 'partial: VISTA tundra and hollow'
     licence: see ledger
     preview: {fileID: 21300000, guid: d9299211fdfda473b986b096cb0e5dc1, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -986,6 +1086,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: e9165e50967af4d72ba8c80ed895b9e9, type: 3}
+    - {fileID: 21300000, guid: 677023cbc201245db8a2234e8d4f97cc, type: 3}
+    - {fileID: 21300000, guid: 0b3fde5296d0c40f6b0363000294f75c, type: 3}
+    - {fileID: 21300000, guid: d45f114d63ae543608c287ab17284c94, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-arctic
@@ -997,8 +1103,8 @@ MonoBehaviour:
     note: VISTA tundra, cairn
     licence: see ledger
     preview: {fileID: 21300000, guid: 959625e0bdf92449ba4a3125c0383fd6, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1006,6 +1112,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 10ed51608d358436588dd63a9578a450, type: 3}
+    - {fileID: 21300000, guid: fa87f4e7ba39946beb959a3c3d52371b, type: 3}
+    - {fileID: 21300000, guid: 6f62b2e3833ef4e6eadc0b34aa30ff69, type: 3}
+    - {fileID: 21300000, guid: 56dff43552f514b5dafc06aa439ac610, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-canyon
@@ -1018,8 +1130,8 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: ee998e039593d4ef39b17bfebd44bd93, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1027,6 +1139,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 5df76edd4310b404586232aada3a1665, type: 3}
+    - {fileID: 21300000, guid: 3b448b08cb1e941738b8fa81c1926053, type: 3}
+    - {fileID: 21300000, guid: ae977ec1480064a209cd13a5c6389ce6, type: 3}
+    - {fileID: 21300000, guid: 24ec00c3be7aa472d96790b42747e09a, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-coast
@@ -1038,8 +1156,8 @@ MonoBehaviour:
     note: VISTA leeward
     licence: see ledger
     preview: {fileID: 21300000, guid: 9f6520e1b076a423ba0aa257edc7289e, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1047,6 +1165,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 83d5fd62e303d45f19f8e9fe7a89589e, type: 3}
+    - {fileID: 21300000, guid: 269f7c8cb1f2f471ca64bb19f38439f5, type: 3}
+    - {fileID: 21300000, guid: 8271695716c0d47b59ec14e203b515b4, type: 3}
+    - {fileID: 21300000, guid: e11b61c3ed67642aea3a5094302c1e14, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-desert
@@ -1058,8 +1182,8 @@ MonoBehaviour:
     note: VISTA mesa
     licence: see ledger
     preview: {fileID: 21300000, guid: 58e69bd560f11482ca827a1071f2b36a, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1067,6 +1191,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: 1
     friction: 1.25
     bounce: 0
   - id: world-farm
@@ -1079,8 +1205,8 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 0feaf343d87724fa68cc621ce18faaad, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1088,6 +1214,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: ad5754b1e98f04b87b24258df63022bd, type: 3}
+    - {fileID: 21300000, guid: 0a63ea88e28fd4dc1b5bd89f6af7a6a0, type: 3}
+    - {fileID: 21300000, guid: 05435aaeae0584ade84c517c1060ea4f, type: 3}
+    - {fileID: 21300000, guid: b7b01b85c03954fb58882283924c512a, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-jungle
@@ -1099,8 +1231,8 @@ MonoBehaviour:
     note: VISTA canopy
     licence: see ledger
     preview: {fileID: 21300000, guid: 9b2d2a97fd1304bcc9f07ee1fde3be78, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1108,6 +1240,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 3fd952ab409804a63956d18a7bc2246e, type: 3}
+    - {fileID: 21300000, guid: a69af643d7dcd44c89b598985260230f, type: 3}
+    - {fileID: 21300000, guid: 3bd018ba0582d449488dfb517f45e4bb, type: 3}
+    - {fileID: 21300000, guid: 6a240ea67a3cc405d9760faaf73be0c8, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-rolling-hills
@@ -1119,8 +1257,8 @@ MonoBehaviour:
     note: VISTA downs (cleaned sky)
     licence: see ledger
     preview: {fileID: 21300000, guid: 092e7d86fbbaf4aaf8b3e75f252170b1, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1128,6 +1266,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: 0
     friction: 1.25
     bounce: 0
   - id: world-wild-west
@@ -1140,8 +1280,8 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 74ebb234d6e7c4951bff925585ba60f3, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1149,6 +1289,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: e24f39ef88c574ea08fd899cada7f3c4, type: 3}
+    - {fileID: 21300000, guid: b73d75a1b8de64505bdc1aade87f38f3, type: 3}
+    - {fileID: 21300000, guid: 7ae1e15db08d74059b9350fcf29b67a5, type: 3}
+    - {fileID: 21300000, guid: f2280913524554f0c9e52eb4b7a19736, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-mars
@@ -1161,8 +1307,8 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: cde1155b135b74136a8366be07cac347, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1170,6 +1316,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 6d898c7a428a34ef7a2c8335e3580bbf, type: 3}
+    - {fileID: 21300000, guid: f116b95d9387640ecad3c9537132861f, type: 3}
+    - {fileID: 21300000, guid: 3c87b30ed558446db8d0023d2b457cec, type: 3}
+    - {fileID: 21300000, guid: 76f3e4c22a7244161a8d5a8ed091259b, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-moon
@@ -1182,8 +1334,8 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 1febd7f1da8304d709d3151a9c64c161, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1191,6 +1343,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: b7bafd66228bc4083906115dd6a6ee24, type: 3}
+    - {fileID: 21300000, guid: fe6cc959407964e268ed7ba8db02ab73, type: 3}
+    - {fileID: 21300000, guid: ccf5842b80c93423b8986c75324e54cb, type: 3}
+    - {fileID: 21300000, guid: 7e4be12ecf0ac47b4a94c4fcb3e7f512, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-industrial
@@ -1202,8 +1360,8 @@ MonoBehaviour:
     note: VISTA flue
     licence: see ledger
     preview: {fileID: 21300000, guid: 1c06b0bac559d468fa6277e40d285324, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1211,6 +1369,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 5e00b015d80614e5380b958cb8353c8e, type: 3}
+    - {fileID: 21300000, guid: be301b5c4387047c6a5a69ca0a4df43a, type: 3}
+    - {fileID: 21300000, guid: 0a5b478ea31d64de2aa5af57baa9e46d, type: 3}
+    - {fileID: 21300000, guid: 1970b4f54529a4112a988e95f219f9c9, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-night-city
@@ -1222,8 +1386,8 @@ MonoBehaviour:
     note: VISTA sodium
     licence: see ledger
     preview: {fileID: 21300000, guid: a271024fd1f25491c82dba45ec2cb945, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1231,6 +1395,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: 2
     friction: 1.25
     bounce: 0
   - id: world-candy-land
@@ -1243,8 +1409,8 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 3535ac22997184b7eb899f2a18e14f41, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1252,6 +1418,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: c545d60c7377940328a550b49dc00572, type: 3}
+    - {fileID: 21300000, guid: f6849d4e01c45436dae45efa54b481b8, type: 3}
+    - {fileID: 21300000, guid: 52582b700116b49529704d4bd8b14277, type: 3}
+    - {fileID: 21300000, guid: 3ff276bfc91674dd69ce1ccd473ef540, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-cloud-kingdom
@@ -1265,8 +1437,8 @@ MonoBehaviour:
       0.02 targe
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: dc5788cc39c7841a4a2970072578921a, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1274,6 +1446,12 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: afeff2fea075640eea370a41500f83ec, type: 3}
+    - {fileID: 21300000, guid: c923a243c068045df97d7fce432175d2, type: 3}
+    - {fileID: 21300000, guid: a9ae5aaa59b584229ac9aac60f2d5544, type: 3}
+    - {fileID: 21300000, guid: 3dc677eadda6346059cda534e4ce8289, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-underwater
@@ -1286,7 +1464,7 @@ MonoBehaviour:
     licence: see ledger
     preview: {fileID: 21300000, guid: e7893eaccfbe64b9898b290fdbdb50a9, type: 3}
     playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playNote: Needs its four scenery layers first.
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1294,6 +1472,8 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers: []
+    themeIndex: -1
     friction: 1.25
     bounce: 0
   - id: world-volcano
@@ -1305,8 +1485,8 @@ MonoBehaviour:
     note: VISTA kiln
     licence: see ledger
     preview: {fileID: 21300000, guid: 757c95f91c24845038b994c91d5fde8f, type: 3}
-    playable: 0
-    playNote: Worlds are remembered but not shown on the track yet.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1314,5 +1494,11 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 5b95b04bb4bba41ad92e187df7a8db9e, type: 3}
+    - {fileID: 21300000, guid: a4fcc88308305418c8aa4dc09148883b, type: 3}
+    - {fileID: 21300000, guid: d0919539a2149482d9dd9d75a03bf949, type: 3}
+    - {fileID: 21300000, guid: 0bc200280d1fc4271a13dcd75dba560e, type: 3}
+    themeIndex: -1
     friction: 1.25
     bounce: 0

@@ -36,6 +36,7 @@ namespace RoadBuilderGame.UI
         [SerializeField] private TMP_Text selectLabel;
 
         private CatalogKind _kind;
+        private bool _selectEnabled;
         private string _group;                       // null = all groups
         private CatalogEntry _current;
         private AssetCatalog _catalog;
@@ -104,6 +105,8 @@ namespace RoadBuilderGame.UI
         {
             Clear(gridRoot);
             _cards.Clear();
+            var grid = gridRoot.GetComponent<GridLayoutGroup>();
+            if (grid != null) grid.cellSize = CollectionCard.SizeFor(_kind) + new Vector2(20f, 32f);
             var items = _catalog != null ? _catalog.Query(_kind, _group) : new List<CatalogEntry>();
             string selectedId = GameServices.Model.SelectedId(_kind);
 
@@ -200,14 +203,17 @@ namespace RoadBuilderGame.UI
                        "Remembered. Worlds are not on the track yet.";
             }
             selectLabel.SetText(label);
-            selectButtonImage.color = theme.GetColor(colour);
-            selectButton.interactable = enabled;
+            // Art buttons: orange arcade to act, steel plate when already selected, dull arcade when blocked.
+            selectButtonImage.sprite = theme.GetSprite(colour == ColorToken.Success ? SpriteSlot.ButtonPlate : (colour == ColorToken.TextSecondary ? SpriteSlot.ButtonArcadeDisabled : SpriteSlot.ButtonArcade));
+            selectButtonImage.color = Color.white;
+            selectButton.interactable = true;
+            _selectEnabled = enabled;
             footnote.SetText(foot);
         }
 
         private void OnSelectPressed()
         {
-            if (_current == null) return;
+            if (_current == null || !_selectEnabled) return;
             GameServices.Actions?.SelectCatalogItem(_kind, _current.id);
         }
 

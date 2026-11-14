@@ -15,6 +15,8 @@ namespace RoadBuilderGame.UI
         [SerializeField] private RectTransform inkFill;
         [SerializeField] private TMP_Text inkLabel;
         [SerializeField] private Button boostButton;
+        [SerializeField] private RectTransform needle;
+        [SerializeField] private float gaugeMaxKmh = 80f;
 
         private const float LowInk = 0.2f;
 
@@ -58,7 +60,9 @@ namespace RoadBuilderGame.UI
             if (d != _distance) { _distance = d; distanceText.SetText("{0} m", d); }
 
             int s = Mathf.RoundToInt(m.SpeedKmh);
-            if (s != _speed) { _speed = s; speedText.SetText("{0} km/h", s); }
+            if (s != _speed) { _speed = s; speedText.SetText("{0}", s); }
+            // The needle sweeps 240 degrees: -120 at rest to +120 at full scale.
+            if (needle != null) needle.localEulerAngles = new Vector3(0f, 0f, 120f - 240f * Mathf.Clamp01(m.SpeedKmh / gaugeMaxKmh));
 
             int c = m.Coins + m.SessionCoins;
             if (c != _coins)
@@ -76,7 +80,7 @@ namespace RoadBuilderGame.UI
                 for (int i = 0; i < hearts.Length; i++)
                 {
                     bool full = i < m.Lives;
-                    hearts[i].color = full ? Color.white : new Color(0.2f, 0.2f, 0.25f, 0.35f);
+                    hearts[i].sprite = theme.GetSprite(full ? SpriteSlot.HeartOn : SpriteSlot.HeartOff);
                     if (previous >= 0 && full != (i < previous)) UIAnim.Punch(hearts[i].transform, 0.4f);
                 }
             }
@@ -86,7 +90,7 @@ namespace RoadBuilderGame.UI
             {
                 _inkPercent = ink;
                 inkFill.anchorMax = new Vector2(Mathf.Max(0.02f, m.Ink01), 1f);
-                inkLabel.SetText("ROAD INK {0}%", ink);
+                inkLabel.SetText("INK {0}%", ink);
 
                 bool low = m.Ink01 < LowInk;
                 if (low && !_lowPulse) { _lowPulse = true; UIAnim.StartPulse(inkBar, 1.05f); }
