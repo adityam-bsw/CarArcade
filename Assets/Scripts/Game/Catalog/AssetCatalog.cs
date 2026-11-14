@@ -43,6 +43,8 @@ namespace RoadBuilderGame
         public int themeIndex = -1;
         public float friction = 1.25f;
         public float bounce = 0f;
+        [Tooltip("Vehicle: wheels cut out of the picture (round sprites with centre and radius in picture pixels). Empty = no spinning wheels.")]
+        public WheelArt[] wheels;
 
         /// <summary>Approved by the inspector (or present before the asset agents existed).</summary>
         public bool Reviewed => status != CatalogStatus.Forged;

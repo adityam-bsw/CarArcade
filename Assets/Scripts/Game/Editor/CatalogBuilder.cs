@@ -21,6 +21,10 @@ namespace RoadBuilderGame.Editor
             public int quality;
         }
         [System.Serializable] private class Rows { public List<Row> entries; }
+        [System.Serializable] private class WheelRow { public float cx, cy, r; public string image; }
+        [System.Serializable] private class WheelCar { public string id; public List<WheelRow> wheels; }
+        [System.Serializable] private class WheelFile { public List<WheelCar> vehicles; }
+        private const string WheelsJson = "Assets/Art/Catalog/wheels.json";
 
         [MenuItem("Road Builder/Catalog/Build Catalog")]
         public static void Build()
@@ -60,6 +64,7 @@ namespace RoadBuilderGame.Editor
                 });
             }
             foreach (var e in catalog.entries) FillPlayData(e);
+            LinkWheels(catalog);
             EditorUtility.SetDirty(catalog);
             AssetDatabase.SaveAssets();
             Debug.Log($"[CatalogBuilder] {catalog.entries.Count} entries ({missing} missing sprites) -> {AssetPath}");
@@ -169,6 +174,45 @@ namespace RoadBuilderGame.Editor
             foreach (var s in sprites) if (s == null) ok = false;
             if (ok) { e.layers = sprites; e.playable = true; }
             else e.playNote = "Needs its four scenery layers first.";
+        }
+
+        /// <summary>Attaches the wheel cut-outs written by tools/assets/find_wheels.py to their vehicle entries.</summary>
+        private static void LinkWheels(AssetCatalog catalog)
+        {
+            if (!File.Exists(WheelsJson)) { Debug.LogWarning("[CatalogBuilder] No wheels.json: vehicles keep their wheels in the picture. Run tools/assets/find_wheels.py."); return; }
+            var file = JsonUtility.FromJson<WheelFile>(File.ReadAllText(WheelsJson));
+            foreach (var car in file.vehicles)
+                foreach (var w in car.wheels) ConfigureWheel(w.image);
+            AssetDatabase.Refresh();
+            int linked = 0;
+            foreach (var car in file.vehicles)
+            {
+                var e = catalog.Find(car.id);
+                if (e == null) continue;
+                var list = new List<WheelArt>();
+                foreach (var w in car.wheels)
+                {
+                    var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(w.image);
+                    if (sprite != null) list.Add(new WheelArt { sprite = sprite, cx = w.cx, cy = w.cy, r = w.r });
+                }
+                e.wheels = list.ToArray();
+                linked++;
+            }
+            Debug.Log("[CatalogBuilder] wheel cut-outs linked for " + linked + " vehicles");
+        }
+
+        private static void ConfigureWheel(string path)
+        {
+            var imp = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (imp == null) return;
+            imp.textureType = TextureImporterType.Sprite;
+            imp.spriteImportMode = SpriteImportMode.Single;
+            imp.spritePixelsPerUnit = 16f;
+            imp.filterMode = FilterMode.Point;
+            imp.mipmapEnabled = false;
+            imp.alphaIsTransparency = true;
+            imp.textureCompression = TextureImporterCompression.Uncompressed;
+            imp.SaveAndReimport();
         }
 
         private static void ConfigureWorldLayer(string path)

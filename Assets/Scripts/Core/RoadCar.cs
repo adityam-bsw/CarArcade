@@ -29,6 +29,14 @@ namespace RoadBuilderGame
     /// Data for a catalogue vehicle: one assembled sprite (wheels drawn in it) plus the physics numbers.
     /// The car drives on two invisible wheels placed under the sprite.
     /// </summary>
+    /// <summary>A wheel cut out of a vehicle picture: round sprite plus its centre and radius in picture pixels (from the top-left).</summary>
+    [System.Serializable]
+    public class WheelArt
+    {
+        public Sprite sprite;
+        public float cx, cy, r;
+    }
+
     [System.Serializable]
     public class VehicleRig
     {
@@ -38,6 +46,8 @@ namespace RoadBuilderGame
         public float mass = 1.45f;
         public float torque = 34f;
         public float speedMultiplier = 1f;
+        [Tooltip("Optional: wheels cut out of the picture. With two or more, the outer two become the physics wheels and spin.")]
+        public WheelArt[] wheels;
     }
 
     public class RoadCar : MonoBehaviour
@@ -64,6 +74,8 @@ namespace RoadBuilderGame
         private Vector2 _frontAnchor;
         private SpriteRenderer[] _renderers;
         private bool _invisibleWheels;
+        private WheelArt _artBack, _artFront;
+        private float _artScale;
         private bool _isInvincible;
         private float _invincibleTimer;
         private float _lowSpeedTimer;
@@ -94,8 +106,20 @@ namespace RoadBuilderGame
             float wr = Mathf.Clamp(h * 0.3f, 0.22f, 0.5f);
             maxTorquePerWheel = rig.torque;
             SpeedMultiplier = rig.speedMultiplier;
-            // Wheel centres sit a little inside the ends, bottoms level with the bottom of the picture.
             _invisibleWheels = true;
+            var wheels = rig.wheels;
+            if (wheels != null && wheels.Length >= 2 && rig.body != null)
+            {
+                // Wheels cut from the picture: physics wheels sit exactly where the drawn ones are and the cut-out discs spin on top.
+                WheelArt back = wheels[0], front = wheels[0];
+                foreach (var wa in wheels) { if (wa.cx < back.cx) back = wa; if (wa.cx > front.cx) front = wa; }
+                float k = w / rig.body.rect.width;
+                Vector2 Anchor(WheelArt wa) => new Vector2((wa.cx - rig.body.rect.width * 0.5f) * k, (rig.body.rect.height * 0.5f - wa.cy) * k);
+                _artBack = back; _artFront = front; _artScale = k;
+                BuildCore(position, rig.body, null, w, h, Mathf.Clamp(back.r * k, 0.18f, 1f), rig.mass, Anchor(back), Anchor(front));
+                return;
+            }
+            // No cut-outs: wheel centres sit a little inside the ends, bottoms level with the bottom of the picture.
             float ay = -h * 0.5f + wr;
             BuildCore(position, rig.body, null, w, h, wr, rig.mass,
                 new Vector2(-0.30f * w, ay), new Vector2(0.30f * w, ay));
@@ -218,7 +242,15 @@ namespace RoadBuilderGame
             col.sharedMaterial = mat;
 
             // Catalogue vehicles have their wheels drawn into the body picture, so their physics wheels stay invisible.
-            if (sprite != null || !_invisibleWheels)
+            var art = name == "BackWheel" ? _artBack : (name == "FrontWheel" ? _artFront : null);
+            if (art != null && art.sprite != null)
+            {
+                float d = art.sprite.rect.width * _artScale;      // the cut-out is a square of whole pixels
+                var sr = SpriteFactory.CreateSprite("WheelSprite", go.transform, art.sprite, Color.white, 6);
+                Vector2 b = art.sprite.bounds.size;
+                sr.transform.localScale = new Vector3(d / b.x, d / b.y, 1f);
+            }
+            else if (sprite != null || !_invisibleWheels)
             {
                 Sprite s = sprite != null ? sprite : SpriteFactory.Circle;
                 var sr = SpriteFactory.CreateSprite("WheelSprite", go.transform, s, Color.white, 6);

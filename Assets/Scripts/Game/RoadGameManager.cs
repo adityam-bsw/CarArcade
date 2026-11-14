@@ -701,7 +701,7 @@ namespace RoadBuilderGame
             if (e == null) return RoadCar.Create(pos, SelectedVehicle);
             return RoadCar.Create(pos, new VehicleRig
             {
-                id = e.id, body = e.preview, width = e.widthUnits, mass = e.mass, torque = e.torque, speedMultiplier = e.speed
+                id = e.id, body = e.preview, width = e.widthUnits, mass = e.mass, torque = e.torque, speedMultiplier = e.speed, wheels = e.wheels
             });
         }
 

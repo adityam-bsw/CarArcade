@@ -28,7 +28,7 @@ status, notes, SELECT). Selecting stores the pick in the save file only.
 ## The catalogue pipeline (re-run whenever assets change)
 ```
 Docs/asset-manifest/items/*.json   (status per item, kept by the asset agents)
-        |  python3 tools/assets/make_previews.py
+        |  python3 tools/assets/make_previews.py  then  python3 tools/assets/find_wheels.py
         v
 Assets/Art/Catalog/Previews/<id>.png + Assets/Art/Catalog/catalog.json
         |  Unity menu: Road Builder > Catalog > Build Catalog
@@ -71,5 +71,5 @@ entries carry an "UNREVIEWED" badge, quality 2 or lower a "PLACEHOLDER" badge. T
   cave, spring), plus the skateboard placeholder. The forge agents that would finish them were stopped.
 - The nine forged worlds were never reviewed by the inspector; their records were written by the main session.
 - Forged vehicle pictures had an opaque backdrop on some previews; `make_previews.py` now removes it (`strip_backdrop`).
-- Vehicle wheels do not spin visually (they are drawn into the picture). Wheel anchors are a rule of thumb, not read from FORGE_NOTES.
+- Wheels spin: `tools/assets/find_wheels.py` finds the drawn wheels in each vehicle preview and cuts them into round sprites (`Assets/Art/Catalog/Wheels/`, list in `wheels.json`). Build Catalog links them to the entry (`CatalogEntry.wheels`); `RoadCar` puts the physics wheels exactly at the outermost drawn wheels and the cut-out discs rotate on top. A middle wheel (pickup) stays still. Vehicles without a found pair (moon rover, boats, sleds, tank, handcar, skateboard) keep the old invisible wheels at 30% from each end and do not spin.
 - Not tested on a touch device. Balance of masses, torque and costs is a first guess.

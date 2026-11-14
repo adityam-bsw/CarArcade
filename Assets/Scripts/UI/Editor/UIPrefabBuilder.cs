@@ -89,6 +89,8 @@ namespace RoadBuilderGame.UI.Editor
             var root = ScreenRoot<HomeScreen>("HomeScreen", ShowStyle.Fade, out var c);
 
             WallBackdrop(c, true);
+            var full = c;                 // full-bleed parent (rails and fills that must reach the screen edges)
+            c = DesignFrameRect(c);       // everything else is anchored inside the 1920x1080 frame
             Props(c, PropMode.Full);
 
             // Grouped by area; every element keeps its own edge anchor.
@@ -252,6 +254,18 @@ namespace RoadBuilderGame.UI.Editor
                     rt.anchoredPosition = Vector2.zero;
                 }
             }
+        }
+
+        /// <summary>
+        /// The 1920x1080 design frame: all controls of a screen are anchored inside it (see DesignFrame). Full-bleed art
+        /// (background, dim) stays outside it, on the screen content itself.
+        /// </summary>
+        private static RectTransform DesignFrameRect(Transform content)
+        {
+            var rt = Rect("Frame", content);
+            Place(rt, C, C, Vector2.zero, DesignFrame.DesignSize);
+            rt.gameObject.AddComponent<DesignFrame>();
+            return rt;
         }
 
         /// <summary>A stretch container that only groups its children; they keep their own edge anchors.</summary>
@@ -431,6 +445,10 @@ namespace RoadBuilderGame.UI.Editor
             var go = new GameObject(name, typeof(RectTransform), typeof(ScrollRect), typeof(CardRail));
             go.transform.SetParent(parent, false);
             Place((RectTransform)go.transform, anchor, pivot, pos, size);
+            // Rails run the full screen width (edge to edge), whatever the screen shape; only their height is fixed.
+            var rr = (RectTransform)go.transform;
+            rr.anchorMin = new Vector2(0, anchor.y); rr.anchorMax = new Vector2(1, anchor.y);
+            rr.sizeDelta = new Vector2(0, size.y); rr.anchoredPosition = new Vector2(0, pos.y);
 
             var viewport = Rect("Viewport", (RectTransform)go.transform);
             Stretch(viewport);
@@ -464,6 +482,8 @@ namespace RoadBuilderGame.UI.Editor
         {
             var root = ScreenRoot<WorldsScreen>("WorldsScreen", ShowStyle.SlideUp, out var c);
             WallBackdrop(c, true);
+            var full = c;                 // full-bleed parent (rails and fills that must reach the screen edges)
+            c = DesignFrameRect(c);       // everything else is anchored inside the 1920x1080 frame
             Props(c, PropMode.Lamps);
 
             // Grouped by area; every element keeps its own edge anchor.
@@ -491,7 +511,7 @@ namespace RoadBuilderGame.UI.Editor
                 "RACE!", 52, ColorToken.TextOnAccent, TR, TR, new Vector2(-40, -310), new Vector2(480, 187), 0f, new Vector4(100, 40, 40, 34));
             ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -296), new Vector2(84, 84), 14f);
 
-            var rail = BuildRail(c, "Rail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 310));
+            var rail = BuildRail(full, "Rail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 310));
             var hint = Label(c, "Hint", "", TextStyle.Body, ColorToken.TextPrimary, 30);
             hint.enableAutoSizing = true; hint.fontSizeMin = 18; hint.fontSizeMax = 30;
             Place(hint.rectTransform, BC, BC, new Vector2(0, 322), new Vector2(1500, 50));
@@ -510,6 +530,8 @@ namespace RoadBuilderGame.UI.Editor
         {
             var root = ScreenRoot<GarageScreen>("GarageScreen", ShowStyle.Fade, out var c);
             WallBackdrop(c, true);
+            var full = c;                 // full-bleed parent (rails and fills that must reach the screen edges)
+            c = DesignFrameRect(c);       // everything else is anchored inside the 1920x1080 frame
             // No floor props here: the plates and the vehicle rail use that space.
 
             // Grouped by area; every element keeps its own edge anchor.
@@ -556,7 +578,7 @@ namespace RoadBuilderGame.UI.Editor
             ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -262), new Vector2(84, 84), 14f);
 
             // The vehicle rail runs along the floor.
-            var rail = BuildRail(c, "VehicleRail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 290));
+            var rail = BuildRail(full, "VehicleRail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 290));
 
             Ref(g, "rail", rail);
             Ref(g, "coinsText", coinsText); Ref(g, "carNameText", carName); Ref(g, "actionLabel", action.label);
@@ -568,6 +590,7 @@ namespace RoadBuilderGame.UI.Editor
         private static GameObject BuildHud()
         {
             var root = ScreenRoot<HudScreen>("HudScreen", ShowStyle.Fade, out var c);
+            c = DesignFrameRect(c);
 
             // Grouped by corner so each cluster moves as one thing; every element keeps its own edge anchor.
             var topLeft = Group(c, "TopLeft"); var topCenter = Group(c, "TopCenter"); var topRight = Group(c, "TopRight");
@@ -621,6 +644,8 @@ namespace RoadBuilderGame.UI.Editor
         {
             var root = ScreenRoot<ResultScreen>("ResultScreen", ShowStyle.Pop, out var c);
             WallBackdrop(c, false);
+            var full = c;                 // full-bleed parent (rails and fills that must reach the screen edges)
+            c = DesignFrameRect(c);       // everything else is anchored inside the 1920x1080 frame
 
             var actions = Group(c, "Actions");
             Props(c, PropMode.Lamps);
@@ -666,6 +691,7 @@ namespace RoadBuilderGame.UI.Editor
         {
             var root = ScreenRoot<SettingsScreen>("SettingsScreen", ShowStyle.Pop, out var c);
             Dim(root.transform, ColorToken.Outline, 0.7f, 0);
+            c = DesignFrameRect(c);
 
             // A workshop control board with a hanging title plate and one big switch.
             var board = ArtImg(c, "Board", SpriteSlot.PanelBoard, C, C, Vector2.zero, new Vector2(860, 520));
@@ -747,6 +773,8 @@ namespace RoadBuilderGame.UI.Editor
         {
             var root = ScreenRoot<CollectionScreen>("CollectionScreen", ShowStyle.Fade, out var c);
             WallBackdrop(c, false);
+            var full = c;                 // full-bleed parent (rails and fills that must reach the screen edges)
+            c = DesignFrameRect(c);       // everything else is anchored inside the 1920x1080 frame
             Props(c, PropMode.Lamps);
 
             var header = Group(c, "Header");

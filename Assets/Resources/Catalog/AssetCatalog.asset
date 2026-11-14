@@ -35,6 +35,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 13eb56aa8a8f740b49cd9c80b3ee5ca2, type: 3}
+      cx: 5.5
+      cy: 10.5
+      r: 3
+    - sprite: {fileID: 21300000, guid: 22684c62f2cbc4454b2b7e1058e896ac, type: 3}
+      cx: 19.5
+      cy: 10.5
+      r: 3
   - id: vehicle-dune-buggy
     kind: 0
     displayName: Dune Buggy
@@ -57,6 +66,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 2f0f8eb0fab474571bafaaff57e87d7f, type: 3}
+      cx: 4.5
+      cy: 11.5
+      r: 3
+    - sprite: {fileID: 21300000, guid: 07e44d43babc047be9beedd862e65a54, type: 3}
+      cx: 14.5
+      cy: 11.5
+      r: 3
   - id: vehicle-golf-cart
     kind: 0
     displayName: Golf Cart
@@ -81,6 +99,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 9210a491446cc47399b0e6313be41cca, type: 3}
+      cx: 7.5
+      cy: 14.5
+      r: 3.5
+    - sprite: {fileID: 21300000, guid: 3e280b3e028704ab7817349a465cd65a, type: 3}
+      cx: 25.5
+      cy: 14.5
+      r: 3.5
   - id: vehicle-police-car
     kind: 0
     displayName: Police Car
@@ -103,6 +130,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 6693eb495819d4a01b7a157997add8cc, type: 3}
+      cx: 7.5
+      cy: 11.5
+      r: 3
+    - sprite: {fileID: 21300000, guid: bdbee111c9ebc43a4b7d593e94b561cc, type: 3}
+      cx: 21.5
+      cy: 11.5
+      r: 3
   - id: vehicle-race-car
     kind: 0
     displayName: Race Car
@@ -125,6 +161,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 72317e4fc73d94551980579be3211e91, type: 3}
+      cx: 6
+      cy: 7
+      r: 3.5
+    - sprite: {fileID: 21300000, guid: 10eeceab854a14f4d828fefff773c54f, type: 3}
+      cx: 21.5
+      cy: 6.5
+      r: 3
   - id: vehicle-sports-car
     kind: 0
     displayName: Sports Car
@@ -147,6 +192,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 93e06414a8b4c41f190d783817792780, type: 3}
+      cx: 7
+      cy: 10
+      r: 3.5
+    - sprite: {fileID: 21300000, guid: eaa640fbcce304c55ad1c34ee9a914b2, type: 3}
+      cx: 23
+      cy: 10
+      r: 3.5
   - id: vehicle-taxi
     kind: 0
     displayName: Taxi
@@ -169,6 +223,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: d071a69d9763142a3b15b1c561b099a5, type: 3}
+      cx: 6
+      cy: 12
+      r: 3.5
+    - sprite: {fileID: 21300000, guid: a940036be764c4ae9916db7d5b01109e, type: 3}
+      cx: 23
+      cy: 12
+      r: 3.5
   - id: vehicle-tuk-tuk
     kind: 0
     displayName: Tuk Tuk
@@ -193,6 +256,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 59c997b5cd9154e8daa44c4799c35f88, type: 3}
+      cx: 7.5
+      cy: 14.5
+      r: 3.5
+    - sprite: {fileID: 21300000, guid: 5d5d8450d7fbf4d6fb7ebf437e5e5ff3, type: 3}
+      cx: 25.5
+      cy: 14.5
+      r: 3.5
   - id: vehicle-bus
     kind: 0
     displayName: Bus
@@ -215,6 +287,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: da3de68a6ee7643a4ae64b4c1864a896, type: 3}
+      cx: 9
+      cy: 18
+      r: 3.5
+    - sprite: {fileID: 21300000, guid: 6b7cca94707394782a8faa9b385b4ed8, type: 3}
+      cx: 25
+      cy: 18
+      r: 3.5
   - id: vehicle-camper
     kind: 0
     displayName: Camper
@@ -237,6 +318,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 78915dadb147b46e48dfebc5351f7f43, type: 3}
+      cx: 8.5
+      cy: 16.5
+      r: 3
+    - sprite: {fileID: 21300000, guid: c4ef3e7f2f3714ebd872c784099a7419, type: 3}
+      cx: 24.5
+      cy: 16.5
+      r: 3
   - id: vehicle-fire-truck
     kind: 0
     displayName: Fire Truck
@@ -259,6 +349,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 2260cfbbb204042c3ae24c0b0726678d, type: 3}
+      cx: 9
+      cy: 18
+      r: 3.5
+    - sprite: {fileID: 21300000, guid: 61966d7ef02534f9595e69170fb5d97d, type: 3}
+      cx: 30
+      cy: 18
+      r: 3.5
   - id: vehicle-monster-truck
     kind: 0
     displayName: Monster Truck
@@ -283,6 +382,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 5fb9343a453f7417e84184842b348a3b, type: 3}
+      cx: 8.5
+      cy: 21
+      r: 7.5
+    - sprite: {fileID: 21300000, guid: a9450ec1e0bc64c68886a2d8cacfe6cf, type: 3}
+      cx: 25.5
+      cy: 21
+      r: 7.5
   - id: vehicle-pickup
     kind: 0
     displayName: Pickup
@@ -305,6 +413,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 94923fec1be33494a81ff167e7a79c58, type: 3}
+      cx: 5.5
+      cy: 21.5
+      r: 3
+    - sprite: {fileID: 21300000, guid: 41e3f55052ffa4350b86c51a1c55070f, type: 3}
+      cx: 12.5
+      cy: 21.5
+      r: 3
+    - sprite: {fileID: 21300000, guid: 42ea0e2b0e13747279e2bab923d8c181, type: 3}
+      cx: 29.5
+      cy: 21.5
+      r: 3
   - id: vehicle-semi-truck
     kind: 0
     displayName: Semi Truck
@@ -327,6 +448,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 9c56b6288c22f4592829d07b6c2978f9, type: 3}
+      cx: 7.5
+      cy: 21.5
+      r: 3
+    - sprite: {fileID: 21300000, guid: 6616ceb8c6ee64a6ea5aca2a00ad0d41, type: 3}
+      cx: 13.5
+      cy: 21.5
+      r: 3
   - id: vehicle-tank
     kind: 0
     displayName: Tank
@@ -351,6 +481,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-tractor
     kind: 0
     displayName: Tractor
@@ -373,6 +504,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: bb9ee5f2a5396418ba33a8bc7f6c0751, type: 3}
+      cx: 5
+      cy: 13.5
+      r: 4.5
+    - sprite: {fileID: 21300000, guid: 003ca27b71d364419a37b47e7b0d74f2, type: 3}
+      cx: 15.5
+      cy: 15.5
+      r: 3
   - id: vehicle-bicycle
     kind: 0
     displayName: Bicycle
@@ -396,6 +536,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 66de97c1a07ab45ae88e5e7a93c1a002, type: 3}
+      cx: 8.5
+      cy: 11.5
+      r: 7.5
+    - sprite: {fileID: 21300000, guid: d34645ad4d044407991ed04f0c2b2c20, type: 3}
+      cx: 29.5
+      cy: 11.5
+      r: 7.5
   - id: vehicle-motorcycle
     kind: 0
     displayName: Motorcycle
@@ -418,6 +567,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 36f1e418e574949578694d6762af70bb, type: 3}
+      cx: 12.5
+      cy: 32.5
+      r: 11
+    - sprite: {fileID: 21300000, guid: d805a85fc23be45f5a95e2e893bea429, type: 3}
+      cx: 67.5
+      cy: 31.5
+      r: 12
   - id: vehicle-quad-atv
     kind: 0
     displayName: Quad Atv
@@ -441,6 +599,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: bffc6909a3215494f93d23bf526c4381, type: 3}
+      cx: 11
+      cy: 19
+      r: 6.5
+    - sprite: {fileID: 21300000, guid: d5d4699ea8cb84cd880b6bcae8988698, type: 3}
+      cx: 37
+      cy: 19
+      r: 6.5
   - id: vehicle-scooter
     kind: 0
     displayName: Scooter
@@ -463,6 +630,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: 89fedf8cdeb2848c48c05862ae456c43, type: 3}
+      cx: 4
+      cy: 8.5
+      r: 2
+    - sprite: {fileID: 21300000, guid: be6603d096b36428591fb9801844c876, type: 3}
+      cx: 14
+      cy: 8
+      r: 2.5
   - id: vehicle-hovercraft
     kind: 0
     displayName: Hovercraft
@@ -487,6 +663,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-jet-ski
     kind: 0
     displayName: Jet Ski
@@ -511,6 +688,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-speedboat
     kind: 0
     displayName: Speedboat
@@ -535,6 +713,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-sled
     kind: 0
     displayName: Sled
@@ -557,6 +736,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-snowboard
     kind: 0
     displayName: Snowboard
@@ -580,6 +760,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-snowmobile
     kind: 0
     displayName: Snowmobile
@@ -603,6 +784,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-toboggan
     kind: 0
     displayName: Toboggan
@@ -626,6 +808,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-handcar
     kind: 0
     displayName: Handcar
@@ -650,6 +833,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-moon-rover
     kind: 0
     displayName: Moon Rover
@@ -673,6 +857,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-rocket-sled
     kind: 0
     displayName: Rocket Sled
@@ -696,6 +881,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: vehicle-shopping-cart
     kind: 0
     displayName: Shopping Cart
@@ -720,6 +906,15 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels:
+    - sprite: {fileID: 21300000, guid: d6e1bf7b987c54299ab1fc6d3f4f1463, type: 3}
+      cx: 7.5
+      cy: 13
+      r: 3
+    - sprite: {fileID: 21300000, guid: 754e364e02e344e92bcf19ad9b3ee859, type: 3}
+      cx: 21.5
+      cy: 12
+      r: 3
   - id: surface-asphalt
     kind: 1
     displayName: Asphalt
@@ -742,6 +937,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: surface-cobblestone
     kind: 1
     displayName: Cobblestone
@@ -765,6 +961,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.1
     bounce: 0
+    wheels: []
   - id: surface-dirt
     kind: 1
     displayName: Dirt
@@ -787,6 +984,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1
     bounce: 0
+    wheels: []
   - id: surface-glass
     kind: 1
     displayName: Glass
@@ -810,6 +1008,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 0.5
     bounce: 0
+    wheels: []
   - id: surface-gravel
     kind: 1
     displayName: Gravel
@@ -833,6 +1032,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 0.9
     bounce: 0
+    wheels: []
   - id: surface-mud
     kind: 1
     displayName: Mud
@@ -856,6 +1056,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.6
     bounce: 0
+    wheels: []
   - id: surface-neon-grid
     kind: 1
     displayName: Neon Grid
@@ -878,6 +1079,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: surface-rail-track
     kind: 1
     displayName: Rail Track
@@ -901,6 +1103,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.3
     bounce: 0
+    wheels: []
   - id: surface-moon-dust
     kind: 1
     displayName: Moon Dust
@@ -924,6 +1127,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 0.8
     bounce: 0
+    wheels: []
   - id: surface-salt-flat
     kind: 1
     displayName: Salt Flat
@@ -947,6 +1151,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 0.9
     bounce: 0
+    wheels: []
   - id: surface-sea-water
     kind: 1
     displayName: Sea Water
@@ -969,6 +1174,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: surface-lava-crust
     kind: 1
     displayName: Lava Crust
@@ -991,6 +1197,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: surface-magma-bridge
     kind: 1
     displayName: Magma Bridge
@@ -1014,6 +1221,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.2
     bounce: 0
+    wheels: []
   - id: world-autumn-leaves
     kind: 2
     displayName: Autumn Leaves
@@ -1041,6 +1249,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-christmas
     kind: 2
     displayName: Christmas
@@ -1068,6 +1277,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-winter
     kind: 2
     displayName: Winter
@@ -1094,6 +1304,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-arctic
     kind: 2
     displayName: Arctic
@@ -1120,6 +1331,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-canyon
     kind: 2
     displayName: Canyon
@@ -1147,6 +1359,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-coast
     kind: 2
     displayName: Coast
@@ -1173,6 +1386,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-desert
     kind: 2
     displayName: Desert
@@ -1195,6 +1409,7 @@ MonoBehaviour:
     themeIndex: 1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-farm
     kind: 2
     displayName: Farm
@@ -1222,6 +1437,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-jungle
     kind: 2
     displayName: Jungle
@@ -1248,6 +1464,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-rolling-hills
     kind: 2
     displayName: Rolling Hills
@@ -1270,6 +1487,7 @@ MonoBehaviour:
     themeIndex: 0
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-wild-west
     kind: 2
     displayName: Wild West
@@ -1297,6 +1515,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-mars
     kind: 2
     displayName: Mars
@@ -1324,6 +1543,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-moon
     kind: 2
     displayName: Moon
@@ -1351,6 +1571,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-industrial
     kind: 2
     displayName: Industrial
@@ -1377,6 +1598,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-night-city
     kind: 2
     displayName: Night City
@@ -1399,6 +1621,7 @@ MonoBehaviour:
     themeIndex: 2
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-candy-land
     kind: 2
     displayName: Candy Land
@@ -1426,6 +1649,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-cloud-kingdom
     kind: 2
     displayName: Cloud Kingdom
@@ -1454,6 +1678,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-underwater
     kind: 2
     displayName: Underwater
@@ -1476,6 +1701,7 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []
   - id: world-volcano
     kind: 2
     displayName: Volcano
@@ -1502,3 +1728,4 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    wheels: []

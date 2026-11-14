@@ -1,0 +1,431 @@
+{
+ "vehicles": [
+  {
+   "id": "vehicle-bicycle",
+   "width": 38,
+   "height": 20,
+   "wheels": [
+    {
+     "cx": 8.5,
+     "cy": 11.5,
+     "r": 7.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-bicycle_w0.png",
+     "size": 16
+    },
+    {
+     "cx": 29.5,
+     "cy": 11.5,
+     "r": 7.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-bicycle_w1.png",
+     "size": 16
+    }
+   ]
+  },
+  {
+   "id": "vehicle-bus",
+   "width": 47,
+   "height": 23,
+   "wheels": [
+    {
+     "cx": 9.0,
+     "cy": 18.0,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-bus_w0.png",
+     "size": 8
+    },
+    {
+     "cx": 25.0,
+     "cy": 18.0,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-bus_w1.png",
+     "size": 8
+    }
+   ]
+  },
+  {
+   "id": "vehicle-camper",
+   "width": 37,
+   "height": 21,
+   "wheels": [
+    {
+     "cx": 8.5,
+     "cy": 16.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-camper_w0.png",
+     "size": 6
+    },
+    {
+     "cx": 24.5,
+     "cy": 16.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-camper_w1.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-car",
+   "width": 31,
+   "height": 15,
+   "wheels": [
+    {
+     "cx": 5.5,
+     "cy": 10.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-car_w0.png",
+     "size": 6
+    },
+    {
+     "cx": 19.5,
+     "cy": 10.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-car_w1.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-dune-buggy",
+   "width": 25,
+   "height": 16,
+   "wheels": [
+    {
+     "cx": 4.5,
+     "cy": 11.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-dune-buggy_w0.png",
+     "size": 6
+    },
+    {
+     "cx": 14.5,
+     "cy": 11.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-dune-buggy_w1.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-fire-truck",
+   "width": 46,
+   "height": 23,
+   "wheels": [
+    {
+     "cx": 9.0,
+     "cy": 18.0,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-fire-truck_w0.png",
+     "size": 8
+    },
+    {
+     "cx": 30.0,
+     "cy": 18.0,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-fire-truck_w1.png",
+     "size": 8
+    }
+   ]
+  },
+  {
+   "id": "vehicle-golf-cart",
+   "width": 32,
+   "height": 19,
+   "wheels": [
+    {
+     "cx": 7.5,
+     "cy": 14.5,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-golf-cart_w0.png",
+     "size": 8
+    },
+    {
+     "cx": 25.5,
+     "cy": 14.5,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-golf-cart_w1.png",
+     "size": 8
+    }
+   ]
+  },
+  {
+   "id": "vehicle-monster-truck",
+   "width": 40,
+   "height": 30,
+   "wheels": [
+    {
+     "cx": 8.5,
+     "cy": 21.0,
+     "r": 7.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-monster-truck_w0.png",
+     "size": 16
+    },
+    {
+     "cx": 25.5,
+     "cy": 21.0,
+     "r": 7.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-monster-truck_w1.png",
+     "size": 16
+    }
+   ]
+  },
+  {
+   "id": "vehicle-motorcycle",
+   "width": 83,
+   "height": 45,
+   "wheels": [
+    {
+     "cx": 12.5,
+     "cy": 32.5,
+     "r": 11.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-motorcycle_w0.png",
+     "size": 22
+    },
+    {
+     "cx": 67.5,
+     "cy": 31.5,
+     "r": 12.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-motorcycle_w1.png",
+     "size": 24
+    }
+   ]
+  },
+  {
+   "id": "vehicle-pickup",
+   "width": 41,
+   "height": 26,
+   "wheels": [
+    {
+     "cx": 5.5,
+     "cy": 21.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-pickup_w0.png",
+     "size": 6
+    },
+    {
+     "cx": 12.5,
+     "cy": 21.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-pickup_w1.png",
+     "size": 6
+    },
+    {
+     "cx": 29.5,
+     "cy": 21.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-pickup_w2.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-police-car",
+   "width": 35,
+   "height": 16,
+   "wheels": [
+    {
+     "cx": 7.5,
+     "cy": 11.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-police-car_w0.png",
+     "size": 6
+    },
+    {
+     "cx": 21.5,
+     "cy": 11.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-police-car_w1.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-quad-atv",
+   "width": 46,
+   "height": 27,
+   "wheels": [
+    {
+     "cx": 11.0,
+     "cy": 19.0,
+     "r": 6.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-quad-atv_w0.png",
+     "size": 14
+    },
+    {
+     "cx": 37.0,
+     "cy": 19.0,
+     "r": 6.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-quad-atv_w1.png",
+     "size": 14
+    }
+   ]
+  },
+  {
+   "id": "vehicle-race-car",
+   "width": 35,
+   "height": 11,
+   "wheels": [
+    {
+     "cx": 6.0,
+     "cy": 7.0,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-race-car_w0.png",
+     "size": 8
+    },
+    {
+     "cx": 21.5,
+     "cy": 6.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-race-car_w1.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-scooter",
+   "width": 17,
+   "height": 11,
+   "wheels": [
+    {
+     "cx": 4.0,
+     "cy": 8.5,
+     "r": 2.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-scooter_w0.png",
+     "size": 4
+    },
+    {
+     "cx": 14.0,
+     "cy": 8.0,
+     "r": 2.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-scooter_w1.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-semi-truck",
+   "width": 50,
+   "height": 26,
+   "wheels": [
+    {
+     "cx": 7.5,
+     "cy": 21.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-semi-truck_w0.png",
+     "size": 6
+    },
+    {
+     "cx": 13.5,
+     "cy": 21.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-semi-truck_w1.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-shopping-cart",
+   "width": 28,
+   "height": 17,
+   "wheels": [
+    {
+     "cx": 7.5,
+     "cy": 13.0,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-shopping-cart_w0.png",
+     "size": 6
+    },
+    {
+     "cx": 21.5,
+     "cy": 12.0,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-shopping-cart_w1.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-sports-car",
+   "width": 35,
+   "height": 14,
+   "wheels": [
+    {
+     "cx": 7.0,
+     "cy": 10.0,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-sports-car_w0.png",
+     "size": 8
+    },
+    {
+     "cx": 23.0,
+     "cy": 10.0,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-sports-car_w1.png",
+     "size": 8
+    }
+   ]
+  },
+  {
+   "id": "vehicle-taxi",
+   "width": 35,
+   "height": 16,
+   "wheels": [
+    {
+     "cx": 6.0,
+     "cy": 12.0,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-taxi_w0.png",
+     "size": 8
+    },
+    {
+     "cx": 23.0,
+     "cy": 12.0,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-taxi_w1.png",
+     "size": 8
+    }
+   ]
+  },
+  {
+   "id": "vehicle-tractor",
+   "width": 26,
+   "height": 20,
+   "wheels": [
+    {
+     "cx": 5.0,
+     "cy": 13.5,
+     "r": 4.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-tractor_w0.png",
+     "size": 10
+    },
+    {
+     "cx": 15.5,
+     "cy": 15.5,
+     "r": 3.0,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-tractor_w1.png",
+     "size": 6
+    }
+   ]
+  },
+  {
+   "id": "vehicle-tuk-tuk",
+   "width": 33,
+   "height": 19,
+   "wheels": [
+    {
+     "cx": 7.5,
+     "cy": 14.5,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-tuk-tuk_w0.png",
+     "size": 8
+    },
+    {
+     "cx": 25.5,
+     "cy": 14.5,
+     "r": 3.5,
+     "image": "Assets/Art/Catalog/Wheels/vehicle-tuk-tuk_w1.png",
+     "size": 8
+    }
+   ]
+  }
+ ]
+}
