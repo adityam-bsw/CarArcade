@@ -96,25 +96,17 @@ namespace RoadBuilderGame
         public bool sportUnlocked = false;
         public bool truckUnlocked = false;
 
-        private const string CoinsKey = "HCD_Coins";
-        private const string BestScoreKey = "HCD_Best";
-        private const string EngineKey = "HCD_Engine";
-        private const string SuspKey = "HCD_Susp";
-        private const string InkTankKey = "HCD_Ink";
-        private const string VehicleKey = "HCD_Vehicle";
-        private const string ThemeKey = "HCD_Theme";
-        private const string RoadStyleKey = "HCD_RoadStyle";
-        private const string SportUnlockKey = "HCD_Unlock_Sport";
-        private const string TruckUnlockKey = "HCD_Unlock_Truck";
+        private PlayerProfile _profile;
 
         private RoadCar _car;
         private PhysicsMaterial2D _roadMaterial;
 
         private ScreenState _state = ScreenState.HomeDashboard;
         private float _startX, _distance, _bestScore, _stateTime, _upsideDownTime;
-        private Vector2 _lastStrokeWorld;
-        private Vector2 _smoothedBrushWorld;
-        private bool _isDrawingStroke = false;
+        // Extracted collaborators (plain classes, created in Awake)
+        private BrushController _brush;
+        private PickupSpawner _pickups;
+        private GameCameraRig _cameraRig;
 
         [Header("Smooth Brush Settings")]
         [Tooltip("Higher values follow finger faster; lower values create silkier macro curves")]
@@ -124,10 +116,11 @@ namespace RoadBuilderGame
         public EnvironmentTheme SelectedTheme { get; private set; } = EnvironmentTheme.Country;
         public RoadStyle SelectedRoadStyle { get; private set; } = RoadStyle.AsphaltHighway;
 
-        private readonly List<Collectible> _activeCollectibles = new List<Collectible>();
-        private float _nextSpawnX = 14f;
         private int _lastScreenW, _lastScreenH;
         private Rect _lastSafeArea;
+
+        private void OnEnable() { Collectible.Collected += OnCollectItem; }
+        private void OnDisable() { Collectible.Collected -= OnCollectItem; }
 
         private void Awake()
         {
@@ -202,6 +195,18 @@ namespace RoadBuilderGame
                 _background = bgGo.AddComponent<ParallaxBackground>();
             }
             _background.Init();
+
+            _brush = new BrushController(_cam, _road)
+            {
+                InkAvailable = () => currentInk,
+                SpendInk = amount =>
+                {
+                    currentInk = Mathf.Max(0f, currentInk - amount);
+                    UpdateInkUI();
+                }
+            };
+            _pickups = new PickupSpawner(_road);
+            _cameraRig = new GameCameraRig(_cam, _background);
 
             LoadPlayerData();
             _background.ApplyTheme(SelectedTheme);
@@ -289,32 +294,33 @@ namespace RoadBuilderGame
 
         private void LoadPlayerData()
         {
-            totalCoins = PlayerPrefs.GetInt(CoinsKey, 150);
-            _bestScore = PlayerPrefs.GetFloat(BestScoreKey, 0f);
-            engineLevel = Mathf.Clamp(PlayerPrefs.GetInt(EngineKey, 1), 1, 5);
-            suspensionLevel = Mathf.Clamp(PlayerPrefs.GetInt(SuspKey, 1), 1, 5);
-            inkTankLevel = Mathf.Clamp(PlayerPrefs.GetInt(InkTankKey, 1), 1, 5);
-            SelectedVehicle = (VehicleType)PlayerPrefs.GetInt(VehicleKey, 0);
-            SelectedTheme = (EnvironmentTheme)PlayerPrefs.GetInt(ThemeKey, 0);
-            SelectedRoadStyle = (RoadStyle)PlayerPrefs.GetInt(RoadStyleKey, 0);
-
-            sportUnlocked = PlayerPrefs.GetInt(SportUnlockKey, 0) == 1;
-            truckUnlocked = PlayerPrefs.GetInt(TruckUnlockKey, 0) == 1;
+            _profile = SaveService.Load();
+            totalCoins = _profile.coins;
+            _bestScore = _profile.bestDistance;
+            engineLevel = _profile.engineLevel;
+            suspensionLevel = _profile.suspensionLevel;
+            inkTankLevel = _profile.inkTankLevel;
+            SelectedVehicle = (VehicleType)_profile.vehicle;
+            SelectedTheme = (EnvironmentTheme)_profile.theme;
+            SelectedRoadStyle = (RoadStyle)_profile.roadStyle;
+            sportUnlocked = _profile.sportUnlocked;
+            truckUnlocked = _profile.truckUnlocked;
         }
 
         private void SavePlayerData()
         {
-            PlayerPrefs.SetInt(CoinsKey, totalCoins);
-            PlayerPrefs.SetFloat(BestScoreKey, _bestScore);
-            PlayerPrefs.SetInt(EngineKey, engineLevel);
-            PlayerPrefs.SetInt(SuspKey, suspensionLevel);
-            PlayerPrefs.SetInt(InkTankKey, inkTankLevel);
-            PlayerPrefs.SetInt(VehicleKey, (int)SelectedVehicle);
-            PlayerPrefs.SetInt(ThemeKey, (int)SelectedTheme);
-            PlayerPrefs.SetInt(RoadStyleKey, (int)SelectedRoadStyle);
-            PlayerPrefs.SetInt(SportUnlockKey, sportUnlocked ? 1 : 0);
-            PlayerPrefs.SetInt(TruckUnlockKey, truckUnlocked ? 1 : 0);
-            PlayerPrefs.Save();
+            if (_profile == null) _profile = new PlayerProfile();
+            _profile.coins = totalCoins;
+            _profile.bestDistance = _bestScore;
+            _profile.engineLevel = engineLevel;
+            _profile.suspensionLevel = suspensionLevel;
+            _profile.inkTankLevel = inkTankLevel;
+            _profile.vehicle = (int)SelectedVehicle;
+            _profile.theme = (int)SelectedTheme;
+            _profile.roadStyle = (int)SelectedRoadStyle;
+            _profile.sportUnlocked = sportUnlocked;
+            _profile.truckUnlocked = truckUnlocked;
+            SaveService.Save(_profile);
         }
 
         public void SwitchScreen(ScreenState newState)
@@ -388,9 +394,6 @@ namespace RoadBuilderGame
         private void StartGameplaySession()
         {
             CleanupAllCars();
-            foreach (var col in _activeCollectibles)
-                if (col != null) Destroy(col.gameObject);
-            _activeCollectibles.Clear();
 
             _background.ApplyTheme(SelectedTheme);
             _road.SetRoadStyle(SelectedRoadStyle);
@@ -410,15 +413,15 @@ namespace RoadBuilderGame
             _startX = _car.Body.position.x;
             _distance = 0f;
             _upsideDownTime = 0f;
-            _nextSpawnX = 16f;
-            _isDrawingStroke = false;
+            _pickups.Reset(16f);
+            _brush.Cancel();
             currentLives = maxLives;
             sessionCoins = 0;
 
             UpdateHeartsUI();
             UpdateInkUI();
             if (SoundManager.Instance) SoundManager.Instance.SetEngineRunning(true, 0.2f);
-            SnapCamera();
+            _cameraRig.Snap(_car);
         }
 
         private void Update()
@@ -428,7 +431,10 @@ namespace RoadBuilderGame
 
             if (_state == ScreenState.Playing)
             {
-                HandleGameplayInput();
+                _brush.SmoothingSpeed = brushSmoothingSpeed;
+                _brush.DragSpacing = dragSpacing;
+                _brush.InkCostPerMeter = inkCostPerMeter;
+                _brush.Tick();
 
                 currentInk = Mathf.Min(maxInk, currentInk + inkRegenPerSec * Time.deltaTime);
                 UpdateInkUI();
@@ -441,7 +447,7 @@ namespace RoadBuilderGame
                 _car.TargetSpeed = Mathf.Min(baseMaxSpeed + (engineLevel * 0.8f), baseStartSpeed + (engineLevel * 0.8f) + _distance * speedGainPerMetre);
                 if (SoundManager.Instance) SoundManager.Instance.SetEngineRunning(true, speedRatio);
 
-                SpawnPickupsAhead(carPos.x);
+                _pickups.Tick(carPos.x);
 
                 // Fail conditions:
                 // Only check chasm drop against a real road under or behind the car, or an absolute abyss floor (-12f)
@@ -484,7 +490,7 @@ namespace RoadBuilderGame
 
         private void HandleLifeLoss(string reason)
         {
-            _isDrawingStroke = false;
+            _brush.Cancel();
             currentLives--;
             UpdateHeartsUI();
             if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
@@ -518,227 +524,9 @@ namespace RoadBuilderGame
             SwitchScreen(ScreenState.GameOver);
         }
 
-        private void HandleGameplayInput()
-        {
-            // Don't draw road strokes if pointer is over any UI button
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-                return;
-
-            Vector2 screenPos = Vector2.zero;
-            bool down = false;
-            bool held = false;
-            bool up = false;
-
-            // 1. Check New Input System Pointer
-            var pointer = Pointer.current;
-            if (pointer != null)
-            {
-                screenPos = pointer.position.ReadValue();
-                down = pointer.press.wasPressedThisFrame;
-                held = pointer.press.isPressed;
-                up = pointer.press.wasReleasedThisFrame;
-            }
-
-            // 2. Legacy / Mouse Fallback (Supports legacy editor clicks, mouse, and touches)
-            if (!down && !held && !up)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    down = true;
-                    held = true;
-                    screenPos = Input.mousePosition;
-                }
-                else if (Input.GetMouseButton(0))
-                {
-                    held = true;
-                    screenPos = Input.mousePosition;
-                }
-                else if (Input.GetMouseButtonUp(0))
-                {
-                    up = true;
-                    screenPos = Input.mousePosition;
-                }
-            }
-
-            if (!down && !held && !up) return;
-
-            Vector2 world = _cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, -_cam.transform.position.z));
-
-            if (down)
-            {
-                StartStroke(world);
-            }
-            else if (held && _isDrawingStroke)
-            {
-                ContinueStroke(world);
-            }
-            else if (up && _isDrawingStroke)
-            {
-                EndStroke();
-            }
-        }
-
-        private void StartStroke(Vector2 worldPos)
-        {
-            if (currentInk < 4f) return;
-
-            // Only start a stroke if it is allowed by forward-only / anti-overlap rules
-            if (!_road.BeginNewSegment(worldPos))
-            {
-                _isDrawingStroke = false;
-                return;
-            }
-
-            _isDrawingStroke = true;
-            _smoothedBrushWorld = worldPos;
-            _lastStrokeWorld = _road.LastPoint;
-            if (SoundManager.Instance) SoundManager.Instance.PlayDraw();
-            if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(_lastStrokeWorld, new Color(0.9f, 0.95f, 1f), 3);
-        }
-
-        private void ContinueStroke(Vector2 worldPos)
-        {
-            if (currentInk < 2f)
-            {
-                EndStroke();
-                return;
-            }
-
-            // Smooth the pointer position using an exponential spring filter so micro-jitters vanish
-            float alpha = 1f - Mathf.Exp(-brushSmoothingSpeed * Time.deltaTime);
-            _smoothedBrushWorld = Vector2.Lerp(_smoothedBrushWorld, worldPos, alpha);
-
-            float d = Vector2.Distance(_lastStrokeWorld, _smoothedBrushWorld);
-            if (d >= dragSpacing)
-            {
-                if (_road.AddPointToCurrent(_smoothedBrushWorld))
-                {
-                    Vector2 actualAdded = _road.LastPoint;
-                    float committedDist = Vector2.Distance(_lastStrokeWorld, actualAdded);
-                    currentInk = Mathf.Max(0f, currentInk - committedDist * inkCostPerMeter);
-                    UpdateInkUI();
-                    _lastStrokeWorld = actualAdded;
-                    if (SoundManager.Instance) SoundManager.Instance.PlayDraw();
-                    if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(actualAdded, new Color(0.85f, 0.95f, 1f), 2);
-                }
-            }
-            else
-            {
-                // Continuously stretch the elastic live tip between knot commits for 60fps silkiness
-                _road.UpdateLiveStrokeTip(_smoothedBrushWorld);
-            }
-        }
-
-        private void EndStroke()
-        {
-            _isDrawingStroke = false;
-            _road.EndSegment();
-        }
-
         private void LateUpdate()
         {
-            if (_state == ScreenState.Playing && _car != null && _cam != null)
-            {
-                Vector3 currentCam = _cam.transform.position;
-                Vector3 carPos = _car.Body.position;
-
-                // Camera X follows car smoothly with forward look-ahead
-                float targetX = carPos.x + 2.5f;
-                // Camera Y is stabilized: follows road or car gently, clamped so background never whips wildly during a fall
-                float targetY = Mathf.Clamp(carPos.y + 1.1f, -2.5f, 8.5f);
-
-                float newX = Mathf.Lerp(currentCam.x, targetX, 7.5f * Time.deltaTime);
-                float newY = Mathf.Lerp(currentCam.y, targetY, 3.5f * Time.deltaTime);
-
-                _cam.transform.position = new Vector3(newX, newY, -10f);
-                _background.Follow(_cam);
-            }
-            else if (_background != null && _cam != null)
-            {
-                _background.Follow(_cam);
-            }
-        }
-
-        private void SnapCamera()
-        {
-            if (_car == null || _cam == null) return;
-            Vector3 pos = _car.Body.position;
-            pos.z = -10f;
-            pos.y = Mathf.Clamp(pos.y + 1.1f, -2.5f, 8.5f);
-            pos.x += 2.5f;
-            _cam.transform.position = pos;
-        }
-
-        private void SpawnPickupsAhead(float carX)
-        {
-            // Spawn pickups along a smooth, predictable world wave completely decoupled from road creation!
-            while (_nextSpawnX < carX + 32f)
-            {
-                float x = _nextSpawnX;
-                // Smooth world-space sine wave for natural collectible arcs (independent of player road strokes)
-                float waveY = 1.4f + Mathf.Sin(x * 0.14f) * 1.35f + Mathf.Cos(x * 0.06f) * 0.65f;
-
-                // If a road happens to already exist at X, ensure the item sits nicely above it, never buried inside
-                if (_road.TryGetRoadYAtX(x, out float existingRoadY))
-                {
-                    waveY = Mathf.Max(waveY, existingRoadY + 1.35f);
-                }
-
-                int roll = Random.Range(0, 100);
-                Collectible.Type t;
-                Sprite s;
-                if (roll < 65)
-                {
-                    t = Collectible.Type.Coin;
-                    s = Resources.Load<Sprite>("RoadBuilder/Coin");
-                }
-                else if (roll < 88)
-                {
-                    t = Collectible.Type.Ink;
-                    s = Resources.Load<Sprite>("RoadBuilder/InkCanister");
-                }
-                else
-                {
-                    t = Collectible.Type.Heart;
-                    s = Resources.Load<Sprite>("RoadBuilder/Heart");
-                }
-
-                // Spawn coins in neat 3-coin arcs so the player has clear visual targets to build towards!
-                if (t == Collectible.Type.Coin)
-                {
-                    for (int c = 0; c < 3; c++)
-                    {
-                        float cx = x + c * 1.6f;
-                        float cy = waveY + Mathf.Sin((c / 2f) * Mathf.PI) * 0.55f;
-                        if (_road.TryGetRoadYAtX(cx, out float ry)) cy = Mathf.Max(cy, ry + 1.35f);
-
-                        var coinGo = new GameObject("Pickup_Coin");
-                        coinGo.transform.position = new Vector3(cx, cy, 0f);
-                        var coinPickup = coinGo.AddComponent<Collectible>();
-                        coinPickup.Init(t, s);
-                        _activeCollectibles.Add(coinPickup);
-                    }
-                    _nextSpawnX += Random.Range(11f, 16f);
-                }
-                else
-                {
-                    var itemGo = new GameObject("Pickup_" + t);
-                    itemGo.transform.position = new Vector3(x, waveY, 0f);
-                    var pickup = itemGo.AddComponent<Collectible>();
-                    pickup.Init(t, s);
-                    _activeCollectibles.Add(pickup);
-                    _nextSpawnX += Random.Range(9f, 14f);
-                }
-            }
-
-            for (int i = _activeCollectibles.Count - 1; i >= 0; i--)
-            {
-                if (_activeCollectibles[i] == null || _activeCollectibles[i].transform.position.x < carX - 18f)
-                {
-                    if (_activeCollectibles[i] != null) Destroy(_activeCollectibles[i].gameObject);
-                    _activeCollectibles.RemoveAt(i);
-                }
-            }
+            _cameraRig.Tick(_car, _state == ScreenState.Playing);
         }
 
         public void OnCollectItem(Collectible item)

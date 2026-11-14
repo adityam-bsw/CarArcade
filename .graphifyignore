@@ -1,0 +1,18 @@
+Library/
+Temp/
+Logs/
+obj/
+UserSettings/
+Packages/
+ProjectSettings/
+Assets/Screenshots/
+Assets/Resources/RoadBuilder/Audio/
+Assets/Plugins/Demigiant/
+Assets/TextMesh Pro/
+Docs/Images/
+*.png
+*.wav
+*.meta
+*.unity
+*.prefab
+*.asset

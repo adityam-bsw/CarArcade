@@ -5,6 +5,10 @@ namespace RoadBuilderGame
     public class Collectible : MonoBehaviour
     {
         public enum Type { Coin, Heart, Ink }
+
+        /// <summary>Raised when the car touches this pickup, just before it is destroyed. Game code subscribes; this class knows nothing about it.</summary>
+        public static event System.Action<Collectible> Collected;
+
         public Type itemType;
         public int value = 1;
 
@@ -57,7 +61,7 @@ namespace RoadBuilderGame
             var car = collision.GetComponentInParent<RoadCar>();
             if (car != null)
             {
-                RoadGameManager.Instance.OnCollectItem(this);
+                Collected?.Invoke(this);
                 Destroy(gameObject);
             }
         }
