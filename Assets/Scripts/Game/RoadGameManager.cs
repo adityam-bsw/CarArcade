@@ -3,22 +3,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
-using UnityEngine.UI;
 
 namespace RoadBuilderGame
 {
-    public class RoadGameManager : MonoBehaviour
+    public class RoadGameManager : MonoBehaviour, IGameActions
     {
         public static RoadGameManager Instance { get; private set; }
-
-        public enum ScreenState
-        {
-            HomeDashboard,
-            StageSelect,
-            GarageMenu,
-            Playing,
-            GameOver
-        }
 
         [Header("Scene Object References (Inspectable in Editor)")]
         [SerializeField] private Camera _cam;
@@ -27,46 +17,6 @@ namespace RoadBuilderGame
         [SerializeField] private SoundManager _soundManager;
         [SerializeField] private ParticleManager _particleManager;
         [SerializeField] private EventSystem _eventSystem;
-
-        [Header("UI Panels & Canvas (Visible and Editable in Scene)")]
-        [SerializeField] public GameObject uiCanvas;
-        [SerializeField] public GameObject homePanel;
-        [SerializeField] public GameObject stagePanel;
-        [SerializeField] public GameObject garagePanel;
-        [SerializeField] public GameObject hudPanel;
-        [SerializeField] public GameObject gameOverPanel;
-
-        [Header("Home View Bindings")]
-        [SerializeField] public Text homeCoinsText;
-        [SerializeField] public Text homeBestText;
-
-        [Header("Stage View Bindings")]
-        [SerializeField] public Image stagePreviewImg;
-        [SerializeField] public Text stageTitleText;
-        [SerializeField] public Text stageDescText;
-
-        [Header("Garage View Bindings")]
-        [SerializeField] public Text garageCarNameText;
-        [SerializeField] public Text garageUnlockBtnText;
-        [SerializeField] public Text engineValText;
-        [SerializeField] public Text suspValText;
-        [SerializeField] public Text inkValText;
-        [SerializeField] public Text engineCostText;
-        [SerializeField] public Text suspCostText;
-        [SerializeField] public Text inkCostText;
-
-        [Header("HUD Bindings")]
-        [SerializeField] public Text hudDistanceText;
-        [SerializeField] public Text hudSpeedText;
-        [SerializeField] public Text hudCoinsText;
-        [SerializeField] public RectTransform hudInkFill;
-        [SerializeField] public Text hudInkText;
-        [SerializeField] public GameObject[] hudHeartIcons;
-
-        [Header("Game Over Bindings")]
-        [SerializeField] public Text goReasonText;
-        [SerializeField] public Text goDistanceText;
-        [SerializeField] public Text goCoinsText;
 
         [Header("Gameplay Dynamics")]
         public float baseStartSpeed = 4.2f;
@@ -97,6 +47,7 @@ namespace RoadBuilderGame
         public bool truckUnlocked = false;
 
         private PlayerProfile _profile;
+        private bool _soundEnabled = true;
 
         private RoadCar _car;
         private PhysicsMaterial2D _roadMaterial;
@@ -212,15 +163,7 @@ namespace RoadBuilderGame
             _background.ApplyTheme(SelectedTheme);
             _road.SetRoadStyle(SelectedRoadStyle);
 
-            // If UI Canvas wasn't pre-constructed in scene, build it as fallback
-            if (uiCanvas == null)
-            {
-                BuildComprehensiveUI();
-            }
-            else
-            {
-                BindButtonEvents();
-            }
+            GameServices.Actions = this;
 
             UpdateResponsiveLayout(force: true);
             SwitchScreen(ScreenState.HomeDashboard);
@@ -245,27 +188,6 @@ namespace RoadBuilderGame
 
             float aspect = (h > 0) ? (float)w / h : 1.777f;
 
-            // 1. Update CanvasScaler to Expand mode so zero UI elements ever clip off-screen on narrow/tall or ultrawide displays
-            if (uiCanvas != null)
-            {
-                var scaler = uiCanvas.GetComponent<CanvasScaler>();
-                if (scaler != null)
-                {
-                    scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-                    scaler.referenceResolution = new Vector2(1920, 1080);
-                    scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
-                }
-
-                // 2. Apply Screen.safeArea normalized anchors to all main panels (protects against notches & rounded corners)
-                if (w > 0 && h > 0)
-                {
-                    Vector2 anchorMin = new Vector2(safe.xMin / w, safe.yMin / h);
-                    Vector2 anchorMax = new Vector2(safe.xMax / w, safe.yMax / h);
-                    ApplySafeAreaToPanel(homePanel, anchorMin, anchorMax);
-                    ApplySafeAreaToPanel(hudPanel, anchorMin, anchorMax);
-                }
-            }
-
             // 3. Adapt Camera orthographic size so narrow/portrait screens still see the same horizontal look-ahead distance!
             if (_cam != null)
             {
@@ -281,17 +203,6 @@ namespace RoadBuilderGame
             }
         }
 
-        private static void ApplySafeAreaToPanel(GameObject panel, Vector2 anchorMin, Vector2 anchorMax)
-        {
-            if (panel == null) return;
-            var rt = panel.GetComponent<RectTransform>();
-            if (rt == null) return;
-            rt.anchorMin = anchorMin;
-            rt.anchorMax = anchorMax;
-            rt.offsetMin = Vector2.zero;
-            rt.offsetMax = Vector2.zero;
-        }
-
         private void LoadPlayerData()
         {
             _profile = SaveService.Load();
@@ -305,6 +216,8 @@ namespace RoadBuilderGame
             SelectedRoadStyle = (RoadStyle)_profile.roadStyle;
             sportUnlocked = _profile.sportUnlocked;
             truckUnlocked = _profile.truckUnlocked;
+            _soundEnabled = _profile.soundEnabled;
+            AudioListener.volume = _soundEnabled ? 1f : 0f;
         }
 
         private void SavePlayerData()
@@ -320,6 +233,7 @@ namespace RoadBuilderGame
             _profile.roadStyle = (int)SelectedRoadStyle;
             _profile.sportUnlocked = sportUnlocked;
             _profile.truckUnlocked = truckUnlocked;
+            _profile.soundEnabled = _soundEnabled;
             SaveService.Save(_profile);
         }
 
@@ -328,31 +242,26 @@ namespace RoadBuilderGame
             _state = newState;
             _stateTime = 0f;
 
-            if (homePanel) homePanel.SetActive(newState == ScreenState.HomeDashboard);
-            if (stagePanel) stagePanel.SetActive(newState == ScreenState.StageSelect);
-            if (garagePanel) garagePanel.SetActive(newState == ScreenState.GarageMenu);
-            if (hudPanel) hudPanel.SetActive(newState == ScreenState.Playing);
-            if (gameOverPanel) gameOverPanel.SetActive(newState == ScreenState.GameOver);
-
             switch (newState)
             {
                 case ScreenState.HomeDashboard:
                     SetupShowcaseCar();
                     if (SoundManager.Instance) SoundManager.Instance.SetEngineRunning(false, 0f);
-                    UpdateHomeUI();
+                    SyncModel();
                     break;
 
                 case ScreenState.StageSelect:
-                    UpdateStageUI();
+                    SyncModel();
                     break;
 
                 case ScreenState.GarageMenu:
                     SetupShowcaseCar();
-                    UpdateGarageUI();
+                    SyncModel();
                     break;
 
                 case ScreenState.Playing:
                     StartGameplaySession();
+                    SyncModel();
                     break;
 
                 case ScreenState.GameOver:
@@ -361,9 +270,11 @@ namespace RoadBuilderGame
                         SoundManager.Instance.SetEngineRunning(false, 0f);
                         SoundManager.Instance.PlayCrash();
                     }
-                    UpdateGameOverUI();
+                    SyncModel();
                     break;
             }
+
+            Model.SetScreen(newState);
         }
 
         private void CleanupAllCars()
@@ -437,7 +348,6 @@ namespace RoadBuilderGame
                 _brush.Tick();
 
                 currentInk = Mathf.Min(maxInk, currentInk + inkRegenPerSec * Time.deltaTime);
-                UpdateInkUI();
 
                 if (_car == null) return;
 
@@ -481,10 +391,7 @@ namespace RoadBuilderGame
 
                 _road.CullBefore(_cam.transform.position.x - cameraSize * _cam.aspect - 15f);
 
-                // Update HUD
-                if (hudDistanceText) hudDistanceText.text = $"{_distance:0} m";
-                if (hudSpeedText) hudSpeedText.text = $"{_car.TargetSpeed * 3.6f:0} km/h";
-                if (hudCoinsText) hudCoinsText.text = $"COINS: {totalCoins + sessionCoins}";
+                SyncHud();
             }
         }
 
@@ -517,9 +424,14 @@ namespace RoadBuilderGame
             totalCoins += sessionCoins;
             SavePlayerData();
 
-            if (goReasonText) goReasonText.text = reason;
-            if (goDistanceText) goDistanceText.text = $"{_distance:0} METRES{(newBest ? "\n<color=#FFD700>★ NEW PERSONAL BEST! ★</color>" : "")}";
-            if (goCoinsText) goCoinsText.text = $"COINS WON: +{sessionCoins} (TOTAL: {totalCoins})";
+            Model.LastRun = new RunResult
+            {
+                reason = reason,
+                distance = _distance,
+                coinsWon = sessionCoins,
+                totalCoins = totalCoins,
+                newBest = newBest
+            };
 
             SwitchScreen(ScreenState.GameOver);
         }
@@ -553,38 +465,59 @@ namespace RoadBuilderGame
             }
         }
 
-        // ==================================================================== UI SETUP & BINDINGS
-        public void BindButtonEvents()
+        // ==================================================================== MODEL SYNC (UI reads this)
+        private static GameModel Model => GameServices.Model;
+
+        private void SyncModel()
         {
-            // Bind Home Buttons
-            BindButton(homePanel, "Btn_START RACE!", OnClickStartRace);
-            BindButton(homePanel, "Btn_GARAGE", OnClickOpenGarage);
-            BindButton(homePanel, "Btn_STAGES", OnClickOpenStages);
-
-            // Bind Stage Select Buttons
-            BindButton(stagePanel, "Btn_Prev", OnStagePrev);
-            BindButton(stagePanel, "Btn_Next", OnStageNext);
-            BindButton(stagePanel, "Btn_CHANGE ROAD MATERIAL", OnClickChangeRoadStyle);
-            BindButton(stagePanel, "Btn_Back", OnClickBackToHome);
-
-            // Bind Garage Buttons
-            BindButton(garagePanel, "Btn_Prev", OnGarageVehiclePrev);
-            BindButton(garagePanel, "Btn_Next", OnGarageVehicleNext);
-            BindButton(garagePanel, "Btn_Action", HandleVehicleSelectionAction);
-            BindButton(garagePanel, "Btn_Upgrade_0", () => UpgradeStat(0));
-            BindButton(garagePanel, "Btn_Upgrade_1", () => UpgradeStat(1));
-            BindButton(garagePanel, "Btn_Upgrade_2", () => UpgradeStat(2));
-            BindButton(garagePanel, "Btn_Back", OnClickBackToHome);
-
-            // Bind HUD Buttons
-            BindButton(hudPanel, "Btn_UNSTUCK", OnClickUnstuckHop);
-
-            // Bind Game Over Buttons
-            BindButton(gameOverPanel, "Btn_PLAY AGAIN", OnClickStartRace);
-            BindButton(gameOverPanel, "Btn_MENU", OnClickBackToHome);
+            var m = Model;
+            m.Coins = totalCoins;
+            m.BestDistance = _bestScore;
+            m.EngineLevel = engineLevel;
+            m.SuspensionLevel = suspensionLevel;
+            m.InkTankLevel = inkTankLevel;
+            m.Vehicle = SelectedVehicle;
+            m.World = SelectedTheme;
+            m.RoadStyle = SelectedRoadStyle;
+            m.SportUnlocked = sportUnlocked;
+            m.TruckUnlocked = truckUnlocked;
+            m.SoundEnabled = _soundEnabled;
+            m.RaiseChanged();
         }
 
-        public void OnClickUnstuckHop()
+        private void SyncHud()
+        {
+            var m = Model;
+            m.Distance = _distance;
+            m.SpeedKmh = _car != null ? _car.TargetSpeed * 3.6f : 0f;
+            m.SessionCoins = sessionCoins;
+            m.Lives = currentLives;
+            m.MaxLives = maxLives;
+            m.Ink01 = maxInk > 0f ? Mathf.Clamp01(currentInk / maxInk) : 0f;
+            m.RaiseHud();
+        }
+
+        private void UpdateHeartsUI() { SyncHud(); }
+        private void UpdateInkUI() { SyncHud(); }
+
+        private void OnDestroy()
+        {
+            if (GameServices.Actions == (IGameActions)this) GameServices.Actions = null;
+        }
+
+        // ==================================================================== ACTIONS (IGameActions)
+        public void StartRace()
+        {
+            // Never start a run in a car the player has not unlocked.
+            if (!IsCurrentVehicleUnlocked()) SelectedVehicle = VehicleType.ClassicRed;
+            SwitchScreen(ScreenState.Playing);
+        }
+
+        public void GoHome() { SwitchScreen(ScreenState.HomeDashboard); }
+        public void OpenGarage() { SwitchScreen(ScreenState.GarageMenu); }
+        public void OpenWorlds() { SwitchScreen(ScreenState.StageSelect); }
+
+        public void Boost()
         {
             if (_car == null) return;
             if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
@@ -593,289 +526,34 @@ namespace RoadBuilderGame
             _car.NudgeUnstick();
         }
 
-        private void BindButton(GameObject root, string name, UnityEngine.Events.UnityAction action)
-        {
-            if (root == null) return;
-            Transform t = root.transform.Find(name);
-            if (t == null)
-            {
-                // Recursive search
-                var btns = root.GetComponentsInChildren<Button>(true);
-                foreach (var b in btns)
-                {
-                    if (b.gameObject.name == name)
-                    {
-                        b.onClick.RemoveAllListeners();
-                        b.onClick.AddListener(action);
-                        return;
-                    }
-                }
-                return;
-            }
-            var btn = t.GetComponent<Button>();
-            if (btn != null)
-            {
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(action);
-            }
-        }
-
-        public void OnClickStartRace()
-        {
-            if (SoundManager.Instance) SoundManager.Instance.PlayClick();
-            SwitchScreen(ScreenState.Playing);
-        }
-
-        public void OnClickOpenGarage()
-        {
-            if (SoundManager.Instance) SoundManager.Instance.PlayClick();
-            SwitchScreen(ScreenState.GarageMenu);
-        }
-
-        public void OnClickOpenStages()
-        {
-            if (SoundManager.Instance) SoundManager.Instance.PlayClick();
-            SwitchScreen(ScreenState.StageSelect);
-        }
-
-        public void OnClickBackToHome()
-        {
-            if (SoundManager.Instance) SoundManager.Instance.PlayClick();
-            SwitchScreen(ScreenState.HomeDashboard);
-        }
-
-        public void OnStagePrev() => CycleTheme(-1);
-        public void OnStageNext() => CycleTheme(1);
-        public void OnClickChangeRoadStyle() => CycleRoadStyle();
-        public void OnGarageVehiclePrev() => CycleGarageVehicle(-1);
-        public void OnGarageVehicleNext() => CycleGarageVehicle(1);
-
-        private void BuildComprehensiveUI()
-        {
-            if (uiCanvas != null) Destroy(uiCanvas);
-
-            uiCanvas = new GameObject("FullGameUI");
-            var canvas = uiCanvas.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 100;
-            var scaler = uiCanvas.AddComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1920, 1080);
-            scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
-            uiCanvas.AddComponent<GraphicRaycaster>();
-
-            Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-
-            BuildHomePanel(uiCanvas.transform, font);
-            BuildStageSelectPanel(uiCanvas.transform, font);
-            BuildGaragePanel(uiCanvas.transform, font);
-            BuildHUDPanel(uiCanvas.transform, font);
-            BuildGameOverPanel(uiCanvas.transform, font);
-        }
-
-        // ------------------ 1. HOME DASHBOARD ------------------
-        private void BuildHomePanel(Transform parent, Font font)
-        {
-            homePanel = new GameObject("Panel_Home");
-            homePanel.transform.SetParent(parent, false);
-            FillRect(homePanel.AddComponent<RectTransform>());
-
-            Sprite bannerSp = Resources.Load<Sprite>("RoadBuilder/Art/GameLogoBanner");
-            var logoGo = new GameObject("LogoBanner");
-            logoGo.transform.SetParent(homePanel.transform, false);
-            var lrt = logoGo.AddComponent<RectTransform>();
-            lrt.anchorMin = lrt.anchorMax = new Vector2(0.5f, 1f);
-            lrt.anchoredPosition = new Vector2(0, -90);
-            lrt.sizeDelta = new Vector2(760, 190);
-            var lImg = logoGo.AddComponent<Image>();
-            lImg.sprite = bannerSp;
-            lImg.raycastTarget = false;
-
-            var titleTxt = MakeText(logoGo.transform, font, 48, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.5f), Vector2.zero, Color.white);
-            titleTxt.text = "ROAD BUILDER RACER";
-
-            homeCoinsText = MakeText(homePanel.transform, font, 44, TextAnchor.UpperLeft, new Vector2(0, 1), new Vector2(50, -40), new Color(1f, 0.85f, 0.2f));
-            homeBestText = MakeText(homePanel.transform, font, 44, TextAnchor.UpperRight, new Vector2(1, 1), new Vector2(-50, -40), Color.white);
-
-            Sprite podSp = Resources.Load<Sprite>("RoadBuilder/Art/Podium");
-            var podGo = new GameObject("Podium");
-            podGo.transform.SetParent(homePanel.transform, false);
-            var prt = podGo.AddComponent<RectTransform>();
-            prt.anchorMin = prt.anchorMax = new Vector2(0.5f, 0.35f);
-            prt.anchoredPosition = new Vector2(0, -20);
-            prt.sizeDelta = new Vector2(520, 90);
-            var pImg = podGo.AddComponent<Image>();
-            pImg.sprite = podSp;
-            pImg.raycastTarget = false;
-
-            Sprite greenBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_RaceGreen");
-            Sprite yellowBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_UpgradeYellow");
-            Sprite blueBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_MenuBlue");
-
-            CreateTexturedButton(homePanel.transform, greenBtnSp, font, "START RACE!", 36, new Vector2(0.5f, 0.15f), new Vector2(0, 0), new Vector2(340, 100), OnClickStartRace);
-            CreateTexturedButton(homePanel.transform, yellowBtnSp, font, "GARAGE", 30, new Vector2(0.5f, 0.15f), new Vector2(-360, 0), new Vector2(280, 85), OnClickOpenGarage);
-            CreateTexturedButton(homePanel.transform, blueBtnSp, font, "STAGES", 30, new Vector2(0.5f, 0.15f), new Vector2(360, 0), new Vector2(280, 85), OnClickOpenStages);
-        }
-
-        private void UpdateHomeUI()
-        {
-            if (homeCoinsText) homeCoinsText.text = $"COINS: {totalCoins}";
-            if (homeBestText) homeBestText.text = $"RECORD: {_bestScore:0} m";
-        }
-
-        // ------------------ 2. STAGE / THEME SELECT ------------------
-        private void BuildStageSelectPanel(Transform parent, Font font)
-        {
-            stagePanel = new GameObject("Panel_StageSelect");
-            stagePanel.transform.SetParent(parent, false);
-            FillRect(stagePanel.AddComponent<RectTransform>());
-
-            var bgCover = stagePanel.AddComponent<Image>();
-            bgCover.color = new Color(0.06f, 0.08f, 0.14f, 0.94f);
-            bgCover.raycastTarget = false;
-
-            var title = MakeText(stagePanel.transform, font, 52, TextAnchor.UpperCenter, new Vector2(0.5f, 1f), new Vector2(0, -60), Color.white);
-            title.text = "SELECT ENVIRONMENT & ROAD TYPE";
-
-            var cardGo = new GameObject("StageCard");
-            cardGo.transform.SetParent(stagePanel.transform, false);
-            var crt = cardGo.AddComponent<RectTransform>();
-            crt.anchorMin = crt.anchorMax = new Vector2(0.5f, 0.65f);
-            crt.anchoredPosition = Vector2.zero;
-            crt.sizeDelta = new Vector2(400, 280);
-            stagePreviewImg = cardGo.AddComponent<Image>();
-            stagePreviewImg.raycastTarget = false;
-
-            stageTitleText = MakeText(stagePanel.transform, font, 40, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.44f), Vector2.zero, new Color(1f, 0.85f, 0.2f));
-            stageDescText = MakeText(stagePanel.transform, font, 28, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.36f), Vector2.zero, Color.white);
-
-            Sprite prevSp = Resources.Load<Sprite>("RoadBuilder/UI/Btn_Arrow_Prev");
-            Sprite nextSp = Resources.Load<Sprite>("RoadBuilder/UI/Btn_Arrow_Next");
-
-            CreateNamedButton(stagePanel.transform, "Btn_Prev", prevSp, font, "", 0, new Vector2(0.5f, 0.65f), new Vector2(-280, 0), new Vector2(150, 68), OnStagePrev);
-            CreateNamedButton(stagePanel.transform, "Btn_Next", nextSp, font, "", 0, new Vector2(0.5f, 0.65f), new Vector2(280, 0), new Vector2(150, 68), OnStageNext);
-
-            Sprite yellowBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_UpgradeYellow");
-            CreateTexturedButton(stagePanel.transform, yellowBtnSp, font, "CHANGE ROAD MATERIAL", 26, new Vector2(0.5f, 0.22f), Vector2.zero, new Vector2(420, 75), OnClickChangeRoadStyle);
-
-            Sprite blueBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_MenuBlue");
-            CreateNamedButton(stagePanel.transform, "Btn_Back", blueBtnSp, font, "< BACK", 28, new Vector2(0.5f, 0.10f), Vector2.zero, new Vector2(240, 70), OnClickBackToHome);
-        }
-
-        private void CycleTheme(int dir)
+        public void CycleWorld(int dir)
         {
             int total = System.Enum.GetValues(typeof(EnvironmentTheme)).Length;
             SelectedTheme = (EnvironmentTheme)(((int)SelectedTheme + dir + total) % total);
             _background.ApplyTheme(SelectedTheme);
-            if (SoundManager.Instance) SoundManager.Instance.PlayClick();
             SavePlayerData();
-            UpdateStageUI();
+            SyncModel();
         }
 
-        private void CycleRoadStyle()
+        public void CycleRoadStyle()
         {
             int total = System.Enum.GetValues(typeof(RoadStyle)).Length;
             SelectedRoadStyle = (RoadStyle)(((int)SelectedRoadStyle + 1) % total);
             _road.SetRoadStyle(SelectedRoadStyle);
             if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
             SavePlayerData();
-            UpdateStageUI();
+            SyncModel();
         }
 
-        private void UpdateStageUI()
-        {
-            string cardPath = "RoadBuilder/Art/Stage_Country";
-            string title = "COUNTRYSIDE HILLS";
-            string desc = "Lush green rolling hills with smooth tarmac highway.";
-
-            if (SelectedTheme == EnvironmentTheme.Desert)
-            {
-                cardPath = "RoadBuilder/Art/Stage_Desert";
-                title = "DESERT DUNES";
-                desc = "Blazing hot sand dunes with rustic dirt & sand tracks.";
-            }
-            else if (SelectedTheme == EnvironmentTheme.CyberNight)
-            {
-                cardPath = "RoadBuilder/Art/Stage_Cyber";
-                title = "CYBER NIGHT 2099";
-                desc = "Synthwave neon landscape with glowing energy tracks.";
-            }
-
-            if (stagePreviewImg) stagePreviewImg.sprite = Resources.Load<Sprite>(cardPath);
-            if (stageTitleText) stageTitleText.text = title;
-            if (stageDescText) stageDescText.text = $"{desc}\nActive Road: <color=#00FFFF>[{SelectedRoadStyle}]</color>";
-        }
-
-        // ------------------ 3. GARAGE & VEHICLE UPGRADES ------------------
-        private void BuildGaragePanel(Transform parent, Font font)
-        {
-            garagePanel = new GameObject("Panel_Garage");
-            garagePanel.transform.SetParent(parent, false);
-            FillRect(garagePanel.AddComponent<RectTransform>());
-
-            var bgCover = garagePanel.AddComponent<Image>();
-            bgCover.color = new Color(0.06f, 0.08f, 0.14f, 0.94f);
-            bgCover.raycastTarget = false;
-
-            var title = MakeText(garagePanel.transform, font, 52, TextAnchor.UpperCenter, new Vector2(0.5f, 1f), new Vector2(0, -50), Color.white);
-            title.text = "GARAGE & VEHICLE TUNING";
-
-            garageCarNameText = MakeText(garagePanel.transform, font, 40, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.90f), Vector2.zero, new Color(1f, 0.85f, 0.2f));
-
-            Sprite prevSp = Resources.Load<Sprite>("RoadBuilder/UI/Btn_Arrow_Prev");
-            Sprite nextSp = Resources.Load<Sprite>("RoadBuilder/UI/Btn_Arrow_Next");
-
-            CreateNamedButton(garagePanel.transform, "Btn_Prev", prevSp, font, "", 0, new Vector2(0.5f, 0.90f), new Vector2(-360, 0), new Vector2(140, 64), OnGarageVehiclePrev);
-            CreateNamedButton(garagePanel.transform, "Btn_Next", nextSp, font, "", 0, new Vector2(0.5f, 0.90f), new Vector2(360, 0), new Vector2(140, 64), OnGarageVehicleNext);
-
-            Sprite greenBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_RaceGreen");
-            var unlockBtn = CreateNamedButton(garagePanel.transform, "Btn_Action", greenBtnSp, font, "SELECT VEHICLE", 28, new Vector2(0.5f, 0.81f), Vector2.zero, new Vector2(320, 75), HandleVehicleSelectionAction);
-            garageUnlockBtnText = unlockBtn.GetComponentInChildren<Text>();
-
-            BuildUpgradeRow(garagePanel.transform, font, "ENGINE (SPEED)", 0, out engineValText, out engineCostText, () => UpgradeStat(0));
-            BuildUpgradeRow(garagePanel.transform, font, "SUSPENSION (GRIP)", 1, out suspValText, out suspCostText, () => UpgradeStat(1));
-            BuildUpgradeRow(garagePanel.transform, font, "INK TANK (ROAD)", 2, out inkValText, out inkCostText, () => UpgradeStat(2));
-
-            Sprite blueBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_MenuBlue");
-            CreateNamedButton(garagePanel.transform, "Btn_Back", blueBtnSp, font, "< BACK", 28, new Vector2(0.5f, 0.10f), Vector2.zero, new Vector2(240, 70), OnClickBackToHome);
-        }
-
-        private void BuildUpgradeRow(Transform parent, Font font, string label, int index, out Text valTxt, out Text costTxt, UnityEngine.Events.UnityAction onUpgrade)
-        {
-            float y = -190f - (index * 95f);
-            var rowGo = new GameObject("UpgradeRow_" + label);
-            rowGo.transform.SetParent(parent, false);
-            var rt = rowGo.AddComponent<RectTransform>();
-            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = new Vector2(0, y);
-            rt.sizeDelta = new Vector2(900, 80);
-
-            var bg = rowGo.AddComponent<Image>();
-            bg.sprite = Resources.Load<Sprite>("RoadBuilder/Art/StatBarBg");
-            bg.type = Image.Type.Sliced;
-            bg.color = Color.white;
-            bg.raycastTarget = false;
-
-            var title = MakeText(rowGo.transform, font, 28, TextAnchor.MiddleLeft, new Vector2(0, 0.5f), new Vector2(30, 0), Color.white);
-            title.text = label;
-
-            valTxt = MakeText(rowGo.transform, font, 26, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.5f), new Vector2(20, 0), new Color(0.2f, 0.95f, 1f));
-
-            Sprite yellowBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_UpgradeYellow");
-            var btn = CreateNamedButton(rowGo.transform, "Btn_Upgrade_" + index, yellowBtnSp, font, "UPGRADE", 22, new Vector2(1, 0.5f), new Vector2(-20, 0), new Vector2(220, 58), onUpgrade);
-            costTxt = btn.GetComponentInChildren<Text>();
-        }
-
-        private void CycleGarageVehicle(int dir)
+        public void CycleVehicle(int dir)
         {
             int total = System.Enum.GetValues(typeof(VehicleType)).Length;
             SelectedVehicle = (VehicleType)(((int)SelectedVehicle + dir + total) % total);
-            if (SoundManager.Instance) SoundManager.Instance.PlayClick();
             SetupShowcaseCar();
-            UpdateGarageUI();
+            SyncModel();
         }
 
-        private void HandleVehicleSelectionAction()
+        public void SelectOrUnlockVehicle()
         {
             if (IsCurrentVehicleUnlocked())
             {
@@ -884,7 +562,7 @@ namespace RoadBuilderGame
             }
             else
             {
-                int cost = GetVehicleCost(SelectedVehicle);
+                int cost = GameCatalog.VehicleCost(SelectedVehicle);
                 if (totalCoins >= cost)
                 {
                     totalCoins -= cost;
@@ -898,30 +576,15 @@ namespace RoadBuilderGame
                     if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
                 }
             }
-            UpdateGarageUI();
+            SyncModel();
         }
 
-        private bool IsCurrentVehicleUnlocked()
-        {
-            if (SelectedVehicle == VehicleType.ClassicRed) return true;
-            if (SelectedVehicle == VehicleType.SportCyan) return sportUnlocked;
-            if (SelectedVehicle == VehicleType.MonsterTruck) return truckUnlocked;
-            return false;
-        }
-
-        private int GetVehicleCost(VehicleType type)
-        {
-            if (type == VehicleType.SportCyan) return 200;
-            if (type == VehicleType.MonsterTruck) return 350;
-            return 0;
-        }
-
-        private void UpgradeStat(int statIndex)
+        public void UpgradeStat(int statIndex)
         {
             int currentLevel = (statIndex == 0) ? engineLevel : ((statIndex == 1) ? suspensionLevel : inkTankLevel);
-            if (currentLevel >= 5) return;
+            if (currentLevel >= GameCatalog.MaxUpgradeLevel) return;
 
-            int cost = currentLevel * 50;
+            int cost = GameCatalog.UpgradeCost(currentLevel);
             if (totalCoins >= cost)
             {
                 totalCoins -= cost;
@@ -931,7 +594,7 @@ namespace RoadBuilderGame
 
                 if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
                 SavePlayerData();
-                UpdateGarageUI();
+                SyncModel();
             }
             else
             {
@@ -939,235 +602,20 @@ namespace RoadBuilderGame
             }
         }
 
-        private void UpdateGarageUI()
+        public void SetSoundEnabled(bool enabled)
         {
-            if (garageCarNameText)
-            {
-                string nameStr = "CLASSIC RUNNER";
-                if (SelectedVehicle == VehicleType.SportCyan) nameStr = "CYAN HYPERCAR";
-                else if (SelectedVehicle == VehicleType.MonsterTruck) nameStr = "MONSTER TRUCK";
-                garageCarNameText.text = nameStr;
-            }
-
-            if (garageUnlockBtnText)
-            {
-                if (IsCurrentVehicleUnlocked())
-                {
-                    garageUnlockBtnText.text = "EQUIPPED ✓";
-                }
-                else
-                {
-                    garageUnlockBtnText.text = $"UNLOCK ({GetVehicleCost(SelectedVehicle)} COINS)";
-                }
-            }
-
-            if (engineValText) engineValText.text = $"LVL {engineLevel}/5";
-            if (suspValText) suspValText.text = $"LVL {suspensionLevel}/5";
-            if (inkValText) inkValText.text = $"LVL {inkTankLevel}/5";
-
-            if (engineCostText) engineCostText.text = (engineLevel >= 5) ? "MAX" : $"UPGRADE ({engineLevel * 50}c)";
-            if (suspCostText) suspCostText.text = (suspensionLevel >= 5) ? "MAX" : $"UPGRADE ({suspensionLevel * 50}c)";
-            if (inkCostText) inkCostText.text = (inkTankLevel >= 5) ? "MAX" : $"UPGRADE ({inkTankLevel * 50}c)";
+            _soundEnabled = enabled;
+            AudioListener.volume = enabled ? 1f : 0f;
+            SavePlayerData();
+            SyncModel();
         }
 
-        // ------------------ 4. IN-GAME HUD ------------------
-        private void BuildHUDPanel(Transform parent, Font font)
+        private bool IsCurrentVehicleUnlocked()
         {
-            hudPanel = new GameObject("Panel_HUD");
-            hudPanel.transform.SetParent(parent, false);
-            FillRect(hudPanel.AddComponent<RectTransform>());
-
-            hudDistanceText = MakeText(hudPanel.transform, font, 72, TextAnchor.UpperLeft, new Vector2(0, 1), new Vector2(50, -35), Color.white);
-            hudSpeedText = MakeText(hudPanel.transform, font, 42, TextAnchor.UpperLeft, new Vector2(0, 1), new Vector2(50, -125), new Color(0.9f, 0.95f, 1f));
-            hudCoinsText = MakeText(hudPanel.transform, font, 52, TextAnchor.UpperRight, new Vector2(1, 1), new Vector2(-50, -35), new Color(1f, 0.85f, 0.2f));
-
-            var heartContainer = new GameObject("HeartsContainer");
-            heartContainer.transform.SetParent(hudPanel.transform, false);
-            var rt = heartContainer.AddComponent<RectTransform>();
-            rt.anchorMin = rt.anchorMax = new Vector2(0f, 1f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = new Vector2(150, -185);
-            rt.sizeDelta = new Vector2(240, 60);
-
-            hudHeartIcons = new GameObject[maxLives];
-            Sprite heartSp = Resources.Load<Sprite>("RoadBuilder/Heart");
-            for (int i = 0; i < maxLives; i++)
-            {
-                var h = new GameObject("Heart_" + i);
-                h.transform.SetParent(heartContainer.transform, false);
-                var hrt = h.AddComponent<RectTransform>();
-                hrt.anchoredPosition = new Vector2((i - 1) * 65, 0);
-                hrt.sizeDelta = new Vector2(55, 55);
-
-                var img = h.AddComponent<Image>();
-                img.sprite = heartSp;
-                img.color = Color.white;
-                img.raycastTarget = false;
-                hudHeartIcons[i] = h;
-            }
-
-            Sprite frameSp = Resources.Load<Sprite>("RoadBuilder/UI/InkFrame");
-            var barBg = new GameObject("InkBarBg");
-            barBg.transform.SetParent(hudPanel.transform, false);
-            var brt = barBg.AddComponent<RectTransform>();
-            brt.anchorMin = brt.anchorMax = new Vector2(0.5f, 0f);
-            brt.pivot = new Vector2(0.5f, 0.5f);
-            brt.anchoredPosition = new Vector2(0, 50);
-            brt.sizeDelta = new Vector2(620, 42);
-
-            var bgImg = barBg.AddComponent<Image>();
-            bgImg.sprite = frameSp;
-            bgImg.type = Image.Type.Sliced;
-            bgImg.color = Color.white;
-            bgImg.raycastTarget = false;
-
-            var fillGo = new GameObject("Fill");
-            fillGo.transform.SetParent(barBg.transform, false);
-            hudInkFill = fillGo.AddComponent<RectTransform>();
-            hudInkFill.anchorMin = new Vector2(0.015f, 0.15f);
-            hudInkFill.anchorMax = new Vector2(0.985f, 0.85f);
-            hudInkFill.sizeDelta = Vector2.zero;
-
-            var fillImg = fillGo.AddComponent<Image>();
-            fillImg.color = new Color(0.65f, 0.25f, 1.0f, 0.95f);
-            fillImg.raycastTarget = false;
-
-            hudInkText = MakeText(barBg.transform, font, 24, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.5f), Vector2.zero, Color.white);
-            hudInkText.text = "ROAD INK: 100%";
-
-            Sprite yellowBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_UpgradeYellow");
-            CreateNamedButton(hudPanel.transform, "Btn_UNSTUCK", yellowBtnSp, font, "BOOST / HOP", 24, new Vector2(1f, 0f), new Vector2(-150, 55), new Vector2(230, 62), OnClickUnstuckHop);
-        }
-
-        private void UpdateHeartsUI()
-        {
-            if (hudHeartIcons == null) return;
-            for (int i = 0; i < hudHeartIcons.Length; i++)
-            {
-                if (hudHeartIcons[i] != null)
-                {
-                    var img = hudHeartIcons[i].GetComponent<Image>();
-                    img.color = (i < currentLives) ? Color.white : new Color(0.2f, 0.2f, 0.25f, 0.35f);
-                }
-            }
-        }
-
-        private void UpdateInkUI()
-        {
-            if (hudInkFill != null)
-            {
-                float ratio = Mathf.Clamp01(currentInk / maxInk);
-                hudInkFill.anchorMax = new Vector2(0.015f + ratio * 0.97f, 0.85f);
-            }
-            if (hudInkText != null)
-            {
-                hudInkText.text = $"ROAD INK: {(currentInk / maxInk * 100f):0}%";
-            }
-        }
-
-        // ------------------ 5. GAME OVER DIALOG ------------------
-        private void BuildGameOverPanel(Transform parent, Font font)
-        {
-            gameOverPanel = new GameObject("Panel_GameOver");
-            gameOverPanel.transform.SetParent(parent, false);
-            FillRect(gameOverPanel.AddComponent<RectTransform>());
-
-            var bgCover = gameOverPanel.AddComponent<Image>();
-            bgCover.color = new Color(0.08f, 0.05f, 0.12f, 0.92f);
-            bgCover.raycastTarget = false;
-
-            goReasonText = MakeText(gameOverPanel.transform, font, 64, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.72f), Vector2.zero, new Color(1f, 0.3f, 0.2f));
-            goDistanceText = MakeText(gameOverPanel.transform, font, 52, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.56f), Vector2.zero, Color.white);
-            goCoinsText = MakeText(gameOverPanel.transform, font, 38, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.42f), Vector2.zero, new Color(1f, 0.85f, 0.2f));
-
-            Sprite greenBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_RaceGreen");
-            CreateTexturedButton(gameOverPanel.transform, greenBtnSp, font, "PLAY AGAIN", 32, new Vector2(0.5f, 0.26f), new Vector2(-160, 0), new Vector2(280, 85), OnClickStartRace);
-
-            Sprite blueBtnSp = Resources.Load<Sprite>("RoadBuilder/Art/Btn_MenuBlue");
-            CreateNamedButton(gameOverPanel.transform, "Btn_MENU", blueBtnSp, font, "MENU", 30, new Vector2(0.5f, 0.26f), new Vector2(160, 0), new Vector2(240, 85), OnClickBackToHome);
-        }
-
-        private void UpdateGameOverUI() { }
-
-        // ==================================================================== HELPERS
-        private static void FillRect(RectTransform rt)
-        {
-            rt.anchorMin = Vector2.zero;
-            rt.anchorMax = Vector2.one;
-            rt.sizeDelta = Vector2.zero;
-            rt.anchoredPosition = Vector2.zero;
-        }
-
-        public static GameObject CreateTexturedButton(Transform parent, Sprite sprite, Font font, string label, int fontSize, Vector2 anchor, Vector2 pos, Vector2 size, UnityEngine.Events.UnityAction onClick)
-        {
-            return CreateNamedButton(parent, "Btn_" + label, sprite, font, label, fontSize, anchor, pos, size, onClick);
-        }
-
-        public static GameObject CreateNamedButton(Transform parent, string objectName, Sprite sprite, Font font, string label, int fontSize, Vector2 anchor, Vector2 pos, Vector2 size, UnityEngine.Events.UnityAction onClick)
-        {
-            var btnGo = new GameObject(objectName);
-            btnGo.transform.SetParent(parent, false);
-            var rt = btnGo.AddComponent<RectTransform>();
-            rt.anchorMin = rt.anchorMax = anchor;
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = pos;
-            rt.sizeDelta = size;
-
-            var img = btnGo.AddComponent<Image>();
-            img.sprite = sprite;
-            img.type = Image.Type.Sliced;
-            img.color = Color.white;
-            img.raycastTarget = true; // Clickable!
-
-            var btn = btnGo.AddComponent<Button>();
-            btn.targetGraphic = img;
-            btn.onClick.AddListener(onClick);
-
-            if (!string.IsNullOrEmpty(label))
-            {
-                var txt = MakeText(btnGo.transform, font, fontSize, TextAnchor.MiddleCenter, new Vector2(0.5f, 0.5f), new Vector2(0, 3), Color.white);
-                txt.text = label;
-                txt.raycastTarget = false; // Never block click!
-            }
-
-            return btnGo;
-        }
-
-        public static Text MakeText(Transform parent, Font font, int size, TextAnchor align, Vector2 anchor, Vector2 offset, Color color)
-        {
-            var go = new GameObject("Text");
-            go.transform.SetParent(parent, false);
-            var rt = go.AddComponent<RectTransform>();
-            rt.anchorMin = rt.anchorMax = anchor;
-
-            // Set pivot to match alignment horizontally/vertically so edge-anchored texts never clip off-screen!
-            float px = 0.5f;
-            if (align == TextAnchor.UpperLeft || align == TextAnchor.MiddleLeft || align == TextAnchor.LowerLeft) px = 0f;
-            else if (align == TextAnchor.UpperRight || align == TextAnchor.MiddleRight || align == TextAnchor.LowerRight) px = 1f;
-
-            float py = 0.5f;
-            if (align == TextAnchor.UpperLeft || align == TextAnchor.UpperCenter || align == TextAnchor.UpperRight) py = 1f;
-            else if (align == TextAnchor.LowerLeft || align == TextAnchor.LowerCenter || align == TextAnchor.LowerRight) py = 0f;
-
-            rt.pivot = new Vector2(px, py);
-            rt.anchoredPosition = offset;
-            rt.sizeDelta = new Vector2(900, 160);
-
-            var t = go.AddComponent<Text>();
-            t.font = font;
-            t.fontSize = size;
-            t.fontStyle = FontStyle.Bold;
-            t.alignment = align;
-            t.color = color;
-            t.supportRichText = true;
-            t.raycastTarget = false; // Never block clicks
-            t.horizontalOverflow = HorizontalWrapMode.Overflow;
-            t.verticalOverflow = VerticalWrapMode.Overflow;
-
-            var outline = go.AddComponent<Outline>();
-            outline.effectColor = new Color(0f, 0f, 0f, 0.8f);
-            outline.effectDistance = new Vector2(3, -3);
-            return t;
+            if (SelectedVehicle == VehicleType.ClassicRed) return true;
+            if (SelectedVehicle == VehicleType.SportCyan) return sportUnlocked;
+            if (SelectedVehicle == VehicleType.MonsterTruck) return truckUnlocked;
+            return false;
         }
     }
 }

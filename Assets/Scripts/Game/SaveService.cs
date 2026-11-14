@@ -22,6 +22,7 @@ namespace RoadBuilderGame
         public int roadStyle;
         public bool sportUnlocked;
         public bool truckUnlocked;
+        public bool soundEnabled = true;
 
         /// <summary>Clamp values to the ranges the game supports (same limits the old PlayerPrefs loader used).</summary>
         public void Sanitize()

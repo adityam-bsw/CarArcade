@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7adcb28313d6849daa255ecff9dd7b90, type: 3}
+  m_Name: UITheme_Default
+  m_EditorClassIdentifier: RB.UI::RoadBuilderGame.UI.UITheme
+  colors:
+  - {r: 0.105882354, g: 0.1254902, b: 0.2, a: 1}
+  - {r: 0.14901961, g: 0.1764706, b: 0.2784314, a: 1}
+  - {r: 0.19607843, g: 0.23137255, b: 0.36862746, a: 1}
+  - {r: 0.23921569, g: 0.8627451, b: 0.42352942, a: 1}
+  - {r: 0.23921569, g: 0.54509807, b: 1, a: 1}
+  - {r: 1, g: 0.78431374, b: 0.23921569, a: 1}
+  - {r: 0.23921569, g: 0.8627451, b: 0.42352942, a: 1}
+  - {r: 1, g: 0.3019608, b: 0.36862746, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.72156864, g: 0.7529412, b: 0.8784314, a: 1}
+  - {r: 0.105882354, g: 0.1254902, b: 0.2, a: 1}
+  - {r: 1, g: 0.8235294, b: 0.24705882, a: 1}
+  - {r: 0.6509804, g: 0.23921569, b: 1, a: 1}
+  - {r: 0.05490196, g: 0.07058824, b: 0.1254902, a: 1}
+  displayFont: {fileID: 11400000, guid: a8e96dfbe15bc434c9530a86fe4b8071, type: 2}
+  bodyFont: {fileID: 11400000, guid: 15eb72b6a48fc4487b2ff1a2b1c32ac3, type: 2}
+  textStyles:
+  - font: 0
+    size: 72
+    fontStyle: 1
+    color: 8
+  - font: 0
+    size: 48
+    fontStyle: 1
+    color: 8
+  - font: 1
+    size: 32
+    fontStyle: 0
+    color: 8
+  - font: 1
+    size: 24
+    fontStyle: 0
+    color: 9
+  - font: 0
+    size: 40
+    fontStyle: 1
+    color: 8
+  - font: 0
+    size: 40
+    fontStyle: 1
+    color: 8
+  sprites:
+  - {fileID: 0}
+  - {fileID: 21300000, guid: ddc9cad075f40472e8f6b5a66e46ef8f, type: 3}
+  - {fileID: 21300000, guid: ba8b6a34ec0b049fe855c36d44a11670, type: 3}
+  - {fileID: 21300000, guid: f8a61bad89a964bf1bab303d9455a144, type: 3}
+  - {fileID: 21300000, guid: e4205ca31cf434f5582f3b0b455d91de, type: 3}
+  - {fileID: 21300000, guid: c63e78bcf0bea40668a066fcddd36c41, type: 3}
+  - {fileID: 21300000, guid: c0408874b5b4d49278f670423ce23aa2, type: 3}
+  - {fileID: 21300000, guid: b650ee1b178934f36960c687cbd41e7e, type: 3}
+  pressedScale: 0.92

@@ -115,3 +115,6 @@ InitTestScene*.unity*
 *.apk
 *.aab
 .DS_Store
+
+# graphify generated code graph (rebuild with: graphify update .)
+/graphify-out/

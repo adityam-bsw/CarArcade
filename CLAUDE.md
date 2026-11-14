@@ -10,8 +10,9 @@ no art or design team. Read `Docs/REDESIGN_PLAN.md` before any structural work.
 - **Manager -> Flow -> View -> Animation -> Event.** Views only display and raise events. No
   gameplay logic in UI scripts. No `FindObjectOfType` in hot paths. Static singletons only for
   services created in `Boot`.
-- **Scenes:** `Boot`, `Menu`, `Gameplay` (+ optional additive `Mode_*`). No feature lives in one
-  giant scene. UI is prefabs on a ScreenStack, never built in code at runtime.
+- **Scenes:** `Boot` and `Main` (+ optional additive `Mode_*`). `Main` keeps world and menus together by
+  design. UI is prefabs on a ScreenStack, never built in code at runtime. Screens read `GameServices.Model`
+  and call `GameServices.Actions`; they hold no game rules.
 - **UI:** TextMeshPro only, no legacy `UI.Text`. Colours, fonts, sprites come from `UITheme`
   tokens, never hardcoded in scenes or scripts.
 - **Animation:** DOTween for UI and feel (see skill `rb-dotween`). Rules in `rb-motion-design`.

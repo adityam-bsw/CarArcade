@@ -69,6 +69,9 @@ structs, so Cargo and Daily can later sit on top of any mode.
 
 Replaces `SampleScene` and the code-built UI fallback.
 
+> **Update (Phase 1):** `Menu` and `Gameplay` stay one scene, `Main`, because the menus show the same world and
+> Retry must be instant. Scenes today: `Boot` and `Main`. See `PHASE1_PROGRESS.md`.
+
 ## 5. UI system
 
 - **TextMeshPro everywhere.** Remove all legacy `UnityEngine.UI.Text` (81 usages).

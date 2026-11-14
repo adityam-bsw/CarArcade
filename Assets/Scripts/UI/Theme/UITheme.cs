@@ -1,0 +1,112 @@
+using System;
+using TMPro;
+using UnityEngine;
+
+namespace RoadBuilderGame.UI
+{
+    /// <summary>Named colour slots. UI never hardcodes a colour; it asks the theme for a token.</summary>
+    public enum ColorToken
+    {
+        Background, Surface, SurfaceAlt, Primary, Secondary, Accent, Success, Danger,
+        TextPrimary, TextSecondary, TextOnAccent, Coin, Ink, Outline
+    }
+
+    public enum FontRole { Display, Body }
+
+    /// <summary>Semantic text styles. Screens pick a style, the theme decides font, size and colour.</summary>
+    public enum TextStyle { Title, Heading, Body, Caption, Number, Button }
+
+    /// <summary>Named sprite slots (9-sliced). A theme can swap the whole look by swapping these.</summary>
+    public enum SpriteSlot { None, Button, Panel, Popup, Pill, BarBackground, BarFill, Card }
+
+    [Serializable]
+    public class TextStyleDef
+    {
+        public FontRole font = FontRole.Body;
+        public float size = 32f;
+        public FontStyles fontStyle = FontStyles.Normal;
+        public ColorToken color = ColorToken.TextPrimary;
+    }
+
+    /// <summary>
+    /// One look for the whole UI: colours, fonts, text styles, sprites. Mode packs can ship their own
+    /// (e.g. a pencil-notebook theme) and swap it through <see cref="UIThemeManager"/>.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Road Builder/UI Theme", fileName = "UITheme")]
+    public class UITheme : ScriptableObject
+    {
+        [Header("Colours (indexed by ColorToken)")]
+        [SerializeField] private Color[] colors = new Color[Enum.GetValues(typeof(ColorToken)).Length];
+
+        [Header("Fonts")]
+        public TMP_FontAsset displayFont;
+        public TMP_FontAsset bodyFont;
+
+        [Header("Text styles (indexed by TextStyle)")]
+        [SerializeField] private TextStyleDef[] textStyles = new TextStyleDef[Enum.GetValues(typeof(TextStyle)).Length];
+
+        [Header("Sprites (indexed by SpriteSlot, None is unused)")]
+        [SerializeField] private Sprite[] sprites = new Sprite[Enum.GetValues(typeof(SpriteSlot)).Length];
+
+        [Header("Press feedback")]
+        [Range(0.8f, 1f)] public float pressedScale = 0.92f;
+
+        public Color GetColor(ColorToken token)
+        {
+            int i = (int)token;
+            return (colors != null && i < colors.Length) ? colors[i] : Color.magenta;
+        }
+
+        public void SetColor(ColorToken token, Color c)
+        {
+            EnsureSizes();
+            colors[(int)token] = c;
+        }
+
+        public Sprite GetSprite(SpriteSlot slot)
+        {
+            int i = (int)slot;
+            return (sprites != null && i < sprites.Length) ? sprites[i] : null;
+        }
+
+        public void SetSprite(SpriteSlot slot, Sprite s)
+        {
+            EnsureSizes();
+            sprites[(int)slot] = s;
+        }
+
+        public TextStyleDef GetTextStyle(TextStyle style)
+        {
+            int i = (int)style;
+            if (textStyles == null || i >= textStyles.Length || textStyles[i] == null) return new TextStyleDef();
+            return textStyles[i];
+        }
+
+        public void SetTextStyle(TextStyle style, TextStyleDef def)
+        {
+            EnsureSizes();
+            textStyles[(int)style] = def;
+        }
+
+        public TMP_FontAsset GetFont(FontRole role) => role == FontRole.Display ? displayFont : bodyFont;
+
+        private void EnsureSizes()
+        {
+            Resize(ref colors, Enum.GetValues(typeof(ColorToken)).Length);
+            Resize(ref textStyles, Enum.GetValues(typeof(TextStyle)).Length);
+            Resize(ref sprites, Enum.GetValues(typeof(SpriteSlot)).Length);
+        }
+
+        private static void Resize<T>(ref T[] arr, int n)
+        {
+            if (arr == null) arr = new T[n];
+            else if (arr.Length != n) Array.Resize(ref arr, n);
+        }
+
+        private void OnValidate()
+        {
+            EnsureSizes();
+            UIThemeManager.NotifyThemeEdited(this);
+        }
+    }
+}
