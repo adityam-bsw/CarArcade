@@ -87,5 +87,43 @@ namespace RoadBuilderGame.Tests
             Assert.IsTrue(AssetCatalog.ShowUnreviewed, "the Editor must show unreviewed entries");
             Assert.Greater(unreviewed, 0, "test is only meaningful while some entries are unreviewed");
         }
+
+        [Test]
+        public void PlayableEntries_HaveTheDataTheTrackNeeds()
+        {
+            int vehicles = 0, surfaces = 0;
+            foreach (var e in Catalog().entries)
+            {
+                if (!e.playable) continue;
+                if (e.kind == CatalogKind.Vehicle)
+                {
+                    vehicles++;
+                    Assert.IsNotNull(e.preview, e.id);
+                    Assert.Greater(e.mass, 0.5f, e.id); Assert.Greater(e.torque, 10f, e.id); Assert.Greater(e.speed, 0.5f, e.id);
+                    Assert.GreaterOrEqual(e.cost, 0, e.id);
+                    Assert.That(e.widthUnits, Is.InRange(1.4f, 3.1f), e.id);
+                }
+                else if (e.kind == CatalogKind.Surface)
+                {
+                    surfaces++;
+                    Assert.IsTrue(e.strip != null || e.roadStyle >= 0, e.id + " is playable but has no strip or road style");
+                    if (e.strip != null)
+                    {
+                        Assert.AreEqual(26, e.strip.height, e.id + " strip must be 2 curb + 4 body + 20 skirt rows");
+                        Assert.AreEqual(TextureWrapMode.Repeat, e.strip.wrapModeU, e.id);
+                    }
+                    Assert.That(e.friction, Is.InRange(0.2f, 2f), e.id);
+                }
+            }
+            Assert.Greater(vehicles, 10); Assert.Greater(surfaces, 5);
+        }
+
+        [Test]
+        public void NotPlayableEntries_SayWhy()
+        {
+            foreach (var e in Catalog().entries)
+                if (!e.playable && e.kind != CatalogKind.World)
+                    Assert.IsFalse(string.IsNullOrEmpty(e.playNote), e.id + " is not playable but gives no reason");
+        }
     }
 }

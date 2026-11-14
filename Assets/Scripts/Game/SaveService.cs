@@ -26,6 +26,7 @@ namespace RoadBuilderGame
 
         // Catalogue choices (ids from the asset manifest). Empty = none picked yet. Stored only: the game applies them later.
         public string selectedVehicleId = "";
+        public System.Collections.Generic.List<string> unlockedVehicleIds = new System.Collections.Generic.List<string>();
         public string selectedSurfaceId = "";
         public string selectedWorldId = "";
 

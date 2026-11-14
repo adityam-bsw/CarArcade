@@ -22,6 +22,17 @@ MonoBehaviour:
     note: Kenney sedan, hatch etc.
     licence: see ledger
     preview: {fileID: 21300000, guid: f9119f44f14af4024a7eb5b31d554380, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.2142856
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-dune-buggy
     kind: 0
     displayName: Dune Buggy
@@ -31,6 +42,17 @@ MonoBehaviour:
     note: Kenney buggy, ZaninDevelopers vintagebuggy
     licence: see ledger
     preview: {fileID: 21300000, guid: b070667f80bf4424594d3afe46ad4331, type: 3}
+    playable: 1
+    playNote: 
+    cost: 120
+    widthUnits: 1.7857143
+    mass: 1.7
+    torque: 46
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-golf-cart
     kind: 0
     displayName: Golf Cart
@@ -42,6 +64,17 @@ MonoBehaviour:
       steering w'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack)
     preview: {fileID: 21300000, guid: ec38dab00bd1a4b35b7f224b20158df5, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.5
+    mass: 1.3
+    torque: 36
+    speed: 1.05
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-police-car
     kind: 0
     displayName: Police Car
@@ -51,6 +84,17 @@ MonoBehaviour:
     note: Kenney police
     licence: see ledger
     preview: {fileID: 21300000, guid: 634417c3afe5e444ca60634bf4374f1a, type: 3}
+    playable: 1
+    playNote: 
+    cost: 220
+    widthUnits: 2.5
+    mass: 1.3
+    torque: 38
+    speed: 1.15
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-race-car
     kind: 0
     displayName: Race Car
@@ -60,6 +104,17 @@ MonoBehaviour:
     note: Kenney formula, sports_race
     licence: see ledger
     preview: {fileID: 21300000, guid: cb997ded905074a25b0eed4cb78335cb, type: 3}
+    playable: 1
+    playNote: 
+    cost: 400
+    widthUnits: 2.5
+    mass: 1.3
+    torque: 38
+    speed: 1.15
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-sports-car
     kind: 0
     displayName: Sports Car
@@ -69,6 +124,17 @@ MonoBehaviour:
     note: Kenney sports_*
     licence: see ledger
     preview: {fileID: 21300000, guid: 70dbee66e2c1a4de995eead977b02343, type: 3}
+    playable: 1
+    playNote: 
+    cost: 250
+    widthUnits: 2.5
+    mass: 1.3
+    torque: 38
+    speed: 1.15
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-taxi
     kind: 0
     displayName: Taxi
@@ -78,6 +144,17 @@ MonoBehaviour:
     note: Kenney taxi
     licence: see ledger
     preview: {fileID: 21300000, guid: 672fba77e662247539af727fd4da420b, type: 3}
+    playable: 1
+    playNote: 
+    cost: 150
+    widthUnits: 2.5
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-tuk-tuk
     kind: 0
     displayName: Tuk Tuk
@@ -89,6 +166,17 @@ MonoBehaviour:
       n'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack)
     preview: {fileID: 21300000, guid: 6f588e7d54c5a4e018a0ef10b22555f9, type: 3}
+    playable: 1
+    playNote: 
+    cost: 150
+    widthUnits: 2.5714285
+    mass: 1.3
+    torque: 36
+    speed: 1.05
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-bus
     kind: 0
     displayName: Bus
@@ -98,6 +186,17 @@ MonoBehaviour:
     note: Kenney bus, bus_school
     licence: see ledger
     preview: {fileID: 21300000, guid: a6c438b2e99c34684bdcc09441dc7931, type: 3}
+    playable: 1
+    playNote: 
+    cost: 400
+    widthUnits: 3
+    mass: 2.6
+    torque: 62
+    speed: 0.85
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-camper
     kind: 0
     displayName: Camper
@@ -107,6 +206,17 @@ MonoBehaviour:
     note: Kenney van_* / station
     licence: see ledger
     preview: {fileID: 21300000, guid: d4a9c98fdae1242979e1c204f61e0ce4, type: 3}
+    playable: 1
+    playNote: 
+    cost: 320
+    widthUnits: 2.642857
+    mass: 2
+    torque: 52
+    speed: 0.95
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-fire-truck
     kind: 0
     displayName: Fire Truck
@@ -116,6 +226,17 @@ MonoBehaviour:
     note: Kenney firetruck
     licence: see ledger
     preview: {fileID: 21300000, guid: dcba7a8df194f439c82e56c6208c43c7, type: 3}
+    playable: 1
+    playNote: 
+    cost: 450
+    widthUnits: 3
+    mass: 2.6
+    torque: 62
+    speed: 0.85
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-monster-truck
     kind: 0
     displayName: Monster Truck
@@ -127,6 +248,17 @@ MonoBehaviour:
       cod'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack)
     preview: {fileID: 21300000, guid: a95f938d2e86d4a90b2f1e31494b3c05, type: 3}
+    playable: 1
+    playNote: 
+    cost: 450
+    widthUnits: 3
+    mass: 2
+    torque: 52
+    speed: 0.95
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-pickup
     kind: 0
     displayName: Pickup
@@ -136,6 +268,17 @@ MonoBehaviour:
     note: Kenney truck/pickup
     licence: see ledger
     preview: {fileID: 21300000, guid: f556fe75b1957443ea55629a180abecf, type: 3}
+    playable: 1
+    playNote: 
+    cost: 300
+    widthUnits: 2.9285715
+    mass: 2
+    torque: 52
+    speed: 0.95
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-semi-truck
     kind: 0
     displayName: Semi Truck
@@ -145,6 +288,17 @@ MonoBehaviour:
     note: Kenney truck_trailer, transport
     licence: see ledger
     preview: {fileID: 21300000, guid: 3538ff36d37084040b1a262707ec8934, type: 3}
+    playable: 1
+    playNote: 
+    cost: 500
+    widthUnits: 3
+    mass: 2.6
+    torque: 62
+    speed: 0.85
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-tank
     kind: 0
     displayName: Tank
@@ -156,6 +310,17 @@ MonoBehaviour:
       (hull ri
     licence: CC0
     preview: {fileID: 21300000, guid: a471816c28d394290a89b9b683bb08a7, type: 3}
+    playable: 1
+    playNote: 
+    cost: 700
+    widthUnits: 2.2857144
+    mass: 2.6
+    torque: 62
+    speed: 0.85
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-tractor
     kind: 0
     displayName: Tractor
@@ -165,6 +330,17 @@ MonoBehaviour:
     note: Kenney tractor
     licence: see ledger
     preview: {fileID: 21300000, guid: 2049e2499bb214892aee322c7caa658c, type: 3}
+    playable: 1
+    playNote: 
+    cost: 280
+    widthUnits: 1.8571428
+    mass: 2
+    torque: 52
+    speed: 0.95
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-bicycle
     kind: 0
     displayName: Bicycle
@@ -175,6 +351,17 @@ MonoBehaviour:
       outlined Kenney vehicles; no rider; no pedal animation.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: a3d8ca513ac9a452097b1fa531aa3821, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.7142856
+    mass: 0.9
+    torque: 26
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-motorcycle
     kind: 0
     displayName: Motorcycle
@@ -184,6 +371,17 @@ MonoBehaviour:
     note: Reactorcore dirt bike, chopper, Zanin motorcycle, Kenney cycle
     licence: see ledger
     preview: {fileID: 21300000, guid: 1ad21839ddd314f09a4ae9791bd16d90, type: 3}
+    playable: 1
+    playNote: 
+    cost: 200
+    widthUnits: 3
+    mass: 0.9
+    torque: 26
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-quad-atv
     kind: 0
     displayName: Quad Atv
@@ -194,6 +392,17 @@ MonoBehaviour:
       by the fat wheels than the body; fenders are blocky.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: ffbbb3fe99b064612a9644f762f6bc7f, type: 3}
+    playable: 1
+    playNote: 
+    cost: 260
+    widthUnits: 3
+    mass: 1.7
+    torque: 46
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-scooter
     kind: 0
     displayName: Scooter
@@ -203,6 +412,17 @@ MonoBehaviour:
     note: Kenney scooter
     licence: see ledger
     preview: {fileID: 21300000, guid: 5083cdbbf1a294f75ae5e46256b93d49, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 1.5
+    mass: 0.9
+    torque: 26
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-hovercraft
     kind: 0
     displayName: Hovercraft
@@ -214,6 +434,17 @@ MonoBehaviour:
       s). '
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack)
     preview: {fileID: 21300000, guid: 93a5bc433aa3442f9a379d235f9a1afb, type: 3}
+    playable: 0
+    playNote: Needs water physics, which the game does not have yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-jet-ski
     kind: 0
     displayName: Jet Ski
@@ -225,6 +456,17 @@ MonoBehaviour:
       effect). Limit'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack)
     preview: {fileID: 21300000, guid: 3166f0d682c444be086f263db7d74178, type: 3}
+    playable: 0
+    playNote: Needs water physics, which the game does not have yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-speedboat
     kind: 0
     displayName: Speedboat
@@ -236,6 +478,17 @@ MonoBehaviour:
       sprite'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack)
     preview: {fileID: 21300000, guid: 0e7b042b9fd2d41e79cd77926f2d5c54, type: 3}
+    playable: 0
+    playNote: Needs water physics, which the game does not have yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-sled
     kind: 0
     displayName: Sled
@@ -245,6 +498,17 @@ MonoBehaviour:
     note: ' Forged: Rider is a generic blocky figure; runner curl is only 2 px.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: aacbbab4acbf649c6a7df60e371b2106, type: 3}
+    playable: 0
+    playNote: Needs snow-runner physics, which the game does not have yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-snowboard
     kind: 0
     displayName: Snowboard
@@ -255,6 +519,17 @@ MonoBehaviour:
       pose only.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: e3bc0776c16c54cbfa762d3d76faa48f, type: 3}
+    playable: 0
+    playNote: Needs snow-runner physics, which the game does not have yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-snowmobile
     kind: 0
     displayName: Snowmobile
@@ -265,6 +540,17 @@ MonoBehaviour:
       does not curve like a real one.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: c4552954dbe3c4cd4a18db24e7b3fdb5, type: 3}
+    playable: 0
+    playNote: Needs snow-runner physics, which the game does not have yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-toboggan
     kind: 0
     displayName: Toboggan
@@ -275,6 +561,17 @@ MonoBehaviour:
       slat toboggan; rider shares the sled figure.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: c1f0cdb13bf5c40c6b5cc5d7b9c80883, type: 3}
+    playable: 0
+    playNote: Needs snow-runner physics, which the game does not have yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-handcar
     kind: 0
     displayName: Handcar
@@ -286,6 +583,17 @@ MonoBehaviour:
       5x5.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack)
     preview: {fileID: 21300000, guid: 09ffcee76175d4ea6a13d3f4c4431a48, type: 3}
+    playable: 1
+    playNote: 
+    cost: 180
+    widthUnits: 2.7142856
+    mass: 1.3
+    torque: 36
+    speed: 1.05
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-moon-rover
     kind: 0
     displayName: Moon Rover
@@ -296,6 +604,17 @@ MonoBehaviour:
       is the Kenney greys, not lunar.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: 339f30f640eb14e6a9fc6b31f3c99be2, type: 3}
+    playable: 1
+    playNote: 
+    cost: 500
+    widthUnits: 3
+    mass: 1.7
+    torque: 46
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-rocket-sled
     kind: 0
     displayName: Rocket Sled
@@ -306,6 +625,17 @@ MonoBehaviour:
       (tip left) should be checked in Unity; no rider, canopy only.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: 883f609502aec42c9a7bf61bb8b28a91, type: 3}
+    playable: 0
+    playNote: Needs snow-runner physics, which the game does not have yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: vehicle-shopping-cart
     kind: 0
     displayName: Shopping Cart
@@ -317,6 +647,17 @@ MonoBehaviour:
       small (abou'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack)
     preview: {fileID: 21300000, guid: f897f8a20941840c595e958c2620689e, type: 3}
+    playable: 1
+    playNote: 
+    cost: 100
+    widthUnits: 2.2857144
+    mass: 0.9
+    torque: 26
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: surface-asphalt
     kind: 1
     displayName: Asphalt
@@ -326,6 +667,17 @@ MonoBehaviour:
     note: flat colours today; ambientCG textures planned
     licence: see ledger
     preview: {fileID: 21300000, guid: e7ede744cd66a42aa86e5858ad4d7e5d, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    friction: 1.25
+    bounce: 0
   - id: surface-cobblestone
     kind: 1
     displayName: Cobblestone
@@ -336,6 +688,17 @@ MonoBehaviour:
       0.05 (rattly). Import settings still to set in inspector.'
     licence: own work (procedural; palette sampled from CC0 Kenney-style greys)
     preview: {fileID: 21300000, guid: 41fa4ce290b334da38063b8bac571c71, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 02d6dad2b1b724d62bf1dbeac0b93164, type: 3}
+    roadStyle: -1
+    friction: 1.1
+    bounce: 0
   - id: surface-dirt
     kind: 1
     displayName: Dirt
@@ -345,6 +708,17 @@ MonoBehaviour:
     note: flat colours today
     licence: see ledger
     preview: {fileID: 21300000, guid: 33261783ebad2427f97852d071e0b277, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 1
+    friction: 1
+    bounce: 0
   - id: surface-glass
     kind: 1
     displayName: Glass
@@ -355,6 +729,17 @@ MonoBehaviour:
       ice), bounce 0.1. Import settings still to set in inspector.'
     licence: own work (procedural; palette sampled from CC0 tundra)
     preview: {fileID: 21300000, guid: 6e89d73e22a364851bb43e66d7d0cfc6, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 97a5de04c3dba4629ac748d0d5c1b0da, type: 3}
+    roadStyle: -1
+    friction: 0.5
+    bounce: 0
   - id: surface-gravel
     kind: 1
     displayName: Gravel
@@ -365,6 +750,17 @@ MonoBehaviour:
       bounce 0.0-0.1, slight slide on corners. Import settings still to set in inspector.'
     licence: own work (procedural; palette sampled from CC0 cairn/downs)
     preview: {fileID: 21300000, guid: 51519afe84be748939f4687f86adee00, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: fbbeda4034189407696c8c755f523615, type: 3}
+    roadStyle: -1
+    friction: 0.9
+    bounce: 0
   - id: surface-mud
     kind: 1
     displayName: Mud
@@ -375,6 +771,17 @@ MonoBehaviour:
       speed), bounce 0.0. Import settings still to set in inspector.'
     licence: own work (procedural; palette sampled from CC0 kiln/mesa)
     preview: {fileID: 21300000, guid: 1c9e1b4cc9e1042f6b9dec234bfd056a, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 4ad613698160d4bc089d11d5e9ed6bc2, type: 3}
+    roadStyle: -1
+    friction: 1.6
+    bounce: 0
   - id: surface-neon-grid
     kind: 1
     displayName: Neon Grid
@@ -384,6 +791,17 @@ MonoBehaviour:
     note: flat neon skin in code
     licence: see ledger
     preview: {fileID: 21300000, guid: a54b19e0f7d6a4579844cec4ccc7dc12, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 2
+    friction: 1.25
+    bounce: 0
   - id: surface-rail-track
     kind: 1
     displayName: Rail Track
@@ -394,6 +812,17 @@ MonoBehaviour:
       (clack). Import settings still to set in inspector.'
     licence: own work (procedural; palette sampled from CC0 Kenney greys, kiln browns)
     preview: {fileID: 21300000, guid: b65941987ac9a4d7792d9e0e017fd09a, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: a889d68e827e649f29a7def3d501696d, type: 3}
+    roadStyle: -1
+    friction: 1.3
+    bounce: 0
   - id: surface-moon-dust
     kind: 1
     displayName: Moon Dust
@@ -404,6 +833,17 @@ MonoBehaviour:
       0.0 (low gravity mode suggested). Import settings still to set in inspector.'
     licence: own work (procedural; palette sampled from CC0 tundra/cairn greys)
     preview: {fileID: 21300000, guid: f596b424c36064c46812173e5888067e, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 30371f09b8a354541a3b6f28de4b6bdf, type: 3}
+    roadStyle: -1
+    friction: 0.8
+    bounce: 0
   - id: surface-salt-flat
     kind: 1
     displayName: Salt Flat
@@ -414,6 +854,17 @@ MonoBehaviour:
       0.0. Import settings still to set in inspector.'
     licence: own work (procedural; palette sampled from CC0 mesa)
     preview: {fileID: 21300000, guid: 324b811c2494241839aed73c46e45570, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 12e69d9abb89b4d17b75173b6803d610, type: 3}
+    roadStyle: -1
+    friction: 0.9
+    bounce: 0
   - id: surface-sea-water
     kind: 1
     displayName: Sea Water
@@ -423,6 +874,17 @@ MonoBehaviour:
     note: 'partial: POKOMOKO ocean tile; buoyancy physics is game logic'
     licence: see ledger
     preview: {fileID: 21300000, guid: 361ba85e446ca47cc94aec76bac9c446, type: 3}
+    playable: 0
+    playNote: Needs a road strip made from this art first.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: surface-lava-crust
     kind: 1
     displayName: Lava Crust
@@ -432,6 +894,17 @@ MonoBehaviour:
     note: 'partial: Tio Aimar volcano (vector) + InThePixel lava strip'
     licence: see ledger
     preview: {fileID: 21300000, guid: 64cb7327d26c44b518c8ba42429fe1e7, type: 3}
+    playable: 0
+    playNote: Needs a road strip made from this art first.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: surface-magma-bridge
     kind: 1
     displayName: Magma Bridge
@@ -442,6 +915,17 @@ MonoBehaviour:
       (damage/heat is a mode rule). Import settings still to set in inspector.'
     licence: own work (procedural; palette sampled from CC0 Assets/Art/Surfaces/Lava/lava_strip8.png)
     preview: {fileID: 21300000, guid: 8ceec67b152884e93905f10f0f71cd8f, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: f021b88b923ad4775a67f89e9042dd56, type: 3}
+    roadStyle: -1
+    friction: 1.2
+    bounce: 0
   - id: world-autumn-leaves
     kind: 2
     displayName: Autumn Leaves
@@ -452,6 +936,17 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 2e8075e921ac8413f923e97e2bf1e24a, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-christmas
     kind: 2
     displayName: Christmas
@@ -462,6 +957,17 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 7e11f08805a5b4cae97f1375fe390fbc, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-winter
     kind: 2
     displayName: Winter
@@ -471,6 +977,17 @@ MonoBehaviour:
     note: 'partial: VISTA tundra and hollow'
     licence: see ledger
     preview: {fileID: 21300000, guid: d9299211fdfda473b986b096cb0e5dc1, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-arctic
     kind: 2
     displayName: Arctic
@@ -480,6 +997,17 @@ MonoBehaviour:
     note: VISTA tundra, cairn
     licence: see ledger
     preview: {fileID: 21300000, guid: 959625e0bdf92449ba4a3125c0383fd6, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-canyon
     kind: 2
     displayName: Canyon
@@ -490,6 +1018,17 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: ee998e039593d4ef39b17bfebd44bd93, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-coast
     kind: 2
     displayName: Coast
@@ -499,6 +1038,17 @@ MonoBehaviour:
     note: VISTA leeward
     licence: see ledger
     preview: {fileID: 21300000, guid: 9f6520e1b076a423ba0aa257edc7289e, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-desert
     kind: 2
     displayName: Desert
@@ -508,6 +1058,17 @@ MonoBehaviour:
     note: VISTA mesa
     licence: see ledger
     preview: {fileID: 21300000, guid: 58e69bd560f11482ca827a1071f2b36a, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-farm
     kind: 2
     displayName: Farm
@@ -518,6 +1079,17 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 0feaf343d87724fa68cc621ce18faaad, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-jungle
     kind: 2
     displayName: Jungle
@@ -527,6 +1099,17 @@ MonoBehaviour:
     note: VISTA canopy
     licence: see ledger
     preview: {fileID: 21300000, guid: 9b2d2a97fd1304bcc9f07ee1fde3be78, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-rolling-hills
     kind: 2
     displayName: Rolling Hills
@@ -536,6 +1119,17 @@ MonoBehaviour:
     note: VISTA downs (cleaned sky)
     licence: see ledger
     preview: {fileID: 21300000, guid: 092e7d86fbbaf4aaf8b3e75f252170b1, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-wild-west
     kind: 2
     displayName: Wild West
@@ -546,6 +1140,17 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 74ebb234d6e7c4951bff925585ba60f3, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-mars
     kind: 2
     displayName: Mars
@@ -556,6 +1161,17 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: cde1155b135b74136a8366be07cac347, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-moon
     kind: 2
     displayName: Moon
@@ -566,6 +1182,17 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 1febd7f1da8304d709d3151a9c64c161, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-industrial
     kind: 2
     displayName: Industrial
@@ -575,6 +1202,17 @@ MonoBehaviour:
     note: VISTA flue
     licence: see ledger
     preview: {fileID: 21300000, guid: 1c06b0bac559d468fa6277e40d285324, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-night-city
     kind: 2
     displayName: Night City
@@ -584,6 +1222,17 @@ MonoBehaviour:
     note: VISTA sodium
     licence: see ledger
     preview: {fileID: 21300000, guid: a271024fd1f25491c82dba45ec2cb945, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-candy-land
     kind: 2
     displayName: Candy Land
@@ -594,6 +1243,17 @@ MonoBehaviour:
       written by main session. Unreviewed by inspector.
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: 3535ac22997184b7eb899f2a18e14f41, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-cloud-kingdom
     kind: 2
     displayName: Cloud Kingdom
@@ -605,6 +1265,17 @@ MonoBehaviour:
       0.02 targe
     licence: own work (derivative of CC0 VISTA by najjar320)
     preview: {fileID: 21300000, guid: dc5788cc39c7841a4a2970072578921a, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-underwater
     kind: 2
     displayName: Underwater
@@ -614,6 +1285,17 @@ MonoBehaviour:
     note: ansimuz Underwater Diving Pack (art only)
     licence: see ledger
     preview: {fileID: 21300000, guid: e7893eaccfbe64b9898b290fdbdb50a9, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0
   - id: world-volcano
     kind: 2
     displayName: Volcano
@@ -623,3 +1305,14 @@ MonoBehaviour:
     note: VISTA kiln
     licence: see ledger
     preview: {fileID: 21300000, guid: 757c95f91c24845038b994c91d5fde8f, type: 3}
+    playable: 0
+    playNote: Worlds are remembered but not shown on the track yet.
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    friction: 1.25
+    bounce: 0

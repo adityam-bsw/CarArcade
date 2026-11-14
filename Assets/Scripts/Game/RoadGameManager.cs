@@ -49,6 +49,8 @@ namespace RoadBuilderGame
         private PlayerProfile _profile;
         private bool _soundEnabled = true;
         private string _selVehicleId = "", _selSurfaceId = "", _selWorldId = "";
+        private readonly HashSet<string> _unlockedVehicleIds = new HashSet<string>();
+        private readonly Dictionary<string, RoadSkin> _surfaceSkins = new Dictionary<string, RoadSkin>();
 
         private RoadCar _car;
         private PhysicsMaterial2D _roadMaterial;
@@ -162,7 +164,7 @@ namespace RoadBuilderGame
 
             LoadPlayerData();
             _background.ApplyTheme(SelectedTheme);
-            _road.SetRoadStyle(SelectedRoadStyle);
+            ApplySurface();
 
             GameServices.Actions = this;
 
@@ -221,6 +223,8 @@ namespace RoadBuilderGame
             _selVehicleId = _profile.selectedVehicleId ?? "";
             _selSurfaceId = _profile.selectedSurfaceId ?? "";
             _selWorldId = _profile.selectedWorldId ?? "";
+            _unlockedVehicleIds.Clear();
+            if (_profile.unlockedVehicleIds != null) foreach (var id in _profile.unlockedVehicleIds) _unlockedVehicleIds.Add(id);
             AudioListener.volume = _soundEnabled ? 1f : 0f;
         }
 
@@ -241,6 +245,7 @@ namespace RoadBuilderGame
             _profile.selectedVehicleId = _selVehicleId;
             _profile.selectedSurfaceId = _selSurfaceId;
             _profile.selectedWorldId = _selWorldId;
+            _profile.unlockedVehicleIds = new List<string>(_unlockedVehicleIds);
             SaveService.Save(_profile);
         }
 
@@ -301,8 +306,9 @@ namespace RoadBuilderGame
         private void SetupShowcaseCar()
         {
             CleanupAllCars();
+            ApplySurface();
             _road.ResetRoad(-15f, 25f, 0f);
-            _car = RoadCar.Create(new Vector2(0f, 1.2f), SelectedVehicle);
+            _car = CreateSelectedCar(new Vector2(0f, 1.2f));
             _car.MotorOn = false;
 
             _cam.transform.position = new Vector3(0f, 1.8f, -10f);
@@ -314,15 +320,15 @@ namespace RoadBuilderGame
             CleanupAllCars();
 
             _background.ApplyTheme(SelectedTheme);
-            _road.SetRoadStyle(SelectedRoadStyle);
+            ApplySurface();
             _road.ResetRoad(-20f, 12f, 0f);
 
-            _car = RoadCar.Create(new Vector2(-2f, 1.2f), SelectedVehicle);
+            _car = CreateSelectedCar(new Vector2(-2f, 1.2f));
             _car.MotorOn = true;
 
             // Apply Upgrades:
             float engineBonus = (engineLevel - 1) * 0.8f;
-            _car.TargetSpeed = baseStartSpeed + engineBonus;
+            _car.TargetSpeed = (baseStartSpeed + engineBonus) * _car.SpeedMultiplier;
             _car.maxTorquePerWheel += (suspensionLevel - 1) * 3f;
 
             maxInk = 100f + (inkTankLevel - 1) * 30f;
@@ -492,6 +498,8 @@ namespace RoadBuilderGame
             m.SelectedVehicleId = _selVehicleId;
             m.SelectedSurfaceId = _selSurfaceId;
             m.SelectedWorldId = _selWorldId;
+            m.UnlockedVehicleIds.Clear();
+            foreach (var id in _unlockedVehicleIds) m.UnlockedVehicleIds.Add(id);
             m.RaiseChanged();
         }
 
@@ -520,6 +528,7 @@ namespace RoadBuilderGame
         {
             // Never start a run in a car the player has not unlocked.
             if (!IsCurrentVehicleUnlocked()) SelectedVehicle = VehicleType.ClassicRed;
+            if (CatalogVehicle() == null) _selVehicleId = "";
             SwitchScreen(ScreenState.Playing);
         }
 
@@ -549,7 +558,8 @@ namespace RoadBuilderGame
         {
             int total = System.Enum.GetValues(typeof(RoadStyle)).Length;
             SelectedRoadStyle = (RoadStyle)(((int)SelectedRoadStyle + 1) % total);
-            _road.SetRoadStyle(SelectedRoadStyle);
+            _selSurfaceId = "";
+            ApplySurface();
             if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
             SavePlayerData();
             SyncModel();
@@ -559,6 +569,8 @@ namespace RoadBuilderGame
         {
             int total = System.Enum.GetValues(typeof(VehicleType)).Length;
             SelectedVehicle = (VehicleType)(((int)SelectedVehicle + dir + total) % total);
+            _selVehicleId = "";
+            SavePlayerData();
             SetupShowcaseCar();
             SyncModel();
         }
@@ -612,15 +624,95 @@ namespace RoadBuilderGame
             }
         }
 
-        /// <summary>Remember a catalogue pick. Storage only: the track, physics and vehicle rig do not read it yet.</summary>
+        /// <summary>
+        /// A catalogue pick. Vehicles: buy when locked (coins), then drive it. Surfaces: the next road is drawn with it and
+        /// uses its grip. Worlds: remembered only (the background remixer does not read it yet). Unplayable items are refused.
+        /// </summary>
         public void SelectCatalogItem(CatalogKind kind, string id)
         {
             id = id ?? "";
-            if (kind == CatalogKind.Vehicle) _selVehicleId = id;
-            else if (kind == CatalogKind.Surface) _selSurfaceId = id;
+            var entry = AssetCatalog.Load()?.Find(id);
+            if (entry != null && kind != CatalogKind.World && !entry.playable)
+            {
+                if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
+                return;
+            }
+
+            if (kind == CatalogKind.Vehicle)
+            {
+                if (entry != null && entry.cost > 0 && !_unlockedVehicleIds.Contains(id))
+                {
+                    if (totalCoins < entry.cost)
+                    {
+                        if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
+                        return;
+                    }
+                    totalCoins -= entry.cost;
+                    _unlockedVehicleIds.Add(id);
+                }
+                _selVehicleId = id;
+                if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
+                SavePlayerData();
+                SyncModel();
+                if (_state == ScreenState.GarageMenu || _state == ScreenState.HomeDashboard) SetupShowcaseCar();
+                return;
+            }
+            if (kind == CatalogKind.Surface)
+            {
+                _selSurfaceId = id;
+                ApplySurface();
+            }
             else _selWorldId = id;
+            if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
             SavePlayerData();
             SyncModel();
+        }
+
+        // ---------------------------------------------------------------- catalogue vehicles and surfaces
+        private CatalogEntry CatalogVehicle()
+        {
+            if (string.IsNullOrEmpty(_selVehicleId)) return null;
+            var e = AssetCatalog.Load()?.Find(_selVehicleId);
+            if (e == null || e.kind != CatalogKind.Vehicle || !e.playable || e.preview == null) return null;
+            if (e.cost > 0 && !_unlockedVehicleIds.Contains(e.id)) return null;
+            return e;
+        }
+
+        private RoadCar CreateSelectedCar(Vector2 pos)
+        {
+            var e = CatalogVehicle();
+            if (e == null) return RoadCar.Create(pos, SelectedVehicle);
+            return RoadCar.Create(pos, new VehicleRig
+            {
+                id = e.id, body = e.preview, width = e.widthUnits, mass = e.mass, torque = e.torque, speedMultiplier = e.speed
+            });
+        }
+
+        /// <summary>Road skin and grip for the current surface pick (or the legacy road style). Looks and friction only.</summary>
+        private void ApplySurface()
+        {
+            var e = string.IsNullOrEmpty(_selSurfaceId) ? null : AssetCatalog.Load()?.Find(_selSurfaceId);
+            if (e != null && e.kind == CatalogKind.Surface && e.playable)
+            {
+                _roadMaterial.friction = e.friction;
+                _roadMaterial.bounciness = e.bounce;
+                if (e.strip != null)
+                {
+                    if (!_surfaceSkins.TryGetValue(e.id, out var skin) || skin == null)
+                    {
+                        skin = ScriptableObject.CreateInstance<RoadSkin>();
+                        skin.displayName = e.displayName;
+                        skin.atlas = e.strip;
+                        _surfaceSkins[e.id] = skin;
+                    }
+                    _road.SetSkin(skin);
+                    return;
+                }
+                if (e.roadStyle >= 0) { SelectedRoadStyle = (RoadStyle)e.roadStyle; _road.SetRoadStyle(SelectedRoadStyle); return; }
+            }
+            _roadMaterial.friction = 1.25f;
+            _roadMaterial.bounciness = 0f;
+            _road.SetRoadStyle(SelectedRoadStyle);
         }
 
         public void SetSoundEnabled(bool enabled)

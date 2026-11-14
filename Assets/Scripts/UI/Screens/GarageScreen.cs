@@ -74,11 +74,14 @@ namespace RoadBuilderGame.UI
             if (_lastCoins >= 0 && m.Coins != _lastCoins) UIAnim.Punch(coinsText.transform.parent, 0.1f);
             _lastCoins = m.Coins;
 
-            carNameText.SetText(GameCatalog.VehicleName(m.Vehicle));
+            // A vehicle picked from the full collection replaces the three starter cars.
+            CatalogEntry picked = string.IsNullOrEmpty(m.SelectedVehicleId) ? null : AssetCatalog.Load()?.Find(m.SelectedVehicleId);
+            if (picked != null && !(picked.playable && m.IsVehicleUnlocked(picked))) picked = null;
+            carNameText.SetText(picked != null ? picked.displayName.ToUpperInvariant() : GameCatalog.VehicleName(m.Vehicle));
 
             bool unlocked = m.IsUnlocked(m.Vehicle);
             int vehicleCost = GameCatalog.VehicleCost(m.Vehicle);
-            if (unlocked)
+            if (picked != null || unlocked)
             {
                 actionLabel.SetText("EQUIPPED");
                 actionImage.color = theme.GetColor(ColorToken.Success);

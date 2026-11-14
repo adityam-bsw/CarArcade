@@ -76,7 +76,31 @@ def group_of(category, key):
     return "Other"
 
 
+def strip_backdrop(rows):
+    """Some forged previews were saved on a flat opaque backdrop. Remove that colour where it touches the border."""
+    h, w = len(rows), len(rows[0])
+    corners = {tuple(rows[0][0]), tuple(rows[0][w - 1]), tuple(rows[h - 1][0]), tuple(rows[h - 1][w - 1])}
+    if len(corners) != 1:
+        return rows
+    bg = corners.pop()
+    if bg[3] != 255:
+        return rows
+    seen = set()
+    stack = [(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)]
+    while stack:
+        x, y = stack.pop()
+        if (x, y) in seen or not (0 <= x < w and 0 <= y < h) or tuple(rows[y][x]) != bg:
+            continue
+        seen.add((x, y))
+        stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+    out = [list(r) for r in rows]
+    for x, y in seen:
+        out[y][x] = (0, 0, 0, 0)
+    return out
+
+
 def crop_to_bounds(rows, pad=1):
+    rows = strip_backdrop(rows)
     b = pixel.bounds(rows)
     if not b:
         return rows

@@ -25,6 +25,21 @@ namespace RoadBuilderGame
         public int costCoins;
     }
 
+    /// <summary>
+    /// Data for a catalogue vehicle: one assembled sprite (wheels drawn in it) plus the physics numbers.
+    /// The car drives on two invisible wheels placed under the sprite.
+    /// </summary>
+    [System.Serializable]
+    public class VehicleRig
+    {
+        public string id;
+        public Sprite body;
+        public float width = 2.4f;
+        public float mass = 1.45f;
+        public float torque = 34f;
+        public float speedMultiplier = 1f;
+    }
+
     public class RoadCar : MonoBehaviour
     {
         public VehicleType vehicleType = VehicleType.ClassicRed;
@@ -37,6 +52,8 @@ namespace RoadBuilderGame
         [Tooltip("Extra forward traction assist when climbing steep hills")]
         public float hillClimbAssistForce = 14f;
 
+        /// <summary>Catalogue vehicles scale the manager's base speed by this.</summary>
+        public float SpeedMultiplier { get; private set; } = 1f;
         public Rigidbody2D Body { get; private set; }
         public bool HeadHit { get; set; }
 
@@ -46,6 +63,7 @@ namespace RoadBuilderGame
         private Vector2 _backAnchor;
         private Vector2 _frontAnchor;
         private SpriteRenderer[] _renderers;
+        private bool _invisibleWheels;
         private bool _isInvincible;
         private float _invincibleTimer;
         private float _lowSpeedTimer;
@@ -57,6 +75,30 @@ namespace RoadBuilderGame
             car.vehicleType = type;
             car.Build(position, type);
             return car;
+        }
+
+        /// <summary>Builds a catalogue vehicle from its rig data.</summary>
+        public static RoadCar Create(Vector2 position, VehicleRig rig)
+        {
+            var root = new GameObject("Car_" + rig.id);
+            var car = root.AddComponent<RoadCar>();
+            car.Build(position, rig);
+            return car;
+        }
+
+        void Build(Vector2 position, VehicleRig rig)
+        {
+            float w = Mathf.Max(1f, rig.width);
+            Vector2 sz = rig.body != null ? rig.body.bounds.size : new Vector2(2.4f, 0.9f);
+            float h = w * sz.y / Mathf.Max(0.01f, sz.x);
+            float wr = Mathf.Clamp(h * 0.3f, 0.22f, 0.5f);
+            maxTorquePerWheel = rig.torque;
+            SpeedMultiplier = rig.speedMultiplier;
+            // Wheel centres sit a little inside the ends, bottoms level with the bottom of the picture.
+            _invisibleWheels = true;
+            float ay = -h * 0.5f + wr;
+            BuildCore(position, rig.body, null, w, h, wr, rig.mass,
+                new Vector2(-0.30f * w, ay), new Vector2(0.30f * w, ay));
         }
 
         void Build(Vector2 position, VehicleType type)
@@ -88,10 +130,15 @@ namespace RoadBuilderGame
                 frontAnchor = new Vector2(0.78f, -0.48f);
             }
 
-            _wheelRadius = wr;
-
             Sprite bodySprite = Resources.Load<Sprite>(bodyPath);
             Sprite wheelSprite = Resources.Load<Sprite>(wheelPath);
+            BuildCore(position, bodySprite, wheelSprite, w, h, wr, mass, backAnchor, frontAnchor);
+        }
+
+        void BuildCore(Vector2 position, Sprite bodySprite, Sprite wheelSprite, float w, float h, float wr, float mass,
+            Vector2 backAnchor, Vector2 frontAnchor)
+        {
+            _wheelRadius = wr;
 
             // High-grip rubber tyres & zero-friction skidplate on chassis so the bumper never snags in dips!
             var tyreMat = new PhysicsMaterial2D("Tyre") { friction = 2.4f, bounciness = 0.04f };
@@ -170,11 +217,15 @@ namespace RoadBuilderGame
             col.radius = radius;
             col.sharedMaterial = mat;
 
-            Sprite s = sprite != null ? sprite : SpriteFactory.Circle;
-            var sr = SpriteFactory.CreateSprite("WheelSprite", go.transform, s, Color.white, 6);
-            float size = radius * 2f * 1.03f;
-            Vector2 b = s.bounds.size;
-            sr.transform.localScale = new Vector3(size / b.x, size / b.y, 1f);
+            // Catalogue vehicles have their wheels drawn into the body picture, so their physics wheels stay invisible.
+            if (sprite != null || !_invisibleWheels)
+            {
+                Sprite s = sprite != null ? sprite : SpriteFactory.Circle;
+                var sr = SpriteFactory.CreateSprite("WheelSprite", go.transform, s, Color.white, 6);
+                float size = radius * 2f * 1.03f;
+                Vector2 b = s.bounds.size;
+                sr.transform.localScale = new Vector3(size / b.x, size / b.y, 1f);
+            }
 
             joint = Body.gameObject.AddComponent<WheelJoint2D>();
             joint.connectedBody = rb;

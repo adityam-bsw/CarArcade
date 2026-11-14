@@ -62,7 +62,14 @@ namespace RoadBuilderGame
         public void SetRoadStyle(RoadStyle style)
         {
             CurrentStyle = style;
-            _skin = RoadSkins.Get(style);
+            SetSkin(RoadSkins.Get(style));
+        }
+
+        /// <summary>Draw the road with any skin (a catalogue surface builds its own). Looks only.</summary>
+        public void SetSkin(RoadSkin skin)
+        {
+            if (skin == null) return;
+            _skin = skin;
             foreach (var seg in _segments)
             {
                 if (seg.chunk != null && seg.sampledPoints.Count >= 2)

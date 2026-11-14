@@ -41,6 +41,8 @@ namespace RoadBuilderGame
 
         // Catalogue picks (manifest ids). Saved with the profile; applying them to the track is a later step.
         public string SelectedVehicleId = "";
+        public readonly System.Collections.Generic.HashSet<string> UnlockedVehicleIds = new System.Collections.Generic.HashSet<string>();
+        public bool IsVehicleUnlocked(CatalogEntry e) => e != null && (e.cost <= 0 || UnlockedVehicleIds.Contains(e.id));
         public string SelectedSurfaceId = "";
         public string SelectedWorldId = "";
 

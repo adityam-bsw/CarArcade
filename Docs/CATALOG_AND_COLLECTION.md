@@ -1,6 +1,6 @@
 # Asset catalogue and the Collection screen
 
-Status: built and verified in the Editor (UI first, no gameplay logic touched).
+Status: vehicles and surfaces are wired into gameplay and verified in Play mode; worlds are still stored only.
 
 ## What it is
 Every vehicle, surface and world that exists as art in the project is listed in one `AssetCatalog` asset and can be
@@ -8,13 +8,21 @@ browsed in the game: **Garage > ALL VEHICLES**, **Worlds > ALL WORLDS** and **AL
 `CollectionScreen`: group tabs, a scrolling grid of thumbnails, and a detail panel (preview, name, group, review
 status, notes, SELECT). Selecting stores the pick in the save file only.
 
-## Deliberately not wired (the logic section)
-Road logic, physics, vehicle rigs, `RoadSkin` assignment and the background remixer do not read the selection yet.
-The screen says so ("Saved for the next update. It is not on the track yet."). Each later step reads
-`GameServices.Model.SelectedVehicleId / SelectedSurfaceId / SelectedWorldId`:
-1. Vehicles: a `VehicleDefinition` and a data-driven `RoadCar` rig (wheels, hull, runner, hover).
-2. Surfaces: a `RoadSkin` per surface from the forged strips (atlas) and a physics profile per surface.
-3. Worlds: a `BackgroundSkin` (and mood) per world so the remixer can use the new scenes.
+## What a pick does now
+- **Vehicles:** the car is built from the catalogue picture (`RoadCar.Create(pos, VehicleRig)`): the assembled sprite with
+  two invisible physics wheels under it (wheel bottoms level with the picture bottom, 30% in from each end). Width is
+  the picture width / 14 px, clamped to 1.5 to 3 units. Mass, torque per wheel and a speed multiplier come from a class
+  (compact, car, sport, truck, heavy, bike, offroad) in `CatalogBuilder`. The three starter cars still use the old rig;
+  picking one of them with the Garage arrows clears the catalogue pick.
+- **Unlocking:** each vehicle has a coin cost (0 = free). Pressing UNLOCK spends the coins and saves the id in
+  `PlayerProfile.unlockedVehicleIds`. Not enough coins: the button reads NEED n MORE and is disabled.
+- **Not playable yet:** boats, jet ski, hovercraft, sleds, snowboard, snowmobile, toboggan, skateboard, rocket sled
+  (need water or runner physics). Shown dimmed with COMING SOON; the manager refuses them.
+- **Surfaces:** a `RoadSkin` is created at run time from the strip (2 curb + 4 body + 20 skirt rows, 128 px wide) and the
+  road material friction and bounce are set per surface (`friction` and `bounce` on the entry). Asphalt, dirt and neon map
+  to the original road styles. The road changes at once, also in the Garage showcase. Sea water and lava crust have no strip.
+- **Worlds:** still only remembered (`BackgroundSkin` per world is the remaining step).
+- All tuning (class numbers, costs, friction) lives in the catalogue asset, filled by `CatalogBuilder.FillPlayData`.
 
 ## The catalogue pipeline (re-run whenever assets change)
 ```
@@ -61,4 +69,6 @@ entries carry an "UNREVIEWED" badge, quality 2 or lower a "PLACEHOLDER" badge. T
   bridges, river, cloud, floating islands) and 5 imported worlds that need converting (summer, synthwave, haunted,
   cave, spring), plus the skateboard placeholder. The forge agents that would finish them were stopped.
 - The nine forged worlds were never reviewed by the inspector; their records were written by the main session.
-- Forged vehicles are 2x taller than typical Kenney cars; scale is not normalised yet (cards scale each to fit).
+- Forged vehicle pictures had an opaque backdrop on some previews; `make_previews.py` now removes it (`strip_backdrop`).
+- Vehicle wheels do not spin visually (they are drawn into the picture). Wheel anchors are a rule of thumb, not read from FORGE_NOTES.
+- Not tested on a touch device. Balance of masses, torque and costs is a first guess.

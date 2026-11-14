@@ -160,8 +160,6 @@ namespace RoadBuilderGame.UI
             else { detailStatus.SetText("APPROVED"); detailStatus.color = theme.GetColor(ColorToken.Success); }
 
             detailNote.SetText(string.IsNullOrEmpty(e.note) ? e.licence : e.note);
-            footnote.SetText("Saved for the next update. It is not on the track yet.");
-            selectButton.interactable = true;
             UpdateSelectButton();
             // Highlight the card the player is looking at, not only the saved one.
             foreach (var c in _cards) c.SetSelected(c.Entry == e);
@@ -170,10 +168,41 @@ namespace RoadBuilderGame.UI
         private void UpdateSelectButton()
         {
             if (_current == null) return;
-            bool selected = GameServices.Model.SelectedId(_kind) == _current.id;
+            var model = GameServices.Model;
             var theme = UIThemeManager.Current;
-            selectLabel.SetText(selected ? "SELECTED" : "SELECT");
-            selectButtonImage.color = theme.GetColor(selected ? ColorToken.Success : ColorToken.Primary);
+            bool selected = model.SelectedId(_kind) == _current.id;
+            bool playable = _current.playable || _kind == CatalogKind.World;
+
+            string label; ColorToken colour = ColorToken.Primary; bool enabled = true; string foot;
+            if (!playable)
+            {
+                label = "COMING SOON"; colour = ColorToken.TextSecondary; enabled = false;
+                foot = string.IsNullOrEmpty(_current.playNote) ? "Not playable yet." : _current.playNote;
+            }
+            else if (selected)
+            {
+                label = "SELECTED"; colour = ColorToken.Success;
+                foot = _kind == CatalogKind.Vehicle ? "This is the vehicle you ride." :
+                       _kind == CatalogKind.Surface ? "This is the road you ride on." : "Remembered. Worlds are not on the track yet.";
+            }
+            else if (_kind == CatalogKind.Vehicle && !model.IsVehicleUnlocked(_current))
+            {
+                int missing = _current.cost - model.Coins;
+                if (missing > 0) { label = "NEED " + missing + " MORE"; colour = ColorToken.TextSecondary; enabled = false; }
+                else { label = "UNLOCK " + _current.cost; colour = ColorToken.Accent; }
+                foot = "Costs " + _current.cost + " coins. You have " + model.Coins + ".";
+            }
+            else
+            {
+                label = _kind == CatalogKind.Vehicle ? "RIDE THIS" : (_kind == CatalogKind.Surface ? "USE THIS ROAD" : "SELECT");
+                foot = _kind == CatalogKind.Surface ? "Changes the road at once. Grip " + _current.friction.ToString("0.0") + "." :
+                       _kind == CatalogKind.Vehicle ? "Wheels are fitted under the picture. Heavier vehicles climb better but start slower." :
+                       "Remembered. Worlds are not on the track yet.";
+            }
+            selectLabel.SetText(label);
+            selectButtonImage.color = theme.GetColor(colour);
+            selectButton.interactable = enabled;
+            footnote.SetText(foot);
         }
 
         private void OnSelectPressed()
@@ -182,6 +211,10 @@ namespace RoadBuilderGame.UI
             GameServices.Actions?.SelectCatalogItem(_kind, _current.id);
         }
 
-        private void RefreshSelectionState() { UpdateSelectButton(); }
+        private void RefreshSelectionState()
+        {
+            foreach (var c in _cards) { c.Refresh(); c.SetSelected(c.Entry == _current); }
+            UpdateSelectButton();
+        }
     }
 }

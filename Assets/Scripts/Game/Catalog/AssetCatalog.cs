@@ -24,6 +24,23 @@ namespace RoadBuilderGame
         public string licence;
         public Sprite preview;
 
+        [Header("Play data (filled by CatalogBuilder)")]
+        [Tooltip("False = art exists but nothing can use it on the track yet; playNote says why.")]
+        public bool playable;
+        public string playNote;
+        [Tooltip("Coins to unlock a vehicle. 0 = free.")]
+        public int cost;
+        [Tooltip("Vehicle: world width of the body picture, mass, torque per wheel, speed multiplier.")]
+        public float widthUnits = 2.4f;
+        public float mass = 1.45f;
+        public float torque = 34f;
+        public float speed = 1f;
+        [Tooltip("Surface: road atlas strip (2 curb + 4 body + 20 skirt rows), or a legacy RoadStyle (-1 = use the strip).")]
+        public Texture2D strip;
+        public int roadStyle = -1;
+        public float friction = 1.25f;
+        public float bounce = 0f;
+
         /// <summary>Approved by the inspector (or present before the asset agents existed).</summary>
         public bool Reviewed => status != CatalogStatus.Forged;
         public bool Placeholder => quality > 0 && quality <= 2;
