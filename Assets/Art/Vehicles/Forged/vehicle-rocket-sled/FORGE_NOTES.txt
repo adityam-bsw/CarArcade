@@ -1,0 +1,8 @@
+vehicle-rocket-sled  (forged 2026-11-14 by asset-forge)
+Method: Drawn from rectangles/ellipse in code with auto outline; flame frames drawn from ASCII maps (our own).
+Sources: Kenney Pixel Vehicle Pack (palette: scooter.png reds, cycle.png whites); all CC0 (Kenney) project files. Code: tools/assets/pixel.py plus our own scratch scripts. No generative AI, no downloads.
+Files: body.png, flame_0.png, flame_1.png, preview.png, runner.png
+Pixel density: about 2x the Kenney cars (parts are 24-60 px wide), palette taken from the Kenney pack.
+Rig: runner. Preview 60x26. body.png at (0,0), runner.png 34x4 top-left (10,17) (posts at x14-15 and x38-39). Flame: flame_0/flame_1.png 14x8, place with the 14 px side right edge at the nozzle (x=0), centred on y=12, i.e. top-left (-14,8); frames 0/1 alternate for animation.
+Limits: Flame sprites are not shown in preview.png and the flame orientation (tip left) should be checked in Unity; no rider, canopy only.
+Quality: 3 / 5 (usable stand-in; reads clearly at game size, not hand-drawn art)

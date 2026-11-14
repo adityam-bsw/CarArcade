@@ -24,6 +24,11 @@ namespace RoadBuilderGame
         public bool truckUnlocked;
         public bool soundEnabled = true;
 
+        // Catalogue choices (ids from the asset manifest). Empty = none picked yet. Stored only: the game applies them later.
+        public string selectedVehicleId = "";
+        public string selectedSurfaceId = "";
+        public string selectedWorldId = "";
+
         /// <summary>Clamp values to the ranges the game supports (same limits the old PlayerPrefs loader used).</summary>
         public void Sanitize()
         {

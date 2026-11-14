@@ -1,0 +1,8 @@
+vehicle-moon-rover  (forged 2026-11-14 by asset-forge)
+Method: Drawn from rectangles/lines in code with auto outline; wheels generated discs (grey rims on Kenney tyre grey). Far wheels are darkened copies baked into body.png.
+Sources: Kenney Pixel Vehicle Pack (palette: buggy.png, cycle.png yellow); wheel design generated; all CC0 (Kenney) project files. Code: tools/assets/pixel.py plus our own scratch scripts. No generative AI, no downloads.
+Files: body.png, preview.png, wheel.png
+Pixel density: about 2x the Kenney cars (parts are 24-60 px wide), palette taken from the Kenney pack.
+Rig: two wheels. Preview 50x38. wheel.png 14x14. Wheel centres: rear (10,29), front (40,29). body.png at (0,0) under the wheels. Suspension arms are drawn in the body.
+Limits: Dish and mast are crude; the hull looks like a boat; palette is the Kenney greys, not lunar.
+Quality: 3 / 5 (usable stand-in; reads clearly at game size, not hand-drawn art)

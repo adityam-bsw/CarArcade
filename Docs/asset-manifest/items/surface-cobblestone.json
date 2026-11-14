@@ -1,0 +1,37 @@
+{
+  "id": "surface-cobblestone",
+  "category": "surface",
+  "name": "Cobblestone",
+  "status": "forged",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Procedural forge, quality 3.5/5. Physics hint: grip normal-high, bounce 0.05 (rattly). Import settings still to set in inspector.",
+  "source": null,
+  "licence": "own work (procedural; palette sampled from CC0 Kenney-style greys)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-cobblestone/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 556,
+  "sha256": "e0c03e2e66af600caf85564a433aab2fb7a09d5847a1287c58ed37c755e78077",
+  "project_path": "Assets/Art/Surfaces/Forged/surface-cobblestone/surface-cobblestone.png",
+  "quality": 3.5,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "not_found",
+      "note": "OGA cobblestone sets are CC-BY 3.0 (cemkalyoncu) and top-down; no CC0 side-view found. Forge from stone body of floating-islands pack."
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "procedural strip, quality 3.5"
+    }
+  ]
+}

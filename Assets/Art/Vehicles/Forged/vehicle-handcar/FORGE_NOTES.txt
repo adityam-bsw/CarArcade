@@ -1,0 +1,8 @@
+vehicle-handcar  (asset forge, 2026-11-14)
+Quality: 3/5
+Files: handcar_platform.png 32x5, handcar_post.png 4x9, handcar_lever.png 30x9 (pump beam, can be rotated around the post +-15 degrees), handcar_wheel.png 5x5.
+Method: Drawn from coordinates in Kenney palette. The mine cart pack was not used (GIF sprites that pixel.py cannot read). Not hand-drawn by a human: made with Python (tools/assets/pixel.py) from explicit coordinates and project art. No generative AI.
+Sources: Kenney Pixel Vehicle Pack (Assets/Art/Vehicles/Kenney/Cars, CC0, Kenney) for the palette; Reactorcore/Zanin art not used.
+Anchors and rig: Preview 36x26: platform at (2,13), post at (16,4), lever at (3,1) (pivot is about lever x=15,y=4), wheels top-left (4,16) and (26,16); centres (6,18) and (28,18). A rail line (grey/dark rows) at y=21..22 is part of the preview only.
+Limits: Lever is drawn as a stepped diagonal and would need rotation in the engine to pump; plain platform; no rider.
+Facing right; palette limited to Kenney colours; import at 16 px per unit, point filter, no mipmaps, uncompressed (not yet applied; the Editor was busy).

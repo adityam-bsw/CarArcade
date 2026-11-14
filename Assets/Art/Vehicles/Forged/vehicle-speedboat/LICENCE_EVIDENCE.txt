@@ -1,0 +1,3 @@
+Own work; derivative of CC0 Kenney Pixel Vehicle Pack (https://kenney.nl/assets/pixel-vehicle-pack, Kenney, CC0; see Assets/Art/Vehicles/Kenney/License.txt).
+No pixels are copied from the pack; only its colour values are reused. 
+Made by the asset forge agent with Python code from explicit coordinates. No generative AI. Date: 2026-11-14.

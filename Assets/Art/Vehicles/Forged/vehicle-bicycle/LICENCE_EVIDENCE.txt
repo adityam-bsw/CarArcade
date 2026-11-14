@@ -1,0 +1,3 @@
+Own work; derivative of CC0 Kenney Pixel Vehicle Pack (palette: cycle.png, scooter.png).
+Palette only is taken from the CC0 Kenney Pixel Vehicle Pack (Assets/Art/Vehicles/Kenney, CC0 by Kenney, kenney.nl). Shapes are drawn procedurally by code.
+Read from project files 2026-11-14 by asset-forge. Licence evidence for Kenney sits in Assets/Art/Vehicles/Kenney.

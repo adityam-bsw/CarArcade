@@ -1,0 +1,31 @@
+{
+  "id": "vehicle-skateboard",
+  "category": "vehicle",
+  "name": "Skateboard",
+  "status": "imported",
+  "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
+  "have": [],
+  "notes": "Only a tiny 29x12 red board silhouette, no visible wheels, no rider. Usable as deck base; forge must add wheels/rider. Placeholder quality.",
+  "source": "https://opengameart.org/content/skateboard-0",
+  "licence": "CC0",
+  "licence_evidence": "CC0; 'free use'",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/vehicle-skateboard",
+  "bytes": 204,
+  "sha256": "d124d6f8082c63a33656d982af9dd34659e73fcb7423b676fa808376b2e718b6",
+  "project_path": "Assets/Art/Vehicles/Skateboard/",
+  "quality": 2,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "downloaded",
+      "note": "OGA CC0 tiny 29x12 skateboard, quality 2, needs forge"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "downloaded",
+      "to": "imported",
+      "note": "placeholder: 29x12 red board silhouette, no wheels or rider; forge must add wheels and rider"
+    }
+  ]
+}

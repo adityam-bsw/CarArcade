@@ -1,0 +1,37 @@
+{
+  "id": "surface-metal-grating",
+  "category": "surface",
+  "name": "Metal Grating",
+  "status": "rejected",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Eris sci-fi platform tiles 16x16/32x32: light-grey metal platform slabs with dark shadow tiles beneath and hazard-stripe blocks. Not literally grating; usable as metal deck, grating look needs forge detail. Grip normal. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page).",
+  "source": "https://opengameart.org/content/sci-fi-platform-tiles",
+  "licence": "CC0",
+  "licence_evidence": "OGA page: License(s): CC0",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/_oga-scifi-platform-tiles",
+  "bytes": 346948,
+  "sha256": "00070c9803e19077165fdc8388ef1542548a73b3986ee81f5817680f3c84fc76",
+  "project_path": null,
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "downloaded",
+      "note": "_oga-scifi-platform-tiles q3"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "downloaded",
+      "to": "rejected",
+      "note": "rejected: Eris sci-fi tiles have 9050 colours with noisy photo-like texture, not palette-limited pixel art; clashes with VISTA/Kenney. Forge a clean grating instead"
+    }
+  ]
+}

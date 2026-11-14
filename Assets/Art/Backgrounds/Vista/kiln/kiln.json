@@ -1,0 +1,85 @@
+{
+  "name": "kiln",
+  "canvas": [
+    384,
+    216
+  ],
+  "tiles_x": true,
+  "licence": "CC0-1.0",
+  "layers": [
+    {
+      "file": "kiln_0_sky.png",
+      "name": "sky",
+      "order": 0,
+      "scroll": 0.0,
+      "parts": [
+        "sky_0",
+        "sky_1",
+        "sky_2",
+        "plume"
+      ]
+    },
+    {
+      "file": "kiln_1_far.png",
+      "name": "far",
+      "order": 1,
+      "scroll": 0.2,
+      "parts": [
+        "cone"
+      ]
+    },
+    {
+      "file": "kiln_2_mid.png",
+      "name": "mid",
+      "order": 2,
+      "scroll": 0.4,
+      "parts": [
+        "flank"
+      ]
+    },
+    {
+      "file": "kiln_3_near.png",
+      "name": "near",
+      "order": 3,
+      "scroll": 0.8,
+      "parts": [
+        "ash"
+      ]
+    }
+  ],
+  "palette": [
+    "#52393B",
+    "#503636",
+    "#593E3C",
+    "#5B413E",
+    "#5E4540",
+    "#67362F",
+    "#6F3C31",
+    "#774434",
+    "#7B4A37",
+    "#7E4F3A",
+    "#84382A",
+    "#964832",
+    "#A05133",
+    "#A75B38",
+    "#AA633B",
+    "#5A3F42",
+    "#644746",
+    "#6C4F49",
+    "#72584E",
+    "#79403F",
+    "#84483C",
+    "#8B523A",
+    "#8E5D3C",
+    "#582E2F",
+    "#623631",
+    "#6A3E32",
+    "#714836",
+    "#76513A",
+    "#271A1C",
+    "#2F2021",
+    "#372727",
+    "#3E2F2C",
+    "#433531"
+  ]
+}

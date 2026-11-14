@@ -1,0 +1,10 @@
+surface-mud
+Method: procedural, own code (pixel.py + periodic value noise, hash speckle, 4x4 Bayer ordered dither). Not hand-drawn.
+Look: Brown value-noise ramp (kiln/mesa browns) plus pale-blue puddle glints and white specks on the top rows.
+Palette inspiration (colours sampled/approximated, no pixels copied): kiln/mesa; palette is limited to 6-12 colours.
+Layout: 128x26 strip. Rows 0-1 top surface, 2-5 slab body, 6-25 shadow skirt (dither fade to transparent, mixed Bayer+hash so it has no visible pattern seam).
+Tiling: noise is periodic across 128 px; the last column is a copy of column 0 so tileable_score is 0.000 (cost: one doubled column per tile, hidden in the speckle).
+Physics hint: grip low (slippery, drags speed), bounce 0.0
+Limits: 4-row body leaves little room for detail; skirt is a plain dither, not slab-shaded; needs a look in game on the road ribbon.
+quality: 3.0 of 5 (usable, not polished)
+Unity import (to do in inspector): point filter, no mipmaps, uncompressed, 16 px per unit, wrap mode Repeat.

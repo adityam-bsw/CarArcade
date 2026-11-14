@@ -1,0 +1,8 @@
+vehicle-shopping-cart  (asset forge, 2026-11-14)
+Quality: 3/5
+Files: cart_body.png 26x12 (wire basket, handle, frame), cart_wheel.png 5x5.
+Method: Drawn from coordinates in Kenney palette; wheel from own circle function. Not hand-drawn by a human: made with Python (tools/assets/pixel.py) from explicit coordinates and project art. No generative AI.
+Sources: Kenney Pixel Vehicle Pack (Assets/Art/Vehicles/Kenney/Cars, CC0, Kenney) for the palette; Reactorcore/Zanin art not used.
+Anchors and rig: Preview 30x18: body at (2,1), wheels top-left (6,11) and (20,11); centres (8,13) and (22,13), i.e. (6,12) and (20,12) relative to the body top-left. Handle is at the left (back).
+Limits: Wire grid reads as a bar when small; frame is simplified; very small (about 25 px).
+Facing right; palette limited to Kenney colours; import at 16 px per unit, point filter, no mipmaps, uncompressed (not yet applied; the Editor was busy).

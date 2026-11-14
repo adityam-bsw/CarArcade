@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37986f04a88b4716a736139def980fa, type: 3}
+  m_Name: flue
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.BackgroundSkin
+  displayName: Industrial Works
+  mood: 3
+  sky: {fileID: 21300000, guid: 5e00b015d80614e5380b958cb8353c8e, type: 3}
+  far: {fileID: 21300000, guid: be301b5c4387047c6a5a69ca0a4df43a, type: 3}
+  mid: {fileID: 21300000, guid: 0a5b478ea31d64de2aa5af57baa9e46d, type: 3}
+  near: {fileID: 21300000, guid: 1970b4f54529a4112a988e95f219f9c9, type: 3}
+  scroll:
+  - 0
+  - 0.2
+  - 0.4
+  - 0.8

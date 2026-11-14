@@ -1,0 +1,31 @@
+{
+  "id": "vehicle-mine-cart",
+  "category": "vehicle",
+  "name": "Mine Cart",
+  "status": "rejected",
+  "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
+  "have": [],
+  "notes": "OPP2017 cave pack. cart/spr_obj_cart_str_{back,front,complete}_anim.gif: 48x48 animated gifs (rolling cart on rail, wheels animated, back/front layers) plus slope variants; DB32 palette pixel art. Convert gif frames to PNG; wheels not separate sprites but wheel positions clear. Check facing direction.",
+  "source": "https://opengameart.org/content/opp2017-cave-and-mine-cart",
+  "licence": "CC0",
+  "licence_evidence": "pack license cc0 - public domain.txt; readme: THEY ARE IN THE PUBLIC DOMAIN",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/opp2017-cave",
+  "bytes": 194770,
+  "sha256": "e0e8188338e2ee1431c0a64af222deac7275fb23be3f68e08de50d91bc910651",
+  "project_path": null,
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "downloaded",
+      "note": "OPP2017 cave pack CC0, 48x48 cart gifs"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "downloaded",
+      "to": "rejected",
+      "note": "rejected: the pack's cart sprites are 48x48 front-on views (wheels toward the viewer), not side view; only animated GIFs (need frame conversion); cart_1.png is a mockup scene with a rider. Forge could build a side cart from rail/cart parts instead"
+    }
+  ]
+}

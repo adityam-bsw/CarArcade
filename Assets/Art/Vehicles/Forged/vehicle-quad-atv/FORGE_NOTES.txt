@@ -1,0 +1,8 @@
+vehicle-quad-atv  (forged 2026-11-14 by asset-forge)
+Method: Drawn from rectangles/lines in code, auto 1 px dark outline (same as Kenney look). Far-side wheels are darkened copies baked into body.png.
+Sources: Kenney Pixel Vehicle Pack (palette: buggy.png, kart.png); all CC0 (Kenney) project files. Code: tools/assets/pixel.py plus our own scratch scripts. No generative AI, no downloads.
+Files: body.png, body.png.meta, fender_overlay.png, fender_overlay.png.meta, preview.png, preview.png.meta, wheel.png, wheel.png.meta
+Pixel density: about 2x the Kenney cars (parts are 24-60 px wide), palette taken from the Kenney pack.
+Rig: two wheels (near side). Preview 44x27. wheel.png 13x13. Wheel centres: rear (9,19), front (35,19). fender_overlay.png goes ABOVE the wheels, body.png below.
+Limits: Reads as a quad more by the fat wheels than the body; fenders are blocky.
+Quality: 3 / 5 (usable stand-in; reads clearly at game size, not hand-drawn art)

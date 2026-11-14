@@ -1,0 +1,37 @@
+{
+  "id": "vehicle-quad-atv",
+  "category": "vehicle",
+  "name": "Quad Atv",
+  "status": "forged",
+  "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
+  "have": [],
+  "notes": "not confirmed in the Kenney pack by name Forged: Reads as a quad more by the fat wheels than the body; fenders are blocky.",
+  "source": null,
+  "licence": "own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)",
+  "licence_evidence": "Assets/Art/Vehicles/Forged/vehicle-quad-atv/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": null,
+  "sha256": null,
+  "project_path": "Assets/Art/Vehicles/Forged/vehicle-quad-atv/",
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "not_found",
+      "note": "OGA searches atv/quad: no results; itch blocked by Cloudflare challenge (not bypassed). Forge from dirt bike/buggy."
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forging",
+      "note": "forged from code and Kenney palette, quality 3"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "Forged from code + Kenney palette, quality 3 stand-in"
+    }
+  ]
+}

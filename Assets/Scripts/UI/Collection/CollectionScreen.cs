@@ -1,0 +1,187 @@
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace RoadBuilderGame.UI
+{
+    /// <summary>
+    /// Browses everything in the AssetCatalog of one kind (vehicles, surfaces or worlds): group tabs, a scrolling grid,
+    /// and a detail panel with a Select button. Selecting stores the choice in the profile only; the track and the
+    /// vehicle rigs do not read it yet, and the screen says so. Pushed on the ScreenStack with a CatalogKind as args.
+    /// </summary>
+    public class CollectionScreen : AnimatedScreen
+    {
+        [Header("Header")]
+        [SerializeField] private TMP_Text titleText;
+        [SerializeField] private TMP_Text countText;
+        [SerializeField] private Button backButton;
+
+        [Header("Browse")]
+        [SerializeField] private RectTransform tabsRoot;
+        [SerializeField] private RectTransform gridRoot;
+        [SerializeField] private ScrollRect scroll;
+        [SerializeField] private CollectionTab tabPrefab;
+        [SerializeField] private CollectionCard cardPrefab;
+
+        [Header("Detail")]
+        [SerializeField] private Image detailPreview;
+        [SerializeField] private TMP_Text detailName;
+        [SerializeField] private TMP_Text detailGroup;
+        [SerializeField] private TMP_Text detailStatus;
+        [SerializeField] private TMP_Text detailNote;
+        [SerializeField] private TMP_Text footnote;
+        [SerializeField] private Button selectButton;
+        [SerializeField] private Image selectButtonImage;
+        [SerializeField] private TMP_Text selectLabel;
+
+        private CatalogKind _kind;
+        private string _group;                       // null = all groups
+        private CatalogEntry _current;
+        private AssetCatalog _catalog;
+        private readonly List<CollectionCard> _cards = new List<CollectionCard>();
+        private readonly List<CollectionTab> _tabs = new List<CollectionTab>();
+
+        private void Awake()
+        {
+            backButton.onClick.AddListener(() => Stack?.Pop());
+            selectButton.onClick.AddListener(OnSelectPressed);
+        }
+
+        public override void OnShow(object args)
+        {
+            _kind = args is CatalogKind k ? k : CatalogKind.Vehicle;
+            _catalog = AssetCatalog.Load();
+            _group = null;
+            _current = null;
+
+            titleText.SetText(_kind == CatalogKind.Vehicle ? "VEHICLES" : (_kind == CatalogKind.Surface ? "SURFACES" : "WORLDS"));
+            BuildTabs();
+            RebuildGrid();
+            GameServices.Model.Changed += RefreshSelectionState;
+        }
+
+        public override void OnHide() { GameServices.Model.Changed -= RefreshSelectionState; }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            GameServices.Model.Changed -= RefreshSelectionState;
+        }
+
+        // ---------------------------------------------------------------- tabs and grid
+        private void BuildTabs()
+        {
+            Clear(tabsRoot);
+            _tabs.Clear();
+            if (_catalog == null) return;
+
+            AddTab(null, "ALL");
+            foreach (var g in _catalog.Groups(_kind)) AddTab(g, g.ToUpperInvariant());
+            UpdateTabHighlight();
+        }
+
+        private void AddTab(string group, string display)
+        {
+            var tab = Instantiate(tabPrefab, tabsRoot);
+            tab.Bind(group, display, group == _group, OnTabPressed);
+            _tabs.Add(tab);
+        }
+
+        private void OnTabPressed(CollectionTab tab)
+        {
+            _group = tab.Group;
+            UpdateTabHighlight();
+            RebuildGrid();
+        }
+
+        private void UpdateTabHighlight()
+        {
+            foreach (var t in _tabs) t.SetActive(t.Group == _group);
+        }
+
+        private void RebuildGrid()
+        {
+            Clear(gridRoot);
+            _cards.Clear();
+            var items = _catalog != null ? _catalog.Query(_kind, _group) : new List<CatalogEntry>();
+            string selectedId = GameServices.Model.SelectedId(_kind);
+
+            foreach (var e in items)
+            {
+                var card = Instantiate(cardPrefab, gridRoot);
+                card.Bind(e, e.id == selectedId, OnCardPressed);
+                _cards.Add(card);
+            }
+            countText.SetText("{0} items", items.Count);
+            if (scroll != null) scroll.verticalNormalizedPosition = 1f;
+
+            // Keep the detail panel on something sensible: the saved pick if shown, otherwise the first item.
+            CatalogEntry keep = null;
+            foreach (var e in items) if (e.id == selectedId) keep = e;
+            ShowDetail(keep ?? (items.Count > 0 ? items[0] : null));
+        }
+
+        private static void Clear(RectTransform root)
+        {
+            for (int i = root.childCount - 1; i >= 0; i--) Destroy(root.GetChild(i).gameObject);
+        }
+
+        // ---------------------------------------------------------------- detail
+        private void OnCardPressed(CollectionCard card) { ShowDetail(card.Entry); }
+
+        private void ShowDetail(CatalogEntry e)
+        {
+            _current = e;
+            foreach (var c in _cards) c.SetSelected(e != null && c.Entry.id == GameServices.Model.SelectedId(_kind));
+
+            bool has = e != null;
+            detailPreview.gameObject.SetActive(has);
+            if (!has)
+            {
+                detailName.SetText("Nothing here yet");
+                detailGroup.SetText(string.Empty);
+                detailStatus.SetText(string.Empty);
+                detailNote.SetText(string.Empty);
+                selectButton.interactable = false;
+                selectLabel.SetText("SELECT");
+                footnote.SetText(string.Empty);
+                return;
+            }
+
+            detailPreview.sprite = e.preview;
+            detailPreview.preserveAspect = true;
+            detailName.SetText(e.displayName);
+            detailGroup.SetText(e.group);
+
+            var theme = UIThemeManager.Current;
+            if (e.Placeholder) { detailStatus.SetText("PLACEHOLDER: made quickly, to be replaced"); detailStatus.color = theme.GetColor(ColorToken.Danger); }
+            else if (!e.Reviewed) { detailStatus.SetText("UNREVIEWED: awaiting inspection"); detailStatus.color = theme.GetColor(ColorToken.Accent); }
+            else { detailStatus.SetText("APPROVED"); detailStatus.color = theme.GetColor(ColorToken.Success); }
+
+            detailNote.SetText(string.IsNullOrEmpty(e.note) ? e.licence : e.note);
+            footnote.SetText("Saved for the next update. It is not on the track yet.");
+            selectButton.interactable = true;
+            UpdateSelectButton();
+            // Highlight the card the player is looking at, not only the saved one.
+            foreach (var c in _cards) c.SetSelected(c.Entry == e);
+        }
+
+        private void UpdateSelectButton()
+        {
+            if (_current == null) return;
+            bool selected = GameServices.Model.SelectedId(_kind) == _current.id;
+            var theme = UIThemeManager.Current;
+            selectLabel.SetText(selected ? "SELECTED" : "SELECT");
+            selectButtonImage.color = theme.GetColor(selected ? ColorToken.Success : ColorToken.Primary);
+        }
+
+        private void OnSelectPressed()
+        {
+            if (_current == null) return;
+            GameServices.Actions?.SelectCatalogItem(_kind, _current.id);
+        }
+
+        private void RefreshSelectionState() { UpdateSelectButton(); }
+    }
+}

@@ -1,0 +1,37 @@
+{
+  "id": "surface-glass",
+  "category": "surface",
+  "name": "Glass",
+  "status": "forged",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Procedural forge, quality 3.0/5. Physics hint: grip very low (slides like ice), bounce 0.1. Import settings still to set in inspector.",
+  "source": null,
+  "licence": "own work (procedural; palette sampled from CC0 tundra)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-glass/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 631,
+  "sha256": "83ad5a844a02f434efed6629923380c574b59503560831e649faad2a8037b4ad",
+  "project_path": "Assets/Art/Surfaces/Forged/surface-glass/surface-glass.png",
+  "quality": 3.0,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "not_found",
+      "note": "No glass ground strip found. Forge from ice blocks in blaze snow tileset (translucent recolour)."
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "procedural strip, quality 3.0"
+    }
+  ]
+}

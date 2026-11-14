@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37986f04a88b4716a736139def980fa, type: 3}
+  m_Name: sodium
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.BackgroundSkin
+  displayName: Night City
+  mood: 3
+  sky: {fileID: 21300000, guid: 0ca4b3ede093a4aa3bc801eb25e19510, type: 3}
+  far: {fileID: 21300000, guid: 745039b14c0ac42fc98269706cfb01a0, type: 3}
+  mid: {fileID: 21300000, guid: af0b4bf5a43dd4568a71ddf6bf958b9b, type: 3}
+  near: {fileID: 21300000, guid: 53de5c0a1925f4094a209441f019eaf0, type: 3}
+  scroll:
+  - 0
+  - 0.2
+  - 0.4
+  - 0.8

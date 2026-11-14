@@ -9,9 +9,9 @@ namespace RoadBuilderGame
     public sealed class GameCameraRig
     {
         private readonly Camera _cam;
-        private readonly ParallaxBackground _background;
+        private readonly BackgroundDirector _background;
 
-        public GameCameraRig(Camera cam, ParallaxBackground background)
+        public GameCameraRig(Camera cam, BackgroundDirector background)
         {
             _cam = cam;
             _background = background;

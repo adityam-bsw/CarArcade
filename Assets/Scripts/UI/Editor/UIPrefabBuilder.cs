@@ -18,6 +18,7 @@ namespace RoadBuilderGame.UI.Editor
         public const string Dir = "Assets/Prefabs/UI";
         public const string ScreensDir = Dir + "/Screens";
         public const string RootPath = Dir + "/UIRoot.prefab";
+        public const string ComponentsDir = Dir + "/Components";
 
         private static Scene _scene;
         private static Sprite _coin, _heart, _podium, _gear, _star;
@@ -30,6 +31,7 @@ namespace RoadBuilderGame.UI.Editor
         {
             if (AssetDatabase.LoadAssetAtPath<Sprite>(IconFactory.GearPath) == null) IconFactory.Build();
             Directory.CreateDirectory(ScreensDir);
+            Directory.CreateDirectory(ComponentsDir);
 
             _coin = Load("Assets/Resources/RoadBuilder/Coin.png");
             _heart = Load("Assets/Resources/RoadBuilder/Heart.png");
@@ -40,12 +42,15 @@ namespace RoadBuilderGame.UI.Editor
             _scene = EditorSceneManager.NewPreviewScene();
             try
             {
+                var cardPrefab = SaveComponent<CollectionCard>(BuildCard(), "CollectionCard");
+                var tabPrefab = SaveComponent<CollectionTab>(BuildTab(), "CollectionTab");
                 Save(BuildHome(), "HomeScreen");
                 Save(BuildWorlds(), "WorldsScreen");
                 Save(BuildGarage(), "GarageScreen");
                 Save(BuildHud(), "HudScreen");
                 Save(BuildResult(), "ResultScreen");
                 Save(BuildSettings(), "SettingsScreen");
+                Save(BuildCollection(cardPrefab, tabPrefab), "CollectionScreen");
                 SaveRoot(BuildRoot());
             }
             finally
@@ -63,6 +68,13 @@ namespace RoadBuilderGame.UI.Editor
         {
             PrefabUtility.SaveAsPrefabAsset(root, ScreensDir + "/" + name + ".prefab");
             Object.DestroyImmediate(root);
+        }
+
+        private static T SaveComponent<T>(GameObject root, string name) where T : Component
+        {
+            var asset = PrefabUtility.SaveAsPrefabAsset(root, ComponentsDir + "/" + name + ".prefab");
+            Object.DestroyImmediate(root);
+            return asset.GetComponent<T>();
         }
 
         private static void SaveRoot(GameObject root)
@@ -133,11 +145,14 @@ namespace RoadBuilderGame.UI.Editor
             var prev = MakeButton(c, "PrevButton", "<", ColorToken.Secondary, ColorToken.TextPrimary, C, C, new Vector2(-610, -20), new Vector2(130, 130), 60);
             var next = MakeButton(c, "NextButton", ">", ColorToken.Secondary, ColorToken.TextPrimary, C, C, new Vector2(610, -20), new Vector2(130, 130), 60);
             var road = MakeButton(c, "RoadButton", "ROAD: ASPHALT HIGHWAY", ColorToken.Accent, ColorToken.TextOnAccent, BC, BC, new Vector2(0, 70), new Vector2(760, 100), 36);
+            var allWorlds = MakeButton(c, "AllWorldsButton", "ALL WORLDS", ColorToken.Secondary, ColorToken.TextPrimary, BC, BC, new Vector2(-640, 70), new Vector2(340, 100), 34);
+            var allSurfaces = MakeButton(c, "AllSurfacesButton", "ALL SURFACES", ColorToken.Secondary, ColorToken.TextPrimary, BC, BC, new Vector2(640, 70), new Vector2(340, 100), 34);
 
             var s = root.GetComponent<WorldsScreen>();
             Ref(s, "preview", preview); Ref(s, "titleText", wTitle); Ref(s, "descriptionText", wDesc);
             Ref(s, "roadLabel", road.label); Ref(s, "prevButton", prev.button); Ref(s, "nextButton", next.button);
             Ref(s, "roadButton", road.button); Ref(s, "backButton", back.button);
+            Ref(s, "allWorldsButton", allWorlds.button); Ref(s, "allSurfacesButton", allSurfaces.button);
             return root;
         }
 
@@ -157,6 +172,7 @@ namespace RoadBuilderGame.UI.Editor
             var title = Label(c, "Title", "GARAGE", TextStyle.Heading);
             Place(title.rectTransform, TC, TC, new Vector2(0, -50), new Vector2(600, 100));
             CoinPill(c, TR, TR, new Vector2(-40, -40), out var coinsText);
+            var allVehicles = MakeButton(c, "AllVehiclesButton", "ALL VEHICLES", ColorToken.Secondary, ColorToken.TextPrimary, TR, TR, new Vector2(-40, -140), new Vector2(300, 84), 30);
 
             var prev = MakeButton(c, "PrevButton", "<", ColorToken.Secondary, ColorToken.TextPrimary, TC, C, new Vector2(-470, -235), new Vector2(120, 110), 56);
             var next = MakeButton(c, "NextButton", ">", ColorToken.Secondary, ColorToken.TextPrimary, TC, C, new Vector2(470, -235), new Vector2(120, 110), 56);
@@ -165,6 +181,7 @@ namespace RoadBuilderGame.UI.Editor
             var action = MakeButton(c, "ActionButton", "EQUIPPED", ColorToken.Success, ColorToken.TextPrimary, TC, C, new Vector2(0, -395), new Vector2(480, 100), 40);
 
             var g = root.GetComponent<GarageScreen>();
+            Ref(g, "allVehiclesButton", allVehicles.button);
             Ref(g, "coinsText", coinsText); Ref(g, "carNameText", carName); Ref(g, "actionLabel", action.label);
             Ref(g, "actionImage", action.image); Ref(g, "actionButton", action.button);
             Ref(g, "prevButton", prev.button); Ref(g, "nextButton", next.button); Ref(g, "backButton", back.button);
@@ -298,6 +315,151 @@ namespace RoadBuilderGame.UI.Editor
             return root;
         }
 
+        // ======================================================================== COLLECTION
+        private static void Sliced(Image img, SpriteSlot slot)
+        {
+            var theme = UIThemeManager.Current;
+            var sprite = theme != null ? theme.GetSprite(slot) : null;
+            if (sprite != null) { img.sprite = sprite; img.type = Image.Type.Sliced; }
+        }
+
+        private static GameObject BuildCard()
+        {
+            var go = new GameObject("CollectionCard", typeof(RectTransform), typeof(Image), typeof(Button), typeof(PressFeedback), typeof(CollectionCard));
+            SceneManager.MoveGameObjectToScene(go, _scene);
+            ((RectTransform)go.transform).sizeDelta = new Vector2(230, 280);
+            var bg = go.GetComponent<Image>();
+            Sliced(bg, SpriteSlot.Card);
+            var btn = go.GetComponent<Button>();
+            btn.targetGraphic = bg;
+            btn.transition = Selectable.Transition.None;
+
+            var previewBack = Img(go.transform, "PreviewBack", SpriteSlot.Panel, ColorToken.Background, 0.55f);
+            Place(previewBack.rectTransform, TC, TC, new Vector2(0, -14), new Vector2(206, 160));
+            var pv = new GameObject("Preview", typeof(RectTransform), typeof(Image));
+            pv.transform.SetParent(previewBack.transform, false);
+            Stretch((RectTransform)pv.transform, 8, 8, 8, 8);
+            var preview = pv.GetComponent<Image>();
+            preview.preserveAspect = true; preview.raycastTarget = false;
+
+            var name = Label(go.transform, "Name", "Name", TextStyle.Body, ColorToken.TextPrimary, 24);
+            name.enableAutoSizing = true; name.fontSizeMin = 16; name.fontSizeMax = 24;
+            Place(name.rectTransform, TC, TC, new Vector2(0, -184), new Vector2(210, 60));
+            var badge = Label(go.transform, "Badge", "", TextStyle.Caption, ColorToken.Accent, 20);
+            Place(badge.rectTransform, BC, BC, new Vector2(0, 12), new Vector2(210, 30));
+
+            var c = go.GetComponent<CollectionCard>();
+            Ref(c, "background", bg); Ref(c, "preview", preview); Ref(c, "nameText", name);
+            Ref(c, "badgeText", badge); Ref(c, "button", btn);
+            return go;
+        }
+
+        private static GameObject BuildTab()
+        {
+            var go = new GameObject("CollectionTab", typeof(RectTransform), typeof(Image), typeof(Button), typeof(PressFeedback), typeof(CollectionTab));
+            SceneManager.MoveGameObjectToScene(go, _scene);
+            ((RectTransform)go.transform).sizeDelta = new Vector2(220, 72);
+            var bg = go.GetComponent<Image>();
+            Sliced(bg, SpriteSlot.Button);
+            var btn = go.GetComponent<Button>();
+            btn.targetGraphic = bg;
+            btn.transition = Selectable.Transition.None;
+
+            var label = Label(go.transform, "Label", "ALL", TextStyle.Button, ColorToken.TextPrimary, 28);
+            label.enableAutoSizing = true; label.fontSizeMin = 16; label.fontSizeMax = 28;
+            Stretch(label.rectTransform, 8, 10, 8, 0);
+
+            var t = go.GetComponent<CollectionTab>();
+            Ref(t, "background", bg); Ref(t, "label", label); Ref(t, "button", btn);
+            return go;
+        }
+
+        private static GameObject BuildCollection(CollectionCard cardPrefab, CollectionTab tabPrefab)
+        {
+            var root = ScreenRoot<CollectionScreen>("CollectionScreen", ShowStyle.Fade, out var c);
+            Dim(root.transform, ColorToken.Background, 0.95f, 0);
+
+            var back = MakeButton(c, "BackButton", "< BACK", ColorToken.Secondary, ColorToken.TextPrimary, TL, TL, new Vector2(40, -40), new Vector2(260, 90), 34);
+            var title = Label(c, "Title", "VEHICLES", TextStyle.Heading);
+            Place(title.rectTransform, TC, TC, new Vector2(0, -50), new Vector2(700, 100));
+            var count = Label(c, "Count", "0 items", TextStyle.Caption, null, 28, TextAlignmentOptions.MidlineRight);
+            Place(count.rectTransform, TR, TR, new Vector2(-50, -62), new Vector2(360, 50));
+
+            // Group tabs
+            var tabs = Rect("Tabs", c);
+            Place(tabs, TC, TC, new Vector2(0, -160), new Vector2(1840, 76));
+            var tabLayout = tabs.gameObject.AddComponent<HorizontalLayoutGroup>();
+            tabLayout.spacing = 8; tabLayout.childAlignment = TextAnchor.MiddleCenter;
+            tabLayout.childControlWidth = false; tabLayout.childControlHeight = false;
+            tabLayout.childForceExpandWidth = false; tabLayout.childForceExpandHeight = false;
+
+            // Scrolling grid
+            var scrollGo = new GameObject("Scroll", typeof(RectTransform), typeof(ScrollRect));
+            scrollGo.transform.SetParent(c, false);
+            var scrollRt = (RectTransform)scrollGo.transform;
+            scrollRt.anchorMin = Vector2.zero; scrollRt.anchorMax = Vector2.one;
+            scrollRt.offsetMin = new Vector2(40, 40); scrollRt.offsetMax = new Vector2(-640, -260);
+
+            var viewport = Rect("Viewport", scrollRt);
+            Stretch(viewport);
+            viewport.gameObject.AddComponent<RectMask2D>();
+            var vpImg = viewport.gameObject.AddComponent<Image>();
+            vpImg.color = new Color(0, 0, 0, 0);
+
+            var content = Rect("Content", viewport);
+            content.anchorMin = new Vector2(0, 1); content.anchorMax = new Vector2(1, 1); content.pivot = new Vector2(0.5f, 1);
+            content.offsetMin = new Vector2(0, 0); content.offsetMax = new Vector2(0, 0);
+            var grid = content.gameObject.AddComponent<GridLayoutGroup>();
+            grid.cellSize = new Vector2(230, 280); grid.spacing = new Vector2(16, 16);
+            grid.padding = new RectOffset(8, 8, 8, 8); grid.childAlignment = TextAnchor.UpperLeft;
+            grid.constraint = GridLayoutGroup.Constraint.Flexible;
+            var fitter = content.gameObject.AddComponent<ContentSizeFitter>();
+            fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+            var scroll = scrollGo.GetComponent<ScrollRect>();
+            scroll.viewport = viewport; scroll.content = content;
+            scroll.horizontal = false; scroll.vertical = true;
+            scroll.movementType = ScrollRect.MovementType.Elastic; scroll.scrollSensitivity = 30f;
+
+            // Detail panel
+            var detail = Img(c, "Detail", SpriteSlot.Card, ColorToken.Surface);
+            detail.rectTransform.anchorMin = new Vector2(1, 0); detail.rectTransform.anchorMax = new Vector2(1, 1);
+            detail.rectTransform.pivot = new Vector2(1, 0.5f);
+            detail.rectTransform.offsetMin = new Vector2(-600, 40); detail.rectTransform.offsetMax = new Vector2(-40, -260);
+
+            var dBack = Img(detail.transform, "PreviewBack", SpriteSlot.Panel, ColorToken.Background, 0.55f);
+            Place(dBack.rectTransform, TC, TC, new Vector2(0, -24), new Vector2(520, 280));
+            var dpv = new GameObject("Preview", typeof(RectTransform), typeof(Image));
+            dpv.transform.SetParent(dBack.transform, false);
+            Stretch((RectTransform)dpv.transform, 12, 12, 12, 12);
+            var detailPreview = dpv.GetComponent<Image>();
+            detailPreview.preserveAspect = true; detailPreview.raycastTarget = false;
+
+            var dName = Label(detail.transform, "Name", "Name", TextStyle.Heading, null, 40);
+            dName.enableAutoSizing = true; dName.fontSizeMin = 24; dName.fontSizeMax = 40;
+            Place(dName.rectTransform, TC, TC, new Vector2(0, -324), new Vector2(520, 52));
+            var dGroup = Label(detail.transform, "Group", "", TextStyle.Caption, null, 26);
+            Place(dGroup.rectTransform, TC, TC, new Vector2(0, -380), new Vector2(520, 34));
+            var dStatus = Label(detail.transform, "Status", "", TextStyle.Body, ColorToken.Success, 24);
+            dStatus.enableAutoSizing = true; dStatus.fontSizeMin = 16; dStatus.fontSizeMax = 24;
+            Place(dStatus.rectTransform, TC, TC, new Vector2(0, -418), new Vector2(520, 36));
+            var dNote = Label(detail.transform, "Note", "", TextStyle.Body, ColorToken.TextSecondary, 24, TextAlignmentOptions.Top);
+            dNote.enableAutoSizing = true; dNote.fontSizeMin = 16; dNote.fontSizeMax = 24;
+            Place(dNote.rectTransform, TC, TC, new Vector2(0, -460), new Vector2(520, 112));
+            var dFoot = Label(detail.transform, "Footnote", "", TextStyle.Caption, null, 22);
+            Place(dFoot.rectTransform, BC, BC, new Vector2(0, 142), new Vector2(520, 56));
+            var select = MakeButton(detail.transform, "SelectButton", "SELECT", ColorToken.Primary, ColorToken.TextPrimary, BC, BC, new Vector2(0, 36), new Vector2(480, 100), 40);
+
+            var s = root.GetComponent<CollectionScreen>();
+            Ref(s, "titleText", title); Ref(s, "countText", count); Ref(s, "backButton", back.button);
+            Ref(s, "tabsRoot", tabs); Ref(s, "gridRoot", content); Ref(s, "scroll", scroll);
+            Ref(s, "tabPrefab", tabPrefab); Ref(s, "cardPrefab", cardPrefab);
+            Ref(s, "detailPreview", detailPreview); Ref(s, "detailName", dName); Ref(s, "detailGroup", dGroup);
+            Ref(s, "detailStatus", dStatus); Ref(s, "detailNote", dNote); Ref(s, "footnote", dFoot);
+            Ref(s, "selectButton", select.button); Ref(s, "selectButtonImage", select.image); Ref(s, "selectLabel", select.label);
+            return root;
+        }
+
         private static GameObject BuildRoot()
         {
             var go = new GameObject("UIRoot", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
@@ -316,7 +478,7 @@ namespace RoadBuilderGame.UI.Editor
             var stack = safe.gameObject.AddComponent<ScreenStack>();
             var flow = safe.gameObject.AddComponent<UIFlow>();
 
-            string[] names = { "HomeScreen", "WorldsScreen", "GarageScreen", "HudScreen", "ResultScreen", "SettingsScreen" };
+            string[] names = { "HomeScreen", "WorldsScreen", "GarageScreen", "HudScreen", "ResultScreen", "SettingsScreen", "CollectionScreen" };
             var screens = new Object[names.Length];
             for (int i = 0; i < names.Length; i++)
                 screens[i] = AssetDatabase.LoadAssetAtPath<GameObject>(ScreensDir + "/" + names[i] + ".prefab").GetComponent<UIScreen>();

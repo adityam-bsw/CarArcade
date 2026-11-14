@@ -1,0 +1,37 @@
+{
+  "id": "surface-coral",
+  "category": "surface",
+  "name": "Coral",
+  "status": "imported",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Blaze sea/sea_tileset.png salmon/coral-pink rock slab with scalloped top, plus coral decor sprites. Fits coral reef; no true coral. Grip normal. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page).",
+  "source": "https://opengameart.org/content/blazes-platformer-pack-3-environments-included",
+  "licence": "CC0",
+  "licence_evidence": "readme.txt in zip: 'licensed under CC0 1.0 Universal (Public Domain Dedication)'; OGA page: License(s): CC0",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/_oga-blazes-platformer-pack",
+  "bytes": 70426,
+  "sha256": "b350450fe96bc2b5073ed2787d75e68c41dfb09feac9de97cb60932559367d1f",
+  "project_path": "Assets/Art/Surfaces/BlazesPlatformer/sea/",
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "downloaded",
+      "note": "_oga-blazes-platformer-pack q3"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "downloaded",
+      "to": "imported",
+      "note": "needs forge: assemble horizontal strip (rows top ~2, body ~4, skirt ~20). Salmon rock slab in sea/sea_tileset.png. Grip normal"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+vehicle-jet-ski  (asset forge, 2026-11-14)
+Quality: 3/5
+Files: jet_ski_body.png 38x16 (hull, seat, handlebar, facing right), jet_ski_spray.png 7x3 (stern spray, optional, place at bow-down/stern as an effect).
+Method: Hull silhouette built by our own code (hull.py style piecewise top and keel lines with banded fill), seat and handlebar drawn from coordinates. Colours are exact Kenney palette values only; no pixels copied from art. Not hand-drawn by a human: made with Python (tools/assets/pixel.py) from explicit coordinates and project art. No generative AI.
+Sources: Kenney Pixel Vehicle Pack (Assets/Art/Vehicles/Kenney/Cars, CC0, Kenney) for the palette; Reactorcore/Zanin art not used.
+Anchors and rig: Waterline: bottom of hull is y=14 of the 16 px sprite; sit it ~2 px into the water. Preview 46x24 shows it on a water strip. Spray sample sits at stern (x 0..6, y 13..15 of preview).
+Limits: Bow band looks a bit stepped; rider missing; no wheels (hull rig; no floating physics yet).
+Facing right; palette limited to Kenney colours; import at 16 px per unit, point filter, no mipmaps, uncompressed (not yet applied; the Editor was busy).

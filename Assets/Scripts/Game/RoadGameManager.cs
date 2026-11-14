@@ -13,7 +13,7 @@ namespace RoadBuilderGame
         [Header("Scene Object References (Inspectable in Editor)")]
         [SerializeField] private Camera _cam;
         [SerializeField] private RoadBuilder _road;
-        [SerializeField] private ParallaxBackground _background;
+        [SerializeField] private BackgroundDirector _background;
         [SerializeField] private SoundManager _soundManager;
         [SerializeField] private ParticleManager _particleManager;
         [SerializeField] private EventSystem _eventSystem;
@@ -48,6 +48,7 @@ namespace RoadBuilderGame
 
         private PlayerProfile _profile;
         private bool _soundEnabled = true;
+        private string _selVehicleId = "", _selSurfaceId = "", _selWorldId = "";
 
         private RoadCar _car;
         private PhysicsMaterial2D _roadMaterial;
@@ -138,12 +139,12 @@ namespace RoadBuilderGame
             _roadMaterial = new PhysicsMaterial2D("Road") { friction = 1.25f, bounciness = 0f };
             _road.Init(_roadMaterial);
 
-            // 5. Ensure ParallaxBackground exists
-            if (_background == null) _background = FindAnyObjectByType<ParallaxBackground>();
+            // 5. Ensure the background director exists
+            if (_background == null) _background = FindAnyObjectByType<BackgroundDirector>();
             if (_background == null)
             {
                 var bgGo = new GameObject("Background");
-                _background = bgGo.AddComponent<ParallaxBackground>();
+                _background = bgGo.AddComponent<BackgroundDirector>();
             }
             _background.Init();
 
@@ -217,6 +218,9 @@ namespace RoadBuilderGame
             sportUnlocked = _profile.sportUnlocked;
             truckUnlocked = _profile.truckUnlocked;
             _soundEnabled = _profile.soundEnabled;
+            _selVehicleId = _profile.selectedVehicleId ?? "";
+            _selSurfaceId = _profile.selectedSurfaceId ?? "";
+            _selWorldId = _profile.selectedWorldId ?? "";
             AudioListener.volume = _soundEnabled ? 1f : 0f;
         }
 
@@ -234,6 +238,9 @@ namespace RoadBuilderGame
             _profile.sportUnlocked = sportUnlocked;
             _profile.truckUnlocked = truckUnlocked;
             _profile.soundEnabled = _soundEnabled;
+            _profile.selectedVehicleId = _selVehicleId;
+            _profile.selectedSurfaceId = _selSurfaceId;
+            _profile.selectedWorldId = _selWorldId;
             SaveService.Save(_profile);
         }
 
@@ -482,6 +489,9 @@ namespace RoadBuilderGame
             m.SportUnlocked = sportUnlocked;
             m.TruckUnlocked = truckUnlocked;
             m.SoundEnabled = _soundEnabled;
+            m.SelectedVehicleId = _selVehicleId;
+            m.SelectedSurfaceId = _selSurfaceId;
+            m.SelectedWorldId = _selWorldId;
             m.RaiseChanged();
         }
 
@@ -600,6 +610,17 @@ namespace RoadBuilderGame
             {
                 if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
             }
+        }
+
+        /// <summary>Remember a catalogue pick. Storage only: the track, physics and vehicle rig do not read it yet.</summary>
+        public void SelectCatalogItem(CatalogKind kind, string id)
+        {
+            id = id ?? "";
+            if (kind == CatalogKind.Vehicle) _selVehicleId = id;
+            else if (kind == CatalogKind.Surface) _selSurfaceId = id;
+            else _selWorldId = id;
+            SavePlayerData();
+            SyncModel();
         }
 
         public void SetSoundEnabled(bool enabled)

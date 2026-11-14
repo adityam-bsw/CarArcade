@@ -1,0 +1,4 @@
+Sources and licences (all read on the OpenGameArt page, 2026-11-14):
+- chopper_with_rider.png, chopper_no_rider.png: https://opengameart.org/content/2d-bike-sprite-1 by Chasersgaming. License(s): CC0. Notice: 'free to use as you want'.
+- motorcycle.png, vintagebuggy.png, vintagehippievan.png: https://opengameart.org/node/191356 by ZaninDevelopers. License(s): CC0. Notice: 'No attribution is necessary'. Made from CC0 rawpixel images.
+Read by: main session (before the asset agents existed)

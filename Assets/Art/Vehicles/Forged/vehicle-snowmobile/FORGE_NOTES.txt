@@ -1,0 +1,8 @@
+vehicle-snowmobile  (forged 2026-11-14 by asset-forge)
+Method: Drawn from an ASCII map plus rectangles in code with auto outline; track belt and ski are separate parts.
+Sources: Kenney Pixel Vehicle Pack (palette: scooter.png, kart.png); all CC0 (Kenney) project files. Code: tools/assets/pixel.py plus our own scratch scripts. No generative AI, no downloads.
+Files: body.png, body.png.meta, preview.png, ski_front.png, track_rear.png
+Pixel density: about 2x the Kenney cars (parts are 24-60 px wide), palette taken from the Kenney pack.
+Rig: runner + track. Preview 54x27. body.png 54x27 (draw order: track_rear, body, ski_front, all at 0,0 except parts). track_rear.png 24x9 paste top-left at (2,13), centre (14,17). ski_front.png 22x7 paste top-left at (30,15); ski posts at x35 and x40, y17-19.
+Limits: Track has no animation frames; windscreen is a rough shape; ski does not curve like a real one.
+Quality: 3 / 5 (usable stand-in; reads clearly at game size, not hand-drawn art)

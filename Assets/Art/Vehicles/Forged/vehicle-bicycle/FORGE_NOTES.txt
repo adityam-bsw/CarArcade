@@ -1,0 +1,8 @@
+vehicle-bicycle  (forged 2026-11-14 by asset-forge)
+Method: Drawn by line/pixel coordinates in code (frame tubes, saddle, bars). thinwheel.png is generated (1 px ring + 4 spokes).
+Sources: Kenney Pixel Vehicle Pack (palette: cycle.png, scooter.png); all CC0 (Kenney) project files. Code: tools/assets/pixel.py plus our own scratch scripts. No generative AI, no downloads.
+Files: body.png, body.png.meta, preview.png, preview.png.meta, wheel.png, wheel.png.meta
+Pixel density: about 2x the Kenney cars (parts are 24-60 px wide), palette taken from the Kenney pack.
+Rig: two wheels. Preview 36x24. Wheel sprite wheel.png 15x15. Wheel centres (px from preview top-left): rear (7,16), front (28,16). Bottom bracket (15,16). No rider included.
+Limits: Frame is 1 px lines with no outline so it is lighter than the outlined Kenney vehicles; no rider; no pedal animation.
+Quality: 3 / 5 (usable stand-in; reads clearly at game size, not hand-drawn art)

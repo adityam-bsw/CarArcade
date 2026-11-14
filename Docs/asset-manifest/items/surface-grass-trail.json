@@ -1,0 +1,37 @@
+{
+  "id": "surface-grass-trail",
+  "category": "surface",
+  "name": "Grass Trail",
+  "status": "imported",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Buch Floating Islands tiles_packed_1.png: grass-topped earth with dark rock body (16px), and seasonal tiles grass column; blaze plains/tileset.png also grass over dirt. Grip normal. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page).",
+  "source": "https://opengameart.org/content/the-field-of-the-floating-islands",
+  "licence": "CC0",
+  "licence_evidence": "OGA page: License(s): CC0",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/_oga-floating-islands",
+  "bytes": 88429,
+  "sha256": "1364b85078461d2a47726cb89c92e34b66b331e4db8271e93570be7756cd6678",
+  "project_path": "Assets/Art/Surfaces/FloatingIslands/",
+  "quality": 4,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "downloaded",
+      "note": "_oga-floating-islands q4"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "downloaded",
+      "to": "imported",
+      "note": "needs forge: assemble horizontal strip (rows top ~2, body ~4, skirt ~20). Grass over dark rock/earth in tiles_packed_1.png. Grip normal"
+    }
+  ]
+}

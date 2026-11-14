@@ -1,0 +1,8 @@
+vehicle-toboggan  (forged 2026-11-14 by asset-forge)
+Method: Drawn from rectangles in code with auto outline; wood in Kenney yellows; rider as in the sled.
+Sources: Kenney Pixel Vehicle Pack (palette: cycle.png yellow ramp); all CC0 (Kenney) project files. Code: tools/assets/pixel.py plus our own scratch scripts. No generative AI, no downloads.
+Files: body.png, preview.png, rider.png
+Pixel density: about 2x the Kenney cars (parts are 24-60 px wide), palette taken from the Kenney pack.
+Rig: hull / flat runner. Preview 52x26. body.png at (0,0), rider.png 13x12 at (14,3). Ground contact is the bottom row of the board, y=21 at the rear.
+Limits: Curled front is chunky; board looks more like a banana than a slat toboggan; rider shares the sled figure.
+Quality: 3 / 5 (usable stand-in; reads clearly at game size, not hand-drawn art)

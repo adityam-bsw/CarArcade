@@ -1,0 +1,8 @@
+vehicle-monster-truck  (asset forge, 2026-11-14)
+Quality: 4/5
+Files: monster_body.png 33x11 (Kenney suv_large cab with its wheels erased), monster_chassis.png 40x5 (axle bar + two struts), monster_wheel.png 15x15 (own code circle, tread lugs).
+Method: Cab cropped from Kenney suv_large (rows 0..10) with the original wheel pixels removed; chassis and the 15 px wheel generated/drawn by our own code in the Kenney palette. Not hand-drawn by a human: made with Python (tools/assets/pixel.py) from explicit coordinates and project art. No generative AI.
+Sources: Kenney Pixel Vehicle Pack (Assets/Art/Vehicles/Kenney/Cars, CC0, Kenney) for the palette; Reactorcore/Zanin art not used.
+Anchors and rig: Preview 48x32: body at (6,4), chassis at (4,13), wheels top-left (4,17) and (21,17). Wheel centres are therefore (11,24) and (28,24) in preview, i.e. (5,20) and (22,20) relative to the body top-left. Chassis struts are centred on the wheel centres.
+Limits: The cab keeps a little leftover white from the SUV roof rack and the cut arches are a bit rough; the big wheel is cleaner than the body; wheel is a single frame (rotate in engine).
+Facing right; palette limited to Kenney colours; import at 16 px per unit, point filter, no mipmaps, uncompressed (not yet applied; the Editor was busy).

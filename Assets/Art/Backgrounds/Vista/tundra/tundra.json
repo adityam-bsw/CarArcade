@@ -1,0 +1,84 @@
+{
+  "name": "tundra",
+  "canvas": [
+    384,
+    216
+  ],
+  "tiles_x": true,
+  "licence": "CC0-1.0",
+  "layers": [
+    {
+      "file": "tundra_0_sky.png",
+      "name": "sky",
+      "order": 0,
+      "scroll": 0.0,
+      "parts": [
+        "sky_0",
+        "sky_1",
+        "sky_2",
+        "sky_3"
+      ]
+    },
+    {
+      "file": "tundra_1_far.png",
+      "name": "far",
+      "order": 1,
+      "scroll": 0.2,
+      "parts": [
+        "hills"
+      ]
+    },
+    {
+      "file": "tundra_2_mid.png",
+      "name": "mid",
+      "order": 2,
+      "scroll": 0.4,
+      "parts": [
+        "moor"
+      ]
+    },
+    {
+      "file": "tundra_3_near.png",
+      "name": "near",
+      "order": 3,
+      "scroll": 0.8,
+      "parts": [
+        "snowfield"
+      ]
+    }
+  ],
+  "palette": [
+    "#1E3F4D",
+    "#254856",
+    "#2C525E",
+    "#355B65",
+    "#3C626A",
+    "#264854",
+    "#2E535E",
+    "#365D66",
+    "#3F676E",
+    "#476E73",
+    "#365B62",
+    "#40686D",
+    "#497376",
+    "#527B7C",
+    "#5D8584",
+    "#5B847E",
+    "#6C958D",
+    "#7DA79B",
+    "#84AC9F",
+    "#8CB1A2",
+    "#69848B",
+    "#6D8C8D",
+    "#78948F",
+    "#4B5B63",
+    "#4F6268",
+    "#53686B",
+    "#5B6F6F",
+    "#9EA7B3",
+    "#B1BDC8",
+    "#C1CFDA",
+    "#D3E2EB",
+    "#E2F3FA"
+  ]
+}

@@ -20,6 +20,9 @@ namespace RoadBuilderGame.UI
         private readonly Dictionary<Type, UIScreen> _instances = new Dictionary<Type, UIScreen>();
         private readonly List<UIScreen> _stack = new List<UIScreen>();
         private bool _transitioning;
+        // Screens that were covered by a full screen above them (OnHide was called). Restored properly when uncovered,
+        // even if the user pops again before the exit animation finished.
+        private readonly HashSet<UIScreen> _covered = new HashSet<UIScreen>();
 
         public UIScreen Top => _stack.Count > 0 ? _stack[_stack.Count - 1] : null;
         public int Depth => _stack.Count;
@@ -51,6 +54,7 @@ namespace RoadBuilderGame.UI
             if (_stack.Count == 0) return;
             var top = _stack[_stack.Count - 1];
             _stack.RemoveAt(_stack.Count - 1);
+            _covered.Remove(top);
             top.OnHide();
             // Only switch it off if it was not pushed again while the exit animation ran (e.g. Reset to the same screen).
             top.PlayOut(() => { if (top != null && !_stack.Contains(top)) top.gameObject.SetActive(false); });
@@ -59,7 +63,9 @@ namespace RoadBuilderGame.UI
             for (int i = _stack.Count - 1; i >= 0; i--)
             {
                 var s = _stack[i];
-                if (!s.gameObject.activeSelf) { s.gameObject.SetActive(true); s.PlayIn(null); }
+                // A covered screen unsubscribed in OnHide and faded out, so show it again properly: active, OnShow, PlayIn.
+                if (_covered.Remove(s)) { s.gameObject.SetActive(true); s.OnShow(null); s.PlayIn(null); }
+                else if (!s.gameObject.activeSelf) { s.gameObject.SetActive(true); s.PlayIn(null); }
                 if (!s.IsPopup) break;
             }
             TopChanged?.Invoke(Top);
@@ -80,6 +86,7 @@ namespace RoadBuilderGame.UI
 
         private void HideBelow(UIScreen below)
         {
+            _covered.Add(below);
             below.OnHide();
             below.PlayOut(() => { if (below != null && Top != below) below.gameObject.SetActive(false); });
         }

@@ -39,6 +39,16 @@ namespace RoadBuilderGame
         public bool SportUnlocked, TruckUnlocked;
         public bool SoundEnabled = true;
 
+        // Catalogue picks (manifest ids). Saved with the profile; applying them to the track is a later step.
+        public string SelectedVehicleId = "";
+        public string SelectedSurfaceId = "";
+        public string SelectedWorldId = "";
+
+        public string SelectedId(CatalogKind kind)
+        {
+            return kind == CatalogKind.Vehicle ? SelectedVehicleId : (kind == CatalogKind.Surface ? SelectedSurfaceId : SelectedWorldId);
+        }
+
         // Run (changes every frame while playing)
         public float Distance;
         public float SpeedKmh;
@@ -92,6 +102,7 @@ namespace RoadBuilderGame
         void CycleWorld(int dir);
         void CycleRoadStyle();
         void SetSoundEnabled(bool enabled);
+        void SelectCatalogItem(CatalogKind kind, string id);
     }
 
     /// <summary>Where the UI finds the model and actions. Set up by the game when it starts.</summary>

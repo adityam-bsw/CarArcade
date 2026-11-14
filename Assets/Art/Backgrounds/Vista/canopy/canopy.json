@@ -1,0 +1,79 @@
+{
+  "name": "canopy",
+  "canvas": [
+    384,
+    216
+  ],
+  "tiles_x": true,
+  "licence": "CC0-1.0",
+  "layers": [
+    {
+      "file": "canopy_0_sky.png",
+      "name": "sky",
+      "order": 0,
+      "scroll": 0.0,
+      "parts": [
+        "sky_0",
+        "sky_1",
+        "sky_2"
+      ]
+    },
+    {
+      "file": "canopy_1_far.png",
+      "name": "far",
+      "order": 1,
+      "scroll": 0.2,
+      "parts": [
+        "haze",
+        "far_crowns"
+      ]
+    },
+    {
+      "file": "canopy_2_mid.png",
+      "name": "mid",
+      "order": 2,
+      "scroll": 0.4,
+      "parts": [
+        "mid_crowns"
+      ]
+    },
+    {
+      "file": "canopy_3_near.png",
+      "name": "near",
+      "order": 3,
+      "scroll": 0.8,
+      "parts": [
+        "near_crowns"
+      ]
+    }
+  ],
+  "palette": [
+    "#79A495",
+    "#80AB98",
+    "#88B09A",
+    "#90B49B",
+    "#8AB09C",
+    "#93B79F",
+    "#9BBCA2",
+    "#A6C2A6",
+    "#B0C5A2",
+    "#BED0AA",
+    "#CDDAB2",
+    "#D4DDB5",
+    "#A6C0A4",
+    "#C2D2AE",
+    "#D1D5B1",
+    "#8BA98C",
+    "#B2C69F",
+    "#C5CBA3",
+    "#597960",
+    "#6B8566",
+    "#8FA17D",
+    "#9EA782",
+    "#1E382A",
+    "#2A4230",
+    "#3E533D",
+    "#4C5D45",
+    "#556148"
+  ]
+}

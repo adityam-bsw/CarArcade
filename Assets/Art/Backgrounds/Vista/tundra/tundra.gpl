@@ -1,0 +1,36 @@
+GIMP Palette
+Name: tundra
+Columns: 10
+#
+ 30  63  77	tundra_00
+ 37  72  86	tundra_01
+ 44  82  94	tundra_02
+ 53  91 101	tundra_03
+ 60  98 106	tundra_04
+ 38  72  84	tundra_05
+ 46  83  94	tundra_06
+ 54  93 102	tundra_07
+ 63 103 110	tundra_08
+ 71 110 115	tundra_09
+ 54  91  98	tundra_10
+ 64 104 109	tundra_11
+ 73 115 118	tundra_12
+ 82 123 124	tundra_13
+ 93 133 132	tundra_14
+ 91 132 126	tundra_15
+108 149 141	tundra_16
+125 167 155	tundra_17
+132 172 159	tundra_18
+140 177 162	tundra_19
+105 132 139	tundra_20
+109 140 141	tundra_21
+120 148 143	tundra_22
+ 75  91  99	tundra_23
+ 79  98 104	tundra_24
+ 83 104 107	tundra_25
+ 91 111 111	tundra_26
+158 167 179	tundra_27
+177 189 200	tundra_28
+193 207 218	tundra_29
+211 226 235	tundra_30
+226 243 250	tundra_31

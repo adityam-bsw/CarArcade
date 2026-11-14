@@ -1,0 +1,8 @@
+vehicle-tuk-tuk  (asset forge, 2026-11-14)
+Quality: 3/5
+Files: tuktuk_body.png 31x13 (canopy, seat, green body), tuktuk_wheel.png 7x7.
+Method: Body drawn from coordinates in Kenney palette (green from van_small); wheel from our own circle function matching the Kenney wheel style. Not a copy of any Kenney sprite. Not hand-drawn by a human: made with Python (tools/assets/pixel.py) from explicit coordinates and project art. No generative AI.
+Sources: Kenney Pixel Vehicle Pack (Assets/Art/Vehicles/Kenney/Cars, CC0, Kenney) for the palette; Reactorcore/Zanin art not used.
+Anchors and rig: Preview 34x20: body at (2,2), wheels top-left (5,12) and (23,12); centres (8,15) and (26,15), i.e. (6,13) and (24,13) relative to the body top-left. Side view only shows two wheels; the third (front) wheel is implied.
+Limits: Reads as an open jeepney or tuk-tuk, not specifically a three-wheeler; nose is plain; no driver.
+Facing right; palette limited to Kenney colours; import at 16 px per unit, point filter, no mipmaps, uncompressed (not yet applied; the Editor was busy).

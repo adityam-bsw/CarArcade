@@ -1,0 +1,7 @@
+Source: https://opengameart.org/content/animated-lava-16x32
+Author: InThePixel
+Licence: CC0 (License(s) field)
+Wording: 'Free to use in commercial or personal projects. Attribution appreciated but not required'
+File: lava_strip8.png, 287 bytes
+Date read: 2026-11-14
+Read by: main session (before the asset agents existed)

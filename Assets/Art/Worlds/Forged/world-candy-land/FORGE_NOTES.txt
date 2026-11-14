@@ -1,0 +1,5 @@
+world-candy-land: four looping 384x216 layers (candy-land_0_sky, _1_far, _2_mid, _3_near), VISTA format.
+Method: recolour, remix and pixel-drawn props on VISTA layers (details were not written down: the forge run was stopped early).
+Quality: not rated by the forge. Main-session visual impression on 2026-11-14: reads as a clean, believable scene next to VISTA.
+Seam scores (0 = exact loop): see tools/assets/pixel.py tileable_score; all layers under 0.025 except cloud-kingdom mid (0.067, above the 0.02 target).
+Not yet inspected: asset-inspector pass 2 must verify, set import settings, and approve or reject.

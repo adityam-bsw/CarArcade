@@ -1,0 +1,3 @@
+Source: https://opengameart.org/content/skateboard-0
+Author: Amir027. Licence: CC0. Notice on page: "free use". Collection 2D::Sprite::Sidescroll.
+Read 2026-11-14 by asset-scout. File: 1.png (29x12, 204 bytes).

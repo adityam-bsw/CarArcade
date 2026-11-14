@@ -1,0 +1,37 @@
+{
+  "id": "world-space-station",
+  "category": "world",
+  "name": "Space Station",
+  "status": "rejected",
+  "requirements": "Four horizontally looping layers 384x216 (sky, far, mid, near) like VISTA, pixel art, transparent where the layer should show what is behind it. Or a source we can convert to that format.",
+  "have": [],
+  "notes": "8 CC0 PNGs, 2000x2000 seamless nebula/stars layers; smooth (not pixel art) so needs_conversion; no station structures. Placeholder-grade.",
+  "source": "https://opengameart.org/content/parallax-space-scene-seamlessly-scrolls-too",
+  "licence": "CC0",
+  "licence_evidence": "OpenGameArt page: License(s): CC0",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/pack-space-scene",
+  "bytes": 3438414,
+  "sha256": "5b7ba3a40c5dd3b4f285ed9088421502c273083f178ffce795a910ba8fc344cb",
+  "project_path": null,
+  "quality": 2,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "downloaded",
+      "note": "scout: pack-space-scene, CC0, quality 2"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "downloaded",
+      "to": "rejected",
+      "note": "rejected: smooth 2000x2000 nebula layers (900 colours), not pixel art, ~1.5 MB each, no station; wrong style and too heavy for mobile. Forge a pixel space layer set instead"
+    }
+  ]
+}

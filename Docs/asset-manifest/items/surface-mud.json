@@ -1,0 +1,37 @@
+{
+  "id": "surface-mud",
+  "category": "surface",
+  "name": "Mud",
+  "status": "forged",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Procedural forge, quality 3.0/5. Physics hint: grip low (slippery, drags speed), bounce 0.0. Import settings still to set in inspector.",
+  "source": null,
+  "licence": "own work (procedural; palette sampled from CC0 kiln/mesa)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-mud/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 668,
+  "sha256": "7ac27aaad340c48dc6f5d7f98e05b20dc378cef37fe14d6d67b36c99665a5fae",
+  "project_path": "Assets/Art/Surfaces/Forged/surface-mud/surface-mud.png",
+  "quality": 3.0,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "not_found",
+      "note": "Only top-down mud tiles seen (LPC, CC-BY-SA). Forge by dark-brown recolour of blaze plains dirt slab."
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "procedural strip, quality 3.0"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+Item: world-autumn-leaves
+Origin: own work made by the asset-forge agent (pixel code with tools/assets/pixel.py), derived from CC0 VISTA by najjar320
+        (https://najjar320.itch.io/vista-parallax-backgrounds, licence file shipped in Assets/Art/Backgrounds/Vista/LICENCE.txt: CC0 1.0,
+        edits and shipping allowed, only reselling it as an asset pack is not).
+Licence of this derivative: CC0 / own work. No generative AI. No third-party art other than VISTA.
+Records written: 2026-11-14 by the main session after the forge run was stopped by the user before it wrote its own notes.
+Status: unreviewed by the asset-inspector.

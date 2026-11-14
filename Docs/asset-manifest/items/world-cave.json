@@ -1,0 +1,37 @@
+{
+  "id": "world-cave",
+  "category": "world",
+  "name": "Cave",
+  "status": "imported",
+  "requirements": "Four horizontally looping layers 384x216 (sky, far, mid, near) like VISTA, pixel art, transparent where the layer should show what is behind it. Or a source we can convert to that format.",
+  "have": [],
+  "notes": "Only 2 layers: background 240x176 and middleground 272x176 (purple crystal cave), ansimuz CC0. Demo code in zip was NOT extracted. Missing near layer.",
+  "source": "https://opengameart.org/content/warped-caves-pixel-art-pack",
+  "licence": "CC0",
+  "licence_evidence": "OpenGameArt page: License(s): CC0",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/pack-warped-caves",
+  "bytes": 18741,
+  "sha256": "1e4515b364c88968d190db3d7bb4796f52c7f6da400162016957341c8a6e0887",
+  "project_path": "Assets/Art/Worlds/WarpedCaves/",
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "downloaded",
+      "note": "scout: pack-warped-caves, CC0, quality 3"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "downloaded",
+      "to": "imported",
+      "note": "needs conversion: only 2 layers (background 240x176, middleground 272x176); needs sky/far/mid/near at 384x216 with a near layer added"
+    }
+  ]
+}

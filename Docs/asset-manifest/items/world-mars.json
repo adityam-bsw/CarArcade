@@ -1,0 +1,37 @@
+{
+  "id": "world-mars",
+  "category": "world",
+  "name": "Mars",
+  "status": "forged",
+  "requirements": "Four horizontally looping layers 384x216 (sky, far, mid, near) like VISTA, pixel art, transparent where the layer should show what is behind it. Or a source we can convert to that format.",
+  "have": [],
+  "notes": "Forged scene, 4 layers 384x216. Forge run stopped before notes; records written by main session. Unreviewed by inspector.",
+  "source": null,
+  "licence": "own work (derivative of CC0 VISTA by najjar320)",
+  "licence_evidence": null,
+  "download_dir": null,
+  "bytes": null,
+  "sha256": null,
+  "project_path": "Assets/Art/Worlds/Forged/world-mars/",
+  "quality": null,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "not_found",
+      "note": "scout: OGA: Red Planet is a single smooth image; Planet Surface Backgrounds are procedural smooth renders. No pixel parallax."
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "layers exist and look complete; records added after the forge run was stopped"
+    }
+  ]
+}

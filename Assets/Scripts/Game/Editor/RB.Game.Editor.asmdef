@@ -1,0 +1,19 @@
+{
+    "name": "RB.Game.Editor",
+    "rootNamespace": "RoadBuilderGame.Editor",
+    "references": [
+        "RB.Core",
+        "RB.Game"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

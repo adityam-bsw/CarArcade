@@ -1,0 +1,10 @@
+surface-magma-bridge
+Method: procedural, own code (pixel.py + periodic value noise, hash speckle, 4x4 Bayer ordered dither). Not hand-drawn.
+Look: Dark basalt noise with a sine-wave glowing crack plus short branches. Glow colours exactly the four lava_strip8.png colours.
+Palette inspiration (colours sampled/approximated, no pixels copied): Assets/Art/Surfaces/Lava/lava_strip8.png; palette is limited to 6-12 colours.
+Layout: 128x26 strip. Rows 0-1 top surface, 2-5 slab body, 6-25 shadow skirt (dither fade to transparent, mixed Bayer+hash so it has no visible pattern seam).
+Tiling: noise is periodic across 128 px; the last column is a copy of column 0 so tileable_score is 0.000 (cost: one doubled column per tile, hidden in the speckle).
+Physics hint: grip normal, bounce 0.0 (damage/heat is a mode rule)
+Limits: 4-row body leaves little room for detail; skirt is a plain dither, not slab-shaded; needs a look in game on the road ribbon.
+quality: 3.0 of 5 (usable, not polished)
+Unity import (to do in inspector): point filter, no mipmaps, uncompressed, 16 px per unit, wrap mode Repeat.

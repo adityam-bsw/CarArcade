@@ -1,0 +1,10 @@
+surface-cobblestone
+Method: procedural, own code (pixel.py + periodic value noise, hash speckle, 4x4 Bayer ordered dither). Not hand-drawn.
+Look: Staggered 16x3 px stone courses, three stone tones with highlight/shade edges, dark grout rows. Cleanest of the set.
+Palette inspiration (colours sampled/approximated, no pixels copied): Kenney-style greys; palette is limited to 6-12 colours.
+Layout: 128x26 strip. Rows 0-1 top surface, 2-5 slab body, 6-25 shadow skirt (dither fade to transparent, mixed Bayer+hash so it has no visible pattern seam).
+Tiling: noise is periodic across 128 px; the last column is a copy of column 0 so tileable_score is 0.000 (cost: one doubled column per tile, hidden in the speckle).
+Physics hint: grip normal-high, bounce 0.05 (rattly)
+Limits: 4-row body leaves little room for detail; skirt is a plain dither, not slab-shaded; needs a look in game on the road ribbon.
+quality: 3.5 of 5 (usable, not polished)
+Unity import (to do in inspector): point filter, no mipmaps, uncompressed, 16 px per unit, wrap mode Repeat.

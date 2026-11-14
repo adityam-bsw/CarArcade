@@ -1,0 +1,8 @@
+vehicle-snowboard  (forged 2026-11-14 by asset-forge)
+Method: Drawn from rectangles in code with auto outline; rider figure drawn by ASCII map.
+Sources: Kenney Pixel Vehicle Pack (palette: buggy.png blues); all CC0 (Kenney) project files. Code: tools/assets/pixel.py plus our own scratch scripts. No generative AI, no downloads.
+Files: board.png, preview.png, rider.png
+Pixel density: about 2x the Kenney cars (parts are 24-60 px wide), palette taken from the Kenney pack.
+Rig: board as a single ground-hugging body. Preview 36x26. board.png at (0,0), rider.png 9x16 at (13,6). Ground contact is the board bottom row y=24.
+Limits: Rider is a stiff standing pose with no lean or arms out; one pose only.
+Quality: 3 / 5 (usable stand-in; reads clearly at game size, not hand-drawn art)

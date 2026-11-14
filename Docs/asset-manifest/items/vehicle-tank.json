@@ -1,0 +1,31 @@
+{
+  "id": "vehicle-tank",
+  "category": "vehicle",
+  "name": "Tank",
+  "status": "ready",
+  "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
+  "have": [],
+  "notes": "Side view pixel tank, facing right, 32x32 frames, 11 frames (352x32 strip; moving+shooting), green. Hull with turret/barrel; tracks not separate wheels (hull rig). Standard and US recolours.",
+  "source": "https://opengameart.org/content/32x32-m1-shepard-tank-set-basic-us-axis",
+  "licence": "CC0",
+  "licence_evidence": "CC0; 'Do whatever you want mang.'",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/vehicle-tank",
+  "bytes": 2724,
+  "sha256": "cc6a2932c1521f7b72434928e99ca07905b1bd166e13660fcf5b20a8e7fce478",
+  "project_path": "Assets/Art/Vehicles/Tank/",
+  "quality": 4,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "downloaded",
+      "note": "OGA CC0 32x32 M1 Shepard tank set, side view"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "downloaded",
+      "to": "ready",
+      "note": "ready"
+    }
+  ]
+}

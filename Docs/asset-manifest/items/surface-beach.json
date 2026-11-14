@@ -1,0 +1,37 @@
+{
+  "id": "surface-beach",
+  "category": "surface",
+  "name": "Beach",
+  "status": "imported",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "GrafxKid Tiles_4.png tropical seaside ground column (sand top, 16px) plus blaze sea pack (_oga-blazes-platformer-pack/x/sea/). Needs strip assembly. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page).",
+  "source": "https://opengameart.org/content/seasonal-platformer-tiles",
+  "licence": "CC0",
+  "licence_evidence": "OGA page: License(s): CC0",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/_oga-seasonal-platformer-tiles",
+  "bytes": 14879,
+  "sha256": "348b572e5b887cc44d5fb69d4c216c0b915b578e900302d1b7d917990457d562",
+  "project_path": "Assets/Art/Surfaces/SeasonalTiles/, Assets/Art/Surfaces/BlazesPlatformer/sea/",
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "downloaded",
+      "note": "_oga-seasonal-platformer-tiles q3"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "downloaded",
+      "to": "imported",
+      "note": "needs forge: assemble horizontal strip (rows top ~2, body ~4, skirt ~20). Tiles_4.png has an opaque magenta backdrop: crop tiles only"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+Source: https://opengameart.org/content/animated-ocean-water-tile
+Author: POKOMOKO (notice names Jason Wild)
+Licence: CC0 (License(s) field)
+Wording: Copyright/Attribution Notice reads 'Jason Wild'; no usage restriction stated.
+File: Ocean_SpriteSheet.png, 2,143 bytes
+Date read: 2026-11-14
+Read by: main session (before the asset agents existed)

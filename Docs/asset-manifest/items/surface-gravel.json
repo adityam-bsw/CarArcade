@@ -1,0 +1,37 @@
+{
+  "id": "surface-gravel",
+  "category": "surface",
+  "name": "Gravel",
+  "status": "forged",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Procedural forge, quality 3.0/5. Physics hint: grip normal-low (loose), bounce 0.0-0.1, slight slide on corners. Import settings still to set in inspector.",
+  "source": null,
+  "licence": "own work (procedural; palette sampled from CC0 cairn/downs)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-gravel/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 816,
+  "sha256": "d3b05568c65fcef0688f3b6503f5e03843ccc5d1a49c4198a9e1d672b29a8834",
+  "project_path": "Assets/Art/Surfaces/Forged/surface-gravel/surface-gravel.png",
+  "quality": 3.0,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "not_found",
+      "note": "No CC0 side-view gravel found. Forge by recolouring/dithering dirt body from blaze plains tileset."
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "procedural strip, quality 3.0"
+    }
+  ]
+}

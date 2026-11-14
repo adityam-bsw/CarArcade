@@ -1,0 +1,8 @@
+vehicle-hovercraft  (asset forge, 2026-11-14)
+Quality: 3/5
+Files: hovercraft_body.png 33x12 (hull + dome + skirt), hovercraft_fan_a.png and _b.png 5x10 (two animation frames for the rear fan, alternate every ~0.05 s).
+Method: Drawn from coordinates; Kenney palette values. Not hand-drawn by a human: made with Python (tools/assets/pixel.py) from explicit coordinates and project art. No generative AI.
+Sources: Kenney Pixel Vehicle Pack (Assets/Art/Vehicles/Kenney/Cars, CC0, Kenney) for the palette; Reactorcore/Zanin art not used.
+Anchors and rig: Fan top-left is (-3,-3) relative to the body top-left (preview: body at (6,3), fan at (3,0)). Skirt bottom is y=11 of the body sprite; ground contact ~ there; skirt is a single piece (no separate sprite).
+Limits: Fan reads as a narrow cage, not a real duct; fan frames are only a coarse flicker; no shadow or dust.
+Facing right; palette limited to Kenney colours; import at 16 px per unit, point filter, no mipmaps, uncompressed (not yet applied; the Editor was busy).

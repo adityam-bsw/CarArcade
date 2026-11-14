@@ -1,0 +1,598 @@
+fileFormatVersion: 2
+guid: 7e70aeb5630114649ac5073051c01fe6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5475762603353162525
+    second: Elasto Bike All_0
+  - first:
+      213: -746882507966708091
+    second: Elasto Bike All_1
+  - first:
+      213: 2819814535760173535
+    second: Elasto Bike All_2
+  - first:
+      213: 2584780203568446211
+    second: Elasto Bike All_3
+  - first:
+      213: -4447310843361720797
+    second: Elasto Bike All_4
+  - first:
+      213: -732172417526516418
+    second: Elasto Bike All_5
+  - first:
+      213: 2273769564841814470
+    second: Elasto Bike All_6
+  - first:
+      213: -6197486253931470570
+    second: Elasto Bike All_7
+  - first:
+      213: -6834329162333134315
+    second: Elasto Bike All_8
+  - first:
+      213: 2324146482105029635
+    second: Elasto Bike All_9
+  - first:
+      213: -6192376555785603322
+    second: Elasto Bike All_10
+  - first:
+      213: -3614411732153055018
+    second: Elasto Bike All_11
+  - first:
+      213: 1009897832502503118
+    second: Elasto Bike All_12
+  - first:
+      213: 6494595222021967902
+    second: Elasto Bike All_13
+  - first:
+      213: -2407752513755890661
+    second: Elasto Bike All_14
+  - first:
+      213: -8742846542381955993
+    second: Elasto Bike All_15
+  - first:
+      213: 3102451753447334331
+    second: Elasto Bike All_16
+  - first:
+      213: 3598473007992098900
+    second: Elasto Bike All_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Elasto Bike All_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 255
+        width: 79
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d13cb3f6311ddfb40800000000000000
+      internalID: 5475762603353162525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_1
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 255
+        width: 79
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58601bfe05a82a5f0800000000000000
+      internalID: -746882507966708091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_2
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 215
+        width: 79
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd9d778516ef12720800000000000000
+      internalID: 2819814535760173535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_3
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 215
+        width: 79
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30bb82086ebfed320800000000000000
+      internalID: 2584780203568446211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_4
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 175
+        width: 79
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3268eafc95af742c0800000000000000
+      internalID: -4447310843361720797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_5
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 175
+        width: 79
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e353ef2c01dc6d5f0800000000000000
+      internalID: -732172417526516418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_6
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 135
+        width: 79
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c9ad7d4f5d0e8f10800000000000000
+      internalID: 2273769564841814470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_7
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 135
+        width: 79
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6116c06761b1ef9a0800000000000000
+      internalID: -6197486253931470570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_8
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 99
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5126a0136d59721a0800000000000000
+      internalID: -6834329162333134315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_9
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 97
+        width: 27
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30418df59e6014020800000000000000
+      internalID: 2324146482105029635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_10
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 97
+        width: 27
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60731f4c452401aa0800000000000000
+      internalID: -6192376555785603322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_11
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 95
+        width: 29
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d84309fda707ddc0800000000000000
+      internalID: -3614411732153055018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_12
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 99
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec6afbd5ab0e30e00800000000000000
+      internalID: 1009897832502503118
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_13
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 66
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e109190d1ff612a50800000000000000
+      internalID: 6494595222021967902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_14
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 78
+        width: 26
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1cb68678d1f59ed0800000000000000
+      internalID: -2407752513755890661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_15
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 59
+        width: 42
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 764429b246b2ba680800000000000000
+      internalID: -8742846542381955993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_16
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 61
+        width: 32
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb12409ae6f1e0b20800000000000000
+      internalID: 3102451753447334331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Elasto Bike All_17
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 8
+        width: 83
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 450533f922850f130800000000000000
+      internalID: 3598473007992098900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Elasto Bike All_0: 5475762603353162525
+      Elasto Bike All_1: -746882507966708091
+      Elasto Bike All_10: -6192376555785603322
+      Elasto Bike All_11: -3614411732153055018
+      Elasto Bike All_12: 1009897832502503118
+      Elasto Bike All_13: 6494595222021967902
+      Elasto Bike All_14: -2407752513755890661
+      Elasto Bike All_15: -8742846542381955993
+      Elasto Bike All_16: 3102451753447334331
+      Elasto Bike All_17: 3598473007992098900
+      Elasto Bike All_2: 2819814535760173535
+      Elasto Bike All_3: 2584780203568446211
+      Elasto Bike All_4: -4447310843361720797
+      Elasto Bike All_5: -732172417526516418
+      Elasto Bike All_6: 2273769564841814470
+      Elasto Bike All_7: -6197486253931470570
+      Elasto Bike All_8: -6834329162333134315
+      Elasto Bike All_9: 2324146482105029635
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

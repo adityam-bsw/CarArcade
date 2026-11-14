@@ -1,0 +1,8 @@
+vehicle-sled  (forged 2026-11-14 by asset-forge)
+Method: Drawn from rectangles/lines in code with auto outline; rider is a small coordinate-drawn figure (rider.png), our own, not from Kenney.
+Sources: Kenney Pixel Vehicle Pack (palette: scooter.png); all CC0 (Kenney) project files. Code: tools/assets/pixel.py plus our own scratch scripts. No generative AI, no downloads.
+Files: body.png, preview.png, rider.png, runner.png
+Pixel density: about 2x the Kenney cars (parts are 24-60 px wide), palette taken from the Kenney pack.
+Rig: runner. Preview 44x24. runner.png 36x5 top-left (3,19); body.png (deck, posts, rope) at (0,0); rider.png 13x12 at (12,3). Ground contact is the runner bottom row y=23.
+Limits: Rider is a generic blocky figure; runner curl is only 2 px.
+Quality: 3 / 5 (usable stand-in; reads clearly at game size, not hand-drawn art)

@@ -15,6 +15,8 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Button nextButton;
         [SerializeField] private Button roadButton;
         [SerializeField] private Button backButton;
+        [SerializeField] private Button allWorldsButton;
+        [SerializeField] private Button allSurfacesButton;
 
         private EnvironmentTheme _shownWorld = (EnvironmentTheme)(-1);
 
@@ -24,6 +26,8 @@ namespace RoadBuilderGame.UI
             nextButton.onClick.AddListener(() => GameServices.Actions?.CycleWorld(1));
             roadButton.onClick.AddListener(() => GameServices.Actions?.CycleRoadStyle());
             backButton.onClick.AddListener(() => GameServices.Actions?.GoHome());
+            if (allWorldsButton != null) allWorldsButton.onClick.AddListener(() => Stack?.Push<CollectionScreen>(CatalogKind.World));
+            if (allSurfacesButton != null) allSurfacesButton.onClick.AddListener(() => Stack?.Push<CollectionScreen>(CatalogKind.Surface));
         }
 
         public override void OnBackPressed() { GameServices.Actions?.GoHome(); }

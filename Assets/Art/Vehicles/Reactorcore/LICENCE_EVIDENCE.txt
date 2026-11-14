@@ -1,0 +1,7 @@
+Source: https://opengameart.org/content/motocross-trial-motorcycle-dirtbike
+Author: Reactorcore (RC Art)
+Licence: CC0 (the page's License(s) field shows CC0; Public Domain badge)
+Wording: Info.txt in the pack: 'Pixel-art sprites pack depicting a modular motocross bike for physics-driven Trials/Elastomania style games.' No usage restriction stated.
+File: rc_art_-_motocross_bike.zip, 40,361 bytes
+Date read: 2026-11-14
+Read by: main session (before the asset agents existed)

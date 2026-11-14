@@ -37,6 +37,10 @@ namespace RoadBuilderGame
         private readonly List<Segment> _segments = new List<Segment>();
         private Segment _activeSegment;
         private PhysicsMaterial2D _physicsMaterial;
+        private RoadSkin _skin;
+
+        /// <summary>How the road is drawn. Looks only: changing it never moves the road or changes its physics.</summary>
+        public RoadSkin CurrentSkin => _skin != null ? _skin : (_skin = RoadSkins.Get(CurrentStyle));
 
         public int SegmentCount => _segments.Count;
 
@@ -58,11 +62,12 @@ namespace RoadBuilderGame
         public void SetRoadStyle(RoadStyle style)
         {
             CurrentStyle = style;
+            _skin = RoadSkins.Get(style);
             foreach (var seg in _segments)
             {
                 if (seg.chunk != null && seg.sampledPoints.Count >= 2)
                 {
-                    seg.chunk.Build(seg.sampledPoints, 0, seg.sampledPoints.Count - 1, roadThickness, supportDepth, CurrentStyle);
+                    seg.chunk.Build(seg.sampledPoints, 0, seg.sampledPoints.Count - 1, roadThickness, supportDepth, _skin);
                 }
             }
         }
@@ -147,7 +152,7 @@ namespace RoadBuilderGame
             var go = new GameObject("RoadSegment_" + _segments.Count);
             go.transform.SetParent(transform, false);
             _activeSegment.chunk = go.AddComponent<RoadChunk>();
-            _activeSegment.chunk.Init(SpriteFactory.MeshMaterial, _physicsMaterial);
+            _activeSegment.chunk.Init(_physicsMaterial);
 
             _segments.Add(_activeSegment);
             return true;
@@ -348,7 +353,7 @@ namespace RoadBuilderGame
                         _activeSegment.sampledPoints.Count - 1,
                         roadThickness,
                         supportDepth,
-                        CurrentStyle
+                        CurrentSkin
                     );
                     _activeSegment.maxX = Mathf.Max(_activeSegment.maxX, _activeSegment.chunk.MaxX);
                     FrontierMaxX = Mathf.Max(FrontierMaxX, _activeSegment.maxX);

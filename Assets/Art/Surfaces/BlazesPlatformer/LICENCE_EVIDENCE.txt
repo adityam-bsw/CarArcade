@@ -1,0 +1,6 @@
+Source: https://opengameart.org/content/blazes-platformer-pack-3-environments-included
+Author: blaze_xcvi
+Licence: CC0
+Wording: readme.txt in zip: 'licensed under CC0 1.0 Universal (Public Domain Dedication)'; OGA page: License(s): CC0
+Date read: 2026-11-14
+Read by asset-scout (page fetched in browser tab; files via plain curl)

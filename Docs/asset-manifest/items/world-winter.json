@@ -1,0 +1,20 @@
+{
+  "id": "world-winter",
+  "category": "world",
+  "name": "Winter",
+  "status": "have",
+  "requirements": "Four horizontally looping layers 384x216 (sky, far, mid, near) like VISTA, pixel art, transparent where the layer should show what is behind it. Or a source we can convert to that format.",
+  "have": [
+    "Assets/Art/Backgrounds/Vista/tundra"
+  ],
+  "notes": "partial: VISTA tundra and hollow",
+  "source": null,
+  "licence": null,
+  "licence_evidence": null,
+  "download_dir": null,
+  "bytes": null,
+  "sha256": null,
+  "project_path": null,
+  "quality": null,
+  "history": []
+}

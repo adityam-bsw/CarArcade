@@ -1,0 +1,37 @@
+{
+  "id": "surface-salt-flat",
+  "category": "surface",
+  "name": "Salt Flat",
+  "status": "forged",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Procedural forge, quality 3.0/5. Physics hint: grip normal-low, bounce 0.0. Import settings still to set in inspector.",
+  "source": null,
+  "licence": "own work (procedural; palette sampled from CC0 mesa)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-salt-flat/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 680,
+  "sha256": "ba9a31e63739138d648e926a5a61ef6814ae21eb0fc2f7bf73be8d5b6617b9a6",
+  "project_path": "Assets/Art/Surfaces/Forged/surface-salt-flat/surface-salt-flat.png",
+  "quality": 3.0,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "not_found",
+      "note": "No pack found. Forge: white/pale-blue recolour of snow slab without snow lumps."
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "procedural strip, quality 3.0"
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "name": "mesa",
+  "canvas": [
+    384,
+    216
+  ],
+  "tiles_x": true,
+  "licence": "CC0-1.0",
+  "layers": [
+    {
+      "file": "mesa_0_sky.png",
+      "name": "sky",
+      "order": 0,
+      "scroll": 0.0,
+      "parts": [
+        "sky_0",
+        "sky_1",
+        "sky_2"
+      ]
+    },
+    {
+      "file": "mesa_1_far.png",
+      "name": "far",
+      "order": 1,
+      "scroll": 0.2,
+      "parts": [
+        "far_mesa"
+      ]
+    },
+    {
+      "file": "mesa_2_mid.png",
+      "name": "mid",
+      "order": 2,
+      "scroll": 0.4,
+      "parts": [
+        "butte"
+      ]
+    },
+    {
+      "file": "mesa_3_near.png",
+      "name": "near",
+      "order": 3,
+      "scroll": 0.8,
+      "parts": [
+        "scree",
+        "sand"
+      ]
+    }
+  ],
+  "palette": [
+    "#8392B1",
+    "#8598B7",
+    "#8B9EBD",
+    "#92A1C1",
+    "#929CAF",
+    "#98A4B8",
+    "#9DA9BD",
+    "#A6B0C4",
+    "#CEB090",
+    "#DBBE9B",
+    "#E9CCA9",
+    "#EED0AF",
+    "#C7A896",
+    "#CFB39A",
+    "#D4BBA0",
+    "#DDC5AB",
+    "#9E7362",
+    "#B0856E",
+    "#BF9677",
+    "#CBA885",
+    "#DABA96",
+    "#865649",
+    "#976652",
+    "#A7775A",
+    "#B48967",
+    "#C19C76",
+    "#D5A280",
+    "#E3B486",
+    "#F5C998",
+    "#FFE2B3"
+  ]
+}

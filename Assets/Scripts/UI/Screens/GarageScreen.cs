@@ -28,6 +28,7 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Button prevButton;
         [SerializeField] private Button nextButton;
         [SerializeField] private Button backButton;
+        [SerializeField] private Button allVehiclesButton;
         [SerializeField] private UpgradeRow[] rows = new UpgradeRow[3];
 
         private int _lastCoins = -1;
@@ -38,6 +39,7 @@ namespace RoadBuilderGame.UI
             prevButton.onClick.AddListener(() => GameServices.Actions?.CycleVehicle(-1));
             nextButton.onClick.AddListener(() => GameServices.Actions?.CycleVehicle(1));
             backButton.onClick.AddListener(() => GameServices.Actions?.GoHome());
+            if (allVehiclesButton != null) allVehiclesButton.onClick.AddListener(() => Stack?.Push<CollectionScreen>(CatalogKind.Vehicle));
             for (int i = 0; i < rows.Length; i++)
             {
                 int stat = i;

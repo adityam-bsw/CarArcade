@@ -1,0 +1,37 @@
+{
+  "id": "surface-rail-track",
+  "category": "surface",
+  "name": "Rail Track",
+  "status": "forged",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Procedural forge, quality 3.0/5. Physics hint: grip high, bounce 0.05 (clack). Import settings still to set in inspector.",
+  "source": null,
+  "licence": "own work (procedural; palette sampled from CC0 Kenney greys, kiln browns)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-rail-track/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 678,
+  "sha256": "0c409293296ecf4a5db7947f42850f23914c27efe52f2d6557cf44cbf5666d67",
+  "project_path": "Assets/Art/Surfaces/Forged/surface-rail-track/surface-rail-track.png",
+  "quality": 3.0,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "not_found",
+      "note": "No side-view rail strip found. Forge: sleepers plus rails over stone body (own code)."
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "procedural strip, quality 3.0"
+    }
+  ]
+}

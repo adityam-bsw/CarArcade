@@ -1,0 +1,37 @@
+{
+  "id": "vehicle-hovercraft",
+  "category": "vehicle",
+  "name": "Hovercraft",
+  "status": "forged",
+  "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
+  "have": [],
+  "notes": "Forged: hovercraft_body.png 33x12 (hull + dome + skirt), hovercraft_fan_a.png and _b.png 5x10 (two animation frames for the rear fan, alternate every ~0.05 s). Limits: Fan reads as a narrow cage, not a real duct; fan frames are only a coarse flicker; no shadow or dust.",
+  "source": null,
+  "licence": "own work (derivative of CC0 Kenney Pixel Vehicle Pack)",
+  "licence_evidence": "Assets/Art/Vehicles/Forged/vehicle-hovercraft/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": null,
+  "sha256": null,
+  "project_path": "Assets/Art/Vehicles/Forged/vehicle-hovercraft/",
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "not_found",
+      "note": "Searched OGA+itch.io several phrasings. No free CC0 side-view art found. Candidates rejected: top-down speed boats (Sami), kayak with paddler (Spring), Lichee10 top-down vehicles, OGA sled CC-BY"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "forged, quality 3"
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "forged from Kenney palette/parts, see FORGE_NOTES"
+    }
+  ]
+}

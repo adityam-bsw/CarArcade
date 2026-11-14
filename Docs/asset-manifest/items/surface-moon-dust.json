@@ -1,0 +1,37 @@
+{
+  "id": "surface-moon-dust",
+  "category": "surface",
+  "name": "Moon Dust",
+  "status": "forged",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "Procedural forge, quality 3.0/5. Physics hint: grip normal-low, bounce 0.0 (low gravity mode suggested). Import settings still to set in inspector.",
+  "source": null,
+  "licence": "own work (procedural; palette sampled from CC0 tundra/cairn greys)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-moon-dust/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 784,
+  "sha256": "84e1c5395c092ce5a1c91fa2f9532b500a799d17b3cfc7b989a43b238ec769cc",
+  "project_path": "Assets/Art/Surfaces/Forged/surface-moon-dust/surface-moon-dust.png",
+  "quality": 3.0,
+  "history": [
+    {
+      "date": "2026-11-14",
+      "from": "todo",
+      "to": "scouting",
+      "note": ""
+    },
+    {
+      "date": "2026-11-14",
+      "from": "scouting",
+      "to": "not_found",
+      "note": "No CC0 pixel moon ground found. Forge by grey recolour of blaze sand/snow slab with crater dots."
+    },
+    {
+      "date": "2026-11-14",
+      "from": "not_found",
+      "to": "forged",
+      "note": "procedural strip, quality 3.0"
+    }
+  ]
+}

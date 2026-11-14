@@ -1,0 +1,18 @@
+{
+  "id": "surface-dirt",
+  "category": "surface",
+  "name": "Dirt",
+  "status": "have",
+  "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
+  "have": [],
+  "notes": "flat colours today",
+  "source": null,
+  "licence": null,
+  "licence_evidence": null,
+  "download_dir": null,
+  "bytes": null,
+  "sha256": null,
+  "project_path": null,
+  "quality": null,
+  "history": []
+}

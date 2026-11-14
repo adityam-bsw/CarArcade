@@ -19,7 +19,11 @@ no art or design team. Read `Docs/REDESIGN_PLAN.md` before any structural work.
 - **Data:** tuning lives in ScriptableObjects, not magic numbers. Save through `SaveService` only
   (no new `PlayerPrefs` keys).
 - **Assets:** every third-party asset is logged in `Docs/ASSET_LEDGER.md` with source and
-  licence (see `rb-asset-pipeline`). No ledger entry, no merge.
+  licence (see `rb-asset-pipeline`). No ledger entry, no merge. New art comes through the asset agents
+  (`rb-asset-agents`: scout, forge, inspector; rules in `Docs/ASSET_AGENT_RULES.md`). Game code may only
+  reference items whose manifest status is `ready` or `have` (`Docs/ASSET_STATUS.md`); the in-game
+  catalogue (`Docs/CATALOG_AND_COLLECTION.md`) lists unreviewed `forged` items in the Editor and development builds only. The EditMode test
+  `AssetLedgerCoverageTests` enforces ledger rows, licence evidence and no scripts inside art packs.
 
 ## Working rules
 - **Code lookups use the graph first:** `graphify explain "Type"` / `graphify query "..."`, then
@@ -42,6 +46,7 @@ no art or design team. Read `Docs/REDESIGN_PLAN.md` before any structural work.
 | `rb-dotween` | Writing any tween: API rules, patterns, cleanup, pitfalls |
 | `rb-motion-design` | Deciding what should move, how long, which easing, what feel |
 | `rb-add-mode` | Adding or changing a Mode pack |
+| `rb-asset-agents` | Finding, creating, checking or importing surfaces, worlds and vehicles (three agents) |
 
 Global Unity skills (`unity-*`) also apply: architecture, canvas UI, audio juice, android release,
 kids safety, perf, playtest script.
