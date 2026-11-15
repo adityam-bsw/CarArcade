@@ -16,17 +16,49 @@ namespace RoadBuilderGame.UI
         [SerializeField] private TMP_Text gemsText;
         [SerializeField] private Button retryButton;
         [SerializeField] private Button menuButton;
+        [Header("Optional rewarded offers (never mid-run)")]
+        [SerializeField] private Button doubleButton;
+        [SerializeField] private Button reviveButton;
+        [SerializeField] private Button extraDailyButton;
+        [SerializeField] private TMP_Text doubleLabel;
+        [SerializeField] private TMP_Text extraDailyLabel;
 
         private void Awake()
         {
             retryButton.onClick.AddListener(() => GameServices.Actions?.StartRace());
             menuButton.onClick.AddListener(() => GameServices.Actions?.GoHome());
+            if (doubleButton != null) doubleButton.onClick.AddListener(() => GameServices.Actions?.WatchOffer(AdPlacement.DoubleCoins));
+            if (reviveButton != null) reviveButton.onClick.AddListener(() => GameServices.Actions?.WatchOffer(AdPlacement.Revive));
+            if (extraDailyButton != null) extraDailyButton.onClick.AddListener(() => GameServices.Actions?.WatchOffer(AdPlacement.ExtraDailyReward));
         }
 
         public override void OnBackPressed() { GameServices.Actions?.GoHome(); }
 
+        public override void OnHide() { GameServices.Model.Changed -= RefreshOffers; }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            GameServices.Model.Changed -= RefreshOffers;
+        }
+
+        private void RefreshOffers()
+        {
+            var m = GameServices.Model;
+            var r = m.LastRun;
+            totalText.SetText("TOTAL {0}", r.totalCoins);
+            coinsWonText.SetText("+{0}", r.coinsWon);
+            if (doubleButton != null) doubleButton.gameObject.SetActive(m.OfferDouble);
+            if (reviveButton != null) reviveButton.gameObject.SetActive(m.OfferRevive);
+            if (extraDailyButton != null) extraDailyButton.gameObject.SetActive(m.OfferExtraDaily);
+            if (doubleLabel != null) doubleLabel.SetText("OPTIONAL AD: 2X COINS  ({0} LEFT TODAY)", m.OfferDoubleLeft);
+            if (extraDailyLabel != null) extraDailyLabel.SetText("OPTIONAL AD: EXTRA DAILY REWARD");
+        }
+
         public override void OnShow(object args)
         {
+            GameServices.Model.Changed += RefreshOffers;
+            RefreshOffers();
             var r = GameServices.Model.LastRun;
             reasonText.SetText(r.reason ?? string.Empty);
             totalText.SetText("TOTAL {0}", r.totalCoins);

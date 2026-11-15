@@ -101,7 +101,20 @@ namespace RoadBuilderGame
 
         // Rewards and progress
         public int Gems, BoostLevel;
-        public int Scrap;                     // earned from boss rewards and duplicates (model only for now)
+        public int Scrap;                     // earned from boss rewards and duplicates
+        public int ShieldLevel;               // fifth upgrade branch for the selected vehicle
+        public int[] UpgradeCosts = new int[5];   // coins for the next level of each branch for the selected vehicle; -1 = maxed
+        /// <summary>Text for what still blocks a world or vehicle (catalogue id to requirement). Absent or empty = nothing blocks it.</summary>
+        public readonly System.Collections.Generic.Dictionary<string, string> LockText = new System.Collections.Generic.Dictionary<string, string>();
+        public string LockLine(string id) { return id != null && LockText.TryGetValue(id, out var t) ? t : string.Empty; }
+        // Daily challenge (the home entry)
+        public bool DailyChallengeOn;
+        public string DailyChallengeInfo = "";
+        public int DailyChallengeBest, DailyChallengeCoins;
+        public bool DailyChallengeClaimable, DailyChallengeClaimed;
+        // Optional rewarded offers on the result screen (never mid-run); *Left is what the daily or run limit still allows
+        public bool OfferDouble, OfferRevive, OfferExtraDaily;
+        public int OfferDoubleLeft, OfferExtraDailyLeft;
         public bool RewardsAvailable;         // something to claim
         public bool DailyAvailable;
         public int DailyDay = 1, DailyCoins, DailyGems;
@@ -136,7 +149,7 @@ namespace RoadBuilderGame
 
         public int LevelOf(int statIndex)
         {
-            return statIndex == 0 ? EngineLevel : (statIndex == 1 ? SuspensionLevel : (statIndex == 2 ? InkTankLevel : BoostLevel));
+            return statIndex == 0 ? EngineLevel : (statIndex == 1 ? SuspensionLevel : (statIndex == 2 ? InkTankLevel : (statIndex == 3 ? BoostLevel : ShieldLevel)));
         }
     }
 
@@ -158,6 +171,11 @@ namespace RoadBuilderGame
         void CycleRoadStyle();
         void SetSoundEnabled(bool enabled);
         void SelectCatalogItem(CatalogKind kind, string id);
+        /// <summary>Starts today's daily challenge run (fixed seed, vehicle and world).</summary>
+        void StartDaily();
+        void ClaimDailyChallenge();
+        /// <summary>An optional rewarded offer on the result screen. Does nothing while a run is active or past its limit.</summary>
+        void WatchOffer(AdPlacement placement);
     }
 
     /// <summary>Where the UI finds the model and actions. Set up by the game when it starts.</summary>

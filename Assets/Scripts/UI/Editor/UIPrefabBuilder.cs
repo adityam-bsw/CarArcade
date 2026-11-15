@@ -146,6 +146,15 @@ namespace RoadBuilderGame.UI.Editor
                 32, ColorToken.TextPrimary, TR, TR, new Vector2(-190, -48), new Vector2(260, 104), -2f, new Vector4(26, 26, 26, 26));
             var rewardsDot = ArtImg(rewards.rt, "Dot", SpriteSlot.DecoSticker, TR, TR, new Vector2(18, 18), new Vector2(60, 60), 10f);
 
+            // Scrap beside the coins, and the Daily Challenge entry under them (hidden by the screen when there is no daily).
+            var scrap = Label(hdrL, "ScrapText", "SCRAP 0", TextStyle.Caption, ColorToken.TextPrimary, 28, TextAlignmentOptions.MidlineLeft);
+            Place(scrap.rectTransform, TL, TL, new Vector2(60, -152), new Vector2(300, 40));
+            var daily = ArtButton(hdrL, "DailyButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "DAILY CHALLENGE",
+                30, ColorToken.TextPrimary, TL, TL, new Vector2(36, -200), new Vector2(400, 120), -2f, new Vector4(26, 40, 26, 26));
+            var dailyInfo = Label(daily.rt, "DailyInfo", "", TextStyle.Caption, ColorToken.Accent, 24);
+            dailyInfo.enableAutoSizing = true; dailyInfo.fontSizeMin = 14; dailyInfo.fontSizeMax = 24;
+            Place(dailyInfo.rectTransform, BC, BC, new Vector2(0, 14), new Vector2(300, 34));
+
             // Hand-stuck details that overlap the plates (never tappable).
             ArtImg(hdrL, "TapeCounter", SpriteSlot.DecoTape, TL, TL, new Vector2(300, -26), new Vector2(130, 40), -9f);
             ArtImg(hdrR, "TapeBest", SpriteSlot.DecoTape, TR, TR, new Vector2(-270, -158), new Vector2(130, 40), 11f);
@@ -157,6 +166,7 @@ namespace RoadBuilderGame.UI.Editor
             Ref(s, "worldsButton", worlds.button); Ref(s, "settingsButton", settings.button);
             Ref(s, "titlePlate", titlePlate.rectTransform);
             Ref(s, "rewardsButton", rewards.button); Ref(s, "rewardsDot", rewardsDot.gameObject);
+            Ref(s, "scrapText", scrap); Ref(s, "dailyButton", daily.button); Ref(s, "dailyText", dailyInfo);
             Refs(s, "popIns", new Object[] { counter.rectTransform, settings.rt, bestPlate.rectTransform, garage.rt, play.rt, worlds.rt, rewards.rt });
             return root;
         }
@@ -567,11 +577,13 @@ namespace RoadBuilderGame.UI.Editor
 
             // Workshop plates for the four upgrades on the left wall; the door in the middle shows the showcase car.
             var g = root.GetComponent<GarageScreen>();
-            string[] names = { "ENGINE", "SUSPENSION", "INK TANK", "BOOST" };
-            for (int i = 0; i < 4; i++)
+            string[] names = { "ENGINE", "SUSPENSION", "INK TANK", "BOOST", "SHIELD" };
+            var scrapG = Label(header, "ScrapText", "SCRAP 0", TextStyle.Caption, ColorToken.TextPrimary, 28, TextAlignmentOptions.MidlineRight);
+            Place(scrapG.rectTransform, TR, TR, new Vector2(-48, -150), new Vector2(300, 40));
+            for (int i = 0; i < 5; i++)
             {
-                var plate = ArtImg(upgrades, "Upgrade_" + names[i], SpriteSlot.PlateUpgrade, TL, TL, new Vector2(34, -146 - i * 156), new Vector2(400, 194));
-                plate.rectTransform.localScale = new Vector3(0.78f, 0.78f, 1f);   // four plates fit above the card rail
+                var plate = ArtImg(upgrades, "Upgrade_" + names[i], SpriteSlot.PlateUpgrade, TL, TL, new Vector2(34, -140 - i * 124), new Vector2(400, 194));
+                plate.rectTransform.localScale = new Vector3(0.62f, 0.62f, 1f);   // five plates fit above the card rail
                 var t = Label(plate.transform, "Title", names[i], TextStyle.Button, ColorToken.TextPrimary, 32, TextAlignmentOptions.MidlineLeft);
                 t.enableAutoSizing = true; t.fontSizeMin = 18; t.fontSizeMax = 32;
                 Place(t.rectTransform, TL, TL, new Vector2(30, -22), new Vector2(200, 42));
@@ -604,7 +616,7 @@ namespace RoadBuilderGame.UI.Editor
             var rail = BuildRail(full, "VehicleRail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 290));
 
             Ref(g, "rail", rail);
-            Ref(g, "coinsText", coinsText); Ref(g, "carNameText", carName); Ref(g, "actionLabel", action.label);
+            Ref(g, "coinsText", coinsText); Ref(g, "scrapText", scrapG); Ref(g, "carNameText", carName); Ref(g, "actionLabel", action.label);
             Ref(g, "actionImage", action.image); Ref(g, "actionButton", action.button);
             Ref(g, "backButton", back.button);
             return root;
@@ -757,7 +769,21 @@ namespace RoadBuilderGame.UI.Editor
             var menu = ArtButton(actions, "MenuButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate,
                 "MENU", 42, ColorToken.TextPrimary, BC, BC, new Vector2(330, 50), new Vector2(340, 127), -3f, new Vector4(30, 30, 30, 30));
 
+            // Optional rewarded offers under the bonus board (each hidden unless allowed; clearly labelled optional, never shown mid-run).
+            Btn Offer(string name, string label, float y)
+            {
+                var b = ArtButton(c, name, SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, label,
+                    26, ColorToken.TextPrimary, C, C, new Vector2(640, y), new Vector2(520, 84), 0f, new Vector4(28, 18, 28, 18));
+                b.button.gameObject.SetActive(false);
+                return b;
+            }
+            var offerDouble = Offer("DoubleCoinsButton", "OPTIONAL AD: 2X COINS", -130f);
+            var offerRevive = Offer("ReviveButton", "OPTIONAL AD: REVIVE", -222f);
+            var offerExtra = Offer("ExtraDailyButton", "OPTIONAL AD: EXTRA DAILY REWARD", -314f);
+
             var s = root.GetComponent<ResultScreen>();
+            Ref(s, "doubleButton", offerDouble.button); Ref(s, "reviveButton", offerRevive.button); Ref(s, "extraDailyButton", offerExtra.button);
+            Ref(s, "doubleLabel", offerDouble.label); Ref(s, "extraDailyLabel", offerExtra.label);
             Ref(s, "reasonText", reason); Ref(s, "distanceText", dist); Ref(s, "newBestBadge", badge);
             Ref(s, "coinsWonText", won); Ref(s, "totalText", total); Ref(s, "bonusText", bonus); Ref(s, "gemsText", gemsWon);
             Ref(s, "retryButton", retry.button); Ref(s, "menuButton", menu.button);

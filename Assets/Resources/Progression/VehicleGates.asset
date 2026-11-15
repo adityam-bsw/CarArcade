@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db378b3de50464ed4a0ed34490dae354, type: 3}
+  m_Name: VehicleGates
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.VehicleGateSO
+  gates:
+  - vehicleId: vehicle-car
+    unlockMetres: 0
+    coins: 0
+  - vehicleId: vehicle-sports-car
+    unlockMetres: 0
+    coins: 600
+  - vehicleId: vehicle-monster-truck
+    unlockMetres: 0
+    coins: 2000
+  - vehicleId: vehicle-bicycle
+    unlockMetres: 500
+    coins: 1500
+  - vehicleId: vehicle-dune-buggy
+    unlockMetres: 1500
+    coins: 4000
+  - vehicleId: vehicle-race-car
+    unlockMetres: 3000
+    coins: 8000
+  - vehicleId: vehicle-tank
+    unlockMetres: 8000
+    coins: 28000
+  - vehicleId: vehicle-moon-rover
+    unlockMetres: 12000
+    coins: 50000

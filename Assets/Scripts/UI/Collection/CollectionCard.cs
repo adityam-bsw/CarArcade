@@ -99,7 +99,8 @@ namespace RoadBuilderGame.UI
             bool usable = entry.playable || entry.kind == CatalogKind.World;
             preview.color = usable ? Color.white : new Color(1f, 1f, 1f, 0.4f);
 
-            bool locked = entry.kind == CatalogKind.Vehicle && usable && !GameServices.Model.IsVehicleUnlocked(entry);
+            string gate = GameServices.Model.LockLine(entry.id);
+            bool locked = (entry.kind == CatalogKind.Vehicle && usable && !GameServices.Model.IsVehicleUnlocked(entry)) || (entry.kind == CatalogKind.World && gate.Length > 0);
             lockTag.gameObject.SetActive(locked);
             if (locked)
             {
@@ -115,6 +116,7 @@ namespace RoadBuilderGame.UI
 
             if (!usable) Badge("COMING SOON", ColorToken.Danger);
             else if (Equipped) Badge("EQUIPPED", ColorToken.Success);
+            else if (locked && gate.Length > 0) { badgeText.SetText(gate); badgeText.color = theme.GetColor(ColorToken.Danger); }
             else if (locked) { badgeText.SetText("{0} COINS", entry.cost); badgeText.color = theme.GetColor(ColorToken.TextOnAccent); }
             else if (entry.Placeholder) Badge("PLACEHOLDER", ColorToken.Danger);
             else if (!entry.Reviewed) Badge("UNREVIEWED", ColorToken.Secondary);

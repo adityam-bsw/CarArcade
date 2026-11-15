@@ -18,6 +18,9 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Button rewardsButton;
         [SerializeField] private GameObject rewardsDot;
         [SerializeField] private TMP_Text gemsText;
+        [SerializeField] private TMP_Text scrapText;
+        [SerializeField] private Button dailyButton;
+        [SerializeField] private TMP_Text dailyText;
         [Header("Entrance")]
         [SerializeField] private RectTransform titlePlate;
         [SerializeField] private RectTransform[] popIns;
@@ -33,6 +36,7 @@ namespace RoadBuilderGame.UI
             garageButton.onClick.AddListener(() => GameServices.Actions?.OpenGarage());
             worldsButton.onClick.AddListener(() => GameServices.Actions?.OpenWorlds());
             settingsButton.onClick.AddListener(() => Stack?.Push<SettingsScreen>());
+            if (dailyButton != null) dailyButton.onClick.AddListener(OnDailyPressed);
             if (rewardsButton != null) rewardsButton.onClick.AddListener(() => GameServices.Actions?.OpenRewards());
         }
 
@@ -78,6 +82,13 @@ namespace RoadBuilderGame.UI
             }
         }
 
+        private void OnDailyPressed()
+        {
+            var m = GameServices.Model;
+            if (m.DailyChallengeClaimable) GameServices.Actions?.ClaimDailyChallenge();
+            else GameServices.Actions?.StartDaily();
+        }
+
         private void KillTweens()
         {
             foreach (var t in _tweens) if (t != null && t.IsActive()) t.Complete();
@@ -93,6 +104,9 @@ namespace RoadBuilderGame.UI
             bestText.SetText("BEST {0} m", Mathf.RoundToInt(m.BestDistance));
             if (rewardsDot != null) rewardsDot.SetActive(m.RewardsAvailable);
             if (gemsText != null) gemsText.SetText("{0}", m.Gems);
+            if (scrapText != null) scrapText.SetText("SCRAP {0}", m.Scrap);
+            if (dailyButton != null) dailyButton.gameObject.SetActive(m.DailyChallengeOn);
+            if (dailyText != null) dailyText.SetText(m.DailyChallengeInfo);
         }
     }
 }

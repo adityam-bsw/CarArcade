@@ -15,7 +15,7 @@ namespace RoadBuilderGame
         public static bool TryBuy(PlayerProfile p, string key, UpgradeBranch b, UpgradeTreeSO tree)
         {
             var e = p.UpgradesFor(key);
-            int cost = tree.Cost(e.levels[(int)b]);
+            int cost = tree.Cost(e.levels[(int)b], key);
             if (cost < 0 || p.coins < cost) return false;
             p.coins -= cost;
             e.levels[(int)b]++;
@@ -134,19 +134,35 @@ namespace RoadBuilderGame
         /// <summary>Monday (UTC) of the date's week; the weekly challenge key.</summary>
         public static string WeekKey(DateTime utc) { int back = ((int)utc.DayOfWeek + 6) % 7; return DateKey(utc.Date.AddDays(-back)); }
 
-        public static DailyChallengeDef Build(DateTime utc, ProgressionTuningSO t)
+        public static DailyChallengeDef Build(DateTime utc, ProgressionTuningSO t) { return Build(utc, t, null); }
+
+        /// <summary>Same as Build, but a candidate event is skipped when the compatibility matrix explicitly forbids it with an event already chosen (default-deny pairs are not treated as forbidden: the three events run one after another, not stacked).</summary>
+        public static DailyChallengeDef Build(DateTime utc, ProgressionTuningSO t, EventCompatibilityMatrix matrix)
         {
             uint seed = SeedFor(utc);
             var rng = new Pcg32(seed);
             var d = new DailyChallengeDef { seed = seed, date = DateKey(utc) };
             d.vehicleId = Pick(t.dailyVehicleIds, ref rng);
             d.worldId = Pick(t.dailyWorldIds, ref rng);
+            d.rewardCoins = rng.NextRange(t.dailyCoinsMin, t.dailyCoinsMax);   // drawn before the events so the matrix filter never changes the reward
             int n = Mathf.Min(t.dailyEventCount, t.dailyEventIds.Length);
             var pool = new List<string>(t.dailyEventIds);
-            d.eventIds = new string[n];
-            for (int i = 0; i < n; i++) { int k = rng.NextInt(pool.Count); d.eventIds[i] = pool[k]; pool.RemoveAt(k); }
-            d.rewardCoins = rng.NextRange(t.dailyCoinsMin, t.dailyCoinsMax);
+            var chosen = new List<string>(n);
+            while (chosen.Count < n && pool.Count > 0)
+            {
+                int k = rng.NextInt(pool.Count);
+                string cand = pool[k]; pool.RemoveAt(k);
+                if (matrix != null && Forbidden(matrix, cand, chosen)) continue;
+                chosen.Add(cand);
+            }
+            d.eventIds = chosen.ToArray();
             return d;
+        }
+
+        private static bool Forbidden(EventCompatibilityMatrix m, string cand, List<string> chosen)
+        {
+            for (int i = 0; i < chosen.Count; i++) if (m.TryGetPair(cand, chosen[i], out var p) && p.rule == StageCompatRule.Forbid) return true;
+            return false;
         }
 
         private static string Pick(string[] a, ref Pcg32 rng) { return a == null || a.Length == 0 ? "" : a[rng.NextInt(a.Length)]; }
@@ -213,7 +229,8 @@ namespace RoadBuilderGame
 #endif
         }
 
-        public void BeginRun() { RunActive = true; _reviveThisRun = 0; }
+        /// <summary>Starts a run. A revive continues the same run, so its counter is kept.</summary>
+        public void BeginRun(bool continuation = false) { RunActive = true; if (!continuation) _reviveThisRun = 0; }
         public void EndRun() { RunActive = false; }
 
         private void RollDay() { string k = DailyChallenge.DateKey(_utc()); if (_p.adDate != k) { _p.adDate = k; _p.adDoubleUsed = 0; _p.adExtraDailyUsed = 0; } }

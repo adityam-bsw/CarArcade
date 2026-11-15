@@ -223,6 +223,8 @@ namespace RoadBuilderGame
 
             LoadPlayerData();
             _meta = new MetaProgress(_profile, _tuning);
+            _tree = UpgradeTreeSO.Load(); _prog = ProgressionTuningSO.Load(); _worldGates = WorldGateSO.Load(); _vehicleGates = VehicleGateSO.Load();
+            _offers = new AdOffers(_profile, _prog, AdOffers.CreateDefaultService(), null);
             _meta.EnsureMissions();
             ApplyWorld();
             ApplySurface();
@@ -302,6 +304,15 @@ namespace RoadBuilderGame
         private ProgressionTuningSO _prog;
         private string _upgradeKey = "";
         private float _engineBonus;
+        private int _shieldLevel;
+        private WorldGateSO _worldGates;
+        private VehicleGateSO _vehicleGates;
+        private AdOffers _offers;
+        // Daily challenge run and post-run offers (section D part 2)
+        private bool _dailyActive, _reviving, _canRevive, _runDoubled, _finishedRun;
+        private DailyChallengeDef _daily;
+        private string _dailySavedVehicle = "", _dailySavedWorld = "";
+        private float _deathDistance;
 
         private string VehicleKey() { return string.IsNullOrEmpty(_selVehicleId) ? "vehicle-enum-" + (int)SelectedVehicle : _selVehicleId; }
 
@@ -314,14 +325,14 @@ namespace RoadBuilderGame
             if (key == _upgradeKey) return;
             _upgradeKey = key;
             var e = _profile.UpgradesFor(key);
-            engineLevel = e.levels[0]; suspensionLevel = e.levels[1]; inkTankLevel = e.levels[2]; boostLevel = e.levels[3];
+            engineLevel = e.levels[0]; suspensionLevel = e.levels[1]; inkTankLevel = e.levels[2]; boostLevel = e.levels[3]; _shieldLevel = e.levels[4];
         }
 
         private void StoreUpgradeLevels()
         {
             if (string.IsNullOrEmpty(_upgradeKey) || _profile == null) return;
             var e = _profile.UpgradesFor(_upgradeKey);
-            e.levels[0] = engineLevel; e.levels[1] = suspensionLevel; e.levels[2] = inkTankLevel; e.levels[3] = boostLevel;
+            e.levels[0] = engineLevel; e.levels[1] = suspensionLevel; e.levels[2] = inkTankLevel; e.levels[3] = boostLevel; e.levels[4] = _shieldLevel;
         }
 
         private void SavePlayerData()
@@ -351,6 +362,7 @@ namespace RoadBuilderGame
             if (newState != ScreenState.Playing)
             {
                 ApplyTimeScale(1f); Collectible.MagnetTarget = null;
+                if (newState != ScreenState.GameOver) EndDaily();
                 EndStageRun(StageRunOutcome.Quit);       // no-op when the run already ended as Died
             }
 
@@ -446,9 +458,13 @@ namespace RoadBuilderGame
             currentLives = maxLives;
             sessionCoins = 0;
             _run.Begin(boostLevel, _bestScore);
+            _run.UpShield.Begin(_shieldLevel, _tree.ShieldRecharge(_shieldLevel));
+            _offers.BeginRun(_reviving);
+            _runDoubled = false;
             _meteors.Reset();
             _powerKey = -1;
             BeginStageRun(_previousState == ScreenState.GameOver);
+            if (_reviving) { _reviving = false; if (_stage.Active) { JumpRun(_deathDistance); currentLives = 1; } }
 
             UpdateHeartsUI();
             UpdateInkUI();
@@ -590,6 +606,11 @@ namespace RoadBuilderGame
             RefreshUpgradeLevels();
             _profile.coins = totalCoins;   // mastery pays coins into the profile; keep the manager's balance authoritative
             MasteryService.RecordDistance(_profile, _prog, VehicleKey(), _distance);
+            ProgressionEvents.RecordRunEnd(_profile, _prog, VehicleKey(), _distance, finished, _run.Stats.cleanJumps, _run.Stats.nearMisses);
+            _offers.EndRun();
+            _deathDistance = _distance; _finishedRun = finished;
+            _canRevive = _stageOn && !finished;
+            if (_dailyActive) DailyChallenge.SubmitScore(_profile, System.DateTime.UtcNow, Mathf.FloorToInt(_distance));
             totalCoins = _profile.coins;
             SavePlayerData();
 
@@ -726,6 +747,9 @@ namespace RoadBuilderGame
             m.Gems = _profile != null ? _profile.gems : 0;
             m.BoostLevel = boostLevel;
             m.Scrap = _profile != null ? _profile.scrap : 0;
+            m.ShieldLevel = _shieldLevel;
+            for (int i = 0; i < 5; i++) m.UpgradeCosts[i] = GameCatalog.UpgradeCost(m.LevelOf(i), _upgradeKey);
+            SyncProgressionModel(m);
             if (_meta != null)
             {
                 _meta.EnsureMissions();
@@ -749,6 +773,38 @@ namespace RoadBuilderGame
             m.RaiseChanged();
         }
 
+        private void SyncProgressionModel(GameModel m)
+        {
+            if (_profile == null) return;
+            m.LockText.Clear();
+            var cat = AssetCatalog.Load();
+            if (cat != null)
+                foreach (var e in cat.entries)
+                {
+                    if (e == null) continue;
+                    string t = "";
+                    if (e.kind == CatalogKind.World) t = GateText.World(_profile, _worldGates, e.id);
+                    else if (e.kind == CatalogKind.Vehicle && !_unlockedVehicleIds.Contains(e.id)) t = GateText.Vehicle(_profile, _vehicleGates, e.id);
+                    if (t.Length > 0) m.LockText[e.id] = t;
+                }
+            var now = System.DateTime.UtcNow;
+            var d = DailyChallenge.Build(now, _prog, _stage != null && _stage.Ladder != null ? _stage.Ladder.matrix : null);
+            string key = DailyChallenge.DateKey(now);
+            bool today = _profile.dailyDate == key;
+            m.DailyChallengeOn = !string.IsNullOrEmpty(d.vehicleId) && !string.IsNullOrEmpty(d.worldId);
+            m.DailyChallengeBest = today ? _profile.dailyBest : 0;
+            m.DailyChallengeClaimed = today && _profile.dailyClaimed;
+            m.DailyChallengeClaimable = DailyChallenge.CanClaim(_profile, now);
+            m.DailyChallengeCoins = d.rewardCoins;
+            m.DailyChallengeInfo = m.DailyChallengeClaimed ? "DONE  BEST " + m.DailyChallengeBest + " m" : (m.DailyChallengeClaimable ? "CLAIM +" + d.rewardCoins : (m.DailyChallengeBest > 0 ? "BEST " + m.DailyChallengeBest + " m" : "+" + d.rewardCoins + " COINS"));
+            bool over = _state == ScreenState.GameOver;
+            m.OfferDouble = over && !_runDoubled && m.LastRun.coinsWon > 0 && _offers.CanOffer(AdPlacement.DoubleCoins);
+            m.OfferRevive = over && _canRevive && _offers.CanOffer(AdPlacement.Revive);
+            m.OfferExtraDaily = over && _profile.dailyClaimed && today && _offers.CanOffer(AdPlacement.ExtraDailyReward);
+            m.OfferDoubleLeft = _offers.Remaining(AdPlacement.DoubleCoins);
+            m.OfferExtraDailyLeft = _offers.Remaining(AdPlacement.ExtraDailyReward);
+        }
+
         private void SyncHud()
         {
             var m = Model;
@@ -765,7 +821,7 @@ namespace RoadBuilderGame
                 m.BoostReady = _run.BoostReady(totalCoins + sessionCoins);
                 m.Combo = _run.Combo; m.Multiplier = _run.Multiplier;
                 m.SessionGems = _run.Stats.gems;
-                int key = (_run.Shield ? 1 : 0) + Mathf.CeilToInt(_run.MagnetLeft) * 2 + Mathf.CeilToInt(_run.DoubleLeft) * 128 + Mathf.CeilToInt(_run.SlowLeft) * 8192 + Mathf.CeilToInt(_run.GhostLeft) * 524288;
+                int key = (_run.ShieldUp ? 1 : 0) + Mathf.CeilToInt(_run.MagnetLeft) * 2 + Mathf.CeilToInt(_run.DoubleLeft) * 128 + Mathf.CeilToInt(_run.SlowLeft) * 8192 + Mathf.CeilToInt(_run.GhostLeft) * 524288;
                 if (key != _powerKey) { _powerKey = key; _powerText = _run.PowerText(); }
                 m.PowerText = _powerText;
             }
@@ -783,10 +839,71 @@ namespace RoadBuilderGame
         // ==================================================================== ACTIONS (IGameActions)
         public void StartRace()
         {
+            if (_dailyActive && !_reviving) EndDaily();
             // Never start a run in a car the player has not unlocked.
             if (!IsCurrentVehicleUnlocked()) SelectedVehicle = VehicleType.ClassicRed;
             if (CatalogVehicle() == null) _selVehicleId = "";
             SwitchScreen(ScreenState.Playing);
+        }
+
+        /// <summary>Today's daily challenge: fixed seed (the ladder of BeginStageRun), vehicle and world. The player's own picks are restored when the run flow leaves it.</summary>
+        public void StartDaily()
+        {
+            if (_state == ScreenState.Playing) return;
+            var cat = AssetCatalog.Load();
+            _daily = DailyChallenge.Build(System.DateTime.UtcNow, _prog, _stage != null && _stage.Ladder != null ? _stage.Ladder.matrix : null);
+            _dailySavedVehicle = _selVehicleId; _dailySavedWorld = _selWorldId;
+            var v = cat?.Find(_daily.vehicleId); if (v != null && v.kind == CatalogKind.Vehicle && v.playable) _selVehicleId = v.id;
+            var w = cat?.Find(_daily.worldId); if (w != null && w.kind == CatalogKind.World && w.playable) _selWorldId = w.id;
+            _dailyActive = true;
+            SwitchScreen(ScreenState.Playing);
+        }
+
+        private void EndDaily()
+        {
+            if (!_dailyActive) return;
+            _dailyActive = false;
+            _selVehicleId = _dailySavedVehicle; _selWorldId = _dailySavedWorld;
+            ApplyWorld(); ApplySurface();
+        }
+
+        public void ClaimDailyChallenge()
+        {
+            SavePlayerData();
+            if (DailyChallenge.Claim(_profile, System.DateTime.UtcNow, _prog, out _))
+            {
+                totalCoins = _profile.coins;
+                SavePlayerData();
+                if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
+            }
+            SyncModel();
+        }
+
+        /// <summary>Optional rewarded offer from the result screen. The ad service decides if an ad exists; limits live in AdOffers; never while a run is active.</summary>
+        public void WatchOffer(AdPlacement placement)
+        {
+            if (_state != ScreenState.GameOver || _offers == null) return;
+            if (placement == AdPlacement.DoubleCoins && (_runDoubled || Model.LastRun.coinsWon <= 0)) return;
+            if (placement == AdPlacement.Revive && !_canRevive) return;
+            if (placement == AdPlacement.ExtraDailyReward && !_profile.dailyClaimed) return;
+            _offers.TryOffer(placement, ok =>
+            {
+                if (!ok) return;
+                if (placement == AdPlacement.DoubleCoins)
+                {
+                    _runDoubled = true; totalCoins += Model.LastRun.coinsWon;
+                    var r = Model.LastRun; r.coinsWon *= 2; r.totalCoins = totalCoins; Model.LastRun = r;
+                    SavePlayerData();
+                }
+                else if (placement == AdPlacement.ExtraDailyReward)
+                {
+                    totalCoins += DailyChallenge.Build(System.DateTime.UtcNow, _prog).rewardCoins;
+                    var r = Model.LastRun; r.totalCoins = totalCoins; Model.LastRun = r;
+                    SavePlayerData();
+                }
+                else { _canRevive = false; _reviving = true; SwitchScreen(ScreenState.Playing); return; }
+                SyncModel();
+            });
         }
 
         public void GoHome() { SwitchScreen(ScreenState.HomeDashboard); }
@@ -836,6 +953,7 @@ namespace RoadBuilderGame
             SavePlayerData();
             if (_meta.ClaimMission(index, out int coins, out int gems))
             {
+                ProgressionEvents.Record(_profile, ProgressionEvent.MissionCompleted);
                 totalCoins = _profile.coins;
                 SavePlayerData();
                 if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
@@ -903,10 +1021,11 @@ namespace RoadBuilderGame
 
         public void UpgradeStat(int statIndex)
         {
-            int currentLevel = (statIndex == 0) ? engineLevel : ((statIndex == 1) ? suspensionLevel : ((statIndex == 2) ? inkTankLevel : boostLevel));
+            if (statIndex < 0 || statIndex > 4) return;
+            int currentLevel = (statIndex == 0) ? engineLevel : ((statIndex == 1) ? suspensionLevel : ((statIndex == 2) ? inkTankLevel : (statIndex == 3 ? boostLevel : _shieldLevel)));
             if (currentLevel >= GameCatalog.MaxUpgradeLevel) return;
 
-            int cost = GameCatalog.UpgradeCost(currentLevel);
+            int cost = GameCatalog.UpgradeCost(currentLevel, _upgradeKey);
             if (totalCoins >= cost)
             {
                 totalCoins -= cost;
@@ -914,6 +1033,7 @@ namespace RoadBuilderGame
                 else if (statIndex == 1) suspensionLevel++;
                 else if (statIndex == 2) inkTankLevel++;
                 else if (statIndex == 3) boostLevel++;
+                else _shieldLevel++;
 
                 if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
                 SavePlayerData();
@@ -939,8 +1059,19 @@ namespace RoadBuilderGame
                 return;
             }
 
+            if (kind == CatalogKind.World && entry != null && GateText.WorldLocked(_profile, _worldGates, id))
+            {
+                _profile.coins = totalCoins;
+                if (!GateService.TryUnlockWorld(_profile, _worldGates, id)) { if (SoundManager.Instance) SoundManager.Instance.PlayCrash(); return; }
+                totalCoins = _profile.coins;
+            }
             if (kind == CatalogKind.Vehicle)
             {
+                if (entry != null && !_unlockedVehicleIds.Contains(id) && GateText.Vehicle(_profile, _vehicleGates, id).Length > 0)
+                {
+                    if (SoundManager.Instance) SoundManager.Instance.PlayCrash();      // distance gate not reached yet (the card says how far)
+                    return;
+                }
                 if (entry != null && entry.cost > 0 && !_unlockedVehicleIds.Contains(id))
                 {
                     if (totalCoins < entry.cost)
@@ -980,7 +1111,7 @@ namespace RoadBuilderGame
         {
             var e = AssetCatalog.Load()?.Find(_selVehicleId);
             if (e == null || e.kind != CatalogKind.Vehicle || !e.playable || e.preview == null) return null;
-            if (e.cost > 0 && !_unlockedVehicleIds.Contains(e.id)) return null;
+            if (e.cost > 0 && !_unlockedVehicleIds.Contains(e.id) && !(_dailyActive && e.id == _selVehicleId)) return null;
             return e;
         }
 
@@ -1137,13 +1268,14 @@ namespace RoadBuilderGame
 
             // Behaviour modules registered by event id on the existing run controller (no switch): the director only knows ids and distances.
             _stage.Register("MON-EATER", new DelegateBehaviour(
-                s => _eater.StartChase(_car.Body.position.x),
+                s => { ProgressionEvents.Record(_profile, ProgressionEvent.MonsterReached); _eater.StartChase(_car.Body.position.x); },
                 s => { if (!_runEnding && _eater.Model.Chasing) _eater.Model.Retreat(true); }));      // the window ended at 1750 m: timeout retreat
             _stage.Register("BOS-ROB0", new DelegateBehaviour(
-                s => _boss.Start(_car.Body.position),
+                s => { ProgressionEvents.Record(_profile, ProgressionEvent.BossReached); _boss.Start(_car.Body.position); },
                 s => { },                                                                              // the fight outlives its planned window: it ends by Overload or the 105 s timeout
                 (s, d) => _boss.OnRespawn()));
             _stage.Signal += (e, sig) => { if (sig == StageSignal.Announcer && e.Definition.role == StageEventRole.Monster) _eater.Warn(); };
+            _stage.EventEnded += e => { if (!_runEnding) ProgressionEvents.Record(_profile, ProgressionEvent.StageEventCompleted); };
             _stage.EventStarted += e => { if (e.Definition.noEat) _road.AddNoEatRange(_startX + e.StartM, _startX + e.EndM); };
         }
 
@@ -1239,7 +1371,8 @@ namespace RoadBuilderGame
             // Retry reuses the saved seed (same ladder); a new run draws a new one. The record is saved through SaveService only.
             var saved = _profile.lastStageRun;
             StageRunRecord rec;
-            if (retry && saved.runSeed != 0u && saved.layoutVersion == _stage.Ladder.layoutVersion) { rec = saved; rec.debugJumped = false; }
+            if (_dailyActive) { rec = StageRunController.NewRecord(_daily.seed, _stage.Ladder.layoutVersion); _profile.lastStageRun = rec; }
+            else if (retry && saved.runSeed != 0u && saved.layoutVersion == _stage.Ladder.layoutVersion) { rec = saved; rec.debugJumped = false; }
             else
             {
                 rec = StageRunController.NewRecord((ulong)System.DateTime.UtcNow.Ticks, _stage.Ladder.layoutVersion);
@@ -1323,6 +1456,16 @@ namespace RoadBuilderGame
         public void DebugJumpToStage(float distanceM)
         {
             if (_state != ScreenState.Playing || _car == null || !_stage.Active) return;
+            JumpRun(distanceM);
+            var rec = _profile.lastStageRun; rec.debugJumped = true; _profile.lastStageRun = rec;
+            Debug.Log("[Stage] debug_jump " + distanceM + " m");
+        }
+#endif
+
+        /// <summary>Moves the run to <paramref name="distanceM"/> on a fresh flat runway with full ink and hearts and replays the director state. Used by the post-run revive and the QA jump.</summary>
+        private void JumpRun(float distanceM)
+        {
+            if (_car == null || !_stage.Active) return;
             _brush.Cancel();
             float worldX = _startX + distanceM;
             _zone.Exit();
@@ -1336,12 +1479,9 @@ namespace RoadBuilderGame
             _meteors.Reset();
             currentInk = maxInk; currentLives = maxLives;
             UpdateHeartsUI(); UpdateInkUI();
-            _stage.JumpTo(distanceM);
-            var rec = _profile.lastStageRun; rec.debugJumped = true; _profile.lastStageRun = rec;
+            _runEnding = true; _stage.JumpTo(distanceM); _runEnding = false;      // ending zones here is not a completed event
             _cameraRig.Snap(_car);
-            Debug.Log("[Stage] debug_jump " + distanceM + " m");
         }
-#endif
 
         public void SetSoundEnabled(bool enabled)
         {

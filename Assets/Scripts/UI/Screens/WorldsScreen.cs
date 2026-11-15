@@ -66,7 +66,19 @@ namespace RoadBuilderGame.UI
 
         private void OnTapped(CatalogEntry e)
         {
-            if (e.playable) { ShowTraits(e); GameServices.Actions?.SelectCatalogItem(_tab, e.id); return; }
+            if (e.playable)
+            {
+                ShowTraits(e);
+                GameServices.Actions?.SelectCatalogItem(_tab, e.id);
+                string gate = GameServices.Model.LockLine(e.id);
+                if (gate.Length > 0)
+                {
+                    hintText.SetText(e.displayName + " is locked: " + gate);
+                    hintText.color = UIThemeManager.Current.GetColor(ColorToken.Danger);
+                    UIAnim.Punch(hintText.transform, 0.06f);
+                }
+                return;
+            }
             // Not playable yet: say why instead of silently doing nothing.
             hintText.SetText(e.displayName + ": " + (string.IsNullOrEmpty(e.playNote) ? "not playable yet." : e.playNote));
             hintText.color = UIThemeManager.Current.GetColor(ColorToken.Danger);

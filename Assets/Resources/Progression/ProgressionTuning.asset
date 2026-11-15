@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb6c911a24c174b1091b515694c02ebb, type: 3}
+  m_Name: ProgressionTuning
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.ProgressionTuningSO
+  scrapPerBossFirst: 20
+  scrapPerBossRepeat: 10
+  scrapPerDuplicate: 5
+  mastery:
+  - metres: 500
+    reward: 0
+    amount: 1
+  - metres: 2000
+    reward: 1
+    amount: 500
+  - metres: 5000
+    reward: 2
+    amount: 1
+  - metres: 10000
+    reward: 3
+    amount: 1
+  - metres: 20000
+    reward: 4
+    amount: 1
+  goalIds:
+  - vehicle-bicycle:clean-landings
+  - vehicle-tank:fragile-breaks
+  - vehicle-race-car:near-misses
+  - vehicle-moon-rover:low-gravity-stages
+  goalTargets: 0a000000140000000f00000005000000
+  survivalRunMetres: 1000
+  dailyVehicleIds:
+  - vehicle-car
+  - vehicle-sports-car
+  - vehicle-monster-truck
+  dailyWorldIds:
+  - world-rolling-hills
+  - world-desert
+  - world-night-city
+  dailyEventIds:
+  - EVT-ICE
+  - EVT-METEOR
+  - EVT-MUD
+  - EVT-GLASS
+  - EVT-RINGS
+  dailyCoinsMin: 100
+  dailyCoinsMax: 250
+  dailyMasteryPoints: 1
+  dailyWeeklyTokens: 1
+  dailyEventCount: 3
+  weeklyTokensNeeded: 5
+  weeklyCoins: 500
+  weeklyGems: 2
+  doubleCoinsPerDay: 2
+  revivePerRun: 1
+  extraDailyRewardPerDay: 1
+  firstHour:
+  - id: first-drive
+    minute: 0
+    coins: 0
+    gems: 0
+    note: First drive
+  - id: first-500m
+    minute: 4
+    coins: 500
+    gems: 0
+    note: 500 m milestone
+  - id: first-upgrade
+    minute: 8
+    coins: 0
+    gems: 0
+    note: First upgrade
+  - id: first-monster
+    minute: 12
+    coins: 150
+    gems: 0
+    note: Escape the Road-Eater
+  - id: second-vehicle
+    minute: 18
+    coins: 0
+    gems: 0
+    note: Second vehicle
+  - id: first-surface
+    minute: 24
+    coins: 100
+    gems: 0
+    note: First new surface
+  - id: first-boss
+    minute: 32
+    coins: 200
+    gems: 1
+    note: Defeat RO-B0
+  - id: first-world
+    minute: 42
+    coins: 0
+    gems: 0
+    note: First new world
+  - id: first-mastery
+    minute: 50
+    coins: 0
+    gems: 0
+    note: First mastery reward
+  - id: daily-challenge
+    minute: 58
+    coins: 100
+    gems: 0
+    note: Daily challenge

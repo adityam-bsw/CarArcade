@@ -26,6 +26,9 @@ namespace RoadBuilderGame
         [Tooltip("Per-vehicle goal stub: counter id and target, e.g. bike clean landings.")] public string[] goalIds = { "vehicle-bicycle:clean-landings", "vehicle-tank:fragile-breaks", "vehicle-race-car:near-misses", "vehicle-moon-rover:low-gravity-stages" };
         public int[] goalTargets = { 10, 20, 15, 5 };
 
+        [Header("Gate counters")]
+        [Tooltip("A run counts as a survival run when it reaches this distance (or finishes the course).")] public int survivalRunMetres = 1000;
+
         [Header("Daily challenge")]
         public string[] dailyVehicleIds = { "vehicle-car", "vehicle-sports-car", "vehicle-monster-truck" };
         public string[] dailyWorldIds = { "world-rolling-hills", "world-desert", "world-night-city" };

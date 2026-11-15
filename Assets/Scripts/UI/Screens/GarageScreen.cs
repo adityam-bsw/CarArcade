@@ -21,13 +21,14 @@ namespace RoadBuilderGame.UI
         }
 
         [SerializeField] private TMP_Text coinsText;
+        [SerializeField] private TMP_Text scrapText;
         [SerializeField] private TMP_Text carNameText;
         [SerializeField] private TMP_Text actionLabel;
         [SerializeField] private Image actionImage;
         [SerializeField] private Button actionButton;
         [SerializeField] private Button backButton;
         [SerializeField] private CardRail rail;
-        [SerializeField] private UpgradeRow[] rows = new UpgradeRow[4];
+        [SerializeField] private UpgradeRow[] rows = new UpgradeRow[5];
 
         private int _lastCoins = -1;
         private CatalogEntry _focus;
@@ -89,6 +90,7 @@ namespace RoadBuilderGame.UI
             if (_lastCoins >= 0 && m.Coins != _lastCoins) UIAnim.Punch(coinsText.transform.parent, 0.1f);
             _lastCoins = m.Coins;
 
+            if (scrapText != null) scrapText.SetText("SCRAP {0}", m.Scrap);
             rail.Refresh(m.SelectedVehicleId, _focus);
 
             if (_focus == null)
@@ -105,6 +107,7 @@ namespace RoadBuilderGame.UI
                 bool enabled = true; string label; ColorToken colour;
                 if (!_focus.playable) { label = "COMING SOON"; colour = ColorToken.SurfaceAlt; enabled = false; }
                 else if (equipped) { label = "EQUIPPED"; colour = ColorToken.Success; enabled = false; }
+                else if (!m.IsVehicleUnlocked(_focus) && m.LockLine(_focus.id).Length > 0) { label = m.LockLine(_focus.id); colour = ColorToken.SurfaceAlt; enabled = false; }
                 else if (!m.IsVehicleUnlocked(_focus))
                 {
                     int missing = _focus.cost - m.Coins;
@@ -126,7 +129,7 @@ namespace RoadBuilderGame.UI
                 r.hint.SetText(GameCatalog.UpgradeHint(i));
 
                 bool maxed = level >= GameCatalog.MaxUpgradeLevel;
-                int cost = GameCatalog.UpgradeCost(level);
+                int cost = i < m.UpgradeCosts.Length ? m.UpgradeCosts[i] : GameCatalog.UpgradeCost(level);
                 if (maxed) r.cost.SetText("MAX"); else r.cost.SetText("UPGRADE  {0}", cost);
                 r.buttonImage.sprite = theme.GetSprite(!maxed && m.Coins >= cost ? SpriteSlot.ButtonArcade : SpriteSlot.ButtonArcadeDisabled);
 

@@ -7,11 +7,11 @@ namespace RoadBuilderGame
     /// <summary>What happened during one run, used for the result screen, missions and mastery.</summary>
     public sealed class RunStats
     {
-        public int coins, gems, flips, boosts, milestones, nearMisses, rings, frenzies, bestMultiplier = 1;
+        public int cleanJumps, coins, gems, flips, boosts, milestones, nearMisses, rings, frenzies, bestMultiplier = 1;
         public float airTime, bestAir;
         public readonly List<string> lines = new List<string>();
         public int bonusCoins;
-        public void Reset() { coins = gems = flips = boosts = milestones = nearMisses = rings = frenzies = 0; bestMultiplier = 1; airTime = bestAir = 0f; bonusCoins = 0; lines.Clear(); }
+        public void Reset() { cleanJumps = coins = gems = flips = boosts = milestones = nearMisses = rings = frenzies = 0; bestMultiplier = 1; airTime = bestAir = 0f; bonusCoins = 0; lines.Clear(); }
     }
 
     /// <summary>
@@ -34,6 +34,9 @@ namespace RoadBuilderGame
         public int Combo, Multiplier = 1;
         public float MagnetLeft, DoubleLeft, SlowLeft, GhostLeft, BoostLeft;
         public bool Shield;
+        /// <summary>The Shield upgrade (absorbs one hit, then recharges). Separate from the Shield pickup.</summary>
+        public readonly UpgradeShield UpShield = new UpgradeShield();
+        public bool ShieldUp => Shield || UpShield.Ready;
         /// <summary>0 to 1 while charging; while frenzying it is the time left as a fraction.</summary>
         public float Frenzy01, FrenzyLeft;
 
@@ -69,6 +72,7 @@ namespace RoadBuilderGame
         public void Tick(float dt, RoadCar car, float distance)
         {
             _cooldown = Mathf.Max(0f, _cooldown - dt);
+            UpShield.Tick(dt);
             BoostLeft = Mathf.Max(0f, BoostLeft - dt);
             MagnetLeft = Mathf.Max(0f, MagnetLeft - dt);
             DoubleLeft = Mathf.Max(0f, DoubleLeft - dt);
@@ -125,7 +129,7 @@ namespace RoadBuilderGame
         {
             if (_airFor >= _t.airMinSeconds)
             {
-                Stats.airTime += _airFor; Stats.bestAir = Mathf.Max(Stats.bestAir, _airFor);
+                Stats.cleanJumps++; Stats.airTime += _airFor; Stats.bestAir = Mathf.Max(Stats.bestAir, _airFor);
                 int coins = Mathf.RoundToInt((Mathf.Min(_airFor, _t.airMaxPaidSeconds) - _t.airMinSeconds + 0.5f) * _t.airCoinsPerSecond);
                 Pay("AIR TIME " + _airFor.ToString("0.0") + " s", coins);
                 if (_airFor >= 1.6f) Raise(Cue.BigAir);
@@ -252,7 +256,7 @@ namespace RoadBuilderGame
         /// <summary>A crash happened: a shield soaks it up once. Returns true when the hit was absorbed.</summary>
         public bool AbsorbHit()
         {
-            if (!Shield) return false;
+            if (!Shield) { if (!UpShield.TryAbsorb()) return false; Bonus?.Invoke("SHIELD SAVED YOU", 0); return true; }
             Shield = false;
             Bonus?.Invoke("SHIELD SAVED YOU", 0);
             return true;
@@ -262,7 +266,7 @@ namespace RoadBuilderGame
         public string PowerText()
         {
             var sb = new System.Text.StringBuilder(64);
-            if (Shield) sb.Append("SHIELD  ");
+            if (ShieldUp) sb.Append("SHIELD  ");
             if (MagnetLeft > 0f) sb.Append("MAGNET ").Append(Mathf.CeilToInt(MagnetLeft)).Append("  ");
             if (DoubleLeft > 0f) sb.Append("x2 COINS ").Append(Mathf.CeilToInt(DoubleLeft)).Append("  ");
             if (SlowLeft > 0f) sb.Append("SLOW ").Append(Mathf.CeilToInt(SlowLeft)).Append("  ");

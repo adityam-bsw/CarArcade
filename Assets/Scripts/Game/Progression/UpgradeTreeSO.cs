@@ -5,6 +5,8 @@ namespace RoadBuilderGame
 {
     public enum UpgradeBranch { Engine = 0, Suspension = 1, InkTank = 2, Boost = 3, Shield = 4 }
 
+    [Serializable] public struct VehicleCostScale { public string vehicleId; public float scale; }
+
     [Serializable] public struct BranchBaseOverride { public string vehicleId; public UpgradeBranch branch; public float baseValue; }
 
     /// <summary>
@@ -19,9 +21,29 @@ namespace RoadBuilderGame
         [Tooltip("Fraction of the base value added by level 1..5 (economy.md section 15: about 6 percent per level).")] public float[] pctPerLevel = { 0.06f, 0.06f, 0.06f, 0.06f, 0.06f };
         [Tooltip("Base value per branch: engine max speed m/s, suspension torque, ink tank, boost seconds, shield strength.")] public float[] baseValues = { 11.5f, 34f, 100f, 1.4f, 1f };
         public BranchBaseOverride[] overrides = new BranchBaseOverride[0];
+        [Tooltip("Seconds the Shield upgrade takes to recharge after it absorbed a hit, for level 1..5 (higher level recharges faster).")] public float[] shieldRechargeSeconds = { 45f, 38f, 31f, 24f, 18f };
+        [Tooltip("Per-vehicle multiplier on the upgrade costs (starting values, economy-balancer owns them). Missing vehicle = 1.")]
+        public VehicleCostScale[] costScales = { new VehicleCostScale { vehicleId = "vehicle-bicycle", scale = 0.8f }, new VehicleCostScale { vehicleId = "vehicle-race-car", scale = 1.25f }, new VehicleCostScale { vehicleId = "vehicle-tank", scale = 1.5f }, new VehicleCostScale { vehicleId = "vehicle-moon-rover", scale = 1.75f } };
 
         /// <summary>Coins to buy the next level when <paramref name="levelOwned"/> are owned; -1 when maxed.</summary>
         public int Cost(int levelOwned) { return levelOwned < 0 || levelOwned >= Levels || costs == null || levelOwned >= costs.Length ? -1 : costs[levelOwned]; }
+
+        /// <summary>Coins for the next level of <paramref name="vehicleId"/> (per-vehicle scale, rounded to 10); -1 when maxed.</summary>
+        public int Cost(int levelOwned, string vehicleId)
+        {
+            int c = Cost(levelOwned);
+            if (c < 0 || string.IsNullOrEmpty(vehicleId) || costScales == null) return c;
+            for (int i = 0; i < costScales.Length; i++)
+                if (costScales[i].vehicleId == vehicleId && costScales[i].scale > 0f) return Mathf.Max(10, Mathf.RoundToInt(c * costScales[i].scale / 10f) * 10);
+            return c;
+        }
+
+        /// <summary>Recharge time of the Shield upgrade at a level (1..5); 0 when the level is 0 (no shield).</summary>
+        public float ShieldRecharge(int level)
+        {
+            if (level <= 0 || shieldRechargeSeconds == null || shieldRechargeSeconds.Length == 0) return 0f;
+            return shieldRechargeSeconds[Mathf.Clamp(level, 1, shieldRechargeSeconds.Length) - 1];
+        }
 
         public float Base(UpgradeBranch b, string vehicleId)
         {

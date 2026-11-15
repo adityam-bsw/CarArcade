@@ -29,14 +29,16 @@ namespace RoadBuilderGame
         /// <summary>Coins for the next level when currentLevel (0..5) are owned; costs come from the UpgradeTreeSO (500/900/1500/2500/4000).</summary>
         public static int UpgradeCost(int currentLevel) { return UpgradeTreeSO.Load().Cost(currentLevel); }
 
+        public static int UpgradeCost(int currentLevel, string vehicleKey) { return UpgradeTreeSO.Load().Cost(currentLevel, vehicleKey); }
+
         public static string UpgradeName(int statIndex)
         {
-            return statIndex == 0 ? "ENGINE" : (statIndex == 1 ? "SUSPENSION" : (statIndex == 2 ? "INK TANK" : "BOOST"));
+            return statIndex == 0 ? "ENGINE" : (statIndex == 1 ? "SUSPENSION" : (statIndex == 2 ? "INK TANK" : (statIndex == 3 ? "BOOST" : "SHIELD")));
         }
 
         public static string UpgradeHint(int statIndex)
         {
-            return statIndex == 0 ? "More speed" : (statIndex == 1 ? "More grip" : (statIndex == 2 ? "More road" : "Longer boost"));
+            return statIndex == 0 ? "More speed" : (statIndex == 1 ? "More grip" : (statIndex == 2 ? "More road" : (statIndex == 3 ? "Longer boost" : "Blocks a hit")));
         }
 
         public static void World(EnvironmentTheme t, out string title, out string description, out string previewResource)
