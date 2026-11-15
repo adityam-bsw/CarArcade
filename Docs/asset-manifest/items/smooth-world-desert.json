@@ -1,0 +1,31 @@
+{
+  "id": "smooth-world-desert",
+  "category": "world",
+  "name": "Smooth Desert background (sky, sun, far, mid, near)",
+  "status": "ready",
+  "requirements": "Smooth art per Docs/design/ART_BIBLE.md 5 and 7.1.",
+  "notes": "Quality 4. Four-layer contract as Countryside (41 ppu, 2048 tiling layers, near 2048x864). No clouds. Contrast: SignalRed 2.5-2.7:1 on sky/far, 1.16:1 on the near hill, so hazards must keep the DeepInk outline (10:1 on sky). Agave is the weakest sprite; near cacti are saturated green. Sky uncompressed RGBA32 clamp; tiling layers Repeat + Full Rect.",
+  "source": "tools/art/make_bg_worlds.py --world desert (own code, tools/art/smoothart)",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Backgrounds/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 375532,
+  "sha256": "1bda3c536d467e372ec34c67dc9e915fb6c3baad7dcb14960abf5f42c43dc2e4",
+  "project_path": "Assets/Art/Smooth/Backgrounds/Desert",
+  "quality": 4,
+  "have": [],
+  "history": [
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "imported",
+      "note": "inspector: generator re-run byte-identical, seams viewed, imported under Assets/Art/Smooth"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: 5 layers byte-identical to generator, wrap viewed, import 41ppu bilinear ASTC6x6 (sky RGBA32), q4; hazards need DeepInk outline"
+    }
+  ]
+}

@@ -2,18 +2,18 @@
   "id": "surface-snow",
   "category": "surface",
   "name": "Snow",
-  "status": "imported",
+  "status": "ready",
   "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
   "have": [],
-  "notes": "Blaze snowy world snow_tileset.png (snow-capped earth slab, 16px tiles) in x/snowy world/. Alt packs: seasonal tiles (winter column), zaph winter tileset (_oga-winter-tileset-16x16, not reviewed in detail). Build strip from top/body tiles; add shadow skirt. Grip low-normal. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page).",
+  "notes": "Blaze snowy world snow_tileset.png (snow-capped earth slab, 16px tiles) in x/snowy world/. Alt packs: seasonal tiles (winter column), zaph winter tileset (_oga-winter-tileset-16x16, not reviewed in detail). Build strip from top/body tiles; add shadow skirt. Grip low-normal. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page). | FORGED 2026-11-15: procedural 128x26 strip, grip low, quality 3.",
   "source": "https://opengameart.org/content/blazes-platformer-pack-3-environments-included",
-  "licence": "CC0",
-  "licence_evidence": "readme.txt in zip: 'licensed under CC0 1.0 Universal (Public Domain Dedication)'; OGA page: License(s): CC0",
+  "licence": "own work (procedural; palette reference Blaze snowy_world snow tileset (CC0))",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-snow/LICENCE_EVIDENCE.txt",
   "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/_oga-blazes-platformer-pack",
   "bytes": 70426,
   "sha256": "b350450fe96bc2b5073ed2787d75e68c41dfb09feac9de97cb60932559367d1f",
-  "project_path": "Assets/Art/Surfaces/BlazesPlatformer/snowy_world/",
-  "quality": 4,
+  "project_path": "Assets/Art/Surfaces/Forged/surface-snow/surface-snow.png",
+  "quality": 3,
   "history": [
     {
       "date": "2026-11-14",
@@ -32,6 +32,18 @@
       "from": "downloaded",
       "to": "imported",
       "note": "needs forge: assemble horizontal strip (rows top ~2, body ~4, skirt ~20). Snow-topped dirt slabs in snowy_world/snow_tileset.png. Grip low"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "forged",
+      "note": "procedural strip, quality 3/5, grip low"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 128x26 seam 0.0, point/repeat/uncompressed matches ConfigureStrip, licence+ledger ok, q3"
     }
   ]
 }

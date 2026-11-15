@@ -2,18 +2,18 @@
   "id": "surface-floating-islands",
   "category": "surface",
   "name": "Floating Islands",
-  "status": "imported",
+  "status": "ready",
   "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
   "have": [],
-  "notes": "Buch Field of the Floating Islands tiles_packed_1.png / tiles_16.png: grass islands with rocky underside and hanging bottoms, plus snow-expansion.png. Strong fit. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page).",
+  "notes": "Buch Field of the Floating Islands tiles_packed_1.png / tiles_16.png: grass islands with rocky underside and hanging bottoms, plus snow-expansion.png. Strong fit. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page). | FORGED 2026-11-15: procedural 128x26 strip, grip normal, quality 3.",
   "source": "https://opengameart.org/content/the-field-of-the-floating-islands",
-  "licence": "CC0",
-  "licence_evidence": "OGA page: License(s): CC0",
+  "licence": "own work (procedural; palette reference Buch Field of the Floating Islands tiles (CC0))",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-floating-islands/LICENCE_EVIDENCE.txt",
   "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/_oga-floating-islands",
   "bytes": 88429,
   "sha256": "1364b85078461d2a47726cb89c92e34b66b331e4db8271e93570be7756cd6678",
-  "project_path": "Assets/Art/Surfaces/FloatingIslands/",
-  "quality": 4,
+  "project_path": "Assets/Art/Surfaces/Forged/surface-floating-islands/surface-floating-islands.png",
+  "quality": 3,
   "history": [
     {
       "date": "2026-11-14",
@@ -32,6 +32,18 @@
       "from": "downloaded",
       "to": "imported",
       "note": "needs forge: assemble horizontal strip (rows top ~2, body ~4, skirt ~20). Grass islands with rocky underside in tiles_16.png"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "forged",
+      "note": "procedural strip, quality 3/5, grip normal"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 128x26 seam 0.0, point/repeat/uncompressed matches ConfigureStrip, licence+ledger ok, q3"
     }
   ]
 }

@@ -1,0 +1,31 @@
+{
+  "id": "smooth-road-strips",
+  "category": "surface",
+  "name": "Smooth road strips (asphalt, dirt, grass, ice, mud, glass + 3 crack stages)",
+  "status": "ready",
+  "requirements": "Smooth 1024x192 vector road strips, bilinear, 128 ppu, tile horizontally, soft lip and skirt; glass has crack overlays 1-3 distinct in greyscale.",
+  "have": [],
+  "notes": "Does not replace the pixel surface-* items (still used by the game until the implementer switches skins). Grips: asphalt/dirt/grass normal, ice very low, mud high drag, glass low. Forge ratings: asphalt 4, cracks 4, dirt 3, grass 3.5, ice 3.5, mud 3.5. Grass vs asphalt body luminance is close (dL 5.4) but silhouette (grass blades, lip) differs. Seams checked numerically (wrap diff equals interior neighbour diff) and grass tiled 3x visually.",
+  "source": "tools/art/make_road.py (own code, tools/art/smoothart)",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Roads/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 509078,
+  "sha256": "396ee5b36d310352d7a832036079adf6e87c05fd3010db28bd0b10d6fef1f0a0",
+  "project_path": "Assets/Art/Smooth/Roads",
+  "quality": 3.5,
+  "history": [
+    {
+      "date": "2026-11-15",
+      "to": "imported",
+      "note": "inspector: regenerated from script, files verified, imported under Assets/Art/Smooth",
+      "from": "forged"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: 9 files byte-identical to generator output, seams ok, grass tiled visually, import bilinear/128ppu/ASTC6x6, licence+ledger ok, q3.5"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "smooth-world-countryside-near-v2",
+  "category": "world",
+  "name": "Smooth Countryside near layer v2 (fences, boulders, flowers) and light alternate",
+  "status": "ready",
+  "requirements": "Smooth art per Docs/design/ART_BIBLE.md 5 and 7.1.",
+  "notes": "Quality v2 3.5, light 3. Imported alongside the v1 near layer, which is untouched and still the default; swap only when wanted (same size and alignment). Light alternate has 62% opaque trees (ghostly pines). No red or gold in the flowers.",
+  "source": "tools/art/make_bg_countryside_v2.py (own code, tools/art/smoothart)",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Backgrounds/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 262010,
+  "sha256": "b854428a122f2808f2457673bf12d34410df7d2971da89362cbf15282ec023a6",
+  "project_path": "Assets/Art/Smooth/Backgrounds/Countryside",
+  "quality": 3.5,
+  "have": [],
+  "history": [
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "imported",
+      "note": "inspector: generator re-run byte-identical, seams viewed, imported under Assets/Art/Smooth"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: both files byte-identical to generator, seam 0 (wrap diff <=1), imported beside v1 which is untouched, q3.5/3"
+    }
+  ]
+}

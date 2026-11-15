@@ -1,0 +1,30 @@
+Smooth slice pickups: coin, heart, star, ink canister, boost ring (+ overload ring variant)
+Method: procedural vector art, own code. tools/art/make_pickups_smooth.py + tools/art/smoothart/ (sprites.py). 4x supersampled
+masks, DeepInk outside-only outline (0.04 world units at display size: 6 to 8 px on the 128 px sprites, 6 px on the ring), 3-tone cel
+shading from the upper left, rim light, gloss, 4 px colour bleed. No generative AI, no downloads. Licence: own work (procedural).
+(tools/art/make_pickups.py and make_ring.py are the old pixel generators; left untouched.)
+
+Files: Coin.png, Heart.png, Star.png, InkCanister.png 128x128; Pickup_Ring.png and Pickup_Ring_Overload.png 256x256.
+Same file names as Resources/RoadBuilder so a later in-place swap needs no code. review/pickups_on_green.png, review/scene_*.png are
+review pictures, not assets.
+How the game uses them (Collectible.Init): the sprite bounds are scaled to a fixed world size (coin 0.65, heart 0.75, ink 0.85,
+ring 1.6, others 0.9), so canvas size and pixels-per-unit do not change gameplay; the canvases are SQUARE to keep the aspect.
+Collider is a fixed 0.5 circle. Star is used by ParticleManager as a particle sprite (it is NOT a pickup in PickupSpawner):
+its size there is set by that code from the sprite bounds at 100 ppu for the old 64 px file, i.e. 0.64 units, so import Star.png
+at 200 ppu (128 px) to keep the same size. Old ring import was 16 ppu with Point filter: re-import as bilinear.
+Colour code: gold = reward (coin, star, ring), purple = ink, pink-red = health (#F0506E family, not SignalRed). The ink drop is cream,
+not gold, so gold stays reserved for rewards. Overload ring: same gold body with a cyan (#60D6E6) rim, extra file for the Overload
+state (not wired anywhere yet).
+Differences from the old art: coin is a flat disc with an embossed star (old: same idea), heart is a glossy lobed heart, the star is
+now 128 px and rounded, ink canister keeps purple bottle + cream cap + drop; the boost ring is hollow (centre stays transparent),
+ring thickness 30 of 256 px = 0.19 units at the 1.6 unit display size (Bible: 0.2).
+Contrast against the Countryside (tools/art/check_sprite_contrast.py, 77 px per unit, outline = DeepInk vs surrounding background):
+  on sky/hills: outline 10 to 12 : 1 (Coin 11.8, Heart 11.7, Star 10.1, Ink 11.9, Ring 10.8, Overload 10.5)
+  at road height against the dark near layer: outline 6.2 to 9.7 : 1 except Heart 2.96 : 1 and fills 1.1 to 1.9 : 1.
+  Heart is the weakest at road height (dark red-pink on dark green trees); it still reads by shape and its light fill (1.86 : 1).
+  Greyscale (review/scene_grey.png): all five read by silhouette and outline; coin and ring fills are close to the sky luminance
+  (1.1 to 1.4 : 1) so they depend on the 6 to 8 px outline. Bible 3:1 rule applies to hazards and tells; no hazards in this batch.
+Rating (1 to 5; placeholder under 3): coin 4, heart 4, star 4, ink canister 3.5 (label detail is tiny at game size), boost ring 4,
+overload ring 3.5 (cyan rim is thin).
+Limits: ring rotates in game (90 deg/s) so its fixed upper-left highlight rotates with it (minor, symmetric otherwise); no sparkle
+frames; not verified in Unity. Nothing here is set ready.

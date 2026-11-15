@@ -1,37 +1,56 @@
 {
-  "id": "vehicle-monster-truck",
-  "category": "vehicle",
-  "name": "Monster Truck",
-  "status": "forged",
-  "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
-  "have": [],
-  "notes": "Forged: monster_body.png 33x11 (Kenney suv_large cab with its wheels erased), monster_chassis.png 40x5 (axle bar + two struts), monster_wheel.png 15x15 (own code circle, tread lugs). Limits: The cab keeps a little leftover white from the SUV roof rack and the cut arches are a bit rough; the big wheel is cleaner than the body; wheel is a single frame (rotate in engine).",
-  "source": null,
-  "licence": "own work (derivative of CC0 Kenney Pixel Vehicle Pack)",
-  "licence_evidence": "Assets/Art/Vehicles/Forged/vehicle-monster-truck/LICENCE_EVIDENCE.txt",
-  "download_dir": null,
-  "bytes": null,
-  "sha256": null,
-  "project_path": "Assets/Art/Vehicles/Forged/vehicle-monster-truck/",
-  "quality": 4,
-  "history": [
-    {
-      "date": "2026-11-14",
-      "from": "todo",
-      "to": "not_found",
-      "note": "OGA monster truck CC0 results (monstertruck Body/Tire, hill-climb, monster-truck-1/-0) are vector/smooth (1000+ colours) or CC-BY; none pixel art. Forge: re-wheel Kenney suv_large/pickup."
-    },
-    {
-      "date": "2026-11-14",
-      "from": "not_found",
-      "to": "forged",
-      "note": "forged, quality 4"
-    },
-    {
-      "date": "2026-11-14",
-      "from": "not_found",
-      "to": "forged",
-      "note": "forged from Kenney palette/parts, see FORGE_NOTES"
-    }
-  ]
+ "id": "vehicle-monster-truck",
+ "category": "vehicle",
+ "name": "Monster Truck",
+ "status": "ready",
+ "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
+ "have": [],
+ "notes": "Forged: monster_body.png 33x11 (Kenney suv_large cab with its wheels erased), monster_chassis.png 40x5 (axle bar + two struts), monster_wheel.png 15x15 (own code circle, tread lugs). Limits: The cab keeps a little leftover white from the SUV roof rack and the cut arches are a bit rough; the big wheel is cleaner than the body; wheel is a single frame (rotate in engine).",
+ "source": null,
+ "licence": "own work (derivative of CC0 Kenney Pixel Vehicle Pack)",
+ "licence_evidence": "Assets/Art/Vehicles/Forged/vehicle-monster-truck/LICENCE_EVIDENCE.txt",
+ "download_dir": null,
+ "bytes": null,
+ "sha256": null,
+ "project_path": "Assets/Art/Vehicles/Forged/vehicle-monster-truck/",
+ "quality": 4,
+ "history": [
+  {
+   "date": "2026-11-14",
+   "from": "todo",
+   "to": "not_found",
+   "note": "OGA monster truck CC0 results (monstertruck Body/Tire, hill-climb, monster-truck-1/-0) are vector/smooth (1000+ colours) or CC-BY; none pixel art. Forge: re-wheel Kenney suv_large/pickup."
+  },
+  {
+   "date": "2026-11-14",
+   "from": "not_found",
+   "to": "forged",
+   "note": "forged, quality 4"
+  },
+  {
+   "date": "2026-11-14",
+   "from": "not_found",
+   "to": "forged",
+   "note": "forged from Kenney palette/parts, see FORGE_NOTES"
+  },
+  {
+   "date": "2026-11-15",
+   "from": "forged",
+   "to": "ready",
+   "note": "inspector: faces right, catalogue preview+wheel cut-outs 16ppu point uncompressed, source PNGs reimported point/16ppu, licence+ledger ok, q3+"
+  },
+  {
+   "date": "2026-11-15",
+   "from": "ready",
+   "to": "ready",
+   "note": "inspector (smooth restyle, status unchanged, smooth_status=ready): smooth restyle reviewed and imported"
+  }
+ ],
+ "smooth_status": "ready",
+ "smooth_quality": 4,
+ "smooth_scale": 9,
+ "smooth_ppu": 144,
+ "smooth_project_path": "Assets/Art/Smooth/Vehicles2/",
+ "smooth_licence": "own work (procedural, tools/art/make_vehicles2.py)",
+ "smooth_licence_evidence": "Assets/Art/Smooth/Vehicles2/LICENCE_EVIDENCE.txt"
 }

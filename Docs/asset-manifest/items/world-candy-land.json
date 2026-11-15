@@ -2,7 +2,7 @@
   "id": "world-candy-land",
   "category": "world",
   "name": "Candy Land",
-  "status": "forged",
+  "status": "ready",
   "requirements": "Four horizontally looping layers 384x216 (sky, far, mid, near) like VISTA, pixel art, transparent where the layer should show what is behind it. Or a source we can convert to that format.",
   "have": [],
   "notes": "Forged scene, 4 layers 384x216. Forge run stopped before notes; records written by main session. Unreviewed by inspector.",
@@ -32,6 +32,12 @@
       "from": "not_found",
       "to": "forged",
       "note": "layers exist and look complete; records added after the forge run was stopped"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 4 layers 384x216, seams <0.07 visually clean, point/16ppu/repeat/no mips, licence+ledger ok, q3+"
     }
   ]
 }

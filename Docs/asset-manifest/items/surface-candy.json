@@ -2,18 +2,18 @@
   "id": "surface-candy",
   "category": "surface",
   "name": "Candy",
-  "status": "found",
+  "status": "ready",
   "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
   "have": [],
-  "notes": "",
+  "notes": " | FORGED 2026-11-15: procedural 128x26 strip, grip normal, quality 3.",
   "source": null,
-  "licence": null,
-  "licence_evidence": null,
+  "licence": "own work (procedural; palette reference no pack (original colours))",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-candy/LICENCE_EVIDENCE.txt",
   "download_dir": null,
   "bytes": null,
   "sha256": null,
-  "project_path": null,
-  "quality": null,
+  "project_path": "Assets/Art/Surfaces/Forged/surface-candy/surface-candy.png",
+  "quality": 3,
   "history": [
     {
       "date": "2026-11-14",
@@ -26,6 +26,18 @@
       "from": "scouting",
       "to": "found",
       "note": "found CC-BY only: MadByte 8x8 Candy Land (OGA, CC-BY 3.0, https://opengameart.org/content/8x8-platformer-tileset-candy-land); Kenney Candy Caverns is smooth vector style. No CC0 pixel option; forge by recolouring snow slab (pink/white)."
+    },
+    {
+      "date": "2026-11-15",
+      "from": "found",
+      "to": "forged",
+      "note": "procedural strip, quality 3/5, grip normal"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 128x26 seam 0.0, point/repeat/uncompressed matches ConfigureStrip, licence+ledger ok, q3"
     }
   ]
 }

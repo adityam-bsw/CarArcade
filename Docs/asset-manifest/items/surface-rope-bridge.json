@@ -2,17 +2,17 @@
   "id": "surface-rope-bridge",
   "category": "surface",
   "name": "Rope Bridge",
-  "status": "imported",
+  "status": "ready",
   "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
   "have": [],
-  "notes": "Same small plank piece as wooden bridge in Buch pack; no rope. Forge needed. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page).",
+  "notes": "Same small plank piece as wooden bridge in Buch pack; no rope. Forge needed. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page). | FORGED 2026-11-15: procedural 128x26 strip, grip normal, quality 2. placeholder.",
   "source": "https://opengameart.org/content/the-field-of-the-floating-islands",
-  "licence": "CC0",
-  "licence_evidence": "OGA page: License(s): CC0",
+  "licence": "own work (procedural; palette reference Buch Floating Islands plank piece (CC0), rope drawn from scratch)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-rope-bridge/LICENCE_EVIDENCE.txt",
   "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/_oga-floating-islands",
   "bytes": 88429,
   "sha256": "1364b85078461d2a47726cb89c92e34b66b331e4db8271e93570be7756cd6678",
-  "project_path": "Assets/Art/Surfaces/FloatingIslands/",
+  "project_path": "Assets/Art/Surfaces/Forged/surface-rope-bridge/surface-rope-bridge.png",
   "quality": 2,
   "history": [
     {
@@ -32,6 +32,18 @@
       "from": "downloaded",
       "to": "imported",
       "note": "placeholder: only a small plank piece, no rope; needs forge: assemble horizontal strip (rows top ~2, body ~4, skirt ~20)"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "forged",
+      "note": "procedural strip, quality 2/5, grip normal (placeholder)"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: PLACEHOLDER q2, accepted: reads as plank deck with rope marks; seam 0.0, imports ok, ledger ok"
     }
   ]
 }

@@ -2,17 +2,17 @@
   "id": "surface-sand",
   "category": "surface",
   "name": "Sand",
-  "status": "imported",
+  "status": "ready",
   "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
   "have": [],
-  "notes": "Blaze sea/sea_tileset.png: sandy-coral earth slab with scalloped top. Also seasonal tiles tropical seaside column (sand block). Grip normal-low. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page).",
+  "notes": "Blaze sea/sea_tileset.png: sandy-coral earth slab with scalloped top. Also seasonal tiles tropical seaside column (sand block). Grip normal-low. Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download refused plain curl (403); needs manual download (CC0 per page). | FORGED 2026-11-15: procedural 128x26 strip, grip normal-low, quality 3.",
   "source": "https://opengameart.org/content/blazes-platformer-pack-3-environments-included",
-  "licence": "CC0",
-  "licence_evidence": "readme.txt in zip: 'licensed under CC0 1.0 Universal (Public Domain Dedication)'; OGA page: License(s): CC0",
+  "licence": "own work (procedural; palette reference Blaze sea tileset sandy slab (CC0, Assets/Art/Surfaces/BlazesPlatformer/sea))",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-sand/LICENCE_EVIDENCE.txt",
   "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/_oga-blazes-platformer-pack",
   "bytes": 70426,
   "sha256": "b350450fe96bc2b5073ed2787d75e68c41dfb09feac9de97cb60932559367d1f",
-  "project_path": "Assets/Art/Surfaces/BlazesPlatformer/sea/",
+  "project_path": "Assets/Art/Surfaces/Forged/surface-sand/surface-sand.png",
   "quality": 3,
   "history": [
     {
@@ -32,6 +32,18 @@
       "from": "downloaded",
       "to": "imported",
       "note": "needs forge: assemble horizontal strip (rows top ~2, body ~4, skirt ~20). Sandy slab in sea/sea_tileset.png. Grip normal-low"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "forged",
+      "note": "procedural strip, quality 3/5, grip normal-low"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 128x26 seam 0.0, point/repeat/uncompressed matches ConfigureStrip, licence+ledger ok, q3"
     }
   ]
 }

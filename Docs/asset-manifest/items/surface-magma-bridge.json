@@ -2,7 +2,7 @@
   "id": "surface-magma-bridge",
   "category": "surface",
   "name": "Magma Bridge",
-  "status": "forged",
+  "status": "ready",
   "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
   "have": [],
   "notes": "Procedural forge, quality 3.0/5. Physics hint: grip normal, bounce 0.0 (damage/heat is a mode rule). Import settings still to set in inspector.",
@@ -32,6 +32,12 @@
       "from": "not_found",
       "to": "forged",
       "note": "procedural strip, quality 3.0"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 128x26 seam 0.0, point/repeat/uncompressed matches ConfigureStrip, licence+ledger ok, q3"
     }
   ]
 }

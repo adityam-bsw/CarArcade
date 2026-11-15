@@ -1,0 +1,31 @@
+{
+  "id": "smooth-world-countryside",
+  "category": "world",
+  "name": "Smooth Countryside background (sky, sun, 4 clouds, far, mid, near)",
+  "status": "ready",
+  "requirements": "Layered smooth backgrounds, 576 px tall, 2048 wide tiling layers (near 864 tall), bilinear, about 41 ppu.",
+  "have": [],
+  "notes": "Pixel world-rolling-hills (VISTA downs) remains the game's world until the implementer wires this. Ratings: sky 4, sun 4, clouds 3.5, far 3.5, mid 3, near 3.5. Red SignalRed is below 3:1 on sky/horizon/near hill: hazards must keep DeepInk outline. cloud_c has two tiny specks near its base (cosmetic). Sky strip is uncompressed RGBA32 on Android, wrap clamp; tiling layers Repeat + Full Rect.",
+  "source": "tools/art/make_bg_countryside.py (own code, tools/art/smoothart)",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Backgrounds/Countryside",
+  "download_dir": null,
+  "bytes": 331605,
+  "sha256": "cbc5f03ee2598929e4bb78e0a0e9ddf5bcab353e5645a6b7c92363f3f921b028",
+  "project_path": "Assets/Art/Smooth/Backgrounds/Countryside",
+  "quality": 3.5,
+  "history": [
+    {
+      "date": "2026-11-15",
+      "to": "imported",
+      "note": "inspector: regenerated from script, files verified, imported under Assets/Art/Smooth",
+      "from": "forged"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: layers verified visually; far/mid/near/sky/sun/cloud_b identical to generator, clouds a,c,d imported from re-run of script; import 41ppu bilinear ASTC6x6 (sky uncompressed), q3.5"
+    }
+  ]
+}

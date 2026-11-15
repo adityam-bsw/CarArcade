@@ -1,37 +1,56 @@
 {
-  "id": "vehicle-bicycle",
-  "category": "vehicle",
-  "name": "Bicycle",
-  "status": "forged",
-  "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
-  "have": [],
-  "notes": " Forged: Frame is 1 px lines with no outline so it is lighter than the outlined Kenney vehicles; no rider; no pedal animation.",
-  "source": null,
-  "licence": "own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)",
-  "licence_evidence": "Assets/Art/Vehicles/Forged/vehicle-bicycle/LICENCE_EVIDENCE.txt",
-  "download_dir": null,
-  "bytes": null,
-  "sha256": null,
-  "project_path": "Assets/Art/Vehicles/Forged/vehicle-bicycle/",
-  "quality": 3,
-  "history": [
-    {
-      "date": "2026-11-14",
-      "from": "todo",
-      "to": "not_found",
-      "note": "Searched OGA+itch.io several phrasings. No free CC0 side-view art found. Candidates rejected: top-down speed boats (Sami), kayak with paddler (Spring), Lichee10 top-down vehicles, OGA sled CC-BY"
-    },
-    {
-      "date": "2026-11-14",
-      "from": "not_found",
-      "to": "forging",
-      "note": "forged from code and Kenney palette, quality 3"
-    },
-    {
-      "date": "2026-11-14",
-      "from": "not_found",
-      "to": "forged",
-      "note": "Forged from code + Kenney palette, quality 3 stand-in"
-    }
-  ]
+ "id": "vehicle-bicycle",
+ "category": "vehicle",
+ "name": "Bicycle",
+ "status": "ready",
+ "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
+ "have": [],
+ "notes": " Forged: Frame is 1 px lines with no outline so it is lighter than the outlined Kenney vehicles; no rider; no pedal animation.",
+ "source": null,
+ "licence": "own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)",
+ "licence_evidence": "Assets/Art/Vehicles/Forged/vehicle-bicycle/LICENCE_EVIDENCE.txt",
+ "download_dir": null,
+ "bytes": null,
+ "sha256": null,
+ "project_path": "Assets/Art/Vehicles/Forged/vehicle-bicycle/",
+ "quality": 3,
+ "history": [
+  {
+   "date": "2026-11-14",
+   "from": "todo",
+   "to": "not_found",
+   "note": "Searched OGA+itch.io several phrasings. No free CC0 side-view art found. Candidates rejected: top-down speed boats (Sami), kayak with paddler (Spring), Lichee10 top-down vehicles, OGA sled CC-BY"
+  },
+  {
+   "date": "2026-11-14",
+   "from": "not_found",
+   "to": "forging",
+   "note": "forged from code and Kenney palette, quality 3"
+  },
+  {
+   "date": "2026-11-14",
+   "from": "not_found",
+   "to": "forged",
+   "note": "Forged from code + Kenney palette, quality 3 stand-in"
+  },
+  {
+   "date": "2026-11-15",
+   "from": "forged",
+   "to": "ready",
+   "note": "inspector: faces right, catalogue preview+wheel cut-outs 16ppu point uncompressed, source PNGs reimported point/16ppu, licence+ledger ok, q3+"
+  },
+  {
+   "date": "2026-11-15",
+   "from": "ready",
+   "to": "ready",
+   "note": "inspector (smooth restyle, status unchanged, smooth_status=ready): smooth restyle reviewed and imported"
+  }
+ ],
+ "smooth_status": "ready",
+ "smooth_quality": 4,
+ "smooth_scale": 9,
+ "smooth_ppu": 144,
+ "smooth_project_path": "Assets/Art/Smooth/Vehicles2/",
+ "smooth_licence": "own work (procedural, tools/art/make_vehicles2.py)",
+ "smooth_licence_evidence": "Assets/Art/Smooth/Vehicles2/LICENCE_EVIDENCE.txt"
 }

@@ -1,37 +1,56 @@
 {
-  "id": "vehicle-shopping-cart",
-  "category": "vehicle",
-  "name": "Shopping Cart",
-  "status": "forged",
-  "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
-  "have": [],
-  "notes": "Forged: cart_body.png 26x12 (wire basket, handle, frame), cart_wheel.png 5x5. Limits: Wire grid reads as a bar when small; frame is simplified; very small (about 25 px).",
-  "source": null,
-  "licence": "own work (derivative of CC0 Kenney Pixel Vehicle Pack)",
-  "licence_evidence": "Assets/Art/Vehicles/Forged/vehicle-shopping-cart/LICENCE_EVIDENCE.txt",
-  "download_dir": null,
-  "bytes": null,
-  "sha256": null,
-  "project_path": "Assets/Art/Vehicles/Forged/vehicle-shopping-cart/",
-  "quality": 3,
-  "history": [
-    {
-      "date": "2026-11-14",
-      "from": "todo",
-      "to": "not_found",
-      "note": "OGA shopping cart: only icon set and LPC office (not vehicle). Forge from mine cart/props."
-    },
-    {
-      "date": "2026-11-14",
-      "from": "not_found",
-      "to": "forged",
-      "note": "forged, quality 3"
-    },
-    {
-      "date": "2026-11-14",
-      "from": "not_found",
-      "to": "forged",
-      "note": "forged from Kenney palette/parts, see FORGE_NOTES"
-    }
-  ]
+ "id": "vehicle-shopping-cart",
+ "category": "vehicle",
+ "name": "Shopping Cart",
+ "status": "ready",
+ "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
+ "have": [],
+ "notes": "Forged: cart_body.png 26x12 (wire basket, handle, frame), cart_wheel.png 5x5. Limits: Wire grid reads as a bar when small; frame is simplified; very small (about 25 px).",
+ "source": null,
+ "licence": "own work (derivative of CC0 Kenney Pixel Vehicle Pack)",
+ "licence_evidence": "Assets/Art/Vehicles/Forged/vehicle-shopping-cart/LICENCE_EVIDENCE.txt",
+ "download_dir": null,
+ "bytes": null,
+ "sha256": null,
+ "project_path": "Assets/Art/Vehicles/Forged/vehicle-shopping-cart/",
+ "quality": 3,
+ "history": [
+  {
+   "date": "2026-11-14",
+   "from": "todo",
+   "to": "not_found",
+   "note": "OGA shopping cart: only icon set and LPC office (not vehicle). Forge from mine cart/props."
+  },
+  {
+   "date": "2026-11-14",
+   "from": "not_found",
+   "to": "forged",
+   "note": "forged, quality 3"
+  },
+  {
+   "date": "2026-11-14",
+   "from": "not_found",
+   "to": "forged",
+   "note": "forged from Kenney palette/parts, see FORGE_NOTES"
+  },
+  {
+   "date": "2026-11-15",
+   "from": "forged",
+   "to": "ready",
+   "note": "inspector: faces right, catalogue preview+wheel cut-outs 16ppu point uncompressed, source PNGs reimported point/16ppu, licence+ledger ok, q3+"
+  },
+  {
+   "date": "2026-11-15",
+   "from": "ready",
+   "to": "ready",
+   "note": "inspector (smooth restyle, status unchanged, smooth_status=ready): smooth restyle reviewed and imported"
+  }
+ ],
+ "smooth_status": "ready",
+ "smooth_quality": 3,
+ "smooth_scale": 9,
+ "smooth_ppu": 144,
+ "smooth_project_path": "Assets/Art/Smooth/Vehicles2/",
+ "smooth_licence": "own work (procedural, tools/art/make_vehicles2.py)",
+ "smooth_licence_evidence": "Assets/Art/Smooth/Vehicles2/LICENCE_EVIDENCE.txt"
 }

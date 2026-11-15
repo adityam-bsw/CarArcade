@@ -1,0 +1,6 @@
+Source: own work. Generated in-house by tools/art/make_vehicles2.py + tools/art/veh2lib.py + tools/art/smoothart/
+(procedural pure-Python vector rasteriser). No third-party pixels, no downloads, no generative AI. The old pixel
+previews under Assets/Art/Catalog were used only as a size and anchor reference.
+Licence: own work (CC0-compatible, no obligations). Credit not required.
+Verified by the asset-inspector 2026-11-15: re-running make_vehicles2.py reproduces all 97 staged PNGs byte for byte (cmp).
+Not imported (sent back): vehicle-fire-truck (art touches the right canvas border).

@@ -1,0 +1,73 @@
+Smooth catalogue (garage) vehicles, restyle of 28 of 32 vehicle items. Forged 2026-11-15. Status: forged, NOT reviewed (inspector decides).
+
+METHOD
+Procedural vector art, our own code: tools/art/make_vehicles2.py + tools/art/veh2lib.py on top of tools/art/smoothart/ (pure Python
+rasteriser, 4x supersampled masks). Same recipe as the slice cars: rounded-polygon silhouettes (round_poly), DeepInk outline of 0.04
+world units sized from the DISPLAY density (about 5 px), cel3 three-tone shading from the upper left, rim light, gloss, cool gradient
+windows, dark arch liners, 4 px colour bleed. Wheels are drawn by one parametric function (car, sport, truck, lug, tractor, cart, wire):
+tyre, tread notches, rim, dish, 4 to 8 spokes, hub in the vehicle accent colour and ONE bright bolt so rotation reads.
+No generative AI, no downloads, no third-party pixels. The old Kenney / forged / OGA previews were used ONLY as a size and layout
+reference (canvas, wheel anchors, silhouette box, what the vehicle is); none of their pixels are in the new files.
+Regenerate: python3 tools/art/make_vehicles2.py --output <dir>   (about 25 s)   then   python3 tools/art/vehicles2_report.py <dir>
+
+WHAT IS KEPT EXACTLY (so colliders, wheel spin and gameplay numbers do not change)
+- Canvas = old preview canvas x an integer S (8 to 11, 5 for the motorcycle, 7 for the snowmobile). Pivot is the centre, as before.
+- Wheel anchors (cx, cy), radius r and cut-out size = old values x S, listed in MAPPING.md and wheels_new.json. The drawn wheel has
+  radius r*S (the physics radius), so the picture agrees with the collider.
+- Silhouette box (outline included) fills the old content box (1 old px margin): within about 0.1 old px for most; larger deviations
+  are listed in MAPPING.md (old vs new bounds).
+- NOT kept: pixel content, obviously. Colours changed where the old car clashed with another (see below).
+
+THREE FILES PER VEHICLE WITH WHEELS
+ previews/<id>.png   body + wheels baked (catalogue card, and a drop-in for the old Previews/<id>.png)
+ bodies/<id>.png     body only, wheel arches show a dark liner; use as the rig body so the spinning cut-outs are not drawn over baked wheels
+ wheels/<id>_w<i>.png  round wheel cut-outs, size = old size x S, same file names as Assets/Art/Catalog/Wheels
+Vehicles without cut-outs (handcar, moon rover, tank, snowmobile, sled, toboggan, snowboard, skateboard): bodies/ and previews/ are identical
+(wheels, if any, are baked, as in the old picture).
+
+COLOURS CHOSEN (distinct from each other and from the slice cars: Classic red, Sport cyan, Monster orange)
+police white + charcoal + blue stripe, red/blue light bar; car leaf green; sports violet; monster truck orange (catalogue truck is a
+different vehicle from the slice monster); taxi yellow with checker band; race car cobalt blue; dune buggy sky blue; cab-over truck
+blue; city bus teal and cream; fire truck red and white; camper cream and orange; trailer white with blue band; tractor lime;
+quad flame red; scooter pink; bicycle red frame; motorbike blue; golf cart white with green roof; tuk-tuk green with yellow roof.
+Red is only used for vehicles whose colour is red by nature (fire truck, quad, tail lamps); gold only for lamps, taxi and tuk-tuk roof.
+
+RATINGS (1 to 5, honest; all are better than the old pixel art in a smooth world, none are a hand-drawn illustration)
+ 4  police-car, car, sports-car, monster-truck, taxi, bus, camper, tractor, bicycle, moon-rover
+ 3  race-car, dune-buggy, pickup (really a cab), fire-truck, semi-truck (trailer), quad-atv, scooter, motorcycle, golf-cart, tuk-tuk,
+    shopping-cart, tank, handcar, sled, toboggan, skateboard
+ 2  snowmobile, snowboard  (placeholder grade: pieces read, but the track pod / rider anatomy are crude; the old pixel art is not better in
+    a smooth world, but the inspector may prefer to keep the old files until redrawn)
+Shared weaknesses: wheels are small on the cars because the anchors and radii are fixed by the old art (police 3 old px of a 34 px body);
+the long front overhang (front wheel at about 60 to 65 percent of the body) comes from the old anchors and makes every car a long-hood
+shape; shading is one fixed light direction so tall parts (bus, trailer) have a dark right end; riders (sled, toboggan, snowboard) are
+simple cap + head + block torso; no decals or text anywhere (taxi sign, police) by choice.
+
+KNOWN PROBLEMS IN THE OLD DATA (not fixed here, for the implementer)
+- vehicle-pickup: the old picture is a SEMI CAB (tandem rear wheels, one front wheel), not a pickup. Redrawn as a cab-over tractor unit to match
+  its anchors (5.5, 12.5, 29.5). Rename or redraw the item if a real pickup is wanted. Outer wheels (5.5 and 29.5) stay the physics pair.
+- vehicle-semi-truck: the old picture is a trailer with both wheels at the rear (7.5 and 13.5 old px, only 6 px apart), so the physics wheelbase
+  is tiny. Redrawn as a box trailer. Re-running tools/assets/find_wheels.py logic or setting new anchors would give a real semi.
+- vehicle-skateboard: manifest status forged, quality 3; old picture was a red hull shape; redrawn as a deck with trucks and wheels.
+- The free default in code (RoadGameManager line 278) is vehicle-car (cost 0). The police car costs 220 (class sport) in CatalogBuilder, so it is
+  not the default starter. Both were done first.
+- vehicle-mine-cart has no preview in the catalogue (not listed); hovercraft, jet-ski, speedboat, rocket-sled are listed but not playable.
+
+NOT DONE (kept as old pixel art; no art made)
+vehicle-hovercraft, vehicle-jet-ski, vehicle-speedboat, vehicle-rocket-sled (not playable yet, no rig), vehicle-mine-cart (no catalogue preview).
+The three slice cars (Classic, Sport, Monster) are already smooth (make_vehicles.py) and are not touched.
+
+REVIEW FILES (review/)
+ sheet_color.png        every new preview on the Countryside sky, old pixel art above each for comparison (old drawn at nearest scale)
+ sheet_grey.png         same, vehicles in greyscale (silhouette and value read); background not greyed
+ sheet_old_vs_new_a.png the four priority cars, old above new
+ scene_a..d.png         vehicles at in-game scale (41 px per unit) on the Countryside preview and the smooth asphalt strip
+Seen at 41 px/unit the ink outline is about 1.6 px and reads like the scenery; interior details below about 3 px (door seams, lamps)
+are lost, which is intended.
+
+IMPORT (for the implementer, not done here: nothing was written under Assets/)
+Under Assets/Art/Smooth/ the SmoothArtImporter applies bilinear, no mipmaps, 128 PPU, ASTC. Suggested path: Assets/Art/Smooth/Vehicles/Catalog/
+{previews,bodies,wheels}. Needs a ledger row (LEDGER_ROWS.md), a LICENCE_EVIDENCE.txt beside it (own work, procedural), and the catalogue
+builder changed to (a) read wheels_new.json, (b) set widthUnits to clamp(OLD width / 14, 1.5, 3) because preview.rect.width / 14 would now clamp to 3.
+
+REVISION (fire truck border fix): the fire truck design spanned x 1..46 while the 46 px canvas content box is x 1..45, so the front touched the right border (alpha 255 on the last column). make_vehicles2.py now squeezes its x by 44/45; margins are now 8 px (1 old px) on left, top and right. Only the fire truck body and preview were regenerated; wheels and every other vehicle are byte-identical. Other vehicles have a margin under 1 old px on some sides (wheels/bleed reaching the old bounds) but none touch the border.

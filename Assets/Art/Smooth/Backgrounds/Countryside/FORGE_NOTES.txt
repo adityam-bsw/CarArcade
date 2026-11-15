@@ -1,0 +1,32 @@
+Countryside background layers (smooth art), Bible sections 5, 6 (Countryside ramp) and 8
+Method: procedural vector rasteriser, own code (tools/art/smoothart + tools/art/make_bg_countryside.py). No generative AI, no
+downloads, no third-party pixels. Licence: own work, procedural.
+Generator: python3 tools/art/make_bg_countryside.py --output <dir>        (~25 s; deterministic seeds)
+Checks:    python3 tools/art/check_bg_contrast.py <dir>   (CHECK_RESULTS.txt)
+Files: bg_countryside_sky_4x576.png (opaque gradient strip, stretch in X; uncompressed per Bible 7.1), bg_countryside_sun_256.png
+(disc + glow), bg_countryside_cloud_a/b/c/d.png (420x200 separate cloud sprites, flat base, no stray bumps),
+bg_countryside_far_2048x576.png (back pointed mountain range + soft front hills), bg_countryside_mid_2048x576.png (rolling hills with
+tree-line bumps), bg_countryside_near_2048x864.png (dark saturated hill, 15 round trees and pines, bushes, grass tufts).
+Not for import: bg_countryside_preview_2048x576.png, _seam_*.png.
+Params: scenery ramp from palette.SCENERY['countryside']; hill heights use an amplitude envelope (wave_fbm base 1) so peaks vary;
+far mountains base y 330 amp 230 (peak = 1 - sqrt(v^2+0.03)); mid ground y 446 +-52, 260 tree candidates (clustered); near crest y 772.
+Placement assumption (needs confirming by the BackgroundDirector owner): layers bottom-aligned to the 576 px view; near layer's lowest
+576 rows visible; sun placed by the director (sprite is 256 px, glow radius 128, disc radius 44).
+Fixes versus the first version: stray cloud bump (circles hung below the base) now clipped by a flat base; uniform hills replaced by
+enveloped fbm with pointed far peaks; vertical banding removed (slope shading fades with depth); painter ~4x faster.
+Contrast (CHECK_RESULTS.txt): SignalRed #D94B40 vs scenery is BELOW 3:1: sky 2.73, horizon 2.35, near hill 1.05. DeepInk outline
+passes everywhere (sky 10.7, horizon 9.2, near hill 4.1). So red hazards/tells must keep the DeepInk outline or a light under-stroke
+and a shape; red-only tells fail the 3:1 rule on Countryside. Atmospheric perspective holds: mean luminance far 0.55 > mid 0.33 > near 0.21.
+Seam: tops continuous across the wrap (mid 422 -> 420 px). Seam scores far 1.07, near 0.72, mid 4.3 (metric is inflated by steep
+tree edges at the wrap, visually continuous).
+Weaknesses: trees are generic lollipop shapes and identical in style; no near-layer variety (no fence, rocks, flowers); far layer is
+pale and low in contrast; cloud base is a little blocky; near trees are large (about 4 units) which may crowd the road area.
+Ratings (1-5): sky 4, sun 4, clouds 3.5, far 3.5, mid 3, near 3.5.
+
+---- near layer v2 + light alternate (batch 2, imported 2026-11-15) ----
+Countryside near layer v2 + light alternate, forge 2026-11-15. Quality 3.5/5 (v2), 3/5 (light).
+Method: tools/art/make_bg_countryside_v2.py. Same hill, palette, tree kinds and positions as make_bg_countryside.make_near (same random stream, v1 file stays valid); extras use a separate stream.
+near_v2: + three post-and-rail fence runs that follow the ground, boulders (grey-green, shaded), nine flower clusters (white, lilac, sky blue; NO red and NO gold by the colour code), all <= 70 px and drawn in front of the trees. Replaces v1 only if wanted; same size 2048x864, same alignment.
+near_v2_light (optional alternate): same extras, trees 22% smaller, lerped 35% toward the mid-layer green, 62% opaque so the mid hills show through and the tree line stops filling car height.
+Limits: light-tree alpha makes overlapping canopy parts show their own overlaps slightly (canopy is one mask so it is mostly clean) and pines look ghostly; boulders look slightly glassy. Fence rails are thin at distance. Seam 0.002.
+Not imported (Assets/ untouched).

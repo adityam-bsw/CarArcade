@@ -1,0 +1,31 @@
+{
+  "id": "smooth-vehicles-slice",
+  "category": "vehicle",
+  "name": "Smooth slice vehicles (Classic cherry red, Sport cyan, Monster orange; bodies + 3 wheels)",
+  "status": "ready",
+  "requirements": "Smooth vector sprites per Docs/design/ART_BIBLE.md, bilinear, 5x5 ASTC vehicles; same canvases as the old Resources sprites.",
+  "have": [],
+  "notes": "Same canvases as Resources/RoadBuilder CarBody/SportCarBody/MonsterTruckBody/Wheel, centre pivot. Game code loads one shared Wheel: implementer needs per-vehicle wheel routing or uses wheel_classic. Classic stays cherry red #D8323C (user approved). Ratings: wheels 4, monster 4, classic 3.5, sport 3.5.",
+  "source": "tools/art/make_vehicles.py",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Vehicles/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 97079,
+  "sha256": "1d65e83cb103ed495c4ea20cb1898fcf357826ffe58aafd412b57a24bd2c88cf",
+  "project_path": "Assets/Art/Smooth/Vehicles",
+  "quality": 3.5,
+  "history": [
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "imported",
+      "note": "inspector: generator re-run byte-identical, canvases checked, imported"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: byte-identical regen, canvases/pivots match old sprites, alpha+bleed ok, import ok, q3.5"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "id": "smooth-pickups",
+  "category": "pickup",
+  "name": "Smooth pickups (coin, heart, star, ink canister, boost ring, overload ring)",
+  "status": "ready",
+  "requirements": "Smooth vector sprites per Docs/design/ART_BIBLE.md, bilinear, 5x5 ASTC vehicles; same canvases as the old Resources sprites.",
+  "have": [],
+  "notes": "Same names as Resources/RoadBuilder. Star imported at 200 ppu (128 px keeps 0.64 units for ParticleManager). Rings bilinear, hollow centre. Ratings: coin 4, heart 4, star 4, ink 3.5, ring 4, overload 3.5. Heart outline contrast at road height is weak (2.96:1).",
+  "source": "tools/art/make_pickups_smooth.py",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Pickups/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 63966,
+  "sha256": "ba0621800f1ef04c7cf150cb84f0e9776e966f614e1565e4f4c1958842cb2248",
+  "project_path": "Assets/Art/Smooth/Pickups",
+  "quality": 3.5,
+  "history": [
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "imported",
+      "note": "inspector: generator re-run byte-identical, canvases checked, imported"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: byte-identical regen, alpha+bleed ok, Star 200ppu, rings bilinear, q3.5"
+    }
+  ]
+}

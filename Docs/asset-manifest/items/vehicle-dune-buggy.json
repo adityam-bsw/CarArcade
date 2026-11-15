@@ -1,21 +1,35 @@
 {
-  "id": "vehicle-dune-buggy",
-  "category": "vehicle",
-  "name": "Dune Buggy",
-  "status": "have",
-  "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
-  "have": [
-    "Assets/Art/Vehicles/Kenney",
-    "Assets/Art/Vehicles/OpenGameArt"
-  ],
-  "notes": "Kenney buggy, ZaninDevelopers vintagebuggy",
-  "source": null,
-  "licence": null,
-  "licence_evidence": null,
-  "download_dir": null,
-  "bytes": null,
-  "sha256": null,
-  "project_path": null,
-  "quality": null,
-  "history": []
+ "id": "vehicle-dune-buggy",
+ "category": "vehicle",
+ "name": "Dune Buggy",
+ "status": "have",
+ "requirements": "Side-view pixel art facing right, about 30 to 70 px wide (our world: one art pixel is 1/16 unit). Prefer separate wheel sprites so a physics rig can be built, or a clean body plus wheel positions.",
+ "have": [
+  "Assets/Art/Vehicles/Kenney",
+  "Assets/Art/Vehicles/OpenGameArt"
+ ],
+ "notes": "Kenney buggy, ZaninDevelopers vintagebuggy",
+ "source": null,
+ "licence": null,
+ "licence_evidence": null,
+ "download_dir": null,
+ "bytes": null,
+ "sha256": null,
+ "project_path": null,
+ "quality": null,
+ "history": [
+  {
+   "date": "2026-11-15",
+   "from": "have",
+   "to": "have",
+   "note": "inspector (smooth restyle, status unchanged, smooth_status=ready): smooth restyle reviewed and imported"
+  }
+ ],
+ "smooth_status": "ready",
+ "smooth_quality": 3,
+ "smooth_scale": 9,
+ "smooth_ppu": 144,
+ "smooth_project_path": "Assets/Art/Smooth/Vehicles2/",
+ "smooth_licence": "own work (procedural, tools/art/make_vehicles2.py)",
+ "smooth_licence_evidence": "Assets/Art/Smooth/Vehicles2/LICENCE_EVIDENCE.txt"
 }

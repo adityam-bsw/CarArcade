@@ -1,0 +1,45 @@
+Smooth slice vehicles: ClassicRed, SportCyan, MonsterTruck (body + wheel as separate PNGs)
+Method: procedural vector art, own code. tools/art/make_vehicles.py + tools/art/smoothart/ (sprites.py is new: Sprite helper with
+outline from display density, 3-tone cel shading, upper-left rim light, gloss, round_poly fillets). 4x supersampled masks,
+DeepInk outside-only outline, 4 px colour bleed. No generative AI, no downloads, no third-party pixels. Licence: own work (procedural).
+Review pictures (not assets): review/assembled_*.png (body + wheels placed like RoadCar.cs does), review/scene_colour.png and scene_grey.png.
+
+Files (all facing right, transparent background):
+  body_classic.png 480x180   body_sport.png 480x160   body_monster.png 480x200   (same canvases as CarBody/SportCarBody/MonsterTruckBody)
+  wheel_classic.png, wheel_sport.png, wheel_monster.png  160x160  (same canvas as Wheel.png; centre pivot)
+
+What the game really loads (RoadCar.cs, Build(Vector2, VehicleType)): Resources/RoadBuilder/CarBody|SportCarBody|MonsterTruckBody and a
+single shared Wheel. Bodies are stretched to world boxes 2.4x0.9, 2.4x0.8, 2.6x1.1 units (about 200 px per unit), wheel diameter
+2*r*1.03 with r 0.42, 0.40, 0.52, wheel anchors at +-0.72/0.70/0.78 x. Collider is data (normalised polygon), not sprite-derived.
+Silhouette extents match the old sprites (outer bbox classic 7..470 x 12..154, sport 7..472 x 20..142, monster 18..477 x 7..157;
+old: 7..472 x 6..155, 7..472 x 13..143, 17..472 x 1..162), so the collider polygon still sits on the drawn body. Arches are centred
+on the physics wheel anchors. Pivot centre, canvas sizes unchanged => no gameplay change from swapping the files in place.
+NOTE: the Countryside screenshot smooth_countryside_04_asphalt.png does NOT show these three cars. It shows a pixel Kenney police
+car (catalogue vehicle with cut-out wheels), so the slice vehicles (and pickups) were checked from the code path and the older
+screenshot-20261028-175756.png, where the red slice car has body-high wheels exactly as assembled here.
+
+Decisions and deviations (read before shipping):
+ 1. Outline is 0.04 WORLD units measured at the display density, not a fixed 5 px: 8 px on the bodies (200 px/unit), 7 px on the
+    wheels. At 128 px/unit that is the Bible's 5 px; these sprites are shown at about 190-200 px/unit, so 5 px would be thinner
+    (0.025 units) than the rest of the world.
+ 2. Three wheel sprites (classic 5 spoke steel/red hub, sport 6 spoke light alloy/cyan hub, monster knobby lugs/orange beadlock).
+    The game code loads ONE shared Wheel; per-vehicle wheels need a small RoadCar change (route to implementer). Until then use
+    wheel_classic.png as the shared Wheel.png (fits all three bodies, monster loses its lug silhouette). The tyre is drawn 5 percent
+    smaller than the canvas (4 px bleed margin), which together with the code's 1.03 factor nets about 0.98 of the physics wheel.
+ 3. Rotation readability: tread notches/lugs, spokes and one bright off-centre bolt on every wheel.
+ 4. Classic keeps its red (VehicleType ClassicRed). Bible 6 lists RacingOrange for the Classic car and reserves SignalRed for damage.
+    I used a cherry red (#D8323C, bluer than SignalRed). Open decision for the art owner: keep red, or recolour (palette tokens
+    CarRed* in smoothart/palette.py). Monster stays orange, sport cyan.
+ 5. Each body carries a cartoon driver (as the old sprites did). Lamps: warm yellow head, red tail.
+ 6. Body sits behind huge wheels: at the game's rig the wheel diameter is about equal to body height, so the lower half of the body
+    is hidden by design. Wheel arches (charcoal liner) show only when the suspension moves.
+
+Quality (honest, 1 to 5; placeholder under 3):
+  wheels 4 (clean, three clearly different, readable spin cues)
+  body_monster 4 (strongest silhouette: tall cab, stacks, light bar, bull bar, lug wheels)
+  body_classic 3.5 (reads as a car; closest to a generic sedan)
+  body_sport 3.5 (low roof, spoiler, long nose; silhouette still similar to classic at tiny size, mainly the spoiler separates them)
+Limits: not hand-drawn art; shading is gradient cel, no fine detail; the driver is a tiny head; no damage/invincibility variants;
+no night tint test. Not verified in Unity (no import, no play test): wheels placement was checked only by the python assembly script.
+Import (when promoted to Assets/Art/Smooth/Vehicles/...): SmoothArtImporter 128 ppu is WRONG for these three because RoadCar
+fits them by bounds; any ppu works, but keep square wheels and the same pixel sizes. Bilinear, no mipmaps, alpha is transparency.

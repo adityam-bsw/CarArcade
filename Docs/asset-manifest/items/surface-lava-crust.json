@@ -2,20 +2,33 @@
   "id": "surface-lava-crust",
   "category": "surface",
   "name": "Lava Crust",
-  "status": "have",
+  "status": "ready",
   "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
   "have": [
     "Assets/Art/Surfaces/Volcano",
     "Assets/Art/Surfaces/Lava"
   ],
-  "notes": "partial: Tio Aimar volcano (vector) + InThePixel lava strip",
+  "notes": "partial: Tio Aimar volcano (vector) + InThePixel lava strip | FORGED 2026-11-15: procedural 128x26 strip, grip normal, quality 3.",
   "source": null,
-  "licence": null,
-  "licence_evidence": null,
+  "licence": "own work (procedural; palette reference Lava pack (Assets/Art/Surfaces/Lava, CC0) colours and surface-magma-bridge style)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-lava-crust/LICENCE_EVIDENCE.txt",
   "download_dir": null,
   "bytes": null,
   "sha256": null,
-  "project_path": null,
-  "quality": null,
-  "history": []
+  "project_path": "Assets/Art/Surfaces/Forged/surface-lava-crust/surface-lava-crust.png",
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-15",
+      "from": "have",
+      "to": "forged",
+      "note": "procedural strip, quality 3/5, grip normal"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 128x26 seam 0.0, point/repeat/uncompressed matches ConfigureStrip, licence+ledger ok, q3"
+    }
+  ]
 }

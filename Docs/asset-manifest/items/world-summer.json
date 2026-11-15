@@ -2,17 +2,17 @@
   "id": "world-summer",
   "category": "world",
   "name": "Summer",
-  "status": "imported",
+  "status": "ready",
   "requirements": "Four horizontally looping layers 384x216 (sky, far, mid, near) like VISTA, pixel art, transparent where the layer should show what is behind it. Or a source we can convert to that format.",
   "have": [],
-  "notes": "8 separate 1280x360 layers (sky, clouds, sun, mountains 1-3, trees, rocks), tileable (seam<0.015), CC0 pixel art, bright green hills. Needs resizing to 384x216 and layer merging.",
+  "notes": "8 separate 1280x360 layers (sky, clouds, sun, mountains 1-3, trees, rocks), tileable (seam<0.015), CC0 pixel art, bright green hills. Needs resizing to 384x216 and layer merging. | FORGED 2026-11-15: four 384x216 layers, quality 4.",
   "source": "https://opengameart.org/content/parallax-background-forest-pixel-art",
-  "licence": "CC0",
-  "licence_evidence": "OpenGameArt page: License(s): CC0",
+  "licence": "own work (CC0 VISTA by najjar320 (Assets/Art/Backgrounds/Vista/downs))",
+  "licence_evidence": "Assets/Art/Worlds/Forged/world-summer/LICENCE_EVIDENCE.txt",
   "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/pack-parallax-forest-zd",
   "bytes": 137441,
   "sha256": "03b9d79d80a46b6da45261aa12a63d3696c5fca9c8d7d8582da2ce099f5e489d",
-  "project_path": "Assets/Art/Worlds/ParallaxForestZD/",
+  "project_path": "Assets/Art/Worlds/Forged/world-summer/",
   "quality": 4,
   "history": [
     {
@@ -32,6 +32,18 @@
       "from": "downloaded",
       "to": "imported",
       "note": "needs conversion: 8 layers 1280x360 (sky, clouds, sun, mountains 1-3, trees, rocks, seam <0.015); merge to 4 layers and resize to 384x216"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "forged",
+      "note": "4 layers 384x216, quality 4/5"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 4 layers 384x216, seams <0.07 visually clean, point/16ppu/repeat/no mips, licence+ledger ok, q3+"
     }
   ]
 }

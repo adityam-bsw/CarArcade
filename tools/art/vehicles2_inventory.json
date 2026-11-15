@@ -1,0 +1,524 @@
+{
+ "vehicle-bicycle": {
+  "W": 38,
+  "H": 20,
+  "units": 2.7143,
+  "S": 9,
+  "status": "ready",
+  "wheels": [
+   {
+    "cx": 8.5,
+    "cy": 11.5,
+    "r": 7.5,
+    "size": 16
+   },
+   {
+    "cx": 29.5,
+    "cy": 11.5,
+    "r": 7.5,
+    "size": 16
+   }
+  ]
+ },
+ "vehicle-bus": {
+  "W": 47,
+  "H": 23,
+  "units": 3.0,
+  "S": 8,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 9.0,
+    "cy": 18.0,
+    "r": 3.5,
+    "size": 8
+   },
+   {
+    "cx": 25.0,
+    "cy": 18.0,
+    "r": 3.5,
+    "size": 8
+   }
+  ]
+ },
+ "vehicle-camper": {
+  "W": 37,
+  "H": 21,
+  "units": 2.6429,
+  "S": 9,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 8.5,
+    "cy": 16.5,
+    "r": 3.0,
+    "size": 6
+   },
+   {
+    "cx": 24.5,
+    "cy": 16.5,
+    "r": 3.0,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-car": {
+  "W": 31,
+  "H": 15,
+  "units": 2.2143,
+  "S": 9,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 5.5,
+    "cy": 10.5,
+    "r": 3.0,
+    "size": 6
+   },
+   {
+    "cx": 19.5,
+    "cy": 10.5,
+    "r": 3.0,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-dune-buggy": {
+  "W": 25,
+  "H": 16,
+  "units": 1.7857,
+  "S": 9,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 4.5,
+    "cy": 11.5,
+    "r": 3.0,
+    "size": 6
+   },
+   {
+    "cx": 14.5,
+    "cy": 11.5,
+    "r": 3.0,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-fire-truck": {
+  "W": 46,
+  "H": 23,
+  "units": 3.0,
+  "S": 8,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 9.0,
+    "cy": 18.0,
+    "r": 3.5,
+    "size": 8
+   },
+   {
+    "cx": 30.0,
+    "cy": 18.0,
+    "r": 3.5,
+    "size": 8
+   }
+  ]
+ },
+ "vehicle-golf-cart": {
+  "W": 32,
+  "H": 19,
+  "units": 2.2857,
+  "S": 9,
+  "status": "ready",
+  "wheels": [
+   {
+    "cx": 7.5,
+    "cy": 14.5,
+    "r": 3.5,
+    "size": 8
+   },
+   {
+    "cx": 25.5,
+    "cy": 14.5,
+    "r": 3.5,
+    "size": 8
+   }
+  ]
+ },
+ "vehicle-handcar": {
+  "W": 38,
+  "H": 24,
+  "units": 2.7143,
+  "S": 9,
+  "status": "ready",
+  "wheels": []
+ },
+ "vehicle-hovercraft": {
+  "W": 38,
+  "H": 17,
+  "units": 2.7143,
+  "S": 9,
+  "status": "forged",
+  "wheels": []
+ },
+ "vehicle-jet-ski": {
+  "W": 48,
+  "H": 26,
+  "units": 3.0,
+  "S": 8,
+  "status": "forged",
+  "wheels": []
+ },
+ "vehicle-monster-truck": {
+  "W": 40,
+  "H": 30,
+  "units": 2.8571,
+  "S": 9,
+  "status": "ready",
+  "wheels": [
+   {
+    "cx": 8.5,
+    "cy": 21.0,
+    "r": 7.5,
+    "size": 16
+   },
+   {
+    "cx": 25.5,
+    "cy": 21.0,
+    "r": 7.5,
+    "size": 16
+   }
+  ]
+ },
+ "vehicle-moon-rover": {
+  "W": 49,
+  "H": 37,
+  "units": 3.0,
+  "S": 8,
+  "status": "ready",
+  "wheels": []
+ },
+ "vehicle-motorcycle": {
+  "W": 83,
+  "H": 45,
+  "units": 3.0,
+  "S": 5,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 12.5,
+    "cy": 32.5,
+    "r": 11.0,
+    "size": 22
+   },
+   {
+    "cx": 67.5,
+    "cy": 31.5,
+    "r": 12.0,
+    "size": 24
+   }
+  ]
+ },
+ "vehicle-pickup": {
+  "W": 41,
+  "H": 26,
+  "units": 2.9286,
+  "S": 9,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 5.5,
+    "cy": 21.5,
+    "r": 3.0,
+    "size": 6
+   },
+   {
+    "cx": 12.5,
+    "cy": 21.5,
+    "r": 3.0,
+    "size": 6
+   },
+   {
+    "cx": 29.5,
+    "cy": 21.5,
+    "r": 3.0,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-police-car": {
+  "W": 35,
+  "H": 16,
+  "units": 2.5,
+  "S": 9,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 7.5,
+    "cy": 11.5,
+    "r": 3.0,
+    "size": 6
+   },
+   {
+    "cx": 21.5,
+    "cy": 11.5,
+    "r": 3.0,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-quad-atv": {
+  "W": 46,
+  "H": 27,
+  "units": 3.0,
+  "S": 8,
+  "status": "ready",
+  "wheels": [
+   {
+    "cx": 11.0,
+    "cy": 19.0,
+    "r": 6.5,
+    "size": 14
+   },
+   {
+    "cx": 37.0,
+    "cy": 19.0,
+    "r": 6.5,
+    "size": 14
+   }
+  ]
+ },
+ "vehicle-race-car": {
+  "W": 35,
+  "H": 11,
+  "units": 2.5,
+  "S": 9,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 6.0,
+    "cy": 7.0,
+    "r": 3.5,
+    "size": 8
+   },
+   {
+    "cx": 21.5,
+    "cy": 6.5,
+    "r": 3.0,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-rocket-sled": {
+  "W": 59,
+  "H": 22,
+  "units": 3.0,
+  "S": 7,
+  "status": "forged",
+  "wheels": []
+ },
+ "vehicle-scooter": {
+  "W": 17,
+  "H": 11,
+  "units": 1.5,
+  "S": 11,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 4.0,
+    "cy": 8.5,
+    "r": 2.0,
+    "size": 4
+   },
+   {
+    "cx": 14.0,
+    "cy": 8.0,
+    "r": 2.5,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-semi-truck": {
+  "W": 50,
+  "H": 26,
+  "units": 3.0,
+  "S": 8,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 7.5,
+    "cy": 21.5,
+    "r": 3.0,
+    "size": 6
+   },
+   {
+    "cx": 13.5,
+    "cy": 21.5,
+    "r": 3.0,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-shopping-cart": {
+  "W": 28,
+  "H": 17,
+  "units": 2.0,
+  "S": 9,
+  "status": "ready",
+  "wheels": [
+   {
+    "cx": 7.5,
+    "cy": 13.0,
+    "r": 3.0,
+    "size": 6
+   },
+   {
+    "cx": 21.5,
+    "cy": 12.0,
+    "r": 3.0,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-skateboard": {
+  "W": 31,
+  "H": 14,
+  "units": 2.2143,
+  "S": 9,
+  "status": "forged",
+  "wheels": []
+ },
+ "vehicle-sled": {
+  "W": 41,
+  "H": 23,
+  "units": 2.9286,
+  "S": 9,
+  "status": "ready",
+  "wheels": []
+ },
+ "vehicle-snowboard": {
+  "W": 38,
+  "H": 21,
+  "units": 2.7143,
+  "S": 9,
+  "status": "ready",
+  "wheels": []
+ },
+ "vehicle-snowmobile": {
+  "W": 53,
+  "H": 20,
+  "units": 3.0,
+  "S": 7,
+  "status": "ready",
+  "wheels": []
+ },
+ "vehicle-speedboat": {
+  "W": 60,
+  "H": 31,
+  "units": 3.0,
+  "S": 6,
+  "status": "forged",
+  "wheels": []
+ },
+ "vehicle-sports-car": {
+  "W": 35,
+  "H": 14,
+  "units": 2.5,
+  "S": 9,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 7.0,
+    "cy": 10.0,
+    "r": 3.5,
+    "size": 8
+   },
+   {
+    "cx": 23.0,
+    "cy": 10.0,
+    "r": 3.5,
+    "size": 8
+   }
+  ]
+ },
+ "vehicle-tank": {
+  "W": 32,
+  "H": 15,
+  "units": 2.2857,
+  "S": 9,
+  "status": "ready",
+  "wheels": []
+ },
+ "vehicle-taxi": {
+  "W": 35,
+  "H": 16,
+  "units": 2.5,
+  "S": 9,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 6.0,
+    "cy": 12.0,
+    "r": 3.5,
+    "size": 8
+   },
+   {
+    "cx": 23.0,
+    "cy": 12.0,
+    "r": 3.5,
+    "size": 8
+   }
+  ]
+ },
+ "vehicle-toboggan": {
+  "W": 51,
+  "H": 20,
+  "units": 3.0,
+  "S": 8,
+  "status": "ready",
+  "wheels": []
+ },
+ "vehicle-tractor": {
+  "W": 26,
+  "H": 20,
+  "units": 1.8571,
+  "S": 9,
+  "status": "have",
+  "wheels": [
+   {
+    "cx": 5.0,
+    "cy": 13.5,
+    "r": 4.5,
+    "size": 10
+   },
+   {
+    "cx": 15.5,
+    "cy": 15.5,
+    "r": 3.0,
+    "size": 6
+   }
+  ]
+ },
+ "vehicle-tuk-tuk": {
+  "W": 33,
+  "H": 19,
+  "units": 2.3571,
+  "S": 9,
+  "status": "ready",
+  "wheels": [
+   {
+    "cx": 7.5,
+    "cy": 14.5,
+    "r": 3.5,
+    "size": 8
+   },
+   {
+    "cx": 25.5,
+    "cy": 14.5,
+    "r": 3.5,
+    "size": 8
+   }
+  ]
+ }
+}

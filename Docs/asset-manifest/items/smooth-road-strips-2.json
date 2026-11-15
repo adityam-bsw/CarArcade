@@ -1,0 +1,31 @@
+{
+  "id": "smooth-road-strips-2",
+  "category": "surface",
+  "name": "Smooth road strips batch 2 (sand, snow, gravel, cobblestone, moon dust, neon grid, wooden bridge, rail track)",
+  "status": "ready",
+  "requirements": "Smooth art per Docs/design/ART_BIBLE.md 5 and 7.1.",
+  "notes": "Ratings: cobblestone 4, snow 4, wooden_bridge 4, neon_grid 4, sand 3.5, gravel 3.5, moon_dust 3.5, rail_track 3.5. Not wired in code. Lip rows for RoadSkin.lipPx: sand 7, snow 8, gravel 4, cobblestone 4, moon_dust 10, neon_grid 4, wooden_bridge 5, rail_track 2. Sand vs snow flagged weak in greyscale (differ by hue and silhouette); wooden_bridge has transparent gaps between planks (collider is a flat line). neon_grid cyan edge near ice/glass hue family but dark. Does not replace the pixel surface-* items.",
+  "source": "tools/art/make_road2.py (own code, tools/art/smoothart)",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Roads/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 627336,
+  "sha256": "52e380d4196bf1396c9c8bfae50cb5b161f20c6a738406e38d06a30bfc34c8cf",
+  "project_path": "Assets/Art/Smooth/Roads",
+  "quality": 3.5,
+  "have": [],
+  "history": [
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "imported",
+      "note": "inspector: generator re-run byte-identical, seams viewed, imported under Assets/Art/Smooth"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: 8 strips byte-identical to make_road2.py, wrap viewed at 1:1, import bilinear/128ppu/ASTC6x6 Repeat FullRect, ledger+licence ok, q3.5"
+    }
+  ]
+}

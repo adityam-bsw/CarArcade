@@ -2,19 +2,32 @@
   "id": "surface-sea-water",
   "category": "surface",
   "name": "Sea Water",
-  "status": "have",
+  "status": "ready",
   "requirements": "Side-view strip texture that repeats along a road ribbon: rows from the top = top surface (about 2 px), slab body (about 4 px), shadow skirt (about 20 px). Pixel art, point filtered, tileable horizontally, palette-limited to match the VISTA backgrounds. Also needs a physics hint (grip low/normal/high).",
   "have": [
     "Assets/Art/Surfaces/Water"
   ],
-  "notes": "partial: POKOMOKO ocean tile; buoyancy physics is game logic",
+  "notes": "partial: POKOMOKO ocean tile; buoyancy physics is game logic | FORGED 2026-11-15: procedural 128x26 strip, grip low (buoyancy is game logic), quality 3.",
   "source": null,
-  "licence": null,
-  "licence_evidence": null,
+  "licence": "own work (procedural; palette reference POKOMOKO ocean tile (Assets/Art/Surfaces/Water, CC0) colours)",
+  "licence_evidence": "Assets/Art/Surfaces/Forged/surface-sea-water/LICENCE_EVIDENCE.txt",
   "download_dir": null,
   "bytes": null,
   "sha256": null,
-  "project_path": null,
-  "quality": null,
-  "history": []
+  "project_path": "Assets/Art/Surfaces/Forged/surface-sea-water/surface-sea-water.png",
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-15",
+      "from": "have",
+      "to": "forged",
+      "note": "procedural strip, quality 3/5, grip low (buoyancy is game logic)"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 128x26 seam 0.0, point/repeat/uncompressed matches ConfigureStrip, licence+ledger ok, q3"
+    }
+  ]
 }

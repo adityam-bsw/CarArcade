@@ -1,0 +1,31 @@
+{
+  "id": "smooth-world-nightcity",
+  "category": "world",
+  "name": "Smooth Night City background (sky, moon, stars overlay, far, mid, near)",
+  "status": "ready",
+  "requirements": "Smooth art per Docs/design/ART_BIBLE.md 5 and 7.1.",
+  "notes": "Quality 4. Far/mid seam scores 9.7/45 are an artefact of the metric (roof-height step vs column noise): inspector viewed the wrap at 1:1 and it reads as any other building boundary; wrap diff is within the range of interior building edges. Contrast: DeepInk fails (1.1-2.3:1) and SignalRed 1.7-2.4:1 over the skyline, so night hazards need a WarmCream or light rim. Far is mostly hidden behind mid; no red used. Sky uncompressed RGBA32 clamp; tiling layers incl. stars overlay Repeat + Full Rect.",
+  "source": "tools/art/make_bg_worlds.py --world nightcity (own code, tools/art/smoothart)",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Backgrounds/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 346964,
+  "sha256": "8fa2f3df620a4ae51119bc6e7eb8969764f27266ed130e981d752aade7199adf",
+  "project_path": "Assets/Art/Smooth/Backgrounds/NightCity",
+  "quality": 4,
+  "have": [],
+  "history": [
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "imported",
+      "note": "inspector: generator re-run byte-identical, seams viewed, imported under Assets/Art/Smooth"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: 6 layers byte-identical to generator, far/mid wrap viewed at 1:1 and reads as a normal building edge (metric 9.7/45 is a false alarm), q4; hazards need light rim"
+    }
+  ]
+}

@@ -2,17 +2,17 @@
   "id": "world-haunted-halloween",
   "category": "world",
   "name": "Haunted Halloween",
-  "status": "imported",
+  "status": "ready",
   "requirements": "Four horizontally looping layers 384x216 (sky, far, mid, near) like VISTA, pixel art, transparent where the layer should show what is behind it. Or a source we can convert to that format.",
   "have": [],
-  "notes": "5 layers 120x120 (bgtooga1-5) dark purple spooky dead-tree forest, CC0 pixel art, tileable. Small size, would need 3x upscale to 384x216 fit.",
+  "notes": "5 layers 120x120 (bgtooga1-5) dark purple spooky dead-tree forest, CC0 pixel art, tileable. Small size, would need 3x upscale to 384x216 fit. | FORGED 2026-11-15: four 384x216 layers, quality 3.",
   "source": "https://opengameart.org/content/desert-forest",
-  "licence": "CC0",
-  "licence_evidence": "OpenGameArt page: License(s): CC0",
+  "licence": "own work (CC0 VISTA by najjar320 (Assets/Art/Backgrounds/Vista/canopy))",
+  "licence_evidence": "Assets/Art/Worlds/Forged/world-haunted-halloween/LICENCE_EVIDENCE.txt",
   "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/fcff3394-44db-4693-9462-93ca0a6dd23c/scratchpad/quarantine/pack-desert-forest",
   "bytes": 10690,
   "sha256": "061a35685c5e5c223626a234630a151c5f62c33b7bf4c0fa56778265dce08ec3",
-  "project_path": "Assets/Art/Worlds/DesertForest/",
+  "project_path": "Assets/Art/Worlds/Forged/world-haunted-halloween/",
   "quality": 3,
   "history": [
     {
@@ -32,6 +32,18 @@
       "from": "downloaded",
       "to": "imported",
       "note": "needs conversion: 5 layers at 120x120 (dark spooky forest, tileable); rescale/recompose to 4 layers 384x216"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "imported",
+      "to": "forged",
+      "note": "4 layers 384x216, quality 3/5"
+    },
+    {
+      "date": "2026-11-15",
+      "from": "forged",
+      "to": "ready",
+      "note": "inspector: 4 layers 384x216, seams <0.07 visually clean, point/16ppu/repeat/no mips, licence+ledger ok, q3+"
     }
   ]
 }

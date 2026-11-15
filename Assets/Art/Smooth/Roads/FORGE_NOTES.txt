@@ -1,0 +1,28 @@
+Road strips (smooth art): asphalt, dirt, grass-edged, ice, mud, glass, glass crack overlays 1-3
+Method: procedural vector rasteriser, own code (tools/art/smoothart + tools/art/make_road.py). No generative AI, no downloads,
+no third-party pixels. Licence: own work, procedural.
+Generator: python3 tools/art/make_road.py --output <dir> --surface all      (~25 s; deterministic, fixed seeds)
+Checks:    python3 tools/art/check_roads.py <dir>   (see CHECK_RESULTS.txt, _sheet_color_vs_grey.png, _sheet_glass_stages.png)
+Spec: 1024x192 RGBA, 128 ppu (8 x 1.5 units), seamless in X (periodic noise, wrap masks), 4 px colour bleed, skirt fades by gradient.
+Palette tokens: DeepInk, Steel*, Ice (blue), Mud (brown), Glass (cyan-white) from Bible 6 via smoothart/palette.py.
+Params per surface (see functions in make_road.py): asphalt top y~4 amp 1.1, dashes x4; dirt top y~7 amp 3.4, 2 tyre-rut bands, 46
+pebbles; grass soil line y~15 (tufts reach y~0), 21 scallops, 70 blade tufts; mud top y~11 + 30 blob bulges, 5 puddles, 18 bubbles,
+26 drips (skirt to y~100-175); ice top y~6, 22 facets, 9 fracture lines, 7 glints, 34 icicles; glass two 4 m panes (x 8-504,
+520-1016, 16 px gap, so the 4 m piece length lines up) with bevel, gloss bands, sparkles.
+Crack overlays (transparent, clipped to pane alpha, soft white glow): stage 1 one hairline per pane; 2 spiderweb (9 radials + 2
+rings); 3 shatter (14 radials, 3 rings, thick gaps, dark hole and light shard plates). Distinct by shape, not colour.
+Greyscale (CHECK_RESULTS.txt): mean luma asphalt 88, dirt 108, grass soil 82, ice 180, mud 64, glass 226 (0-255). Top-edge
+roughness (px/col) asphalt 0.01, dirt 0.05, grass 0.76, mud 0.23, glass 0.12; bottom-edge roughness (icicles/drips) ice 1.63, mud 1.62.
+Weak pair: asphalt vs grass on body luminance (dL 5); they are separated by the green tuft fringe silhouette and texture only.
+Seam scores (1.0 = invisible): asphalt 0.15, dirt 0.32, ice 0.18, mud 0.10, glass 0.0; grass 2.63 (tufts at the wrap column inflate a
+sparse metric; the tufts are drawn wrap-safe; verify on device/tiled preview).
+Limits / honest weaknesses:
+- Surfaces differ in top-line height: grass soil line y~15 vs asphalt y~4; the physics/collision top must use each surface's own line
+  (grass blades poke above it). Needs a per-surface lip offset in RoadSkin data.
+- Ice and mud skirts end in icicles/drips instead of a pure gradient fade (deliberate, for silhouette); glass pieces are separate
+  opaque-ish panes that fade at the bottom.
+- Glass strip contains the 16 px gap between pieces: collision pieces are 4 m; confirm the gap does not mismatch the physics join.
+- Dirt is the plainest (rut bands read a little like stripes). Textures are large soft shapes only (Bible 2.1), so it is less rich
+  than hand-painted art.
+Ratings (honest, 1-5): asphalt 4, glass 4, glass cracks 4 (stages clearly differ), dirt 3, grass 3.5, ice 3.5, mud 3.5.
+Review files (prefixed _ and *_preview_x3.png) are NOT to be imported.
