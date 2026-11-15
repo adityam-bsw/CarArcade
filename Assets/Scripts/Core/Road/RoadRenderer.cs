@@ -50,6 +50,7 @@ namespace RoadBuilderGame
             _tris.Clear();
 
             float curbThick = g.Thickness * (textured ? skin.CurbFraction : 0.22f);
+            bool smooth = skin.SmoothStrip;
 
             // Atlas rows from the top: curb, body, skirt. v = 1 is the top row.
             float rows = Mathf.Max(1, skin.AtlasRows);
@@ -60,6 +61,20 @@ namespace RoadBuilderGame
             _vCapMid = 1f - (skin.curbRows + skin.bodyRows * 0.5f) / rows;
             _uScale = textured ? 1f / (skin.atlas.width * skin.texelWorld) : 0f;
 
+            // Smooth strips are mapped 1:1 in world units (no row stretching): the strip's lip row sits on the collider top,
+            // the rows above it rise over the collider, the slab ends where the thickness says, and the fade runs out the
+            // rest of the strip height. Four rings, same as the pixel layout.
+            float texH = textured ? skin.atlas.height : 1f;
+            float lipW = smooth ? skin.lipPx * skin.texelWorld : 0f;
+            float vSurface = 1f, vSlab = 0f, skirtDepth = g.SupportDepth;
+            if (smooth)
+            {
+                vSurface = 1f - skin.lipPx / texH;
+                vSlab = Mathf.Max(0.02f, vSurface - g.Thickness / (skin.texelWorld * texH));
+                skirtDepth = vSlab * texH * skin.texelWorld;
+                _vCapMid = vSurface - g.Thickness * 0.5f / (skin.texelWorld * texH);
+            }
+
             Color tint = skin.tint;
 
             for (int i = 0; i < g.Count; i++)
@@ -68,12 +83,20 @@ namespace RoadBuilderGame
                 Vector2 norm = g.Normals[i];
                 float u = g.Arc[i] * _uScale;
 
-                Vector2 v0 = p + norm * g.HalfThick;                  // top surface (where tyres roll)
+                Vector2 v0 = p + norm * (g.HalfThick + lipW);         // top of the art (the collider top when the lip is 0)
                 Vector2 v1 = p + norm * (g.HalfThick - curbThick);    // top surface to slab body
                 Vector2 v2 = p - norm * g.HalfThick;                  // bottom of the slab
-                Vector2 v3 = v2 + new Vector2(0f, -g.SupportDepth);   // end of the shadow skirt below
+                Vector2 v3 = v2 + new Vector2(0f, -skirtDepth);       // end of the shadow skirt below
 
-                if (textured)
+                if (smooth)
+                {
+                    Vector2 vs = p + norm * g.HalfThick;                   // where tyres roll
+                    Add(v0, tint, u, vTop);
+                    Add(vs, tint, u, vSurface);
+                    Add(v2, tint, u, vSlab);
+                    Add(v3, tint, u, vBottom);
+                }
+                else if (textured)
                 {
                     Add(v0, tint, u, vTop);
                     Add(v1, tint, u, vCurb);

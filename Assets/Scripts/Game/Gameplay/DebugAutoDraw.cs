@@ -87,5 +87,48 @@ namespace RoadBuilderGame
             if (!brush.IsDrawing) _hasTip = false;
         }
     }
+
+    /// <summary>
+    /// Development test: plays every playable road for a few seconds each with DebugAutoDraw and logs "[Tour]" lines
+    /// (speed, distance, coins, ink spent, lives, errors). Add next to DebugAutoDraw in Play mode.
+    /// </summary>
+    public sealed class DebugSurfaceTour : MonoBehaviour
+    {
+        public RoadGameManager manager;
+        public DebugAutoDraw driver;
+        public float secondsPerRoad = 12f;
+        public string only = "";
+        public string result = "";
+        public bool finished;
+
+        private System.Collections.IEnumerator Start()
+        {
+            yield return new WaitForSecondsRealtime(1f);
+            var cat = AssetCatalog.Load();
+            foreach (var e in cat.entries)
+            {
+                if (e.kind != CatalogKind.Surface || !e.playable) continue;
+                if (only.Length > 0 && !only.Contains(e.id)) continue;
+                manager.SelectCatalogItem(CatalogKind.Surface, e.id);
+                manager.GoHome();
+                yield return new WaitForSecondsRealtime(0.4f);
+                manager.StartRace();
+                yield return new WaitForSecondsRealtime(1.5f);
+                float t0 = Time.realtimeSinceStartup; float speedSum = 0; int n = 0; float inkStart = driver.inkSpent, m0 = driver.metresDrawn;
+                while (Time.realtimeSinceStartup - t0 < secondsPerRoad)
+                {
+                    if (manager.DebugCar != null && manager.DebugCar.Body != null) { speedSum += manager.DebugCar.Body.linearVelocity.x; n++; }
+                    yield return null;
+                }
+                var car = manager.DebugCar;
+                string line = "[Tour] " + e.id + " grip " + e.friction.ToString("0.00") + " | dist " + (car != null ? car.Body.position.x.ToString("F0") : "?") + " m | avg speed " + (n > 0 ? (speedSum / n).ToString("F1") : "?")
+                    + " | target " + (car != null ? car.TargetSpeed.ToString("F1") : "?") + " | drawn " + (driver.metresDrawn - m0).ToString("F0") + " m, ink " + (driver.inkSpent - inkStart).ToString("F0")
+                    + " | lives " + manager.currentLives + " | state " + manager.DebugState;
+                result += line + "\n"; Debug.Log(line);
+            }
+            manager.GoHome();
+            finished = true;
+        }
+    }
 }
 #endif

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37986f04a88b4716a736139def980fa, type: 3}
+  m_Name: countryside_smooth
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.BackgroundSkin
+  displayName: Countryside (Smooth)
+  mood: 0
+  artStyle: 1
+  sky: {fileID: 21300000, guid: f54f6bb31c32f4ff4bffeb27acd12790, type: 3}
+  far: {fileID: 21300000, guid: 7f1f0f128861a4933bd3b3f3197e3900, type: 3}
+  mid: {fileID: 21300000, guid: da954707097784070935f9f545903dda, type: 3}
+  near: {fileID: 21300000, guid: 367843f3c5212454893179032fe79aee, type: 3}
+  sun: {fileID: 21300000, guid: e15d1f909260a480f87d406cbf05f123, type: 3}
+  clouds:
+  - {fileID: 21300000, guid: 5a1cf594d413e482a990a5caab7050eb, type: 3}
+  - {fileID: 21300000, guid: e6ac350cdebef448db83ba57f9ed3100, type: 3}
+  - {fileID: 21300000, guid: e6d1f7642fdf34cfbbdfcc735587375d, type: 3}
+  - {fileID: 21300000, guid: 9b960f835c72a4a03b2d1a8d08d498fe, type: 3}
+  cloudScroll: 0.1
+  overlay: {fileID: 0}
+  nearAlternates:
+  - {fileID: 21300000, guid: 9bd5d9a1c9d3b4fbcbf0bb4320c397cd, type: 3}
+  - {fileID: 21300000, guid: 397db5e0b43f440a289a4bd8e9c2fa48, type: 3}
+  groundFill: {r: 0.24705882, g: 0.56078434, b: 0.31764707, a: 1}
+  scroll:
+  - 0
+  - 0.2
+  - 0.4
+  - 0.8

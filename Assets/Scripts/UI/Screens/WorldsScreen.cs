@@ -58,6 +58,7 @@ namespace RoadBuilderGame.UI
             if (kind == _tab) return;
             _tab = kind;
             hintText.SetText(string.Empty);
+            if (kind == CatalogKind.Surface) ShowTraits(AssetCatalog.Load()?.Find(GameServices.Model.SelectedSurfaceId) ?? new CatalogEntry { displayName = "Road" });
             rail.Populate(_tab, OnTapped);
             Refresh();
             rail.Reveal(GameServices.Model.SelectedId(_tab));
@@ -65,11 +66,19 @@ namespace RoadBuilderGame.UI
 
         private void OnTapped(CatalogEntry e)
         {
-            if (e.playable) { hintText.SetText(string.Empty); GameServices.Actions?.SelectCatalogItem(_tab, e.id); return; }
+            if (e.playable) { ShowTraits(e); GameServices.Actions?.SelectCatalogItem(_tab, e.id); return; }
             // Not playable yet: say why instead of silently doing nothing.
             hintText.SetText(e.displayName + ": " + (string.IsNullOrEmpty(e.playNote) ? "not playable yet." : e.playNote));
             hintText.color = UIThemeManager.Current.GetColor(ColorToken.Danger);
             UIAnim.Punch(hintText.transform, 0.06f);
+        }
+
+        /// <summary>Roads change the run, so say how: grip, speed, ink cost and coin value of the tapped track.</summary>
+        private void ShowTraits(CatalogEntry e)
+        {
+            if (e.kind != CatalogKind.Surface) { hintText.SetText(string.Empty); return; }
+            hintText.SetText(e.displayName + ": " + e.TraitsLine());
+            hintText.color = UIThemeManager.Current.GetColor(ColorToken.TextPrimary);
         }
 
         private void Refresh()

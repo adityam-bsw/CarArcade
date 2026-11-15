@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 
 namespace RoadBuilderGame.Tests
@@ -8,7 +9,9 @@ namespace RoadBuilderGame.Tests
     /// <summary>
     /// The asset controller in code. Every art pack under Assets/Art and every font under Assets/Fonts must have a row in
     /// Docs/ASSET_LEDGER.md and either a licence file beside it or an "own work" ledger row, and no pack may contain
-    /// scripts, installers or editor-source files. These are the same rules the asset agents follow
+    /// scripts, installers or editor-source files. The rules above are style-neutral. The pixel-only import rules
+    /// (point filter, 16 ppu, uncompressed) are not enforced here; textures under Assets/Art/Smooth/ are checked against the
+    /// smooth table instead (see SmoothArtImportTests). These are the same rules the asset agents follow
     /// (Docs/ASSET_AGENT_RULES.md), enforced so nothing slips in by hand either.
     /// </summary>
     public class AssetLedgerCoverageTests

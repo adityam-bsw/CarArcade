@@ -17,6 +17,9 @@ namespace RoadBuilderGame
         private static readonly float[] StickY = { 1f, 0.95f, 0.9f, 0.85f };
         private static readonly int[] Orders = { -50, -46, -42, -38 };
         private const int FillOrder = -39;
+        private const int OverlayOrder = -49, SunOrder = -48, CloudOrder = -47;   // sky < stars < sun/moon < clouds < far layer
+        private const int MaxClouds = 4;
+        private const float CloudPeriod = 64f;                // world units before a cloud repeats (at scale 1)
 
         private const float RegionMin = 450f, RegionRange = 350f; // metres before the next remix
         private const float FadeLength = 160f;                      // metres a cross-fade takes
@@ -25,6 +28,9 @@ namespace RoadBuilderGame
         {
             public readonly SpriteRenderer[] layer = new SpriteRenderer[Layers];
             public SpriteRenderer fill;
+            public SpriteRenderer overlay;
+            public SpriteRenderer sun;
+            public readonly SpriteRenderer[] clouds = new SpriteRenderer[MaxClouds];
             public BackgroundRecipe recipe;
             public float alpha;
         }
@@ -146,7 +152,7 @@ namespace RoadBuilderGame
             float viewH = cam.orthographicSize * 2f;
             float viewW = viewH * cam.aspect;
 
-            // The whole layer height always equals the view height, so one art pixel is viewH/216 world units.
+            // The whole layer height always equals the view height (one art pixel is viewH / sprite height world units).
             bool anyFading = _fading;
 
             for (int l = 0; l < Layers; l++)
@@ -157,7 +163,10 @@ namespace RoadBuilderGame
 
                 float nativeW = sprite.rect.width / sprite.pixelsPerUnit;
                 float nativeH = sprite.rect.height / sprite.pixelsPerUnit;
-                float s = viewH / nativeH;                 // uniform scale: layer height == view height
+                bool smooth = recipe.artStyle == ArtStyle.Smooth;
+                // Pixel: layer height == view height. Smooth: layers keep their own height (the 864 px near layer is 1.5x the view)
+                // at a scale set by the view, and sit on the bottom edge of the view.
+                float s = smooth ? viewH / SmoothArt.BackgroundHeightUnits : viewH / nativeH;
                 float pxWorld = viewH / sprite.rect.height; // one art pixel in world units
                 float tileW = nativeW * s;
 
@@ -167,10 +176,15 @@ namespace RoadBuilderGame
                 float centreK = Mathf.Round((c.x - origin) / tileW);
                 float x = origin + centreK * tileW;
                 float y = ReferenceY + (c.y - ReferenceY) * StickY[l];
+                if (smooth) y += (nativeH * s - viewH) * 0.5f;   // bottom-aligned
 
-                // Snap to the art-pixel grid so nothing shimmers while the camera moves.
-                x = Mathf.Round(x / pxWorld) * pxWorld;
-                y = Mathf.Round(y / pxWorld) * pxWorld;
+                // Pixel art snaps to the art-pixel grid so nothing shimmers while the camera moves.
+                // Smooth art scrolls in float: snapping would make clean edges stutter.
+                if (recipe.artStyle == ArtStyle.Pixel)
+                {
+                    x = Mathf.Round(x / pxWorld) * pxWorld;
+                    y = Mathf.Round(y / pxWorld) * pxWorld;
+                }
 
                 sr.transform.position = new Vector3(x, y, 0f);
                 sr.transform.localScale = new Vector3(s, s, 1f);
@@ -190,6 +204,56 @@ namespace RoadBuilderGame
                     slot.fill.color = new Color(f.r * tint.r, f.g * tint.g, f.b * tint.b, slot.alpha);
                 }
             }
+
+            LayoutDecor(slot, c, viewH, viewW);
+        }
+
+        // Sun and clouds of a smooth scene. Cheap: at most five renderers, no allocations.
+        private void LayoutDecor(Slot slot, Vector3 c, float viewH, float viewW)
+        {
+            var recipe = slot.recipe;
+            float s = viewH / SmoothArt.BackgroundHeightUnits;
+            var tint = recipe.tint[0];
+            float a = slot.alpha;
+
+            if (slot.overlay != null && recipe.overlay != null)
+            {
+                // Same geometry as the sky (scroll 0, bottom-aligned), tiled along X.
+                var ov = recipe.overlay;
+                float nativeW = ov.rect.width / ov.pixelsPerUnit, nativeH = ov.rect.height / ov.pixelsPerUnit;
+                float tileW = nativeW * s;
+                int tiles = 2 * Mathf.CeilToInt(viewW / (2f * tileW)) + 3;
+                float cx = Mathf.Round(c.x / tileW) * tileW;
+                float oy = ReferenceY + (c.y - ReferenceY) * StickY[0] + (nativeH * s - viewH) * 0.5f;
+                slot.overlay.transform.position = new Vector3(cx, oy, 0f);
+                slot.overlay.transform.localScale = new Vector3(s, s, 1f);
+                slot.overlay.size = new Vector2(tiles * nativeW, nativeH);
+                slot.overlay.color = new Color(tint.r, tint.g, tint.b, (slot == _a && _fading) ? 1f : a);
+            }
+
+            if (slot.sun != null && recipe.sun != null)
+            {
+                slot.sun.transform.position = new Vector3(c.x + viewW * 0.30f, c.y + viewH * 0.27f, 0f);
+                slot.sun.transform.localScale = new Vector3(s, s, 1f);
+                slot.sun.color = new Color(tint.r, tint.g, tint.b, a);
+            }
+
+            float o = c.x * (1f - recipe.cloudScroll);
+            float period = CloudPeriod * s;
+            for (int i = 0; i < MaxClouds; i++)
+            {
+                var sr = slot.clouds[i];
+                if (sr == null || i >= recipe.clouds.Length || recipe.clouds[i] == null) continue;
+                float seed = recipe.cloudSeed[i];
+                // Spread the clouds evenly along the repeat, nudged by the seed, then take the copy nearest the camera.
+                float off = ((i + 0.5f * seed) / MaxClouds) * period;
+                float k = Mathf.Round((c.x - o - off) / period);
+                float yFrac = 0.10f + 0.30f * (((i * 0.37f + seed * 0.6f) % 1f));
+                float scale = s * (0.8f + 0.4f * ((seed * 3.7f) % 1f));
+                sr.transform.position = new Vector3(o + off + k * period, c.y + viewH * yFrac, 0f);
+                sr.transform.localScale = new Vector3(scale, scale, 1f);
+                sr.color = new Color(tint.r, tint.g, tint.b, a * 0.95f);
+            }
         }
 
         private void Assign(Slot slot, BackgroundRecipe recipe)
@@ -202,6 +266,19 @@ namespace RoadBuilderGame
                 sr.drawMode = SpriteDrawMode.Tiled;
                 sr.tileMode = SpriteTileMode.Continuous;
                 sr.flipX = recipe.flip[l];
+            }
+
+            slot.overlay.sprite = recipe.overlay;
+            slot.overlay.drawMode = SpriteDrawMode.Tiled;
+            slot.overlay.tileMode = SpriteTileMode.Continuous;
+            slot.overlay.enabled = recipe.overlay != null;
+            slot.sun.sprite = recipe.sun;
+            slot.sun.enabled = recipe.sun != null;
+            for (int i = 0; i < MaxClouds; i++)
+            {
+                var cs = i < recipe.clouds.Length ? recipe.clouds[i] : null;
+                slot.clouds[i].sprite = cs;
+                slot.clouds[i].enabled = cs != null;
             }
         }
 
@@ -221,6 +298,10 @@ namespace RoadBuilderGame
                 slot.layer[l] = sr;
             }
 
+            slot.overlay = MakeDecor(root, "Overlay", OverlayOrder);
+            slot.sun = MakeDecor(root, "Sun", SunOrder);
+            for (int i = 0; i < MaxClouds; i++) slot.clouds[i] = MakeDecor(root, "Cloud" + i, CloudOrder);
+
             var fillGo = new GameObject("Fill");
             fillGo.transform.SetParent(root, false);
             slot.fill = fillGo.AddComponent<SpriteRenderer>();
@@ -228,6 +309,17 @@ namespace RoadBuilderGame
             slot.fill.sprite = WhiteSprite();
             slot.fill.sortingOrder = FillOrder;
             return slot;
+        }
+
+        private static SpriteRenderer MakeDecor(Transform root, string name, int order)
+        {
+            var go = new GameObject(name);
+            go.transform.SetParent(root, false);
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sharedMaterial = SpriteFactory.SpriteMaterial;
+            sr.sortingOrder = order;
+            sr.enabled = false;
+            return sr;
         }
 
         private static Sprite WhiteSprite()

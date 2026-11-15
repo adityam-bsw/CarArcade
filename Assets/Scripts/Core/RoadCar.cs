@@ -101,12 +101,13 @@ namespace RoadBuilderGame
         private float _invincibleTimer;
         private float _lowSpeedTimer;
 
-        public static RoadCar Create(Vector2 position, VehicleType type)
+        /// <param name="art">Smooth uses the smooth body and its own wheel when SmoothSliceArt has them; anything missing falls back to the original sprites. Size and colliders are identical either way.</param>
+        public static RoadCar Create(Vector2 position, VehicleType type, ArtStyle art = ArtStyle.Pixel)
         {
             var root = new GameObject("Car_" + type);
             var car = root.AddComponent<RoadCar>();
             car.vehicleType = type;
-            car.Build(position, type);
+            car.Build(position, type, art);
             return car;
         }
 
@@ -146,7 +147,7 @@ namespace RoadBuilderGame
                 new Vector2(-0.30f * w, ay), new Vector2(0.30f * w, ay));
         }
 
-        void Build(Vector2 position, VehicleType type)
+        void Build(Vector2 position, VehicleType type, ArtStyle art)
         {
             string bodyPath = "RoadBuilder/CarBody";
             string wheelPath = "RoadBuilder/Wheel";
@@ -176,7 +177,18 @@ namespace RoadBuilderGame
             }
 
             Sprite bodySprite = Resources.Load<Sprite>(bodyPath);
-            Sprite wheelSprite = Resources.Load<Sprite>(wheelPath);
+            Sprite wheelSprite = null;
+            if (art == ArtStyle.Smooth)
+            {
+                var smooth = SmoothSliceArt.Load();
+                if (smooth != null)
+                {
+                    // Per-vehicle art; each missing piece falls back to the original sprite (and the shared Wheel).
+                    if (smooth.Body(type) != null) bodySprite = smooth.Body(type);
+                    wheelSprite = smooth.Wheel(type);
+                }
+            }
+            if (wheelSprite == null) wheelSprite = Resources.Load<Sprite>(wheelPath);
             BuildCore(position, bodySprite, wheelSprite, w, h, wr, mass, backAnchor, frontAnchor);
         }
 

@@ -36,6 +36,10 @@ Air time over 0.8 s pays per second (counted up to 4 s, so a long fall is no tri
 a chest every 250 m pays 50 times its number (and sometimes a gem); passing your previous best pays 100 once.
 The result screen lists every bonus.
 
+## Economy values applied from the approved change requests
+Vehicle prices SportCyan 600 and MonsterTruck 2000 (`GameCatalog.VehicleCost`), `nearMissCoins` 8, `boostDurationPerLevel` 0.08 s (about +6 percent of the 1.4 s base per level).
+Not applied (code formulas, not plain data): engine +0.8 m/s per level, suspension +3 torque per level, ink tank +30 per level; the +6 percent target for them is open.
+
 ## Daily reward and missions
 7-day streak (50 to 300 coins, 3 gems on day 7); a missed day restarts it. Three missions per day from: distance in one run,
 coins, flips, air time, boosts, gems, chests. Progress is added when a run ends; the player claims on the Rewards screen.
@@ -44,6 +48,29 @@ The day comes from the device clock (offline game).
 ## Mastery
 Each vehicle earns xp per run (distance / 10 plus 5 per flip); level = 1 + one per 100, 200, 300... xp. Tracked in the save and
 in `GameModel.MasteryLevel`; no cosmetic is attached to it yet.
+
+## Track properties (road surface)
+Each road surface (`CatalogEntry`, filled by `CatalogBuilder`, table `Surfaces`) carries five numbers. Every track is a trade, not a better or worse road.
+| Property | Effect | Where applied |
+|---|---|---|
+| friction, bounce | grip of the road collider (ice slides, mud sticks, cloud and rope bounce) | `ApplySurface` -> road PhysicsMaterial2D |
+| `speedFactor` | multiplies the car's target speed (mud drags, ice and glass are fast) | `RoadGameManager` target speed |
+| `inkFactor` | multiplies ink per metre (mud and gravel cheap, glass, ice, lava costly). Ink rescue uses the same cost | brush cost, `InkPerMeter` |
+| `coinFactor` | multiplies every coin (risky tracks pay more, up to x1.5) | `RunDirector.CoinFactor` |
+Asphalt is the baseline (all 1). The Roads tab shows a one-line summary (`CatalogEntry.TraitsLine`). Tune in `CatalogBuilder.Surfaces`, then run Road Builder > Catalog > Build Catalog.
+
+## Stage director (data layer, Phase A; not wired into the run)
+`Assets/Scripts/Game/Stage/` holds the stage ladder as data plus a pure C# core. Nothing in the scene or the existing run uses it yet.
+`StageEventDefinition`, `StageLadderDefinition` and `EventCompatibilityMatrix` are ScriptableObjects (units in field names, `Validate(errors)` plus an
+editor-only `OnValidate` warning). `StageDirector` (behind `IStageDirector`) builds the plan once in `Begin(StageRunRecord)` and `Tick(distanceM, speedMps, scaledDt)`
+only compares distance with precomputed thresholds (0 bytes allocated, tested). Plan = pure function of (ladder, `runSeed`, `modeId`): per slot a PCG32 seeded
+`unchecked(runSeed + stageIndex + modeId)` (`runSeed` generated as raw shifted left 7), draw order jitter, variant, replacement (only on rejection), terrain seed.
+Rules in code come from data: breather = stricter of `cooldownAfterM` and `minBreatherS` seconds (closed-form pace model, `StagePace`), start ranges shrink backwards
+from fixed anchors so the next event can always keep its breather, matrix default deny, Rewards (ring gauntlet) exempt from the warning-phase overlap term,
+modifiers must fit inside their parent. `FixedSpine` plays the slice slots; `Weighted` is the endless ladder (no repeat of the previous primary, difficulty ramp
+`cost <= 3 + slot`, breather after two hard slots, rejection fallback by descending weight). Signals S1 to S3 are distances computed with `signalSpeedFloorMps` (16).
+Not built: scene wiring, spawner enabling, UI banners, `SurfaceRuleSO`, prefab/audio refs on the definition, early chase end, ladder and event assets.
+Tests: `Assets/Tests/EditMode/StageDirectorTests.cs` (SD-01 to SD-22; SD-17 and SD-20 are not automatable and report Ignored).
 
 ## Not built yet
 Gems have no shop to spend them in. Not built: hazards, fuel, weather, challenge modes, checkpoints (the safety-platform respawn stays).

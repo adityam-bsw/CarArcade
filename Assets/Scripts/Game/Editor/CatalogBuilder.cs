@@ -65,6 +65,7 @@ namespace RoadBuilderGame.Editor
             }
             foreach (var e in catalog.entries) FillPlayData(e);
             LinkWheels(catalog);
+            SmoothVehicleLinker.Link(catalog);
             EditorUtility.SetDirty(catalog);
             AssetDatabase.SaveAssets();
             Debug.Log($"[CatalogBuilder] {catalog.entries.Count} entries ({missing} missing sprites) -> {AssetPath}");
@@ -91,21 +92,45 @@ namespace RoadBuilderGame.Editor
             { "vehicle-bus", P("heavy", 400) }, { "vehicle-fire-truck", P("heavy", 450) }, { "vehicle-semi-truck", P("heavy", 500) },
             { "vehicle-tank", P("heavy", 700) }, { "vehicle-handcar", P("compact", 180) }, { "vehicle-mine-cart", P("compact", 180) },
             { "vehicle-shopping-cart", P("bike", 100) },
+            { "vehicle-skateboard", P("bike", 80) }, { "vehicle-snowmobile", P("offroad", 350) }, { "vehicle-sled", P("compact", 90) },
+            { "vehicle-toboggan", P("compact", 110) }, { "vehicle-snowboard", P("bike", 130) },
         };
-        // surface id -> friction, bounce, legacy RoadStyle (-1 = strip)
+        // surface id -> friction, bounce, legacy RoadStyle (-1 = strip), speed factor, ink factor, coin factor
+        // Every track trades something: grip vs speed vs ink cost vs coin value.
         private static readonly Dictionary<string, float[]> Surfaces = new Dictionary<string, float[]>
         {
-            { "surface-asphalt", new[] { 1.25f, 0f, 0f } }, { "surface-dirt", new[] { 1.0f, 0f, 1f } }, { "surface-neon-grid", new[] { 1.25f, 0f, 2f } },
-            { "surface-cobblestone", new[] { 1.1f, 0f, -1f } }, { "surface-gravel", new[] { 0.9f, 0f, -1f } },
-            { "surface-mud", new[] { 1.6f, 0f, -1f } }, { "surface-rail-track", new[] { 1.3f, 0f, -1f } },
-            { "surface-glass", new[] { 0.5f, 0f, -1f } }, { "surface-salt-flat", new[] { 0.9f, 0f, -1f } },
-            { "surface-moon-dust", new[] { 0.8f, 0f, -1f } }, { "surface-magma-bridge", new[] { 1.2f, 0f, -1f } },
+            { "surface-asphalt",       new[] { 1.25f, 0f,    0f,  1.00f, 1.00f, 1.00f } },
+            { "surface-dirt",          new[] { 1.00f, 0f,    1f,  0.97f, 0.90f, 1.10f } },
+            { "surface-neon-grid",     new[] { 1.25f, 0f,    2f,  1.08f, 1.10f, 1.00f } },
+            { "surface-cobblestone",   new[] { 1.10f, 0.05f, -1f, 0.96f, 1.00f, 1.10f } },
+            { "surface-gravel",        new[] { 0.90f, 0f,    -1f, 0.95f, 0.85f, 1.15f } },
+            { "surface-mud",           new[] { 1.60f, 0f,    -1f, 0.85f, 0.75f, 1.30f } },
+            { "surface-rail-track",    new[] { 1.30f, 0.05f, -1f, 1.10f, 1.15f, 1.00f } },
+            { "surface-glass",         new[] { 0.50f, 0f,    -1f, 1.12f, 1.30f, 1.40f } },
+            { "surface-salt-flat",     new[] { 0.90f, 0f,    -1f, 1.06f, 1.00f, 1.10f } },
+            { "surface-moon-dust",     new[] { 0.80f, 0f,    -1f, 1.00f, 0.90f, 1.20f } },
+            { "surface-magma-bridge",  new[] { 1.20f, 0f,    -1f, 1.05f, 1.25f, 1.50f } },
+            { "surface-sand",          new[] { 0.95f, 0f,    -1f, 0.90f, 0.80f, 1.20f } },
+            { "surface-beach",         new[] { 1.00f, 0f,    -1f, 0.95f, 0.85f, 1.10f } },
+            { "surface-snow",          new[] { 0.70f, 0f,    -1f, 1.00f, 0.90f, 1.20f } },
+            { "surface-ice",           new[] { 0.35f, 0f,    -1f, 1.15f, 1.30f, 1.50f } },
+            { "surface-ice-bridge",    new[] { 0.40f, 0f,    -1f, 1.12f, 1.30f, 1.50f } },
+            { "surface-grass-trail",   new[] { 1.10f, 0f,    -1f, 1.00f, 0.90f, 1.05f } },
+            { "surface-wooden-bridge", new[] { 1.15f, 0.05f, -1f, 1.02f, 1.20f, 1.15f } },
+            { "surface-rope-bridge",   new[] { 1.00f, 0.12f, -1f, 1.00f, 1.30f, 1.30f } },
+            { "surface-river",         new[] { 0.90f, 0f,    -1f, 0.92f, 0.90f, 1.15f } },
+            { "surface-coral",         new[] { 1.10f, 0f,    -1f, 0.98f, 1.00f, 1.15f } },
+            { "surface-cloud",         new[] { 0.60f, 0.15f, -1f, 1.05f, 1.20f, 1.30f } },
+            { "surface-candy",         new[] { 0.80f, 0.10f, -1f, 1.00f, 1.00f, 1.25f } },
+            { "surface-lava-crust",    new[] { 1.20f, 0f,    -1f, 1.05f, 1.30f, 1.50f } },
+            { "surface-sea-water",     new[] { 0.70f, 0f,    -1f, 0.85f, 1.00f, 1.20f } },
+            { "surface-floating-islands", new[] { 1.10f, 0f, -1f, 1.00f, 1.10f, 1.20f } },
         };
         private static KeyValuePair<string, int> P(string cls, int cost) { return new KeyValuePair<string, int>(cls, cost); }
 
         private static void FillPlayData(CatalogEntry e)
         {
-            e.playable = false; e.playNote = ""; e.cost = 0; e.strip = null; e.roadStyle = -1;
+            e.playable = false; e.playNote = ""; e.cost = 0; e.strip = null; e.roadStyle = -1; e.speedFactor = e.inkFactor = e.coinFactor = 1f;
             if (e.kind == CatalogKind.Vehicle)
             {
                 if (Vehicles.TryGetValue(e.id, out var v))
@@ -121,7 +146,7 @@ namespace RoadBuilderGame.Editor
             {
                 if (Surfaces.TryGetValue(e.id, out var s))
                 {
-                    e.friction = s[0]; e.bounce = s[1];
+                    e.friction = s[0]; e.bounce = s[1]; e.speedFactor = s[3]; e.inkFactor = s[4]; e.coinFactor = s[5];
                     if (s[2] >= 0f) { e.roadStyle = (int)s[2]; e.playable = true; }
                     else
                     {

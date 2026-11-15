@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: RB.Game::RoadBuilderGame.GameplayTuning
   boostCoinCost: 5
   boostDuration: 1.4
-  boostDurationPerLevel: 0.25
+  boostDurationPerLevel: 0.08
   boostSpeedBonus: 4.5
   boostCooldown: 0.8
   meterPerAirSecond: 0.25
@@ -22,7 +22,8 @@ MonoBehaviour:
   meterPerComboCoin: 0.04
   inkRegenPerSec: 1
   inkPickup: 45
-  inkPityBelow: 0.3
+  inkRescueBelow: 0.45
+  inkRescueMaxMetres: 14
   inkNoSpawnAbove: 0.8
   heartChance: 7
   powerUpChance: 10
@@ -40,12 +41,31 @@ MonoBehaviour:
   ghostTime: 8
   airMinSeconds: 0.8
   airCoinsPerSecond: 6
+  airMaxPaidSeconds: 4
   flipCoins: 25
   flipDegrees: 300
   milestoneEvery: 250
   milestoneCoins: 50
   milestoneGemChance: 0.25
   recordBonus: 100
+  frenzyDuration: 7
+  frenzyPerCoin: 0.012
+  frenzyPerFlip: 0.12
+  frenzyPerAirSecond: 0.04
+  frenzyPerNearMiss: 0.15
+  frenzyPerRing: 0.2
+  frenzySpeedBonus: 3
+  frenzyCoinMultiplier: 2
+  ringBoostSeconds: 0.9
+  ringCoins: 5
+  ringChancePerArc: 0.6
+  meteorStartDistance: 150
+  meteorIntervalMin: 6
+  meteorIntervalMax: 11
+  meteorWarnSeconds: 1.1
+  meteorBlastRadius: 1.7
+  nearMissRadius: 4.5
+  nearMissCoins: 8
   dailyCoins: 320000004b000000640000007d00000096000000c80000002c010000
   dailyGemsOnLastDay: 3
   missionsPerDay: 3

@@ -4,7 +4,7 @@ namespace RoadBuilderGame
 {
     public class Collectible : MonoBehaviour
     {
-        public enum Type { Coin, Heart, Ink, Gem, Shield, Magnet, Double, SlowMo, Ghost }
+        public enum Type { Coin, Heart, Ink, Gem, Shield, Magnet, Double, SlowMo, Ghost, Ring }
 
         /// <summary>Raised when the car touches this pickup, just before it is destroyed. Game code subscribes; this class knows nothing about it.</summary>
         public static event System.Action<Collectible> Collected;
@@ -34,7 +34,7 @@ namespace RoadBuilderGame
             col.isTrigger = true;
             col.radius = 0.5f;
 
-            float targetScale = (type == Type.Heart) ? 0.75f : ((type == Type.Ink) ? 0.85f : ((type == Type.Coin) ? 0.65f : 0.9f));
+            float targetScale = (type == Type.Heart) ? 0.75f : ((type == Type.Ink) ? 0.85f : ((type == Type.Coin) ? 0.65f : (type == Type.Ring ? 1.6f : 0.9f)));
             if (sprite != null)
             {
                 Vector2 sz = sprite.bounds.size;
@@ -59,6 +59,10 @@ namespace RoadBuilderGame
                 // Pulsing shimmer
                 float s = 1f + Mathf.Sin(Time.time * 6f) * 0.08f;
                 transform.rotation = Quaternion.Euler(0, 0, Mathf.Sin(Time.time * 3f) * 12f);
+            }
+            else if (itemType == Type.Ring)
+            {
+                transform.rotation = Quaternion.Euler(0, 0, Time.time * 90f);
             }
             else if (itemType == Type.Heart)
             {

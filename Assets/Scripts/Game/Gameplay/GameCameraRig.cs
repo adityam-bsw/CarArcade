@@ -10,6 +10,8 @@ namespace RoadBuilderGame
     {
         private readonly Camera _cam;
         private readonly BackgroundDirector _background;
+        private Vector3 _shakeOffset;
+        private float _shakeAmp, _shakeLeft, _shakeTotal;
 
         public GameCameraRig(Camera cam, BackgroundDirector background)
         {
@@ -18,7 +20,28 @@ namespace RoadBuilderGame
         }
 
         /// <summary>Call from LateUpdate. When <paramref name="following"/> is false only the background is updated.</summary>
+        /// <summary>Shakes the camera: amplitude in world units, fading out over the duration (real time, so it also works in slow motion).</summary>
+        public void Shake(float amplitude, float seconds)
+        {
+            if (amplitude < _shakeAmp * (_shakeLeft / Mathf.Max(0.01f, _shakeTotal))) return;   // never replace a bigger shake that is still running
+            _shakeAmp = amplitude; _shakeLeft = _shakeTotal = Mathf.Max(0.05f, seconds);
+        }
+
         public void Tick(RoadCar car, bool following)
+        {
+            if (_cam != null) _cam.transform.position -= _shakeOffset;   // remove last frame's shake so smoothing follows the true position
+            _shakeOffset = Vector3.zero;
+            if (_shakeLeft > 0f)
+            {
+                _shakeLeft -= Time.unscaledDeltaTime;
+                float k = Mathf.Max(0f, _shakeLeft / _shakeTotal);
+                _shakeOffset = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), 0f) * (_shakeAmp * k);
+            }
+            TickFollow(car, following);
+            if (_cam != null) _cam.transform.position += _shakeOffset;
+        }
+
+        private void TickFollow(RoadCar car, bool following)
         {
             if (following && car != null && _cam != null)
             {

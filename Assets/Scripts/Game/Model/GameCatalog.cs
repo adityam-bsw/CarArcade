@@ -21,8 +21,8 @@ namespace RoadBuilderGame
 
         public static int VehicleCost(VehicleType t)
         {
-            if (t == VehicleType.SportCyan) return 200;
-            if (t == VehicleType.MonsterTruck) return 350;
+            if (t == VehicleType.SportCyan) return 600;
+            if (t == VehicleType.MonsterTruck) return 2000;
             return 0;
         }
 

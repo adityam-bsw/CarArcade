@@ -105,6 +105,38 @@ Current art is a high-res placeholder and will clash with a pixel world. A pixel
 - **Licences drift.** Re-read each page when downloading and keep a copy of the licence text in the project.
 
 ## Current logic: background (built)
+**Art style switch (smooth conversion, step 0).** `ArtStyle { Pixel = 0, Smooth }` (`Core/ArtStyle.cs`) is a field on
+`BackgroundSkin`, `RoadSkin` and (informational) `UITheme.filterStyle`; default Pixel, so existing assets render unchanged.
+`BackgroundDirector.Layout` snaps layers to the art-pixel grid only when the recipe's style is Pixel (recipe style comes from
+its base skin); Smooth scrolls in float. A Smooth `RoadSkin` forces its atlas bilinear / repeat U / clamp V when the material
+is built; UVs were already world-unit based (`texelWorld`, set 1/128 for smooth skins). `SmoothArtImporter` (Core/Editor)
+applies the smooth import table (bilinear, no mips, 128 ppu, 100 under UI/, ~41 under Backgrounds/, ASTC 6x6 / 5x5 Android)
+to NEW textures under `Assets/Art/Smooth/` only; `SmoothArt` holds the shared constants. Checks: `SmoothArtImportTests`.
+**Smooth Countryside (wired 2026-11-15).** `ThemeArtStyles` (`Core/Background`, asset `Resources/Themes/ThemeArtStyles`) is the single
+art-style switch per theme: Country, Desert and CyberNight = Smooth (see Smooth batch 2). `BackgroundRemixer.Pool(mood, style)` only offers skins of
+the theme's style, so a remix never mixes styles; `ThemeArtStyles.Override(theme, style)` flips a theme back to Pixel for a session.
+Smooth skin: `Resources/Backgrounds/countryside_smooth.asset` (sky, far, mid, near, scroll 0 / 0.2 / 0.4 / 0.8, plus `sun`, 4 `clouds`,
+`cloudScroll` 0.1, `groundFill`). `BackgroundDirector` shows smooth layers at scale viewH/14, bottom-aligned (the 864 px near layer is 1.5x
+the view), and draws sun and clouds as extra renderers between sky and far. Roads: `Resources/Roads/Smooth/{surface-id}.asset`
+(asphalt, dirt, grass-trail, ice, mud, glass), `RoadSkins.GetSmooth(id)`. `RoadSkin.lipPx` is the strip row of the driving surface
+(asphalt 4, dirt 7, ice 6, glass 8, mud 8, grass 14); `RoadRenderer` maps a smooth strip 1:1 in world units with that row on the collider
+top, so grass sits lower in its strip than asphalt and its blades rise over the collider. `RoadGameManager._worldArt` follows the world
+on screen; `ApplySurface` uses the smooth strip only when the world is Smooth AND that surface has one (otherwise its pixel strip stays).
+Built by menu `Road Builder > Smooth > Build Countryside Skins` (`SmoothSkinFactory`, re-runnable). Glass crack overlays 1-3 are imported
+but NOT wired: no glass break state exists in code yet (glass is only a stage-event definition and a surface), so there is nothing to hook.
+Tests: `SmoothArtImportTests` (switch, no style mixing, lip alignment, 1:1 mapping).
+**Smooth batch 2 (wired 2026-11-15).** All three worlds are Smooth in `ThemeArtStyles` (Country, Desert, CyberNight); pixel skins and
+`ThemeArtStyles.Override(theme, ArtStyle.Pixel)` still work per theme. New background skins: `Resources/Backgrounds/desert_smooth.asset`
+(Mood Warm, sun) and `nightcity_smooth.asset` (Mood Dark, moon in the `sun` slot, stars in the new `BackgroundSkin.overlay`; scroll 0 / 0.2 / 0.4 / 0.8;
+`groundFill` sampled from each near layer). `BackgroundDirector` draws the overlay (tiled, scroll 0, sorting -49) between sky (-50) and sun/moon (-48);
+clouds -47. Roads: 14 smooth strips now (added sand 7, snow 8, gravel 4, cobblestone 4, moon-dust 10, neon-grid 4, wooden-bridge 5, rail-track 2 lip px).
+Countryside near layer: `near` = near_v2 (default); `BackgroundSkin.nearAlternates` = {v1, v2_light}, picked per session with
+`BackgroundRemixer.SetNearVariant(-1|0|1)` (no UI yet).
+**Smooth road fallback (display only).** `RoadGameManager.SmoothDisplaySkin(id)`: in a Smooth world a surface with no smooth strip is drawn with the
+world's default smooth road (`ThemeArtStyles.countryRoad/desertRoad/cyberNightRoad` = asphalt / sand / neon-grid) instead of its pixel strip, and one
+`[Road]` log line is written per surface id. The selected surface id, friction, bounce, speed/ink/coin factors are untouched (`SetSurfaceTuning` still reads the
+selected surface). Surfaces without a smooth strip: beach, salt-flat, cloud, coral, floating-islands, river, sea-water, lava-crust, magma-bridge, candy,
+rope-bridge, ice-bridge. Menu `Road Builder > Smooth > Build Desert and Night City Skins` (same factory, builds everything).
 Files: `Assets/Scripts/Core/Background/` (`BackgroundSkin`, `BackgroundRemixer`, `BackgroundDirector`, `EnvironmentTheme`),
 `Assets/Scripts/Core/Editor/BackgroundSkinFactory.cs`, skins in `Assets/Resources/Backgrounds/*.asset`, art in
 `Assets/Art/Backgrounds/Vista/`. `BackgroundDirector` replaced `ParallaxBackground` (same GUID, same `Init`,
@@ -150,3 +182,19 @@ only), `Assets/Shaders/RoadTextured.shader`, `Assets/Resources/Roads/*.asset`, `
 - Proven by tests: identical collider points under a flat, two textured and a tinted skin; collider sits on the driving
   surface; physics material unchanged; atlas u grows with distance and v spans the atlas.
 - Next: bake atlases from CC0 ambientCG textures (Road007, Asphalt033, Ground109, Gravel043), assign them to the skins, tune.
+
+## Current logic: slice vehicles and pickups by art style (built 2026-11-15)
+- Data: `Resources/Smooth/SmoothSliceArt.asset` (class `SmoothSliceArt`, Core) references, without copies, `Assets/Art/Smooth/Vehicles` (body and own wheel for Classic, Sport, Monster) and `Assets/Art/Smooth/Pickups` (coin, heart, ink canister, ring; also ring overload and star, unused). Built by menu Road Builder > Smooth > Build Countryside Skins (`SmoothSkinFactory.BuildSliceArt`), safe to re-run.
+- Switch: `RoadGameManager._worldArt` (from `ThemeArtStyles` or the picked world skin) is passed to `RoadCar.Create(pos, VehicleType, ArtStyle)` and set on `PickupSpawner.Art` at run start. Pixel (default) keeps `Resources/RoadBuilder/*` exactly as before.
+- `RoadCar.Build(VehicleType)`: Smooth takes the smooth body and the vehicle's own wheel; any missing entry falls back to the pixel body and the shared `RoadBuilder/Wheel`. Body and wheel are still fitted to the same boxes (2.4x0.9, 2.4x0.8, 2.6x1.1; wheel 2*r*1.03); colliders, mass and torque are code data and do not read the sprite. `PickupSpawner.Icon` does the same per name; `Collectible.Init` still scales every sprite to its fixed world size and uses the fixed 0.5 trigger.
+- Not wired on purpose: `Pickup_Ring_Overload` (no Overload state or consumer exists in code; `RunDirector` handles only `Collectible.Type.Ring`); `Star` (ParticleManager tints the star per burst colour, a coloured outlined sprite would turn muddy; needs a white variant); gems, shield, magnet, double, slow-mo, ghost (no smooth art).
+- Tests: `SmoothSliceArtTests` (asset complete, same collider points, circle radii, mass, torque, sprite bounds for pixel vs smooth cars; own wheel per vehicle; pickup bounds and trigger radius).
+- Known mixing (left as is): catalogue vehicles with smooth art now follow the world (see the next section; the others stay pixel); the slice cars are only used when `_selVehicleId` is empty (legacy `CycleVehicle`, no UI calls it) so the default Countryside run still shows a pixel car; HUD/UI plates are smooth but the workshop backdrop lamps and clock, and some HUD hearts, remain pixel; showcase car is not rebuilt when the world changes.
+
+## Current logic: smooth catalogue vehicles (built 2026-11-15)
+- Art: `Assets/Art/Smooth/Vehicles2/{previews,bodies,wheels}` (canvas = old preview x integer S, ppu = 16 x S per file, so world size is unchanged). `MAPPING.md` lists S and wheel anchors in new pixels (`wheels_new.json` was never shipped; the numbers are old `Catalog/wheels.json` x S, checked against MAPPING.md by a test).
+- Data: `CatalogEntry.smoothPreview / smoothBody / smoothWheels / smoothScale` (additive; old fields untouched). Filled by menu `Road Builder > Catalog > Link Smooth Vehicles` (`SmoothVehicleLinker`, also run by Build Catalog): only items whose manifest `smooth_status` is `ready` and whose files exist. 26 linked (fire truck imported later and linked by re-running the menu); snowmobile and snowboard (needs_work) stay old.
+- Switch: `CatalogEntry.MakeRig(ArtStyle)` (used by `RoadGameManager.CreateSelectedCar`): Smooth world + smooth art ready -> smooth body and smooth wheels, else old preview and old wheels. `widthUnits` stays the old `clamp(oldW/14, 1.5, 3)`, mass, torque, speed unchanged; wheel anchors and radius are old x S, so world units are identical; colliders derive only from width and aspect. Cards (`CollectionCard`, `CollectionScreen` detail) use `PreviewFor(ThemeArtStyles.For(Model.World))`.
+- Import: `SmoothArt.IsVehicleFolder` (Vehicles, Vehicles2) -> ASTC 5x5; the importer applies defaults only on first import, so per-file 16 x S ppu is kept.
+- Tests: `SmoothVehicleTests` (ppu = 16 x S, bilinear, ASTC 5x5 for every Vehicles2 texture; only ready vehicles linked; widthUnits; wheels vs MAPPING.md; pixel vs smooth body box, wheel positions, radii, collider points, joint anchors, mass, torque for every linked vehicle; expected count comes from the manifest, not a constant).
+- Known: a showcase car already on screen is not rebuilt when the world style changes (rebuilds on the next vehicle pick or run start).

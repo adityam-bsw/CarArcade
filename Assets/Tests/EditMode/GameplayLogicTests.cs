@@ -172,5 +172,26 @@ namespace RoadBuilderGame.Tests
             Assert.AreEqual(7, t.dailyCoins.Length);
             Assert.LessOrEqual(t.inkChance + t.heartChance + t.gemChance + t.powerUpChance, 60, "coins stay the most common pickup");
         }
+
+        [Test]
+        public void TrackCoinFactor_ScalesCoinValue()
+        {
+            var t = Tuning(); var run = new RunDirector(t); run.Begin(1, 100f);
+            run.CoinFactor = 1.5f;
+            Assert.AreEqual(Mathf.RoundToInt(t.coinValue * 1.5f), run.CollectCoin());
+        }
+
+        [Test]
+        public void SurfaceTraits_AreDescribedForThePicker()
+        {
+            var ice = new CatalogEntry { friction = 0.35f, speedFactor = 1.15f, inkFactor = 1.3f, coinFactor = 1.5f };
+            StringAssert.Contains("very slippery", ice.TraitsLine());
+            StringAssert.Contains("fast", ice.TraitsLine());
+            StringAssert.Contains("costly ink", ice.TraitsLine());
+            StringAssert.Contains("coins x1.5", ice.TraitsLine());
+            var mud = new CatalogEntry { friction = 1.6f, speedFactor = 0.85f, inkFactor = 0.75f, coinFactor = 1.3f };
+            StringAssert.Contains("slow", mud.TraitsLine());
+            StringAssert.Contains("cheap ink", mud.TraitsLine());
+        }
     }
 }

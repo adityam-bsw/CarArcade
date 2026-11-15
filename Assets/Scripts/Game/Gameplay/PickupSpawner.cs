@@ -38,8 +38,17 @@ namespace RoadBuilderGame
         private float _lastInkX = -100f;
         private static readonly System.Collections.Generic.Dictionary<string, Sprite> Sprites = new System.Collections.Generic.Dictionary<string, Sprite>();
 
-        private static Sprite Icon(string name)
+        /// <summary>Art style of the world on screen. Smooth uses the smooth pickup sprites; pickups without one keep the original.</summary>
+        public ArtStyle Art = ArtStyle.Pixel;
+
+        private Sprite Icon(string name)
         {
+            if (Art == ArtStyle.Smooth)
+            {
+                var smooth = SmoothSliceArt.Load();
+                var ss = smooth != null ? smooth.Pickup(name) : null;
+                if (ss != null) return ss;
+            }
             if (!Sprites.TryGetValue(name, out var s) || s == null) Sprites[name] = s = Resources.Load<Sprite>("RoadBuilder/" + name);
             return s;
         }
@@ -68,6 +77,7 @@ namespace RoadBuilderGame
             {
                 case Shape.Arc:      // a jump: coins rise and fall over a hump
                     for (int i = 0; i < 5; i++) { float cx = x + i * 1.5f; Place(Collectible.Type.Coin, "Coin", cx, GroundY(cx) + Mathf.Sin(i / 4f * Mathf.PI) * 1.3f); }
+                    if (Random.value < Tuning.ringChancePerArc) { float rx = x + 3f; Place(Collectible.Type.Ring, "Pickup_Ring", rx, GroundY(rx) + 1.6f); }   // a boost ring above the apex
                     break;
                 case Shape.Line:     // a safe path to follow
                     for (int i = 0; i < 7; i++) { float cx = x + i * 1.3f; Place(Collectible.Type.Coin, "Coin", cx, GroundY(cx) + 0.2f); }

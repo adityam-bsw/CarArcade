@@ -79,7 +79,7 @@ namespace RoadBuilderGame.UI
             frame.rectTransform.sizeDelta = fs != null ? fs.rect.size : l.size;
             frame.rectTransform.anchoredPosition = Vector2.zero;
 
-            preview.sprite = entry.preview;
+            preview.sprite = entry.PreviewFor(ThemeArtStyles.For(GameServices.Model.World));
             preview.preserveAspect = true;
             nameText.SetText(entry.displayName);
             nameText.color = theme.GetColor(ColorToken.TextOnAccent);

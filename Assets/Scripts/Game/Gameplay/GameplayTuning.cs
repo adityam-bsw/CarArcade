@@ -12,7 +12,7 @@ namespace RoadBuilderGame
         [Header("Boost")]
         [Tooltip("Coins one boost costs when the free meter is not full.")] public int boostCoinCost = 5;
         public float boostDuration = 1.4f;
-        [Tooltip("Extra seconds per boost upgrade level above 1.")] public float boostDurationPerLevel = 0.25f;
+        [Tooltip("Extra seconds per boost upgrade level above 1.")] public float boostDurationPerLevel = 0.08f;
         [Tooltip("Extra target speed while boosting.")] public float boostSpeedBonus = 4.5f;
         public float boostCooldown = 0.8f;
         [Header("Free boost meter (0 to 1; a full meter makes the next boost free)")]
@@ -57,6 +57,30 @@ namespace RoadBuilderGame
         public int milestoneCoins = 50;
         [Range(0f, 1f)] public float milestoneGemChance = 0.25f;
         public int recordBonus = 100;
+
+        [Header("Frenzy (fills from coins, flips, rings and near misses; then 'overdrive' for a few seconds)")]
+        public float frenzyDuration = 7f;
+        public float frenzyPerCoin = 0.012f;      // times the combo multiplier
+        public float frenzyPerFlip = 0.12f;
+        public float frenzyPerAirSecond = 0.04f;
+        public float frenzyPerNearMiss = 0.15f;
+        public float frenzyPerRing = 0.2f;
+        public float frenzySpeedBonus = 3f;
+        public int frenzyCoinMultiplier = 2;
+
+        [Header("Boost rings (fly through for a free burst)")]
+        public float ringBoostSeconds = 0.9f;
+        public int ringCoins = 5;
+        [Range(0f, 1f)] public float ringChancePerArc = 0.6f;
+
+        [Header("Meteor storms (sky hazard: warning marker, then a strike)")]
+        public float meteorStartDistance = 150f;
+        public float meteorIntervalMin = 6f;
+        public float meteorIntervalMax = 11f;
+        public float meteorWarnSeconds = 1.1f;
+        public float meteorBlastRadius = 1.7f;
+        [Tooltip("Surviving a strike within this distance of the car counts as a near miss.")] public float nearMissRadius = 4.5f;
+        public int nearMissCoins = 8;
 
         [Header("Daily reward (7 day streak)")]
         public int[] dailyCoins = { 50, 75, 100, 125, 150, 200, 300 };

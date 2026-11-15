@@ -53,9 +53,17 @@ namespace RoadBuilderGame
         private string _powerText = "";
         private PlayerProfile _profile;
         private bool _soundEnabled = true;
+        private AudioDirector _audio;
+        private MeteorSpawner _meteors;
+        private float _frenzyTrailTimer;
+        // Track traits of the current surface (CatalogEntry.speedFactor / inkFactor / coinFactor); 1 = plain asphalt.
+        private float _trackSpeed = 1f, _trackInk = 1f;
         private string _selVehicleId = "", _selSurfaceId = "", _selWorldId = "";
         private readonly HashSet<string> _unlockedVehicleIds = new HashSet<string>();
         private readonly Dictionary<string, BackgroundSkin> _worldSkins = new Dictionary<string, BackgroundSkin>();
+        // Art style of the world on screen. Surfaces switch to their smooth strip only when this is Smooth, so a road never
+        // changes style on its own: a pixel world keeps pixel roads.
+        private ArtStyle _worldArt = ArtStyle.Pixel;
         private readonly Dictionary<string, RoadSkin> _surfaceSkins = new Dictionary<string, RoadSkin>();
 
         private RoadCar _car;
@@ -176,15 +184,22 @@ namespace RoadBuilderGame
             _tuning = GameplayTuning.Load();
             _run = new RunDirector(_tuning);
             _run.Bonus += OnRunBonus;
+            _audio = new AudioDirector();
+            _audio.Bind(_run);
             _pickups = new PickupSpawner(_road)
             {
                 Tuning = _tuning,
                 Ink01 = () => maxInk > 0f ? currentInk / maxInk : 1f,
                 InkUnits = () => currentInk,
-                InkPerMeter = () => inkCostPerMeter,
+                InkPerMeter = () => inkCostPerMeter * _trackInk,
                 NeedsHeart = () => currentLives < maxLives
             };
             _cameraRig = new GameCameraRig(_cam, _background);
+            _meteors = new MeteorSpawner(_road, _tuning);
+            _meteors.Warned += () => _audio.MeteorWarning();
+            _meteors.NearMissed += () => _run.NearMiss();
+            _meteors.Impacted += OnMeteorImpact;
+            _run.CueRaised += OnRunCue;
 
             LoadPlayerData();
             _meta = new MetaProgress(_profile, _tuning);
@@ -322,15 +337,12 @@ namespace RoadBuilderGame
                     break;
 
                 case ScreenState.GameOver:
-                    if (SoundManager.Instance)
-                    {
-                        SoundManager.Instance.SetEngineRunning(false, 0f);
-                        SoundManager.Instance.PlayCrash();
-                    }
+                    _audio?.GameOver(Model.LastRun.newBest);
                     SyncModel();
                     break;
             }
 
+            _audio?.OnScreen(newState, _selWorldId);
             Model.SetScreen(newState);
         }
 
@@ -373,7 +385,7 @@ namespace RoadBuilderGame
 
             // Apply Upgrades:
             float engineBonus = (engineLevel - 1) * 0.8f;
-            _car.TargetSpeed = (baseStartSpeed + engineBonus) * _car.SpeedMultiplier;
+            _car.TargetSpeed = (baseStartSpeed + engineBonus) * _car.SpeedMultiplier * _trackSpeed;
             _car.maxTorquePerWheel += (suspensionLevel - 1) * 3f;
 
             maxInk = 100f + (inkTankLevel - 1) * 30f;
@@ -382,16 +394,19 @@ namespace RoadBuilderGame
             _startX = _car.Body.position.x;
             _distance = 0f;
             _upsideDownTime = 0f;
+            _pickups.Art = _worldArt;
             _pickups.Reset(16f);
             _brush.Cancel();
             currentLives = maxLives;
             sessionCoins = 0;
             _run.Begin(boostLevel, _bestScore);
+            _meteors.Reset();
             _powerKey = -1;
 
             UpdateHeartsUI();
             UpdateInkUI();
             if (SoundManager.Instance) SoundManager.Instance.SetEngineRunning(true, 0.2f);
+            _audio?.RunStart();
             _cameraRig.Snap(_car);
         }
 
@@ -404,7 +419,7 @@ namespace RoadBuilderGame
             {
                 _brush.SmoothingSpeed = brushSmoothingSpeed;
                 _brush.DragSpacing = dragSpacing;
-                _brush.InkCostPerMeter = _run.Ghost ? 0f : inkCostPerMeter;
+                _brush.InkCostPerMeter = _run.Ghost ? 0f : inkCostPerMeter * _trackInk;
                 _brush.Tick();
 
                 currentInk = Mathf.Min(maxInk, currentInk + _tuning.inkRegenPerSec * Time.deltaTime);
@@ -414,7 +429,7 @@ namespace RoadBuilderGame
                 Vector2 carPos = _car.Body.position;
                 _distance = Mathf.Max(_distance, carPos.x - _startX);
                 float speedRatio = Mathf.InverseLerp(baseStartSpeed, baseMaxSpeed + (engineLevel * 0.8f), _car.TargetSpeed);
-                _car.TargetSpeed = Mathf.Min(baseMaxSpeed + (engineLevel * 0.8f), baseStartSpeed + (engineLevel * 0.8f) + _distance * speedGainPerMetre) + _run.BoostSpeedBonus;
+                _car.TargetSpeed = Mathf.Min(baseMaxSpeed + (engineLevel * 0.8f), baseStartSpeed + (engineLevel * 0.8f) + _distance * speedGainPerMetre) * _trackSpeed + _run.BoostSpeedBonus;
                 _run.Tick(Time.unscaledDeltaTime, _car, _distance);
                 Collectible.MagnetTarget = _run.MagnetOn ? _car.Body.transform : null;
                 Collectible.MagnetRadius = _tuning.magnetRadius;
@@ -422,6 +437,9 @@ namespace RoadBuilderGame
                 if (SoundManager.Instance) SoundManager.Instance.SetEngineRunning(true, speedRatio);
 
                 _pickups.Tick(carPos.x);
+                _meteors.Tick(Time.deltaTime, _car, _distance);
+                _audio.InkLevel(maxInk > 0f ? currentInk / maxInk : 1f);
+                if (_run.Frenzying) FrenzyTrail(carPos);
 
                 // Fail conditions:
                 // Only check chasm drop against a real road under or behind the car, or an absolute abyss floor (-12f)
@@ -464,9 +482,10 @@ namespace RoadBuilderGame
             _brush.Cancel();
             bool shielded = _run.AbsorbHit();       // a shield soaks up one crash
             _run.Interrupt();
+            _cameraRig?.Shake(shielded ? 0.2f : 0.45f, 0.4f);
+            _audio?.Crash(shielded);
             if (shielded)
             {
-                if (SoundManager.Instance) SoundManager.Instance.PlayHeart();
                 if (ParticleManager.Instance && _car != null)
                     ParticleManager.Instance.SpawnBurst(_car.Body.position, new Color(0.4f, 0.65f, 1f), 18);
             }
@@ -474,7 +493,6 @@ namespace RoadBuilderGame
             {
                 currentLives--;
                 UpdateHeartsUI();
-                if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
                 if (ParticleManager.Instance && _car != null)
                     ParticleManager.Instance.SpawnBurst(_car.Body.position, new Color(1f, 0.3f, 0.2f), 22);
             }
@@ -538,15 +556,56 @@ namespace RoadBuilderGame
                 case Collectible.Type.Ink:
                     currentInk = Mathf.Min(maxInk, currentInk + _tuning.inkPickup);
                     UpdateInkUI();
-                    if (SoundManager.Instance) SoundManager.Instance.PlayCoin();
+                    if (SoundManager.Instance) SoundManager.Instance.PlaySfx("ink", 0.8f);
                     if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(item.transform.position, new Color(0.6f, 0.2f, 0.9f), 14);
                     break;
                 default:      // gem and the power-ups
-                    _run.CollectPower(item.itemType);
-                    if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
+                    _run.CollectPower(item.itemType);           // the run cue plays the sound
                     if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(item.transform.position, new Color(0.5f, 0.9f, 1f), 18);
                     break;
             }
+        }
+
+        private void OnMeteorImpact(Vector2 point, bool hit)
+        {
+            _audio.MeteorImpact();
+            _cameraRig?.Shake(hit ? 0.5f : 0.3f, 0.35f);
+            if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(point + Vector2.up * 0.3f, new Color(1f, 0.55f, 0.1f), 26);
+            if (hit) HandleLifeLoss("METEOR STRIKE!");
+        }
+
+        /// <summary>Run cues that need an animation or camera reaction (sound lives in AudioDirector).</summary>
+        private void OnRunCue(RunDirector.Cue cue)
+        {
+            if (_car == null) return;
+            Vector2 p = _car.Body.position;
+            switch (cue)
+            {
+                case RunDirector.Cue.FrenzyOn:
+                    _cameraRig?.Shake(0.35f, 0.5f);
+                    if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(p, new Color(1f, 0.3f, 0.9f), 30);
+                    break;
+                case RunDirector.Cue.Ring:
+                    if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(p, new Color(1f, 0.85f, 0.3f), 20);
+                    _cameraRig?.Shake(0.12f, 0.2f);
+                    break;
+                case RunDirector.Cue.Boost:
+                    _cameraRig?.Shake(0.15f, 0.3f);
+                    break;
+                case RunDirector.Cue.NearMiss:
+                case RunDirector.Cue.Flip:
+                    if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(p + Vector2.up, new Color(0.4f, 1f, 0.9f), 14);
+                    break;
+            }
+        }
+
+        /// <summary>Rainbow sparks behind the car while frenzy is on (about 12 a second).</summary>
+        private void FrenzyTrail(Vector2 carPos)
+        {
+            _frenzyTrailTimer -= Time.deltaTime;
+            if (_frenzyTrailTimer > 0f || ParticleManager.Instance == null) return;
+            _frenzyTrailTimer = 0.08f;
+            ParticleManager.Instance.SpawnBurst(carPos + Vector2.left * 0.8f, Color.HSVToRGB(Mathf.Repeat(Time.time * 1.5f, 1f), 0.75f, 1f), 2);
         }
 
         /// <summary>The run director paid out a bonus or announced an event: add the coins and show a toast.</summary>
@@ -713,6 +772,7 @@ namespace RoadBuilderGame
             SelectedTheme = (EnvironmentTheme)(((int)SelectedTheme + dir + total) % total);
             _selWorldId = "";
             ApplyWorld();
+            ApplySurface();
             SavePlayerData();
             SyncModel();
         }
@@ -830,6 +890,8 @@ namespace RoadBuilderGame
             {
                 _selWorldId = id;
                 ApplyWorld();
+                ApplySurface();   // the road follows the world's art style
+                _audio?.OnWorldChosen(id);
             }
             if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
             SavePlayerData();
@@ -848,11 +910,8 @@ namespace RoadBuilderGame
         private RoadCar CreateSelectedCar(Vector2 pos)
         {
             var e = CatalogVehicle();
-            if (e == null) return RoadCar.Create(pos, SelectedVehicle);
-            return RoadCar.Create(pos, new VehicleRig
-            {
-                id = e.id, body = e.preview, width = e.widthUnits, mass = e.mass, torque = e.torque, speedMultiplier = e.speed, wheels = e.wheels
-            });
+            if (e == null) return RoadCar.Create(pos, SelectedVehicle, _worldArt);   // slice vehicles follow the world's art style; catalogue vehicles keep their own art
+            return RoadCar.Create(pos, e.MakeRig(_worldArt));   // Smooth worlds: smooth body and wheels for vehicles whose smooth art is ready; same size, mass, torque
         }
 
         /// <summary>The scenery for the current world pick: a remix of its mood, or one scene shown as drawn.</summary>
@@ -864,6 +923,7 @@ namespace RoadBuilderGame
                 if (e.themeIndex >= 0)
                 {
                     SelectedTheme = (EnvironmentTheme)e.themeIndex;
+                    _worldArt = ThemeArtStyles.For(SelectedTheme);
                     _background.ApplyTheme(SelectedTheme);
                     return;
                 }
@@ -876,10 +936,12 @@ namespace RoadBuilderGame
                         skin.sky = e.layers[0]; skin.far = e.layers[1]; skin.mid = e.layers[2]; skin.near = e.layers[3];
                         _worldSkins[e.id] = skin;
                     }
+                    _worldArt = skin.artStyle;
                     _background.ApplySkin(skin);
                     return;
                 }
             }
+            _worldArt = ThemeArtStyles.For(SelectedTheme);
             _background.ApplyTheme(SelectedTheme);
         }
 
@@ -891,6 +953,9 @@ namespace RoadBuilderGame
             {
                 _roadMaterial.friction = e.friction;
                 _roadMaterial.bounciness = e.bounce;
+                SetSurfaceTuning(e);   // gameplay numbers always come from the selected surface, whatever strip is drawn
+                var smoothSkin = SmoothDisplaySkin(e.id);
+                if (smoothSkin != null) { _road.SetSkin(smoothSkin); return; }
                 if (e.strip != null)
                 {
                     if (!_surfaceSkins.TryGetValue(e.id, out var skin) || skin == null)
@@ -907,7 +972,34 @@ namespace RoadBuilderGame
             }
             _roadMaterial.friction = 1.25f;
             _roadMaterial.bounciness = 0f;
+            _trackSpeed = 1f; _trackInk = 1f; _run.CoinFactor = 1f;
+            var legacySmooth = SmoothDisplaySkin(RoadSkins.SurfaceIdOf(SelectedRoadStyle));
+            if (legacySmooth != null) { _road.SetSkin(legacySmooth); return; }
             _road.SetRoadStyle(SelectedRoadStyle);
+        }
+
+        private readonly HashSet<string> _smoothFallbackLogged = new HashSet<string>();
+
+        /// <summary>
+        /// Display skin for a surface in a Smooth world: its own smooth strip, else the world's default smooth road (display only;
+        /// the selected surface id, friction, bounce and tuning are untouched). Null in a pixel world or when no default exists.
+        /// The fallback is logged once per surface.
+        /// </summary>
+        private RoadSkin SmoothDisplaySkin(string surfaceId)
+        {
+            if (_worldArt != ArtStyle.Smooth) return null;
+            var own = RoadSkins.GetSmooth(surfaceId);
+            if (own != null) return own;
+            string defId = ThemeArtStyles.DefaultSmoothRoad(SelectedTheme);
+            var fallback = RoadSkins.GetSmooth(defId);
+            if (fallback != null && _smoothFallbackLogged.Add(string.IsNullOrEmpty(surfaceId) ? "(legacy)" : surfaceId))
+                Debug.Log("[Road] No smooth strip for '" + surfaceId + "' in a Smooth world: drawing the default '" + defId + "' (display only, gameplay numbers unchanged).");
+            return fallback;
+        }
+
+        private void SetSurfaceTuning(CatalogEntry e)
+        {
+            _trackSpeed = e.speedFactor; _trackInk = e.inkFactor; _run.CoinFactor = e.coinFactor;
         }
 
         public void SetSoundEnabled(bool enabled)

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80756918ad4b24a149efaa5dca90eebd, type: 3}
+  m_Name: SmoothSliceArt
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.SmoothSliceArt
+  bodyClassic: {fileID: 21300000, guid: 36858696e539e41a0922cb569850f992, type: 3}
+  bodySport: {fileID: 21300000, guid: f6f7f46d3d1654e68a6da620714e1236, type: 3}
+  bodyMonster: {fileID: 21300000, guid: 0c06a5bb2704a4d3cba119bb95850b2c, type: 3}
+  wheelClassic: {fileID: 21300000, guid: b881f569711b4484d818cc033c3b1ab0, type: 3}
+  wheelSport: {fileID: 21300000, guid: 5584fd29f74f54ea6a8154d40c41d441, type: 3}
+  wheelMonster: {fileID: 21300000, guid: 3faeab7cde27f461ca8386b4aaab18c6, type: 3}
+  coin: {fileID: 21300000, guid: f58058d841d574cd3bb21b73700f33ca, type: 3}
+  heart: {fileID: 21300000, guid: a0a14aa07d8164129b87a799c1c4065c, type: 3}
+  ink: {fileID: 21300000, guid: 8ff8d76be35944ad295cad9d3103d88e, type: 3}
+  ring: {fileID: 21300000, guid: d098bea6a5c1e4ceebb01a5463265390, type: 3}
+  ringOverload: {fileID: 21300000, guid: 095f8a3a8ca5944fa9e4a13274dca597, type: 3}
+  star: {fileID: 21300000, guid: 9b617557b43a94792bcb30c15b264293, type: 3}

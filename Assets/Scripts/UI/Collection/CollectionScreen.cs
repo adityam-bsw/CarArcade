@@ -152,7 +152,7 @@ namespace RoadBuilderGame.UI
                 return;
             }
 
-            detailPreview.sprite = e.preview;
+            detailPreview.sprite = e.PreviewFor(ThemeArtStyles.For(GameServices.Model.World));
             detailPreview.preserveAspect = true;
             detailName.SetText(e.displayName);
             detailGroup.SetText(e.group);

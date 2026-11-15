@@ -43,11 +43,52 @@ namespace RoadBuilderGame
         public int themeIndex = -1;
         public float friction = 1.25f;
         public float bounce = 0f;
+        [Header("Surface traits (gameplay): see Docs/GAMEPLAY_RULES.md, Track properties")]
+        [Tooltip("Multiplies the car's target speed (rolling resistance: below 1 drags, above 1 is fast).")] public float speedFactor = 1f;
+        [Tooltip("Multiplies the ink one metre of road costs (above 1 = expensive to build).")] public float inkFactor = 1f;
+        [Tooltip("Multiplies the value of every coin. Risky tracks pay more.")] public float coinFactor = 1f;
         [Tooltip("Vehicle: wheels cut out of the picture (round sprites with centre and radius in picture pixels). Empty = no spinning wheels.")]
         public WheelArt[] wheels;
 
+        [Header("Smooth restyle (vehicles with smooth_status ready only; filled by SmoothVehicleLinker)")]
+        [Tooltip("Smooth card/preview picture (wheels baked in). Canvas = old preview x smoothScale.")] public Sprite smoothPreview;
+        [Tooltip("Smooth rig body (wheel arches empty). Same canvas as smoothPreview.")] public Sprite smoothBody;
+        [Tooltip("Smooth wheel cut-outs; cx, cy, r in smooth body pixels (= old x smoothScale).")] public WheelArt[] smoothWheels;
+        public int smoothScale = 1;
+
+        /// <summary>True when smooth art may be used for this vehicle (ready in the manifest and fully linked).</summary>
+        public bool HasSmooth => smoothBody != null && smoothPreview != null;
+        /// <summary>The card picture for an art style. Pixel, or a vehicle without ready smooth art, keeps the old preview.</summary>
+        public Sprite PreviewFor(ArtStyle style) => style == ArtStyle.Smooth && HasSmooth ? smoothPreview : preview;
+
+        /// <summary>
+        /// Rig data for a vehicle in a world of the given art style. Smooth uses the smooth body and wheels only when ready and fully linked
+        /// (same wheel count); widthUnits, mass, torque and speed are the same either way, and the smooth wheel layout is old x scale, so world geometry is identical.
+        /// </summary>
+        public VehicleRig MakeRig(ArtStyle style)
+        {
+            bool smooth = style == ArtStyle.Smooth && HasSmooth && smoothWheels != null && (wheels == null || smoothWheels.Length == wheels.Length);
+            return new VehicleRig
+            {
+                id = id, body = smooth ? smoothBody : preview, width = widthUnits, mass = mass, torque = torque, speedMultiplier = speed,
+                wheels = smooth ? smoothWheels : wheels
+            };
+        }
+
         /// <summary>Approved by the inspector (or present before the asset agents existed).</summary>
         public bool Reviewed => status != CatalogStatus.Forged;
+        /// <summary>One line for the road picker: what this track does to the run.</summary>
+        public string TraitsLine()
+        {
+            string grip = friction < 0.6f ? "very slippery" : friction < 0.95f ? "slippery" : friction > 1.4f ? "sticky" : friction > 1.2f ? "good grip" : "ok grip";
+            string t = grip;
+            if (speedFactor <= 0.92f) t += ", slow"; else if (speedFactor >= 1.08f) t += ", fast";
+            if (inkFactor <= 0.85f) t += ", cheap ink"; else if (inkFactor >= 1.2f) t += ", costly ink";
+            if (coinFactor >= 1.2f) t += ", coins x" + coinFactor.ToString("0.#");
+            if (bounce >= 0.1f) t += ", bouncy";
+            return t;
+        }
+
         public bool Placeholder => quality > 0 && quality <= 2;
     }
 

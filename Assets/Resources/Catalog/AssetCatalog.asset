@@ -35,6 +35,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 13eb56aa8a8f740b49cd9c80b3ee5ca2, type: 3}
       cx: 5.5
@@ -44,6 +47,18 @@ MonoBehaviour:
       cx: 19.5
       cy: 10.5
       r: 3
+    smoothPreview: {fileID: 21300000, guid: 842af2e8a32d94b7fa7f5a0a33e78554, type: 3}
+    smoothBody: {fileID: 21300000, guid: 7491cbd8aaee448fcb819fa3ed26ceb9, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 51c9f2caee1044ce4a68634bc87df214, type: 3}
+      cx: 49.5
+      cy: 94.5
+      r: 27
+    - sprite: {fileID: 21300000, guid: 0bc8feb1360f6480b9f07242843daf53, type: 3}
+      cx: 175.5
+      cy: 94.5
+      r: 27
+    smoothScale: 9
   - id: vehicle-dune-buggy
     kind: 0
     displayName: Dune Buggy
@@ -66,6 +81,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 2f0f8eb0fab474571bafaaff57e87d7f, type: 3}
       cx: 4.5
@@ -75,11 +93,23 @@ MonoBehaviour:
       cx: 14.5
       cy: 11.5
       r: 3
+    smoothPreview: {fileID: 21300000, guid: b6974965ac64a4600b971c491a422250, type: 3}
+    smoothBody: {fileID: 21300000, guid: 8200d0086443b48b7b0521c0635d1e89, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: aafda938f4fb04795bdcdce672d0b8b7, type: 3}
+      cx: 40.5
+      cy: 103.5
+      r: 27
+    - sprite: {fileID: 21300000, guid: ff75ad17869864d768252bc008b4b3de, type: 3}
+      cx: 130.5
+      cy: 103.5
+      r: 27
+    smoothScale: 9
   - id: vehicle-golf-cart
     kind: 0
     displayName: Golf Cart
     group: Cars
-    status: 2
+    status: 1
     quality: 3
     note: 'Forged: golfcart_body.png 30x15 (roof, seat, steering wheel, white body),
       golfcart_wheel.png 7x7. Limits: Roof is a big flat green slab; no golf bag;
@@ -99,6 +129,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 9210a491446cc47399b0e6313be41cca, type: 3}
       cx: 7.5
@@ -108,6 +141,18 @@ MonoBehaviour:
       cx: 25.5
       cy: 14.5
       r: 3.5
+    smoothPreview: {fileID: 21300000, guid: 0471069ab3fd140fbb04edf27979bbe6, type: 3}
+    smoothBody: {fileID: 21300000, guid: ca6d3c588d530408297e010df33eb256, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 3db2e671a4e8244a2a9561f3a4a90a23, type: 3}
+      cx: 67.5
+      cy: 130.5
+      r: 31.5
+    - sprite: {fileID: 21300000, guid: 13d77ae1ee31a4c3589f2ed44f90914c, type: 3}
+      cx: 229.5
+      cy: 130.5
+      r: 31.5
+    smoothScale: 9
   - id: vehicle-police-car
     kind: 0
     displayName: Police Car
@@ -130,6 +175,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 6693eb495819d4a01b7a157997add8cc, type: 3}
       cx: 7.5
@@ -139,6 +187,18 @@ MonoBehaviour:
       cx: 21.5
       cy: 11.5
       r: 3
+    smoothPreview: {fileID: 21300000, guid: 467ff0e000eaa4c0e98bfc09182e5262, type: 3}
+    smoothBody: {fileID: 21300000, guid: 7e4e50c1f9987494ab3b30b1c388c217, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: ca0c47cb2a96047489e1e5ceed7140b7, type: 3}
+      cx: 67.5
+      cy: 103.5
+      r: 27
+    - sprite: {fileID: 21300000, guid: cc745df972a5145efbb1660a300561f3, type: 3}
+      cx: 193.5
+      cy: 103.5
+      r: 27
+    smoothScale: 9
   - id: vehicle-race-car
     kind: 0
     displayName: Race Car
@@ -161,6 +221,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 72317e4fc73d94551980579be3211e91, type: 3}
       cx: 6
@@ -170,6 +233,18 @@ MonoBehaviour:
       cx: 21.5
       cy: 6.5
       r: 3
+    smoothPreview: {fileID: 21300000, guid: 773939132990b4c9d9c3375df64054e0, type: 3}
+    smoothBody: {fileID: 21300000, guid: b5f9a01775f394fadbbd145e83b8eb5c, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 3a4d4755cf9a94e188da479dc4c78927, type: 3}
+      cx: 54
+      cy: 63
+      r: 31.5
+    - sprite: {fileID: 21300000, guid: 747ff27e2506348c4891a0cf29a94972, type: 3}
+      cx: 193.5
+      cy: 58.5
+      r: 27
+    smoothScale: 9
   - id: vehicle-sports-car
     kind: 0
     displayName: Sports Car
@@ -192,6 +267,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 93e06414a8b4c41f190d783817792780, type: 3}
       cx: 7
@@ -201,6 +279,18 @@ MonoBehaviour:
       cx: 23
       cy: 10
       r: 3.5
+    smoothPreview: {fileID: 21300000, guid: b67b2ced7ff814a46932b981ece8360e, type: 3}
+    smoothBody: {fileID: 21300000, guid: 83888b9598ca1418d8c28578890bda39, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 482d810d8ae244982b627250e23812e2, type: 3}
+      cx: 63
+      cy: 90
+      r: 31.5
+    - sprite: {fileID: 21300000, guid: 59d71d82fd13648b4aeecea4d9b807f2, type: 3}
+      cx: 207
+      cy: 90
+      r: 31.5
+    smoothScale: 9
   - id: vehicle-taxi
     kind: 0
     displayName: Taxi
@@ -223,6 +313,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: d071a69d9763142a3b15b1c561b099a5, type: 3}
       cx: 6
@@ -232,11 +325,23 @@ MonoBehaviour:
       cx: 23
       cy: 12
       r: 3.5
+    smoothPreview: {fileID: 21300000, guid: b5d657f32af094d43910ddb0aa1d3f00, type: 3}
+    smoothBody: {fileID: 21300000, guid: 83dc8084d4fb044e4a03f18cf4b61128, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 60d8493b7ca8f4855be8f9c282dfbd6f, type: 3}
+      cx: 54
+      cy: 108
+      r: 31.5
+    - sprite: {fileID: 21300000, guid: d3096293afbd441e7980dc1813e3e7f4, type: 3}
+      cx: 207
+      cy: 108
+      r: 31.5
+    smoothScale: 9
   - id: vehicle-tuk-tuk
     kind: 0
     displayName: Tuk Tuk
     group: Cars
-    status: 2
+    status: 1
     quality: 3
     note: 'Forged: tuktuk_body.png 31x13 (canopy, seat, green body), tuktuk_wheel.png
       7x7. Limits: Reads as an open jeepney or tuk-tuk, not specifically a three-wheeler;
@@ -256,6 +361,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 59c997b5cd9154e8daa44c4799c35f88, type: 3}
       cx: 7.5
@@ -265,6 +373,18 @@ MonoBehaviour:
       cx: 25.5
       cy: 14.5
       r: 3.5
+    smoothPreview: {fileID: 21300000, guid: 2bfe7c882aa1c476fb4b5ed48363783c, type: 3}
+    smoothBody: {fileID: 21300000, guid: f4934b603c7b644549284ad59962252c, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 375f603386a25480c80b7cf4bf041ad2, type: 3}
+      cx: 67.5
+      cy: 130.5
+      r: 31.5
+    - sprite: {fileID: 21300000, guid: dfbc10e713e624194bf25ac5b92eb95e, type: 3}
+      cx: 229.5
+      cy: 130.5
+      r: 31.5
+    smoothScale: 9
   - id: vehicle-bus
     kind: 0
     displayName: Bus
@@ -287,6 +407,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: da3de68a6ee7643a4ae64b4c1864a896, type: 3}
       cx: 9
@@ -296,6 +419,18 @@ MonoBehaviour:
       cx: 25
       cy: 18
       r: 3.5
+    smoothPreview: {fileID: 21300000, guid: f8da013040071411ebb6b8ec9816630a, type: 3}
+    smoothBody: {fileID: 21300000, guid: 4988cc8f54da74ebea827656ca34d584, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 5f249bd12e7e24f14ba85c746769f723, type: 3}
+      cx: 72
+      cy: 144
+      r: 28
+    - sprite: {fileID: 21300000, guid: 8ea4fe1f6b9f64768832f576b2a16183, type: 3}
+      cx: 200
+      cy: 144
+      r: 28
+    smoothScale: 8
   - id: vehicle-camper
     kind: 0
     displayName: Camper
@@ -318,6 +453,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 78915dadb147b46e48dfebc5351f7f43, type: 3}
       cx: 8.5
@@ -327,6 +465,18 @@ MonoBehaviour:
       cx: 24.5
       cy: 16.5
       r: 3
+    smoothPreview: {fileID: 21300000, guid: 2b02cd4fde8474e63b85a7cf3a4ac7b4, type: 3}
+    smoothBody: {fileID: 21300000, guid: 67f6467fd7f8d4ee798195a52f005fb5, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: bb6dd0fd64a2349639fd6a7af57432a9, type: 3}
+      cx: 76.5
+      cy: 148.5
+      r: 27
+    - sprite: {fileID: 21300000, guid: 17f70fdb9e45e485b9b928b6e1074a50, type: 3}
+      cx: 220.5
+      cy: 148.5
+      r: 27
+    smoothScale: 9
   - id: vehicle-fire-truck
     kind: 0
     displayName: Fire Truck
@@ -349,6 +499,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 2260cfbbb204042c3ae24c0b0726678d, type: 3}
       cx: 9
@@ -358,11 +511,23 @@ MonoBehaviour:
       cx: 30
       cy: 18
       r: 3.5
+    smoothPreview: {fileID: 21300000, guid: 89b30ded5f60c4b34aa0dd616e6f3cd3, type: 3}
+    smoothBody: {fileID: 21300000, guid: d470559d923d24de283315d4d5c66915, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 77637e1b6dff7428cb98364f8664aaaa, type: 3}
+      cx: 72
+      cy: 144
+      r: 28
+    - sprite: {fileID: 21300000, guid: 1b7ac1df10a634c0e9a9242ba01dc935, type: 3}
+      cx: 240
+      cy: 144
+      r: 28
+    smoothScale: 8
   - id: vehicle-monster-truck
     kind: 0
     displayName: Monster Truck
     group: Trucks
-    status: 2
+    status: 1
     quality: 4
     note: 'Forged: monster_body.png 33x11 (Kenney suv_large cab with its wheels erased),
       monster_chassis.png 40x5 (axle bar + two struts), monster_wheel.png 15x15 (own
@@ -382,6 +547,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 5fb9343a453f7417e84184842b348a3b, type: 3}
       cx: 8.5
@@ -391,6 +559,18 @@ MonoBehaviour:
       cx: 25.5
       cy: 21
       r: 7.5
+    smoothPreview: {fileID: 21300000, guid: 43c24c5c1f21f42cbb587ca1e33a991e, type: 3}
+    smoothBody: {fileID: 21300000, guid: 755ffe78950d54a96aae216ecdc48f7e, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 6219d630aa76a48f5a56e2693e5b59d3, type: 3}
+      cx: 76.5
+      cy: 189
+      r: 67.5
+    - sprite: {fileID: 21300000, guid: 949f30c69c9af49afb1a381092c733ad, type: 3}
+      cx: 229.5
+      cy: 189
+      r: 67.5
+    smoothScale: 9
   - id: vehicle-pickup
     kind: 0
     displayName: Pickup
@@ -413,6 +593,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 94923fec1be33494a81ff167e7a79c58, type: 3}
       cx: 5.5
@@ -426,6 +609,22 @@ MonoBehaviour:
       cx: 29.5
       cy: 21.5
       r: 3
+    smoothPreview: {fileID: 21300000, guid: b1889d228215149d38ae02dd2a846647, type: 3}
+    smoothBody: {fileID: 21300000, guid: 4dd6a261322d44cb9bbe626b7ed293a2, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 6eeaa02616bb3435e9dd56d052258301, type: 3}
+      cx: 49.5
+      cy: 193.5
+      r: 27
+    - sprite: {fileID: 21300000, guid: 33fbe5d1afb134911a200186379e13be, type: 3}
+      cx: 112.5
+      cy: 193.5
+      r: 27
+    - sprite: {fileID: 21300000, guid: 2340a4c3736a442f1ba37c7bbbb2f339, type: 3}
+      cx: 265.5
+      cy: 193.5
+      r: 27
+    smoothScale: 9
   - id: vehicle-semi-truck
     kind: 0
     displayName: Semi Truck
@@ -448,6 +647,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 9c56b6288c22f4592829d07b6c2978f9, type: 3}
       cx: 7.5
@@ -457,6 +659,18 @@ MonoBehaviour:
       cx: 13.5
       cy: 21.5
       r: 3
+    smoothPreview: {fileID: 21300000, guid: b8be83bc9913b4e82acecd45bdf2a6f7, type: 3}
+    smoothBody: {fileID: 21300000, guid: 684153512f3a2465bb38a5276d9e689c, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: bd729adf232c64102b44684147c3e020, type: 3}
+      cx: 60
+      cy: 172
+      r: 24
+    - sprite: {fileID: 21300000, guid: 73f0a7a6eedc247e8a67916a3c17cce0, type: 3}
+      cx: 108
+      cy: 172
+      r: 24
+    smoothScale: 8
   - id: vehicle-tank
     kind: 0
     displayName: Tank
@@ -481,7 +695,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 21300000, guid: 11a72a16cb09540bc8151b9cfc0799b5, type: 3}
+    smoothBody: {fileID: 21300000, guid: fd17dd7b0ca38456ca11ba1442639642, type: 3}
+    smoothWheels: []
+    smoothScale: 9
   - id: vehicle-tractor
     kind: 0
     displayName: Tractor
@@ -504,6 +725,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: bb9ee5f2a5396418ba33a8bc7f6c0751, type: 3}
       cx: 5
@@ -513,11 +737,23 @@ MonoBehaviour:
       cx: 15.5
       cy: 15.5
       r: 3
+    smoothPreview: {fileID: 21300000, guid: afe06118f111e4d05bebb0979da68cae, type: 3}
+    smoothBody: {fileID: 21300000, guid: 82fe3411d2f05453a8e545c252fb0455, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 35cbe4ab133494fe38303dc70902e3ff, type: 3}
+      cx: 45
+      cy: 121.5
+      r: 40.5
+    - sprite: {fileID: 21300000, guid: 4faa5a9f942a043549cd8a8e378fca34, type: 3}
+      cx: 139.5
+      cy: 139.5
+      r: 27
+    smoothScale: 9
   - id: vehicle-bicycle
     kind: 0
     displayName: Bicycle
     group: Bikes
-    status: 2
+    status: 1
     quality: 3
     note: ' Forged: Frame is 1 px lines with no outline so it is lighter than the
       outlined Kenney vehicles; no rider; no pedal animation.'
@@ -536,6 +772,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 66de97c1a07ab45ae88e5e7a93c1a002, type: 3}
       cx: 8.5
@@ -545,6 +784,18 @@ MonoBehaviour:
       cx: 29.5
       cy: 11.5
       r: 7.5
+    smoothPreview: {fileID: 21300000, guid: a15b1f050f45d49638123d9109ab0554, type: 3}
+    smoothBody: {fileID: 21300000, guid: 2e8189e6923974c4e89af45e0316f9e6, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 6e76f329b57e84834821997881b93368, type: 3}
+      cx: 76.5
+      cy: 103.5
+      r: 67.5
+    - sprite: {fileID: 21300000, guid: 9fafc2c1dbc4b45d0b645830c8d68141, type: 3}
+      cx: 265.5
+      cy: 103.5
+      r: 67.5
+    smoothScale: 9
   - id: vehicle-motorcycle
     kind: 0
     displayName: Motorcycle
@@ -567,6 +818,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 36f1e418e574949578694d6762af70bb, type: 3}
       cx: 12.5
@@ -576,11 +830,23 @@ MonoBehaviour:
       cx: 67.5
       cy: 31.5
       r: 12
+    smoothPreview: {fileID: 21300000, guid: d5d4922968c6f4563a37d4c99ae7d4d7, type: 3}
+    smoothBody: {fileID: 21300000, guid: 9ca8282a601c14bb19704b6d43b0bfac, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 30f6c6914978042efb13014b328a6ab0, type: 3}
+      cx: 62.5
+      cy: 162.5
+      r: 55
+    - sprite: {fileID: 21300000, guid: f8f5686c31461437280812927da41e0c, type: 3}
+      cx: 337.5
+      cy: 157.5
+      r: 60
+    smoothScale: 5
   - id: vehicle-quad-atv
     kind: 0
     displayName: Quad Atv
     group: Bikes
-    status: 2
+    status: 1
     quality: 3
     note: 'not confirmed in the Kenney pack by name Forged: Reads as a quad more
       by the fat wheels than the body; fenders are blocky.'
@@ -599,6 +865,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: bffc6909a3215494f93d23bf526c4381, type: 3}
       cx: 11
@@ -608,6 +877,18 @@ MonoBehaviour:
       cx: 37
       cy: 19
       r: 6.5
+    smoothPreview: {fileID: 21300000, guid: 96bde13217df3401a900db7d67840b72, type: 3}
+    smoothBody: {fileID: 21300000, guid: 31feb9bb7f11e4d8c8112941f405f9ba, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 47a663b3aa09c4fc5905cd34d9410c72, type: 3}
+      cx: 88
+      cy: 152
+      r: 52
+    - sprite: {fileID: 21300000, guid: 263531ae5707646b3b7cddcff1aa8421, type: 3}
+      cx: 296
+      cy: 152
+      r: 52
+    smoothScale: 8
   - id: vehicle-scooter
     kind: 0
     displayName: Scooter
@@ -630,6 +911,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: 89fedf8cdeb2848c48c05862ae456c43, type: 3}
       cx: 4
@@ -639,6 +923,50 @@ MonoBehaviour:
       cx: 14
       cy: 8
       r: 2.5
+    smoothPreview: {fileID: 21300000, guid: fdc11ea6e7705446295692fbef05c54b, type: 3}
+    smoothBody: {fileID: 21300000, guid: 14cfa967aae2142bc83d75f3e498a9a8, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: 8b2c07047c8454bf49696bbe7819f6b7, type: 3}
+      cx: 44
+      cy: 93.5
+      r: 22
+    - sprite: {fileID: 21300000, guid: 83e59a79cb70e4f74b33093567c20b08, type: 3}
+      cx: 154
+      cy: 88
+      r: 27.5
+    smoothScale: 11
+  - id: vehicle-skateboard
+    kind: 0
+    displayName: Skateboard
+    group: Bikes
+    status: 2
+    quality: 3
+    note: 'Only a tiny 29x12 red board silhouette, no visible wheels, no rider. Usable
+      as deck base; forge must add wheels/rider. Placeholder quality. | 2026-11-15
+      forge: '
+    licence: own work (palette from CC0 Kenney)
+    preview: {fileID: 21300000, guid: 61e19bffcb250425a950b2fced356ad8, type: 3}
+    playable: 1
+    playNote: 
+    cost: 80
+    widthUnits: 2.2142856
+    mass: 0.9
+    torque: 26
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 1.25
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
+    wheels: []
+    smoothPreview: {fileID: 21300000, guid: bf6919cbf6d2c4abbad224f7d9b0ebd5, type: 3}
+    smoothBody: {fileID: 21300000, guid: 22e6bd06a536649d198b44c651f57b9d, type: 3}
+    smoothWheels: []
+    smoothScale: 9
   - id: vehicle-hovercraft
     kind: 0
     displayName: Hovercraft
@@ -663,7 +991,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: vehicle-jet-ski
     kind: 0
     displayName: Jet Ski
@@ -688,7 +1023,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: vehicle-speedboat
     kind: 0
     displayName: Speedboat
@@ -713,46 +1055,60 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: vehicle-sled
     kind: 0
     displayName: Sled
     group: Snow
-    status: 2
+    status: 1
     quality: 3
     note: ' Forged: Rider is a generic blocky figure; runner curl is only 2 px.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: aacbbab4acbf649c6a7df60e371b2106, type: 3}
-    playable: 0
-    playNote: Needs snow-runner physics, which the game does not have yet.
-    cost: 0
-    widthUnits: 2.4
-    mass: 1.45
-    torque: 34
-    speed: 1
+    playable: 1
+    playNote: 
+    cost: 90
+    widthUnits: 2.9285715
+    mass: 1.3
+    torque: 36
+    speed: 1.05
     strip: {fileID: 0}
     roadStyle: -1
     layers: []
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 21300000, guid: f188cedefb67c42dab3bd5584b0a29f2, type: 3}
+    smoothBody: {fileID: 21300000, guid: 5f926648128314d0592a7e992fe72e6d, type: 3}
+    smoothWheels: []
+    smoothScale: 9
   - id: vehicle-snowboard
     kind: 0
     displayName: Snowboard
     group: Snow
-    status: 2
+    status: 1
     quality: 3
     note: ' Forged: Rider is a stiff standing pose with no lean or arms out; one
       pose only.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: e3bc0776c16c54cbfa762d3d76faa48f, type: 3}
-    playable: 0
-    playNote: Needs snow-runner physics, which the game does not have yet.
-    cost: 0
-    widthUnits: 2.4
-    mass: 1.45
-    torque: 34
+    playable: 1
+    playNote: 
+    cost: 130
+    widthUnits: 2.7142856
+    mass: 0.9
+    torque: 26
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
@@ -760,23 +1116,30 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: vehicle-snowmobile
     kind: 0
     displayName: Snowmobile
     group: Snow
-    status: 2
+    status: 1
     quality: 3
     note: ' Forged: Track has no animation frames; windscreen is a rough shape; ski
       does not curve like a real one.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: c4552954dbe3c4cd4a18db24e7b3fdb5, type: 3}
-    playable: 0
-    playNote: Needs snow-runner physics, which the game does not have yet.
-    cost: 0
-    widthUnits: 2.4
-    mass: 1.45
-    torque: 34
+    playable: 1
+    playNote: 
+    cost: 350
+    widthUnits: 3
+    mass: 1.7
+    torque: 46
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
@@ -784,36 +1147,50 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: vehicle-toboggan
     kind: 0
     displayName: Toboggan
     group: Snow
-    status: 2
+    status: 1
     quality: 3
     note: ' Forged: Curled front is chunky; board looks more like a banana than a
       slat toboggan; rider shares the sled figure.'
     licence: own work (derivative of CC0 Kenney Pixel Vehicle Pack palette)
     preview: {fileID: 21300000, guid: c1f0cdb13bf5c40c6b5cc5d7b9c80883, type: 3}
-    playable: 0
-    playNote: Needs snow-runner physics, which the game does not have yet.
-    cost: 0
-    widthUnits: 2.4
-    mass: 1.45
-    torque: 34
-    speed: 1
+    playable: 1
+    playNote: 
+    cost: 110
+    widthUnits: 3
+    mass: 1.3
+    torque: 36
+    speed: 1.05
     strip: {fileID: 0}
     roadStyle: -1
     layers: []
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 21300000, guid: 0331d81e4e6ea47da926a7dc1ac8978c, type: 3}
+    smoothBody: {fileID: 21300000, guid: ed03c118b9a2141f9a0a52ad7ff24880, type: 3}
+    smoothWheels: []
+    smoothScale: 8
   - id: vehicle-handcar
     kind: 0
     displayName: Handcar
     group: Space and rail
-    status: 2
+    status: 1
     quality: 3
     note: 'Forged: handcar_platform.png 32x5, handcar_post.png 4x9, handcar_lever.png
       30x9 (pump beam, can be rotated around the post +-15 degrees), handcar_wheel.png
@@ -833,12 +1210,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 21300000, guid: d5179f11b3c614f88a606e0e9fa015af, type: 3}
+    smoothBody: {fileID: 21300000, guid: 226837573ba93453690fa20a487d779c, type: 3}
+    smoothWheels: []
+    smoothScale: 9
   - id: vehicle-moon-rover
     kind: 0
     displayName: Moon Rover
     group: Space and rail
-    status: 2
+    status: 1
     quality: 3
     note: ' Forged: Dish and mast are crude; the hull looks like a boat; palette
       is the Kenney greys, not lunar.'
@@ -857,7 +1241,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 21300000, guid: 6af2aa77f3f5d4e538d87e9937386de8, type: 3}
+    smoothBody: {fileID: 21300000, guid: 2cf060547051f406fad5a5e7686426c9, type: 3}
+    smoothWheels: []
+    smoothScale: 8
   - id: vehicle-rocket-sled
     kind: 0
     displayName: Rocket Sled
@@ -881,12 +1272,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: vehicle-shopping-cart
     kind: 0
     displayName: Shopping Cart
     group: Fun
-    status: 2
+    status: 1
     quality: 3
     note: 'Forged: cart_body.png 26x12 (wire basket, handle, frame), cart_wheel.png
       5x5. Limits: Wire grid reads as a bar when small; frame is simplified; very
@@ -906,6 +1304,9 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels:
     - sprite: {fileID: 21300000, guid: d6e1bf7b987c54299ab1fc6d3f4f1463, type: 3}
       cx: 7.5
@@ -915,6 +1316,18 @@ MonoBehaviour:
       cx: 21.5
       cy: 12
       r: 3
+    smoothPreview: {fileID: 21300000, guid: 07d19e1c25e7243ec8af7cf11215e8a7, type: 3}
+    smoothBody: {fileID: 21300000, guid: 47e2e46730dd84c899cb1950796462f7, type: 3}
+    smoothWheels:
+    - sprite: {fileID: 21300000, guid: be4b0507985bb4be59d1cdeae541eeb1, type: 3}
+      cx: 67.5
+      cy: 117
+      r: 27
+    - sprite: {fileID: 21300000, guid: aa12e77d45861426da4ee104def880da, type: 3}
+      cx: 193.5
+      cy: 108
+      r: 27
+    smoothScale: 9
   - id: surface-asphalt
     kind: 1
     displayName: Asphalt
@@ -937,12 +1350,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-cobblestone
     kind: 1
     displayName: Cobblestone
     group: Road
-    status: 2
+    status: 1
     quality: 3
     note: 'Procedural forge, quality 3.5/5. Physics hint: grip normal-high, bounce
       0.05 (rattly). Import settings still to set in inspector.'
@@ -960,8 +1380,15 @@ MonoBehaviour:
     layers: []
     themeIndex: -1
     friction: 1.1
-    bounce: 0
+    bounce: 0.05
+    speedFactor: 0.96
+    inkFactor: 1
+    coinFactor: 1.1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-dirt
     kind: 1
     displayName: Dirt
@@ -984,12 +1411,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1
     bounce: 0
+    speedFactor: 0.97
+    inkFactor: 0.9
+    coinFactor: 1.1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-glass
     kind: 1
     displayName: Glass
     group: Road
-    status: 2
+    status: 1
     quality: 3
     note: 'Procedural forge, quality 3.0/5. Physics hint: grip very low (slides like
       ice), bounce 0.1. Import settings still to set in inspector.'
@@ -1008,12 +1442,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 0.5
     bounce: 0
+    speedFactor: 1.12
+    inkFactor: 1.3
+    coinFactor: 1.4
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-gravel
     kind: 1
     displayName: Gravel
     group: Road
-    status: 2
+    status: 1
     quality: 3
     note: 'Procedural forge, quality 3.0/5. Physics hint: grip normal-low (loose),
       bounce 0.0-0.1, slight slide on corners. Import settings still to set in inspector.'
@@ -1032,12 +1473,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 0.9
     bounce: 0
+    speedFactor: 0.95
+    inkFactor: 0.85
+    coinFactor: 1.15
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-mud
     kind: 1
     displayName: Mud
     group: Road
-    status: 2
+    status: 1
     quality: 3
     note: 'Procedural forge, quality 3.0/5. Physics hint: grip low (slippery, drags
       speed), bounce 0.0. Import settings still to set in inspector.'
@@ -1056,7 +1504,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.6
     bounce: 0
+    speedFactor: 0.85
+    inkFactor: 0.75
+    coinFactor: 1.3
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-neon-grid
     kind: 1
     displayName: Neon Grid
@@ -1079,12 +1534,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1.08
+    inkFactor: 1.1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-rail-track
     kind: 1
     displayName: Rail Track
     group: Road
-    status: 2
+    status: 1
     quality: 3
     note: 'Procedural forge, quality 3.0/5. Physics hint: grip high, bounce 0.05
       (clack). Import settings still to set in inspector.'
@@ -1102,13 +1564,86 @@ MonoBehaviour:
     layers: []
     themeIndex: -1
     friction: 1.3
-    bounce: 0
+    bounce: 0.05
+    speedFactor: 1.1
+    inkFactor: 1.15
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-beach
+    kind: 1
+    displayName: Beach
+    group: Nature
+    status: 1
+    quality: 3
+    note: GrafxKid Tiles_4.png tropical seaside ground column (sand top, 16px) plus
+      blaze sea pack (_oga-blazes-platformer-pack/x/sea/). Needs strip assembly.
+      Kenney Pixe
+    licence: own work (procedural; palette reference Blaze sea tileset and GrafxKid
+      seasonal tropical column (CC0))
+    preview: {fileID: 21300000, guid: da169896c191146efa6d3ecfdb31c592, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: d947635823cc1423587ee9aacc8ba42c, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 1
+    bounce: 0
+    speedFactor: 0.95
+    inkFactor: 0.85
+    coinFactor: 1.1
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-grass-trail
+    kind: 1
+    displayName: Grass Trail
+    group: Nature
+    status: 1
+    quality: 3
+    note: 'Buch Floating Islands tiles_packed_1.png: grass-topped earth with dark
+      rock body (16px), and seasonal tiles grass column; blaze plains/tileset.png
+      also grass ov'
+    licence: own work (procedural; palette reference Buch Floating Islands grass-over-earth
+      tiles (CC0))
+    preview: {fileID: 21300000, guid: be24abf0b93af4b79a4083d60fffe283, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 6ca1dc0c18bc4491387a75adf002b269, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 1.1
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 0.9
+    coinFactor: 1.05
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-moon-dust
     kind: 1
     displayName: Moon Dust
     group: Nature
-    status: 2
+    status: 1
     quality: 3
     note: 'Procedural forge, quality 3.0/5. Physics hint: grip normal-low, bounce
       0.0 (low gravity mode suggested). Import settings still to set in inspector.'
@@ -1127,12 +1662,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 0.8
     bounce: 0
+    speedFactor: 1
+    inkFactor: 0.9
+    coinFactor: 1.2
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-salt-flat
     kind: 1
     displayName: Salt Flat
     group: Nature
-    status: 2
+    status: 1
     quality: 3
     note: 'Procedural forge, quality 3.0/5. Physics hint: grip normal-low, bounce
       0.0. Import settings still to set in inspector.'
@@ -1151,58 +1693,345 @@ MonoBehaviour:
     themeIndex: -1
     friction: 0.9
     bounce: 0
+    speedFactor: 1.06
+    inkFactor: 1
+    coinFactor: 1.1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-sand
+    kind: 1
+    displayName: Sand
+    group: Nature
+    status: 1
+    quality: 3
+    note: 'Blaze sea/sea_tileset.png: sandy-coral earth slab with scalloped top.
+      Also seasonal tiles tropical seaside column (sand block). Grip normal-low.
+      Kenney Pixel Pl'
+    licence: own work (procedural; palette reference Blaze sea tileset sandy slab
+      (CC0, Assets/Art/Surfaces/BlazesPlatformer/sea))
+    preview: {fileID: 21300000, guid: 95bd1e15b0a0a4eaf97a8cd81765b606, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 826f94a4c0e3040a48012c2a69db5f83, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 0.95
+    bounce: 0
+    speedFactor: 0.9
+    inkFactor: 0.8
+    coinFactor: 1.2
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-ice
+    kind: 1
+    displayName: Ice
+    group: Snow and ice
+    status: 1
+    quality: 3
+    note: Blaze snow_tileset.png has glossy cyan ice blocks (right half). Tileable
+      block; build strip. Grip low. Kenney Pixel Platformer/Platformer Pack Redux
+      not fetched
+    licence: own work (procedural; palette reference Blaze snowy_world ice blocks
+      (CC0))
+    preview: {fileID: 21300000, guid: a9734a3a0b08940e2a55a2be17ac9336, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 1f1c476495f39478fa464d00ff0bebf7, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 0.35
+    bounce: 0
+    speedFactor: 1.15
+    inkFactor: 1.3
+    coinFactor: 1.5
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-ice-bridge
+    kind: 1
+    displayName: Ice Bridge
+    group: Snow and ice
+    status: 1
+    quality: 3
+    note: Blaze snow_tileset.png ice slab plus thin floating snow/ice platforms;
+      recolour/thin the ice block for a bridge span. Grip low. Kenney Pixel Platformer/Platform
+    licence: own work (procedural; palette reference Blaze snowy_world ice slab (CC0))
+    preview: {fileID: 21300000, guid: 56350ad98d0fc49138ad720884fc1cb0, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: ca5006436724f42bc97b1324d0518b56, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 0.4
+    bounce: 0
+    speedFactor: 1.12
+    inkFactor: 1.3
+    coinFactor: 1.5
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-snow
+    kind: 1
+    displayName: Snow
+    group: Snow and ice
+    status: 1
+    quality: 3
+    note: 'Blaze snowy world snow_tileset.png (snow-capped earth slab, 16px tiles)
+      in x/snowy world/. Alt packs: seasonal tiles (winter column), zaph winter tileset
+      (_oga-'
+    licence: own work (procedural; palette reference Blaze snowy_world snow tileset
+      (CC0))
+    preview: {fileID: 21300000, guid: 1e85818048bd446ea9c7981e0aa70356, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: b4a18485a22f14613883d12b93d915be, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 0.7
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 0.9
+    coinFactor: 1.2
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-cloud
+    kind: 1
+    displayName: Cloud
+    group: Water and sky
+    status: 1
+    quality: 3
+    note: Blaze plains/sky tileset.png has a small cloud/sky tile (few tiles, 16px).
+      Weak; likely better forged (white-blue recolour of snow slab). Grip low. Kenney
+      Pixel
+    licence: own work (procedural; palette reference Blaze plains sky tileset (CC0))
+    preview: {fileID: 21300000, guid: 795c055aec6484ef7a21a04e02840496, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: a68728300423d4cb78a8b265cf539c18, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 0.6
+    bounce: 0.15
+    speedFactor: 1.05
+    inkFactor: 1.2
+    coinFactor: 1.3
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-coral
+    kind: 1
+    displayName: Coral
+    group: Water and sky
+    status: 1
+    quality: 3
+    note: Blaze sea/sea_tileset.png salmon/coral-pink rock slab with scalloped top,
+      plus coral decor sprites. Fits coral reef; no true coral. Grip normal. Kenney
+      Pixel Pl
+    licence: own work (procedural; palette reference Blaze sea tileset coral slab
+      (CC0))
+    preview: {fileID: 21300000, guid: f846968654e6e456faf7e1a89a864d8b, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 5266e1fe429ee430cb8cad0fd4eb5b33, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 1.1
+    bounce: 0
+    speedFactor: 0.98
+    inkFactor: 1
+    coinFactor: 1.15
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-floating-islands
+    kind: 1
+    displayName: Floating Islands
+    group: Water and sky
+    status: 1
+    quality: 3
+    note: 'Buch Field of the Floating Islands tiles_packed_1.png / tiles_16.png:
+      grass islands with rocky underside and hanging bottoms, plus snow-expansion.png.
+      Strong fi'
+    licence: own work (procedural; palette reference Buch Field of the Floating Islands
+      tiles (CC0))
+    preview: {fileID: 21300000, guid: ff66f5be9dd03493a84228daaf354018, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 7d2e71f51af7f40cbb34271db235fd54, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 1.1
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1.1
+    coinFactor: 1.2
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-river
+    kind: 1
+    displayName: River
+    group: Water and sky
+    status: 1
+    quality: 3
+    note: Buch tiles_packed_1.png water tiles with grass banks and blaze sea waves
+      (x/sea/sea_waves.png); water-surface strip can be built; a driveable river
+      surface is a
+    licence: own work (procedural; palette reference Buch tiles_packed_1 water +
+      Blaze sea waves (CC0))
+    preview: {fileID: 21300000, guid: 645178747193c4376adb1b110741711b, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: d48183b76662b4cf4add372b3c7669fd, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 0.9
+    bounce: 0
+    speedFactor: 0.92
+    inkFactor: 0.9
+    coinFactor: 1.15
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-sea-water
     kind: 1
     displayName: Sea Water
     group: Water and sky
-    status: 0
-    quality: 0
-    note: 'partial: POKOMOKO ocean tile; buoyancy physics is game logic'
-    licence: see ledger
+    status: 1
+    quality: 3
+    note: 'partial: POKOMOKO ocean tile; buoyancy physics is game logic | FORGED
+      2026-11-15: procedural 128x26 strip, grip low (buoyancy is game logic), quality
+      3.'
+    licence: own work (procedural; palette reference POKOMOKO ocean tile (Assets/Art/Surfaces/Water,
+      CC0) colours)
     preview: {fileID: 21300000, guid: 361ba85e446ca47cc94aec76bac9c446, type: 3}
-    playable: 0
-    playNote: Needs a road strip made from this art first.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
     torque: 34
     speed: 1
-    strip: {fileID: 0}
+    strip: {fileID: 2800000, guid: 9d40fb077d5bb43e8b7086db0c3d87ba, type: 3}
     roadStyle: -1
     layers: []
     themeIndex: -1
-    friction: 1.25
+    friction: 0.7
     bounce: 0
+    speedFactor: 0.85
+    inkFactor: 1
+    coinFactor: 1.2
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-lava-crust
     kind: 1
     displayName: Lava Crust
     group: Fire
-    status: 0
-    quality: 0
-    note: 'partial: Tio Aimar volcano (vector) + InThePixel lava strip'
-    licence: see ledger
+    status: 1
+    quality: 3
+    note: 'partial: Tio Aimar volcano (vector) + InThePixel lava strip | FORGED 2026-11-15:
+      procedural 128x26 strip, grip normal, quality 3.'
+    licence: own work (procedural; palette reference Lava pack (Assets/Art/Surfaces/Lava,
+      CC0) colours and surface-magma-bridge style)
     preview: {fileID: 21300000, guid: 64cb7327d26c44b518c8ba42429fe1e7, type: 3}
-    playable: 0
-    playNote: Needs a road strip made from this art first.
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
     torque: 34
     speed: 1
-    strip: {fileID: 0}
+    strip: {fileID: 2800000, guid: a9bf2145012f846caa8c6e047adce64d, type: 3}
     roadStyle: -1
     layers: []
     themeIndex: -1
-    friction: 1.25
+    friction: 1.2
     bounce: 0
+    speedFactor: 1.05
+    inkFactor: 1.3
+    coinFactor: 1.5
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: surface-magma-bridge
     kind: 1
     displayName: Magma Bridge
     group: Fire
-    status: 2
+    status: 1
     quality: 3
     note: 'Procedural forge, quality 3.0/5. Physics hint: grip normal, bounce 0.0
       (damage/heat is a mode rule). Import settings still to set in inspector.'
@@ -1221,12 +2050,115 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.2
     bounce: 0
+    speedFactor: 1.05
+    inkFactor: 1.25
+    coinFactor: 1.5
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-candy
+    kind: 1
+    displayName: Candy
+    group: Other
+    status: 1
+    quality: 3
+    note: ' | FORGED 2026-11-15: procedural 128x26 strip, grip normal, quality 3.'
+    licence: own work (procedural; palette reference no pack (original colours))
+    preview: {fileID: 21300000, guid: 9f7ad49bed435496da286f3c2ce12a4d, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: a54e2e36cb6704c7cb6d7fa9c5ba0eae, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 0.8
+    bounce: 0.1
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1.25
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-rope-bridge
+    kind: 1
+    displayName: Rope Bridge
+    group: Other
+    status: 1
+    quality: 2
+    note: 'Same small plank piece as wooden bridge in Buch pack; no rope. Forge needed.
+      Kenney Pixel Platformer/Platformer Pack Redux not fetched: kenney.nl download
+      refus'
+    licence: own work (procedural; palette reference Buch Floating Islands plank
+      piece (CC0), rope drawn from scratch)
+    preview: {fileID: 21300000, guid: 62b709dded975431db6453fc5cb358ab, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: c9b08f9391c274125817700522c932c3, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 1
+    bounce: 0.12
+    speedFactor: 1
+    inkFactor: 1.3
+    coinFactor: 1.3
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-wooden-bridge
+    kind: 1
+    displayName: Wooden Bridge
+    group: Other
+    status: 1
+    quality: 3
+    note: Buch tiles_packed_1.png contains a small brown plank/bridge piece among
+      grass tiles; not a full set. Forge from it plus brown recolour. Kenney Pixel
+      Platformer/
+    licence: own work (procedural; palette reference Buch Floating Islands brown
+      plank piece (CC0))
+    preview: {fileID: 21300000, guid: b6df28494c5a04db4a13fd100dcea78e, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 2800000, guid: 9671bdb2b1aac467ca6489f381731c5f, type: 3}
+    roadStyle: -1
+    layers: []
+    themeIndex: -1
+    friction: 1.15
+    bounce: 0.05
+    speedFactor: 1.02
+    inkFactor: 1.2
+    coinFactor: 1.15
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-autumn-leaves
     kind: 2
     displayName: Autumn Leaves
     group: Seasons
-    status: 2
+    status: 1
     quality: 0
     note: Forged scene, 4 layers 384x216. Forge run stopped before notes; records
       written by main session. Unreviewed by inspector.
@@ -1249,12 +2181,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-christmas
     kind: 2
     displayName: Christmas
     group: Seasons
-    status: 2
+    status: 1
     quality: 0
     note: Forged scene, 4 layers 384x216. Forge run stopped before notes; records
       written by main session. Unreviewed by inspector.
@@ -1277,7 +2216,86 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: world-spring-blossom
+    kind: 2
+    displayName: Spring Blossom
+    group: Seasons
+    status: 1
+    quality: 4
+    note: 'Fallback only: same green-hills layered pack; no blossoms. Would need
+      forge recolour (pink trees). Not spring-specific. | FORGED 2026-11-15: four
+      384x216 layers'
+    licence: own work (CC0 VISTA by najjar320 (Assets/Art/Backgrounds/Vista/downs))
+    preview: {fileID: 21300000, guid: 41f31b91e265d4c64b2901bbea1725fc, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 3573fb8ab8e047d281c5b33db1d8fc9c, type: 3}
+    - {fileID: 21300000, guid: 03fc3df35f264f8eb83b5348c84e8f1d, type: 3}
+    - {fileID: 21300000, guid: 7b67c3279bca4461a4ada9035f6374a6, type: 3}
+    - {fileID: 21300000, guid: f406d05b3fef471699de26ecf45bef01, type: 3}
+    themeIndex: -1
+    friction: 1.25
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: world-summer
+    kind: 2
+    displayName: Summer
+    group: Seasons
+    status: 1
+    quality: 4
+    note: '8 separate 1280x360 layers (sky, clouds, sun, mountains 1-3, trees, rocks),
+      tileable (seam<0.015), CC0 pixel art, bright green hills. Needs resizing to
+      384x216 '
+    licence: own work (CC0 VISTA by najjar320 (Assets/Art/Backgrounds/Vista/downs))
+    preview: {fileID: 21300000, guid: 5424e4640540a4f28b0f7b93df7215b0, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 0df8c85311a74334a93fd3f7aac4d684, type: 3}
+    - {fileID: 21300000, guid: e9a855f7bea946898f3299263bc67790, type: 3}
+    - {fileID: 21300000, guid: 525e0283345a4dbfa709c28f6ff4a9d9, type: 3}
+    - {fileID: 21300000, guid: 41b7e19a4e7f418da648db2039a19080, type: 3}
+    themeIndex: -1
+    friction: 1.25
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-winter
     kind: 2
     displayName: Winter
@@ -1304,7 +2322,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-arctic
     kind: 2
     displayName: Arctic
@@ -1331,12 +2356,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-canyon
     kind: 2
     displayName: Canyon
     group: Nature
-    status: 2
+    status: 1
     quality: 0
     note: Forged scene, 4 layers 384x216. Forge run stopped before notes; records
       written by main session. Unreviewed by inspector.
@@ -1359,7 +2391,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-coast
     kind: 2
     displayName: Coast
@@ -1386,7 +2425,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-desert
     kind: 2
     displayName: Desert
@@ -1409,12 +2455,19 @@ MonoBehaviour:
     themeIndex: 1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-farm
     kind: 2
     displayName: Farm
     group: Nature
-    status: 2
+    status: 1
     quality: 0
     note: Forged scene, 4 layers 384x216. Forge run stopped before notes; records
       written by main session. Unreviewed by inspector.
@@ -1437,7 +2490,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-jungle
     kind: 2
     displayName: Jungle
@@ -1464,7 +2524,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-rolling-hills
     kind: 2
     displayName: Rolling Hills
@@ -1487,12 +2554,19 @@ MonoBehaviour:
     themeIndex: 0
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-wild-west
     kind: 2
     displayName: Wild West
     group: Nature
-    status: 2
+    status: 1
     quality: 0
     note: Forged scene, 4 layers 384x216. Forge run stopped before notes; records
       written by main session. Unreviewed by inspector.
@@ -1515,12 +2589,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-mars
     kind: 2
     displayName: Mars
     group: Space
-    status: 2
+    status: 1
     quality: 0
     note: Forged scene, 4 layers 384x216. Forge run stopped before notes; records
       written by main session. Unreviewed by inspector.
@@ -1543,12 +2624,19 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-moon
     kind: 2
     displayName: Moon
     group: Space
-    status: 2
+    status: 1
     quality: 0
     note: Forged scene, 4 layers 384x216. Forge run stopped before notes; records
       written by main session. Unreviewed by inspector.
@@ -1571,7 +2659,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-industrial
     kind: 2
     displayName: Industrial
@@ -1598,7 +2693,14 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-night-city
     kind: 2
     displayName: Night City
@@ -1621,12 +2723,55 @@ MonoBehaviour:
     themeIndex: 2
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: world-synthwave
+    kind: 2
+    displayName: Synthwave
+    group: City
+    status: 1
+    quality: 3
+    note: '4 layers + cars (sky, far, mid, close) 160x144, 4-colour purple/pink palette,
+      tileable (seam 0.000). Fits neon night look; low colour count. Extra: pack-warped-'
+    licence: own work (palette inspired by CC0 CityNight4Col 4-colour pack (no pixels
+      copied))
+    preview: {fileID: 21300000, guid: 104e7ddce1d1c47758c59a5961878439, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: b24a1ce9523c4d57b4ee686837c3b69e, type: 3}
+    - {fileID: 21300000, guid: 26a990b897f74fb5a3eb8ece0bb1670d, type: 3}
+    - {fileID: 21300000, guid: dd6a7d0cb0be40b2977fc9c9a6d84bfe, type: 3}
+    - {fileID: 21300000, guid: 1be11403fc074786af59890a452b3191, type: 3}
+    themeIndex: -1
+    friction: 1.25
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-candy-land
     kind: 2
     displayName: Candy Land
     group: Fantasy
-    status: 2
+    status: 1
     quality: 0
     note: Forged scene, 4 layers 384x216. Forge run stopped before notes; records
       written by main session. Unreviewed by inspector.
@@ -1649,12 +2794,55 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: world-cave
+    kind: 2
+    displayName: Cave
+    group: Fantasy
+    status: 1
+    quality: 3
+    note: 'Only 2 layers: background 240x176 and middleground 272x176 (purple crystal
+      cave), ansimuz CC0. Demo code in zip was NOT extracted. Missing near layer.
+      | FORGED '
+    licence: own work (palette inspired by CC0 ansimuz Warped Caves (no pixels copied))
+    preview: {fileID: 21300000, guid: bff19eb43f4a4408c9a727478e5b370d, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: 11242a3fe25f4fbe86c736f6e894ce27, type: 3}
+    - {fileID: 21300000, guid: a156979ae1c44f3b8df96603baa1e393, type: 3}
+    - {fileID: 21300000, guid: 7de481f2986f4dc389033c0fd32b6f3b, type: 3}
+    - {fileID: 21300000, guid: f0c95807462541e09905c82ee03bb199, type: 3}
+    themeIndex: -1
+    friction: 1.25
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-cloud-kingdom
     kind: 2
     displayName: Cloud Kingdom
     group: Fantasy
-    status: 2
+    status: 1
     quality: 0
     note: Forged scene, 4 layers 384x216. Forge run stopped before notes; records
       written by main session. Unreviewed by inspector. Mid layer seam 0.067 (above
@@ -1678,18 +2866,27 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
-  - id: world-underwater
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: world-haunted-halloween
     kind: 2
-    displayName: Underwater
+    displayName: Haunted Halloween
     group: Fantasy
-    status: 0
-    quality: 0
-    note: ansimuz Underwater Diving Pack (art only)
-    licence: see ledger
-    preview: {fileID: 21300000, guid: e7893eaccfbe64b9898b290fdbdb50a9, type: 3}
-    playable: 0
-    playNote: Needs its four scenery layers first.
+    status: 1
+    quality: 3
+    note: 5 layers 120x120 (bgtooga1-5) dark purple spooky dead-tree forest, CC0
+      pixel art, tileable. Small size, would need 3x upscale to 384x216 fit. | FORGED
+      2026-11-1
+    licence: own work (CC0 VISTA by najjar320 (Assets/Art/Backgrounds/Vista/canopy))
+    preview: {fileID: 21300000, guid: 3353409d059e545da9cf12575454fe0e, type: 3}
+    playable: 1
+    playNote: 
     cost: 0
     widthUnits: 2.4
     mass: 1.45
@@ -1697,11 +2894,58 @@ MonoBehaviour:
     speed: 1
     strip: {fileID: 0}
     roadStyle: -1
-    layers: []
+    layers:
+    - {fileID: 21300000, guid: 5e8bb2feebb047458720010041a9d781, type: 3}
+    - {fileID: 21300000, guid: f4c8435310ae4fc3a58753cd9114bc40, type: 3}
+    - {fileID: 21300000, guid: 976baa59d43f4f0d814770e1f5e15009, type: 3}
+    - {fileID: 21300000, guid: 31a6fa7376a04252b86d88d8dfdb33c5, type: 3}
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: world-underwater
+    kind: 2
+    displayName: Underwater
+    group: Fantasy
+    status: 1
+    quality: 3
+    note: 'ansimuz Underwater Diving Pack (art only) | FORGED 2026-11-15: four 384x216
+      layers, quality 3.'
+    licence: own work (palette inspired by CC0 ansimuz Underwater Diving Pack (no
+      pixels copied))
+    preview: {fileID: 21300000, guid: e7893eaccfbe64b9898b290fdbdb50a9, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: -1
+    layers:
+    - {fileID: 21300000, guid: ff681b5c490344eaba233f2401cd03eb, type: 3}
+    - {fileID: 21300000, guid: e67dc262dfbc4cc49d45b92dc1a71520, type: 3}
+    - {fileID: 21300000, guid: 3ec4a7d359534fb8b635217e239dcd0e, type: 3}
+    - {fileID: 21300000, guid: 2db7600f7513452dbec3c7f0910bcd8c, type: 3}
+    themeIndex: -1
+    friction: 1.25
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
   - id: world-volcano
     kind: 2
     displayName: Volcano
@@ -1728,4 +2972,11 @@ MonoBehaviour:
     themeIndex: -1
     friction: 1.25
     bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1
     wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1

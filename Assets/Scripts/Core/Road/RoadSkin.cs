@@ -13,6 +13,8 @@ namespace RoadBuilderGame
     {
         public RoadStyle style;
         public string displayName;
+        [Tooltip("Pixel (default): atlas stays point filtered as imported. Smooth: atlas is sampled bilinear. Switch only after the atlas is converted.")]
+        public ArtStyle artStyle = ArtStyle.Pixel;
 
         [Header("Flat colours (used when no atlas is assigned)")]
         public Color curbColor = new Color(0.96f, 0.96f, 0.98f, 1f);
@@ -27,14 +29,22 @@ namespace RoadBuilderGame
         public int curbRows = 2;
         public int bodyRows = 4;
         public int skirtRows = 20;
-        [Tooltip("World size of one atlas pixel. 14/216 matches the background art at the default camera.")]
+        [Tooltip("World size of one atlas pixel. 14/216 matches the pixel background art at the default camera; smooth skins use 1/128 (gameplay ppu).")]
         public float texelWorld = 14f / 216f;
         public Color tint = Color.white;
+
+        [Header("Smooth strips only (artStyle = Smooth)")]
+        [Tooltip("Pixel row of the strip (counted from its top edge) where the driving surface sits. The strip is drawn so this row lines up with the collider top; the rows above it (grass blades, mud bumps) rise over the collider. Asphalt 4, grass 14: grass sits lower in its strip than asphalt.")]
+        public float lipPx;
+        [Tooltip("Surface id (surface-asphalt, surface-grass-trail ...) this smooth skin replaces when the world is Smooth. Empty on pixel skins.")]
+        public string surfaceId;
 
         [System.NonSerialized] private Material _material;
 
         public bool Textured => atlas != null;
         public int AtlasRows => curbRows + bodyRows + skirtRows;
+        /// <summary>True for a smooth strip drawn 1:1 (no row stretching) with its lip aligned to the collider top.</summary>
+        public bool SmoothStrip => artStyle == ArtStyle.Smooth && atlas != null;
         public float CurbFraction => (float)curbRows / Mathf.Max(1, curbRows + bodyRows);
 
         public Material GetMaterial()
@@ -50,6 +60,13 @@ namespace RoadBuilderGame
                     _material = shader != null ? new Material(shader) : SpriteFactory.MeshMaterial;
                 }
                 _material.mainTexture = atlas;
+                // Smooth skins sample bilinear and repeat along the road (U) / clamp across it (V). Pixel skins are left as imported.
+                if (artStyle == ArtStyle.Smooth)
+                {
+                    atlas.filterMode = FilterMode.Bilinear;
+                    atlas.wrapModeU = TextureWrapMode.Repeat;
+                    atlas.wrapModeV = TextureWrapMode.Clamp;
+                }
             }
             return _material;
         }
@@ -61,7 +78,7 @@ namespace RoadBuilderGame
         private static readonly Dictionary<RoadStyle, RoadSkin> Cache = new Dictionary<RoadStyle, RoadSkin>();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void Reset() { Cache.Clear(); }
+        private static void Reset() { Cache.Clear(); SmoothCache.Clear(); }
 
         public static RoadSkin Get(RoadStyle style)
         {
@@ -71,6 +88,32 @@ namespace RoadBuilderGame
             if (skin == null) skin = Fallback(style);
             Cache[style] = skin;
             return skin;
+        }
+
+        private static readonly Dictionary<string, RoadSkin> SmoothCache = new Dictionary<string, RoadSkin>();
+
+        /// <summary>
+        /// The smooth skin for a surface id (Resources/Roads/Smooth/{id}), or null when that surface has no smooth strip yet.
+        /// Callers use it only when the current world is Smooth, so pixel worlds never receive one.
+        /// </summary>
+        public static RoadSkin GetSmooth(string surfaceId)
+        {
+            if (string.IsNullOrEmpty(surfaceId)) return null;
+            if (SmoothCache.TryGetValue(surfaceId, out var cached)) return cached;
+            var skin = Resources.Load<RoadSkin>("Roads/Smooth/" + surfaceId);
+            SmoothCache[surfaceId] = skin;
+            return skin;
+        }
+
+        /// <summary>Surface id of a legacy road style, for looking up its smooth variant.</summary>
+        public static string SurfaceIdOf(RoadStyle style)
+        {
+            switch (style)
+            {
+                case RoadStyle.AsphaltHighway: return "surface-asphalt";
+                case RoadStyle.DirtTrack: return "surface-dirt";
+                default: return null;
+            }
         }
 
         // The colours the road used before skins existed.

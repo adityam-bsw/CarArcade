@@ -51,6 +51,10 @@ namespace RoadBuilderGame.UI
         [Header("Colours (indexed by ColorToken)")]
         [SerializeField] private Color[] colors = new Color[Enum.GetValues(typeof(ColorToken)).Length];
 
+        [Header("Art")]
+        [Tooltip("Informational: which art style this theme's sprites follow. Pixel until the Workshop plates are converted.")]
+        public ArtStyle filterStyle = ArtStyle.Pixel;
+
         [Header("Fonts")]
         public TMP_FontAsset displayFont;
         public TMP_FontAsset bodyFont;

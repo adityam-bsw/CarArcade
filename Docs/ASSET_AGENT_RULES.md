@@ -47,7 +47,10 @@ mark it `not_found` and say what was tried. One pack often serves several items:
 
 ## 6. Quality bar (inspector checklist)
 - **All:** transparent background where expected; no junk files; PNG readable (`tools/assets/pixel.py`); Unity import
-  is point filtered, no mipmaps, uncompressed, sensible pixels-per-unit (pixel art 16, matching our world); console clean.
+  matches the item's art style. Pixel art (existing packs): point filtered, no mipmaps, uncompressed, 16 ppu. Smooth art
+  (only under `Assets/Art/Smooth/`, table in `Docs/design/ART_BIBLE.md` 7.1): bilinear, no mipmaps, 128 ppu gameplay /
+  100 UI / about 41 backgrounds, ASTC 6x6 (5x5 vehicles, hazards, UI) on Android, atlas padding 4 px. The importer rule
+  `SmoothArtImporter` applies this automatically to new textures there. Console clean.
 - **Vehicle:** side view facing right; about 24 to 80 px wide at 16 px per unit; one consistent pixel density; wheels
   separate or wheel positions noted; fits the rig type (two wheel, four wheel, hull, runner, hover).
 - **Surface:** tiles horizontally (edge seam score under 0.05) or is a strip we can tile; rows for top, body, skirt;

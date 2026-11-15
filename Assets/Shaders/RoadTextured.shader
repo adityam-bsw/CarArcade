@@ -1,6 +1,6 @@
 // Unlit, textured, vertex-tinted, alpha-blended shader for the road ribbon.
 // Same conventions as VertexColorUnlit (plain MeshRenderer, linear-space vertex colours), plus an atlas sampled with
-// the mesh UVs. The atlas is point filtered and repeats along the road (U) so the pixel art stays crisp.
+// the mesh UVs. Filtering comes from the texture (point for pixel skins, bilinear for smooth skins, see RoadSkin.artStyle); it repeats along the road (U).
 Shader "RoadBuilder/RoadTextured"
 {
     Properties

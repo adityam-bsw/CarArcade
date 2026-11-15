@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37986f04a88b4716a736139def980fa, type: 3}
+  m_Name: desert_smooth
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.BackgroundSkin
+  displayName: Desert (Smooth)
+  mood: 1
+  artStyle: 1
+  sky: {fileID: 21300000, guid: 1dda372a43dcc4d79b38c439b7040ff0, type: 3}
+  far: {fileID: 21300000, guid: b552befa5d97c4b11a743fc93cd6aebc, type: 3}
+  mid: {fileID: 21300000, guid: 5e06813aca3ea4d93af03b7aeb32a1b6, type: 3}
+  near: {fileID: 21300000, guid: cd37fd919de2b45f8aca4f2c0e1dcc9f, type: 3}
+  sun: {fileID: 21300000, guid: 7185066ec382446e9a2dd03c5bd5de8d, type: 3}
+  clouds: []
+  cloudScroll: 0.08
+  overlay: {fileID: 0}
+  nearAlternates: []
+  groundFill: {r: 0.6156863, g: 0.35686275, b: 0.23137255, a: 1}
+  scroll:
+  - 0
+  - 0.2
+  - 0.4
+  - 0.8

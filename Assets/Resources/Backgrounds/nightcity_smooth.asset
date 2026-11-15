@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37986f04a88b4716a736139def980fa, type: 3}
+  m_Name: nightcity_smooth
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.BackgroundSkin
+  displayName: Night City (Smooth)
+  mood: 3
+  artStyle: 1
+  sky: {fileID: 21300000, guid: f40f66f101e0e426db1ca739d0ac84c5, type: 3}
+  far: {fileID: 21300000, guid: 18fc0156c038c42f0a0def9eddbbb745, type: 3}
+  mid: {fileID: 21300000, guid: c7126bcd5195645e2ad65b03e301be3c, type: 3}
+  near: {fileID: 21300000, guid: ad01460734c914de993bf1a66b00e13d, type: 3}
+  sun: {fileID: 21300000, guid: 3ebb8cf267e034040bc0676100b14c41, type: 3}
+  clouds: []
+  cloudScroll: 0.08
+  overlay: {fileID: 21300000, guid: 810b15e9b464f435dbd613c713539167, type: 3}
+  nearAlternates: []
+  groundFill: {r: 0.10980392, g: 0.1254902, b: 0.27450982, a: 1}
+  scroll:
+  - 0
+  - 0.2
+  - 0.4
+  - 0.8
