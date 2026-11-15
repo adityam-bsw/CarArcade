@@ -16,6 +16,11 @@ namespace RoadBuilderGame.UI
         [SerializeField] private RectTransform visual;
         [SerializeField] private Image background;
         [SerializeField] private Image preview;
+        [Tooltip("Clips the picture (cover fit) so it never spills over the card art.")]
+        [SerializeField] private RectTransform picture;
+        [Tooltip("World postcards: the corner stamp is drawn again over the picture, clipped to the stamp, so the stamp sits on the photo.")]
+        [SerializeField] private RectTransform stampClip;
+        [SerializeField] private Image stampImage;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text badgeText;
         [SerializeField] private Image frame;
@@ -23,7 +28,8 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Button button;
 
         private const float Lift = 14f;
-        private Tween _lift;
+        private Tween _lift, _shake;
+        private bool _selected;
 
         public CatalogEntry Entry { get; private set; }
         /// <summary>The player's current pick. Shown as EQUIPPED.</summary>
@@ -51,6 +57,9 @@ namespace RoadBuilderGame.UI
         /// <summary>Card size for a kind (the grid and rails use it for cell sizes).</summary>
         public static Vector2 SizeFor(CatalogKind kind) { return LayoutFor(kind).size; }
 
+        // The stamp on the postcard art (340x252): x 259..329, y 3..65 from the top-left.
+        private static readonly Vector4 StampBox = new Vector4(258f, 0f, 334f, 66f);
+
         private static void Box(RectTransform rt, Vector4 b)
         {
             rt.anchorMin = rt.anchorMax = new Vector2(0, 1);
@@ -69,7 +78,7 @@ namespace RoadBuilderGame.UI
             visual.sizeDelta = l.size;
             background.sprite = theme.GetSprite(l.card);
             background.color = Color.white;
-            Box(preview.rectTransform, l.picture);
+            Box(picture != null ? picture : preview.rectTransform, l.picture);
             Box(nameText.rectTransform, l.name);
             Box(badgeText.rectTransform, l.badge);
 
@@ -80,7 +89,7 @@ namespace RoadBuilderGame.UI
             frame.rectTransform.anchoredPosition = Vector2.zero;
 
             preview.sprite = entry.PreviewFor(ThemeArtStyles.For(GameServices.Model.World));
-            preview.preserveAspect = true;
+            FitPicture(entry, l);
             nameText.SetText(entry.displayName);
             nameText.color = theme.GetColor(ColorToken.TextOnAccent);
 
@@ -88,6 +97,58 @@ namespace RoadBuilderGame.UI
             SetSelected(selected, false);
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(() => onClick?.Invoke(this));
+        }
+
+        // Worlds fill the picture box (cover fit, the clip crops the overflow); cars and roads keep their whole shape.
+        private void FitPicture(CatalogEntry entry, Layout l)
+        {
+            bool cover = entry.kind == CatalogKind.World && picture != null && preview.sprite != null;
+            var rt = preview.rectTransform;
+            if (picture != null)
+            {
+                rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(0.5f, 0.5f);
+                rt.anchoredPosition = Vector2.zero;
+            }
+            if (cover)
+            {
+                var box = new Vector2(l.picture.z - l.picture.x, l.picture.w - l.picture.y);
+                var sr = preview.sprite.rect;
+                float k = Mathf.Max(box.x / sr.width, box.y / sr.height);
+                rt.sizeDelta = new Vector2(sr.width * k, sr.height * k);
+                preview.preserveAspect = false;
+            }
+            else
+            {
+                if (picture != null) rt.sizeDelta = new Vector2(l.picture.z - l.picture.x, l.picture.w - l.picture.y);
+                preview.preserveAspect = true;
+            }
+
+            bool stamp = entry.kind == CatalogKind.World && stampClip != null && stampImage != null;
+            if (stampClip != null) stampClip.gameObject.SetActive(stamp);
+            if (!stamp) return;
+            Box(stampClip, StampBox);
+            stampImage.sprite = background.sprite;
+            var irt = stampImage.rectTransform;
+            irt.anchorMin = irt.anchorMax = new Vector2(0, 1); irt.pivot = new Vector2(0, 1);
+            irt.sizeDelta = l.size;
+            irt.anchoredPosition = new Vector2(-StampBox.x, StampBox.y);
+        }
+
+        /// <summary>A short sideways shake with a red flash on the frame: "this one is locked".</summary>
+        public void ShakeLocked()
+        {
+            _shake?.Kill();
+            _lift?.Kill();
+            float rest = _selected ? Lift : 0f;
+            visual.anchoredPosition = new Vector2(0f, rest);
+            frame.gameObject.SetActive(true);
+            var danger = UIThemeManager.Current.GetColor(ColorToken.Danger);
+            frame.color = danger;
+            _shake = DOTween.Sequence().SetUpdate(true).SetLink(gameObject)
+                .Append(visual.DOShakeAnchorPos(0.35f, new Vector2(16f, 0f), 24, 0f, false, true))
+                .Append(frame.DOColor(Color.white, 0.25f))
+                .OnComplete(() => { visual.anchoredPosition = new Vector2(0f, rest); frame.color = Color.white; frame.gameObject.SetActive(_selected); })
+                .OnKill(() => { if (visual != null) visual.anchoredPosition = new Vector2(0f, _selected ? Lift : 0f); });
         }
 
         /// <summary>Badge, padlock tag and dimming from the entry's state.</summary>
@@ -133,6 +194,9 @@ namespace RoadBuilderGame.UI
 
         private void SetSelected(bool selected, bool animate)
         {
+            _selected = selected;
+            _shake?.Kill();
+            frame.color = Color.white;
             frame.gameObject.SetActive(selected);
             _lift?.Kill();
             float y = selected ? Lift : 0f;
@@ -142,6 +206,6 @@ namespace RoadBuilderGame.UI
                 visual.anchoredPosition = new Vector2(0f, y);
         }
 
-        private void OnDisable() { _lift?.Kill(); }
+        private void OnDisable() { _lift?.Kill(); _shake?.Kill(); }
     }
 }

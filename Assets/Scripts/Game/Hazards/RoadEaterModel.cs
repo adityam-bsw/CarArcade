@@ -19,7 +19,6 @@ namespace RoadBuilderGame
         private float _chewLeft, _chewCooldown, _surgeIn, _surgeTelegraphLeft, _surgeLeft, _snapLeft, _snapAirborne, _freezeLeft, _exitLeft;
         private float _escapeHold, _belowResetFor, _warnClock, _lowGapAgo = -1f, _nearCooldown, _graceLeft;
         private int _jumps;
-        private bool _surgeSignalled;
 
         public EaterState State { get; private set; }
         public EaterBand Band { get; private set; }
@@ -47,7 +46,7 @@ namespace RoadBuilderGame
         {
             State = EaterState.Dormant; Band = EaterBand.Calm; S = Gap = Speed = EatFront = 0f;
             _chewLeft = _chewCooldown = _surgeTelegraphLeft = _surgeLeft = _snapLeft = _snapAirborne = _freezeLeft = _exitLeft = 0f;
-            _escapeHold = _belowResetFor = _warnClock = _nearCooldown = _graceLeft = 0f; _lowGapAgo = -1f; _jumps = 0; _surgeSignalled = false;
+            _escapeHold = _belowResetFor = _warnClock = _nearCooldown = _graceLeft = 0f; _lowGapAgo = -1f; _jumps = 0;
             _rng = new Pcg32(seed == 0u ? 1u : seed);
         }
 

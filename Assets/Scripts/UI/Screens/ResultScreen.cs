@@ -10,6 +10,8 @@ namespace RoadBuilderGame.UI
         [SerializeField] private TMP_Text reasonText;
         [SerializeField] private TMP_Text distanceText;
         [SerializeField] private GameObject newBestBadge;
+        [Tooltip("Patch of blank paper over the medal printed on the certificate art. Shown unless the run is a new best.")]
+        [SerializeField] private GameObject medalCover;
         [SerializeField] private TMP_Text coinsWonText;
         [SerializeField] private TMP_Text totalText;
         [SerializeField] private TMP_Text bonusText;
@@ -51,8 +53,9 @@ namespace RoadBuilderGame.UI
             if (doubleButton != null) doubleButton.gameObject.SetActive(m.OfferDouble);
             if (reviveButton != null) reviveButton.gameObject.SetActive(m.OfferRevive);
             if (extraDailyButton != null) extraDailyButton.gameObject.SetActive(m.OfferExtraDaily);
-            if (doubleLabel != null) doubleLabel.SetText("OPTIONAL AD: 2X COINS  ({0} LEFT TODAY)", m.OfferDoubleLeft);
-            if (extraDailyLabel != null) extraDailyLabel.SetText("OPTIONAL AD: EXTRA DAILY REWARD");
+            // Short first line so it fits its plate; the second line keeps the offer clearly marked as an optional ad.
+            if (doubleLabel != null) doubleLabel.SetText("2X COINS (" + m.OfferDoubleLeft + " LEFT)\n<size=62%>OPTIONAL AD</size>");
+            if (extraDailyLabel != null) extraDailyLabel.SetText("EXTRA DAILY\n<size=62%>OPTIONAL AD</size>");
         }
 
         public override void OnShow(object args)
@@ -69,6 +72,7 @@ namespace RoadBuilderGame.UI
             int metres = Mathf.FloorToInt(r.distance);
             UIAnim.CountUp(distanceText, 0, metres, Mathf.Clamp(metres / 120f, 0.5f, 1.4f), "{0} m");
 
+            if (medalCover != null) medalCover.SetActive(!r.newBest);
             newBestBadge.SetActive(r.newBest);
             if (r.newBest)
             {

@@ -48,6 +48,12 @@ namespace RoadBuilderGame.UI
             }
         }
 
+        /// <summary>Shake the card with this id (a locked item was tapped).</summary>
+        public void ShakeLocked(string id)
+        {
+            foreach (var c in _cards) if (c.Entry.id == id) { c.ShakeLocked(); return; }
+        }
+
         /// <summary>Scroll so the card with this id is in view (centred when there is room).</summary>
         public void Reveal(string id)
         {

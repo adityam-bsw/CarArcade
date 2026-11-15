@@ -110,7 +110,7 @@ namespace RoadBuilderGame
         private Rect _lastSafeArea;
 
         private void OnEnable() { Collectible.Collected += OnCollectItem; }
-        private void OnDisable() { Collectible.Collected -= OnCollectItem; Time.timeScale = 1f; Time.fixedDeltaTime = 0.02f; Collectible.MagnetTarget = null; }
+        private void OnDisable() { Collectible.Collected -= OnCollectItem; AudioListener.pause = false; Time.timeScale = 1f; Time.fixedDeltaTime = 0.02f; Collectible.MagnetTarget = null; }
 
         private void Awake()
         {
@@ -356,6 +356,7 @@ namespace RoadBuilderGame
 
         public void SwitchScreen(ScreenState newState)
         {
+            ClearPause();
             _previousState = _state;
             _state = newState;
             _stateTime = 0f;
@@ -480,6 +481,7 @@ namespace RoadBuilderGame
 
             if (_state == ScreenState.Playing)
             {
+                if (_paused) return;                   // paused: no gameplay system ticks (scaled time is 0 as well; this also stops the unscaled run director)
                 _brush.SmoothingSpeed = brushSmoothingSpeed;
                 _brush.DragSpacing = dragSpacing;
                 _brush.InkCostPerMeter = _run.Ghost ? 0f : inkCostPerMeter * _trackInk;
@@ -554,6 +556,55 @@ namespace RoadBuilderGame
             }
         }
 
+        // ==================================================================== PAUSE
+        private bool _paused;
+
+        /// <summary>
+        /// Pause: scaled time 0 (physics, stage timers, Eater, RO-B0, projectiles, near-miss slow-mo all stand still), the run director and the brush
+        /// are not ticked (Update returns early), audio effects freeze (music keeps playing). UI tweens use unscaled time.
+        /// </summary>
+        public void PauseRun()
+        {
+            if (_state != ScreenState.Playing || _paused || _car == null) return;
+            _paused = true;
+            _brush.Cancel();
+            Time.timeScale = 0f;                       // not ApplyTimeScale: fixedDeltaTime must never become 0
+            AudioListener.pause = true;
+            _stage?.OnPause(true);
+            Model.SetPaused(true);
+        }
+
+        public void ResumeRun()
+        {
+            if (!_paused) return;
+            _paused = false;
+            AudioListener.pause = false;
+            _stage?.OnPause(false);                    // 0.5 s hazard-free grace, counted in scaled time
+            ApplyTimeScale(_run.TimeScale);            // back to 1, or the slow-mo that was running
+            Model.SetPaused(false);
+        }
+
+        /// <summary>Leaves the paused run for the menu. The run still counts: coins, best distance and progress are banked, no revive offer.</summary>
+        public void QuitRun()
+        {
+            if (_state != ScreenState.Playing) return;
+            TriggerGameOver("RUN ENDED", false, true);
+        }
+
+        public void QuitApp()
+        {
+            SavePlayerData();
+            Application.Quit();
+        }
+
+        private void ClearPause()
+        {
+            if (!_paused && !AudioListener.pause) return;
+            _paused = false;
+            AudioListener.pause = false;
+            Model.SetPaused(false);
+        }
+
         private bool HandleLifeLoss(string reason)
         {
             _brush.Cancel();
@@ -596,7 +647,7 @@ namespace RoadBuilderGame
             return shielded;
         }
 
-        private void TriggerGameOver(string reason, bool finished = false)
+        private void TriggerGameOver(string reason, bool finished = false, bool toMenu = false)
         {
             EndStageRun(finished ? StageRunOutcome.Finished : StageRunOutcome.Died);
             bool newBest = _distance > _bestScore;
@@ -609,7 +660,7 @@ namespace RoadBuilderGame
             ProgressionEvents.RecordRunEnd(_profile, _prog, VehicleKey(), _distance, finished, _run.Stats.cleanJumps, _run.Stats.nearMisses);
             _offers.EndRun();
             _deathDistance = _distance; _finishedRun = finished;
-            _canRevive = _stageOn && !finished;
+            _canRevive = _stageOn && !finished && !toMenu;
             if (_dailyActive) DailyChallenge.SubmitScore(_profile, System.DateTime.UtcNow, Mathf.FloorToInt(_distance));
             totalCoins = _profile.coins;
             SavePlayerData();
@@ -626,7 +677,7 @@ namespace RoadBuilderGame
                 bonusLines = string.Join("\n", _run.Stats.lines)
             };
 
-            SwitchScreen(ScreenState.GameOver);
+            SwitchScreen(toMenu ? ScreenState.HomeDashboard : ScreenState.GameOver);
         }
 
         private void LateUpdate()
@@ -912,7 +963,7 @@ namespace RoadBuilderGame
 
         public void Boost()
         {
-            if (_car == null || _state != ScreenState.Playing) return;
+            if (_car == null || _state != ScreenState.Playing || _paused) return;
             var result = _run.TryBoost(totalCoins + sessionCoins, out int paid);
             if (result == RunDirector.BoostResult.None) return;
             if (result == RunDirector.BoostResult.Refused)
@@ -959,38 +1010,6 @@ namespace RoadBuilderGame
                 if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
                 SyncModel();
             }
-        }
-
-        public void CycleWorld(int dir)
-        {
-            int total = System.Enum.GetValues(typeof(EnvironmentTheme)).Length;
-            SelectedTheme = (EnvironmentTheme)(((int)SelectedTheme + dir + total) % total);
-            _selWorldId = "";
-            ApplyWorld();
-            ApplySurface();
-            SavePlayerData();
-            SyncModel();
-        }
-
-        public void CycleRoadStyle()
-        {
-            int total = System.Enum.GetValues(typeof(RoadStyle)).Length;
-            SelectedRoadStyle = (RoadStyle)(((int)SelectedRoadStyle + 1) % total);
-            _selSurfaceId = "";
-            ApplySurface();
-            if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
-            SavePlayerData();
-            SyncModel();
-        }
-
-        public void CycleVehicle(int dir)
-        {
-            int total = System.Enum.GetValues(typeof(VehicleType)).Length;
-            SelectedVehicle = (VehicleType)(((int)SelectedVehicle + dir + total) % total);
-            _selVehicleId = "";
-            SavePlayerData();
-            SetupShowcaseCar();
-            SyncModel();
         }
 
         public void SelectOrUnlockVehicle()
@@ -1443,7 +1462,12 @@ namespace RoadBuilderGame
             turnDeg = Mathf.Abs(a1 - a0);
         }
 
-        private void OnApplicationPause(bool paused) { _stage?.OnPause(paused); }
+        // App in the background counts as a pause (brief F0): the run freezes and waits on the pause popup.
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused) PauseRun();
+            _stage?.OnPause(paused);
+        }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public StageRunController DebugStage => _stage;

@@ -130,6 +130,18 @@ namespace RoadBuilderGame
         /// <summary>Run data changed (distance, ink, lives). Raised often while playing.</summary>
         public event Action HudChanged;
 
+        /// <summary>True while a run is paused (written by the game; the UI shows the pause popup and freezes its warning tweens).</summary>
+        public bool Paused { get; private set; }
+        /// <summary>Raised after <see cref="Paused"/> changes.</summary>
+        public event Action PausedChanged;
+
+        public void SetPaused(bool paused)
+        {
+            if (Paused == paused) return;
+            Paused = paused;
+            PausedChanged?.Invoke();
+        }
+
         public void SetScreen(ScreenState s)
         {
             Screen = s;
@@ -161,14 +173,19 @@ namespace RoadBuilderGame
         void OpenGarage();
         void OpenWorlds();
         void Boost();
+        /// <summary>Freezes the run (HUD pause button, Android Back, app in background). No effect outside a run.</summary>
+        void PauseRun();
+        /// <summary>Unfreezes a paused run; hazards stay out for the 0.5 s resume grace.</summary>
+        void ResumeRun();
+        /// <summary>Ends the paused run, banks what it earned and goes to the menu.</summary>
+        void QuitRun();
+        /// <summary>Saves and closes the app (Android Back twice on Home).</summary>
+        void QuitApp();
         void OpenRewards();
         void ClaimDaily();
         void ClaimMission(int index);
         void UpgradeStat(int statIndex);
         void SelectOrUnlockVehicle();
-        void CycleVehicle(int dir);
-        void CycleWorld(int dir);
-        void CycleRoadStyle();
         void SetSoundEnabled(bool enabled);
         void SelectCatalogItem(CatalogKind kind, string id);
         /// <summary>Starts today's daily challenge run (fixed seed, vehicle and world).</summary>

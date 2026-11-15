@@ -37,7 +37,7 @@ namespace RoadBuilderGame.UI
 
         private CatalogKind _kind;
         private bool _selectEnabled;
-        private string _group;                       // null = all groups
+        private string _activeGroup;                       // null = all groups
         private CatalogEntry _current;
         private AssetCatalog _catalog;
         private readonly List<CollectionCard> _cards = new List<CollectionCard>();
@@ -53,7 +53,7 @@ namespace RoadBuilderGame.UI
         {
             _kind = args is CatalogKind k ? k : CatalogKind.Vehicle;
             _catalog = AssetCatalog.Load();
-            _group = null;
+            _activeGroup = null;
             _current = null;
 
             titleText.SetText(_kind == CatalogKind.Vehicle ? "VEHICLES" : (_kind == CatalogKind.Surface ? "SURFACES" : "WORLDS"));
@@ -85,20 +85,20 @@ namespace RoadBuilderGame.UI
         private void AddTab(string group, string display)
         {
             var tab = Instantiate(tabPrefab, tabsRoot);
-            tab.Bind(group, display, group == _group, OnTabPressed);
+            tab.Bind(group, display, group == _activeGroup, OnTabPressed);
             _tabs.Add(tab);
         }
 
         private void OnTabPressed(CollectionTab tab)
         {
-            _group = tab.Group;
+            _activeGroup = tab.Group;
             UpdateTabHighlight();
             RebuildGrid();
         }
 
         private void UpdateTabHighlight()
         {
-            foreach (var t in _tabs) t.SetActive(t.Group == _group);
+            foreach (var t in _tabs) t.SetActive(t.Group == _activeGroup);
         }
 
         private void RebuildGrid()
@@ -107,7 +107,7 @@ namespace RoadBuilderGame.UI
             _cards.Clear();
             var grid = gridRoot.GetComponent<GridLayoutGroup>();
             if (grid != null) grid.cellSize = CollectionCard.SizeFor(_kind) + new Vector2(20f, 32f);
-            var items = _catalog != null ? _catalog.Query(_kind, _group) : new List<CatalogEntry>();
+            var items = _catalog != null ? _catalog.Query(_kind, _activeGroup) : new List<CatalogEntry>();
             string selectedId = GameServices.Model.SelectedId(_kind);
 
             foreach (var e in items)

@@ -32,6 +32,8 @@ namespace RoadBuilderGame.UI
         [SerializeField] private TMP_Text stageSignMetres;
         [SerializeField] private Image edgeFlashLeft;
         [SerializeField] private Image edgeFlashRight;
+        [Header("Pause")]
+        [SerializeField] private Button pauseButton;
 
         private const float LowInk = 0.2f;
 
@@ -46,11 +48,14 @@ namespace RoadBuilderGame.UI
         private string _signName;
         private Tween _bannerTween, _flashTween;
 
-        public override bool BackCloses => false;
+        // Android Back during a run opens the pause popup instead of leaving.
+        public override bool BackCloses => true;
+        public override void OnBackPressed() { GameServices.Actions?.PauseRun(); }
 
         private void Awake()
         {
             boostButton.onClick.AddListener(() => GameServices.Actions?.Boost());
+            if (pauseButton != null) pauseButton.onClick.AddListener(() => GameServices.Actions?.PauseRun());
         }
 
         public override void OnShow(object args)
@@ -66,6 +71,7 @@ namespace RoadBuilderGame.UI
             if (toastText != null) toastText.alpha = 0f;
             if (_lowPulse) { UIAnim.StopPulse(inkBar); _lowPulse = false; }
             GameServices.Model.HudChanged += Refresh;
+            GameServices.Model.PausedChanged += OnPausedChanged;
             Refresh();
         }
 
@@ -73,6 +79,7 @@ namespace RoadBuilderGame.UI
         {
             KillToast(); KillStageTweens();
             GameServices.Model.HudChanged -= Refresh;
+            GameServices.Model.PausedChanged -= OnPausedChanged;
             if (_lowPulse) { UIAnim.StopPulse(inkBar); _lowPulse = false; }
         }
 
@@ -81,6 +88,21 @@ namespace RoadBuilderGame.UI
             base.OnDisable();
             KillToast(); KillStageTweens();
             GameServices.Model.HudChanged -= Refresh;
+            GameServices.Model.PausedChanged -= OnPausedChanged;
+        }
+
+        // The warning banner, edge flash and toast are unscaled tweens, so a pause would let them run out unseen. Hold them while paused:
+        // a pause during a warning never shortens what the player gets to read (stage brief F0).
+        private void OnPausedChanged()
+        {
+            bool paused = GameServices.Model.Paused;
+            SetTweenPaused(_bannerTween, paused); SetTweenPaused(_flashTween, paused); SetTweenPaused(_toastTween, paused);
+        }
+
+        private static void SetTweenPaused(Tween t, bool paused)
+        {
+            if (t == null || !t.IsActive()) return;
+            if (paused) t.Pause(); else t.Play();
         }
 
         // Runs every frame while playing, so it only touches a label when its value actually changed.

@@ -15,12 +15,14 @@ namespace RoadBuilderGame.UI
         private void OnEnable()
         {
             GameServices.Model.ScreenChanged += Apply;
+            GameServices.Model.PausedChanged += ApplyPause;
             PressFeedback.Pressed += PlayClick;
         }
 
         private void OnDisable()
         {
             GameServices.Model.ScreenChanged -= Apply;
+            GameServices.Model.PausedChanged -= ApplyPause;
             PressFeedback.Pressed -= PlayClick;
         }
 
@@ -42,6 +44,17 @@ namespace RoadBuilderGame.UI
                 case ScreenState.GameOver: stack.Reset<ResultScreen>(); break;
                 case ScreenState.Rewards: stack.Reset<RewardsScreen>(); break;
             }
+        }
+
+        // The pause popup sits on top of the HUD (the HUD stays visible under the dim). Closing it any other way is the game's job: it resumes.
+        private void ApplyPause()
+        {
+            var m = GameServices.Model;
+            if (m.Paused)
+            {
+                if (m.Screen == ScreenState.Playing && !(stack.Top is PauseScreen)) stack.Push<PauseScreen>();
+            }
+            else if (stack.Top is PauseScreen) stack.Pop();
         }
 
         private static void PlayClick()

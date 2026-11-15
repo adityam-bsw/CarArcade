@@ -23,7 +23,7 @@ namespace RoadBuilderGame.UI.Editor
             if (stack == null) { Debug.LogError("[UISceneSync] No ScreenStack under UIRoot"); return; }
             var parent = stack.transform;
 
-            string[] names = { "HomeScreen", "GarageScreen", "WorldsScreen", "HudScreen", "ResultScreen", "SettingsScreen", "CollectionScreen", "RewardsScreen" };
+            string[] names = { "HomeScreen", "GarageScreen", "WorldsScreen", "HudScreen", "ResultScreen", "SettingsScreen", "CollectionScreen", "RewardsScreen", "PauseScreen" };
             int added = 0;
             foreach (var n in names)
             {

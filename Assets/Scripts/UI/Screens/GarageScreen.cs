@@ -14,6 +14,8 @@ namespace RoadBuilderGame.UI
             public TMP_Text title;
             public TMP_Text hint;
             public TMP_Text cost;
+            public GameObject costIcon;
+            public TMP_Text buttonLabel;
             public Button button;
             public Image buttonImage;
             public Image[] pips;
@@ -98,27 +100,33 @@ namespace RoadBuilderGame.UI
                 carNameText.SetText(string.Empty);
                 actionLabel.SetText("PICK A VEHICLE");
                 _actionable = false;
+                actionButton.interactable = false;
                 actionImage.sprite = theme.GetSprite(SpriteSlot.ButtonArcadeDisabled);
+                actionLabel.color = theme.GetColor(ColorToken.TextPrimary);
             }
             else
             {
                 carNameText.SetText(_focus.displayName.ToUpperInvariant());
                 bool equipped = m.SelectedVehicleId == _focus.id;
-                bool enabled = true; string label; ColorToken colour;
-                if (!_focus.playable) { label = "COMING SOON"; colour = ColorToken.SurfaceAlt; enabled = false; }
-                else if (equipped) { label = "EQUIPPED"; colour = ColorToken.Success; enabled = false; }
-                else if (!m.IsVehicleUnlocked(_focus) && m.LockLine(_focus.id).Length > 0) { label = m.LockLine(_focus.id); colour = ColorToken.SurfaceAlt; enabled = false; }
+                bool enabled = true; string label;
+                if (!_focus.playable) { label = "COMING SOON"; enabled = false; }
+                else if (equipped) { label = "EQUIPPED"; enabled = false; }
+                else if (!m.IsVehicleUnlocked(_focus) && m.LockLine(_focus.id).Length > 0) { label = m.LockLine(_focus.id); enabled = false; }
                 else if (!m.IsVehicleUnlocked(_focus))
                 {
                     int missing = _focus.cost - m.Coins;
-                    if (missing > 0) { label = "NEED " + missing + " MORE"; colour = ColorToken.SurfaceAlt; enabled = false; }
-                    else { label = "UNLOCK  " + _focus.cost; colour = ColorToken.Accent; }
+                    if (missing > 0) { label = "NEED " + missing + " MORE"; enabled = false; }
+                    else label = "UNLOCK  " + _focus.cost;
                 }
-                else { label = "EQUIP"; colour = ColorToken.Primary; }
+                else label = "EQUIP";
                 actionLabel.SetText(label);
-                // Actionable: the orange arcade button. Equipped: the steel plate with its teal line. Blocked: disabled arcade.
+                // Actionable: the orange arcade button. Equipped: the steel plate with its teal line. Blocked: steel (disabled arcade).
+                // The button has no sprite swap of its own (a swap would paint the orange normal sprite back over a disabled look),
+                // so the sprite set here is what shows, and the button is only interactable when the tap does something.
                 actionImage.sprite = theme.GetSprite(enabled ? SpriteSlot.ButtonArcade : (equipped ? SpriteSlot.ButtonPlate : SpriteSlot.ButtonArcadeDisabled));
+                actionLabel.color = theme.GetColor(enabled ? ColorToken.TextOnAccent : ColorToken.TextPrimary);
                 _actionable = enabled;
+                actionButton.interactable = enabled;
             }
 
             for (int i = 0; i < rows.Length; i++)
@@ -130,8 +138,14 @@ namespace RoadBuilderGame.UI
 
                 bool maxed = level >= GameCatalog.MaxUpgradeLevel;
                 int cost = i < m.UpgradeCosts.Length ? m.UpgradeCosts[i] : GameCatalog.UpgradeCost(level);
-                if (maxed) r.cost.SetText("MAX"); else r.cost.SetText("UPGRADE  {0}", cost);
-                r.buttonImage.sprite = theme.GetSprite(!maxed && m.Coins >= cost ? SpriteSlot.ButtonArcade : SpriteSlot.ButtonArcadeDisabled);
+                bool affordable = !maxed && m.Coins >= cost;
+                if (maxed) r.cost.SetText(string.Empty); else r.cost.SetText("{0}", cost);
+                if (r.costIcon != null) r.costIcon.SetActive(!maxed);
+                r.cost.color = theme.GetColor(affordable || maxed ? ColorToken.Coin : ColorToken.Danger);
+                r.buttonLabel.SetText(maxed ? "MAX" : "UPGRADE");
+                r.buttonLabel.color = theme.GetColor(affordable ? ColorToken.TextOnAccent : ColorToken.TextPrimary);
+                r.button.interactable = affordable;
+                r.buttonImage.sprite = theme.GetSprite(affordable ? SpriteSlot.ButtonArcade : SpriteSlot.ButtonArcadeDisabled);
 
                 for (int p = 0; p < r.pips.Length; p++)
                     r.pips[p].sprite = theme.GetSprite(p < level ? SpriteSlot.PipOn : SpriteSlot.PipOff);

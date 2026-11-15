@@ -21,6 +21,8 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Button raceButton;
         [SerializeField] private TMP_Text summaryText;
         [SerializeField] private TMP_Text hintText;
+        [Tooltip("Dark banner behind the hint so it reads against the road; shown only while the hint has text.")]
+        [SerializeField] private GameObject hintBanner;
         [SerializeField] private Button backButton;
 
         private CatalogKind _tab = CatalogKind.World;
@@ -39,7 +41,7 @@ namespace RoadBuilderGame.UI
         {
             GameServices.Model.Changed += Refresh;
             _tab = CatalogKind.World;
-            hintText.SetText(string.Empty);
+            SetHint(string.Empty, ColorToken.TextPrimary);
             rail.Populate(_tab, OnTapped);
             Refresh();
             rail.Reveal(GameServices.Model.SelectedId(_tab));
@@ -57,7 +59,7 @@ namespace RoadBuilderGame.UI
         {
             if (kind == _tab) return;
             _tab = kind;
-            hintText.SetText(string.Empty);
+            SetHint(string.Empty, ColorToken.TextPrimary);
             if (kind == CatalogKind.Surface) ShowTraits(AssetCatalog.Load()?.Find(GameServices.Model.SelectedSurfaceId) ?? new CatalogEntry { displayName = "Road" });
             rail.Populate(_tab, OnTapped);
             Refresh();
@@ -73,24 +75,36 @@ namespace RoadBuilderGame.UI
                 string gate = GameServices.Model.LockLine(e.id);
                 if (gate.Length > 0)
                 {
-                    hintText.SetText(e.displayName + " is locked: " + gate);
-                    hintText.color = UIThemeManager.Current.GetColor(ColorToken.Danger);
-                    UIAnim.Punch(hintText.transform, 0.06f);
+                    SetHint(e.displayName + " is locked: " + gate, ColorToken.Danger);
+                    rail.ShakeLocked(e.id);
                 }
                 return;
             }
             // Not playable yet: say why instead of silently doing nothing.
-            hintText.SetText(e.displayName + ": " + (string.IsNullOrEmpty(e.playNote) ? "not playable yet." : e.playNote));
-            hintText.color = UIThemeManager.Current.GetColor(ColorToken.Danger);
-            UIAnim.Punch(hintText.transform, 0.06f);
+            SetHint(e.displayName + ": " + (string.IsNullOrEmpty(e.playNote) ? "not playable yet." : e.playNote), ColorToken.Danger);
+            rail.ShakeLocked(e.id);
+        }
+
+        /// <summary>The message line sits on a dark banner so it keeps its contrast over the road in the door.</summary>
+        private void SetHint(string text, ColorToken colour)
+        {
+            bool has = text.Length > 0;
+            if (hintBanner != null)
+            {
+                // Activate first: enabling the label re-applies its theme style, which would overwrite the colour set below.
+                bool wasShown = hintBanner.activeSelf;
+                hintBanner.SetActive(has);
+                if (has) UIAnim.Punch(hintBanner.transform, wasShown ? 0.05f : 0.1f);
+            }
+            hintText.SetText(text);
+            hintText.color = UIThemeManager.Current.GetColor(colour);
         }
 
         /// <summary>Roads change the run, so say how: grip, speed, ink cost and coin value of the tapped track.</summary>
         private void ShowTraits(CatalogEntry e)
         {
-            if (e.kind != CatalogKind.Surface) { hintText.SetText(string.Empty); return; }
-            hintText.SetText(e.displayName + ": " + e.TraitsLine());
-            hintText.color = UIThemeManager.Current.GetColor(ColorToken.TextPrimary);
+            if (e.kind != CatalogKind.Surface) { SetHint(string.Empty, ColorToken.TextPrimary); return; }
+            SetHint(e.displayName + ": " + e.TraitsLine(), ColorToken.TextPrimary);
         }
 
         private void Refresh()
@@ -114,7 +128,7 @@ namespace RoadBuilderGame.UI
             roadTabLabel.color = worlds ? onSteel : onAccent;
 
             summaryText.SetText(world + " on " + road);
-            if (hintText.text.Length == 0) hintText.color = theme.GetColor(ColorToken.TextPrimary);
+            if (hintText.text.Length == 0) SetHint(string.Empty, ColorToken.TextPrimary);
         }
     }
 }

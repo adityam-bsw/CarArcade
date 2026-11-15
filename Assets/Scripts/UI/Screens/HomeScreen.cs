@@ -21,6 +21,8 @@ namespace RoadBuilderGame.UI
         [SerializeField] private TMP_Text scrapText;
         [SerializeField] private Button dailyButton;
         [SerializeField] private TMP_Text dailyText;
+        [Header("Exit (Android Back on Home)")]
+        [SerializeField] private TMP_Text exitHint;
         [Header("Entrance")]
         [SerializeField] private RectTransform titlePlate;
         [SerializeField] private RectTransform[] popIns;
@@ -28,7 +30,25 @@ namespace RoadBuilderGame.UI
         private readonly List<Tween> _tweens = new List<Tween>();
         private int _lastCoins = -1;
 
-        public override bool BackCloses => false;
+        // Back on Home: the first press shows "press back again", a second one within two seconds closes the app.
+        private const float ExitWindow = 2f;
+        private float _lastBackAt = -10f;
+        private Tween _hintTween;
+
+        public override bool BackCloses => true;
+
+        public override void OnBackPressed()
+        {
+            if (Time.unscaledTime - _lastBackAt <= ExitWindow) { GameServices.Actions?.QuitApp(); return; }
+            _lastBackAt = Time.unscaledTime;
+            if (exitHint == null) return;
+            _hintTween?.Kill();
+            exitHint.alpha = 1f;
+            exitHint.transform.parent.gameObject.SetActive(true);
+            _hintTween = DOTween.Sequence().SetUpdate(true).SetLink(gameObject)
+                .AppendInterval(ExitWindow - 0.3f).Append(exitHint.DOFade(0f, 0.3f))
+                .OnComplete(() => exitHint.transform.parent.gameObject.SetActive(false));
+        }
 
         private void Awake()
         {
@@ -43,6 +63,8 @@ namespace RoadBuilderGame.UI
         public override void OnShow(object args)
         {
             _lastCoins = -1;
+            _lastBackAt = -10f;
+            if (exitHint != null) exitHint.transform.parent.gameObject.SetActive(false);
             GameServices.Model.Changed += Refresh;
             Refresh();
             PlayEntrance();
@@ -51,6 +73,7 @@ namespace RoadBuilderGame.UI
         public override void OnHide()
         {
             GameServices.Model.Changed -= Refresh;
+            _hintTween?.Kill();
             KillTweens();
         }
 
