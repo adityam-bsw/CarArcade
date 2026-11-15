@@ -31,7 +31,6 @@ namespace RoadBuilderGame
         public float maxInk = 100f;
         public float currentInk = 100f;
         public float inkCostPerMeter = 1.2f;
-        public float inkRegenPerSec = 5.0f;
         public int maxLives = 3;
         public int currentLives = 3;
         public int totalCoins = 150;
@@ -41,11 +40,17 @@ namespace RoadBuilderGame
         public int engineLevel = 1;
         public int suspensionLevel = 1;
         public int inkTankLevel = 1;
+        public int boostLevel = 1;
 
         [Header("Vehicle Unlocks")]
         public bool sportUnlocked = false;
         public bool truckUnlocked = false;
 
+        private GameplayTuning _tuning;
+        private RunDirector _run;
+        private MetaProgress _meta;
+        private int _powerKey = -1;
+        private string _powerText = "";
         private PlayerProfile _profile;
         private bool _soundEnabled = true;
         private string _selVehicleId = "", _selSurfaceId = "", _selWorldId = "";
@@ -67,6 +72,14 @@ namespace RoadBuilderGame
         [Tooltip("Higher values follow finger faster; lower values create silkier macro curves")]
         public float brushSmoothingSpeed = 22f;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // Read access for DebugAutoDraw (test driver). Not part of the game.
+        public BrushController DebugBrush => _brush;
+        public RoadCar DebugCar => _car;
+        public RoadBuilder DebugRoad => _road;
+        public ScreenState DebugState => _state;
+#endif
+
         public VehicleType SelectedVehicle { get; private set; } = VehicleType.ClassicRed;
         public EnvironmentTheme SelectedTheme { get; private set; } = EnvironmentTheme.Country;
         public RoadStyle SelectedRoadStyle { get; private set; } = RoadStyle.AsphaltHighway;
@@ -75,7 +88,7 @@ namespace RoadBuilderGame
         private Rect _lastSafeArea;
 
         private void OnEnable() { Collectible.Collected += OnCollectItem; }
-        private void OnDisable() { Collectible.Collected -= OnCollectItem; }
+        private void OnDisable() { Collectible.Collected -= OnCollectItem; Time.timeScale = 1f; Time.fixedDeltaTime = 0.02f; Collectible.MagnetTarget = null; }
 
         private void Awake()
         {
@@ -160,10 +173,22 @@ namespace RoadBuilderGame
                     UpdateInkUI();
                 }
             };
-            _pickups = new PickupSpawner(_road);
+            _tuning = GameplayTuning.Load();
+            _run = new RunDirector(_tuning);
+            _run.Bonus += OnRunBonus;
+            _pickups = new PickupSpawner(_road)
+            {
+                Tuning = _tuning,
+                Ink01 = () => maxInk > 0f ? currentInk / maxInk : 1f,
+                InkUnits = () => currentInk,
+                InkPerMeter = () => inkCostPerMeter,
+                NeedsHeart = () => currentLives < maxLives
+            };
             _cameraRig = new GameCameraRig(_cam, _background);
 
             LoadPlayerData();
+            _meta = new MetaProgress(_profile, _tuning);
+            _meta.EnsureMissions();
             ApplyWorld();
             ApplySurface();
 
@@ -215,6 +240,7 @@ namespace RoadBuilderGame
             engineLevel = _profile.engineLevel;
             suspensionLevel = _profile.suspensionLevel;
             inkTankLevel = _profile.inkTankLevel;
+            boostLevel = _profile.boostLevel;
             SelectedVehicle = (VehicleType)_profile.vehicle;
             SelectedTheme = (EnvironmentTheme)_profile.theme;
             SelectedRoadStyle = (RoadStyle)_profile.roadStyle;
@@ -248,6 +274,7 @@ namespace RoadBuilderGame
             _profile.engineLevel = engineLevel;
             _profile.suspensionLevel = suspensionLevel;
             _profile.inkTankLevel = inkTankLevel;
+            _profile.boostLevel = boostLevel;
             _profile.vehicle = (int)SelectedVehicle;
             _profile.theme = (int)SelectedTheme;
             _profile.roadStyle = (int)SelectedRoadStyle;
@@ -265,6 +292,7 @@ namespace RoadBuilderGame
         {
             _state = newState;
             _stateTime = 0f;
+            if (newState != ScreenState.Playing) { ApplyTimeScale(1f); Collectible.MagnetTarget = null; }
 
             switch (newState)
             {
@@ -286,6 +314,10 @@ namespace RoadBuilderGame
 
                 case ScreenState.Playing:
                     StartGameplaySession();
+                    SyncModel();
+                    break;
+
+                case ScreenState.Rewards:
                     SyncModel();
                     break;
 
@@ -354,6 +386,8 @@ namespace RoadBuilderGame
             _brush.Cancel();
             currentLives = maxLives;
             sessionCoins = 0;
+            _run.Begin(boostLevel, _bestScore);
+            _powerKey = -1;
 
             UpdateHeartsUI();
             UpdateInkUI();
@@ -370,17 +404,21 @@ namespace RoadBuilderGame
             {
                 _brush.SmoothingSpeed = brushSmoothingSpeed;
                 _brush.DragSpacing = dragSpacing;
-                _brush.InkCostPerMeter = inkCostPerMeter;
+                _brush.InkCostPerMeter = _run.Ghost ? 0f : inkCostPerMeter;
                 _brush.Tick();
 
-                currentInk = Mathf.Min(maxInk, currentInk + inkRegenPerSec * Time.deltaTime);
+                currentInk = Mathf.Min(maxInk, currentInk + _tuning.inkRegenPerSec * Time.deltaTime);
 
                 if (_car == null) return;
 
                 Vector2 carPos = _car.Body.position;
                 _distance = Mathf.Max(_distance, carPos.x - _startX);
                 float speedRatio = Mathf.InverseLerp(baseStartSpeed, baseMaxSpeed + (engineLevel * 0.8f), _car.TargetSpeed);
-                _car.TargetSpeed = Mathf.Min(baseMaxSpeed + (engineLevel * 0.8f), baseStartSpeed + (engineLevel * 0.8f) + _distance * speedGainPerMetre);
+                _car.TargetSpeed = Mathf.Min(baseMaxSpeed + (engineLevel * 0.8f), baseStartSpeed + (engineLevel * 0.8f) + _distance * speedGainPerMetre) + _run.BoostSpeedBonus;
+                _run.Tick(Time.unscaledDeltaTime, _car, _distance);
+                Collectible.MagnetTarget = _run.MagnetOn ? _car.Body.transform : null;
+                Collectible.MagnetRadius = _tuning.magnetRadius;
+                ApplyTimeScale(_run.TimeScale);
                 if (SoundManager.Instance) SoundManager.Instance.SetEngineRunning(true, speedRatio);
 
                 _pickups.Tick(carPos.x);
@@ -424,11 +462,22 @@ namespace RoadBuilderGame
         private void HandleLifeLoss(string reason)
         {
             _brush.Cancel();
-            currentLives--;
-            UpdateHeartsUI();
-            if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
-            if (ParticleManager.Instance && _car != null)
-                ParticleManager.Instance.SpawnBurst(_car.Body.position, new Color(1f, 0.3f, 0.2f), 22);
+            bool shielded = _run.AbsorbHit();       // a shield soaks up one crash
+            _run.Interrupt();
+            if (shielded)
+            {
+                if (SoundManager.Instance) SoundManager.Instance.PlayHeart();
+                if (ParticleManager.Instance && _car != null)
+                    ParticleManager.Instance.SpawnBurst(_car.Body.position, new Color(0.4f, 0.65f, 1f), 18);
+            }
+            else
+            {
+                currentLives--;
+                UpdateHeartsUI();
+                if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
+                if (ParticleManager.Instance && _car != null)
+                    ParticleManager.Instance.SpawnBurst(_car.Body.position, new Color(1f, 0.3f, 0.2f), 22);
+            }
 
             if (currentLives <= 0)
             {
@@ -448,6 +497,7 @@ namespace RoadBuilderGame
             bool newBest = _distance > _bestScore;
             if (newBest) _bestScore = _distance;
             totalCoins += sessionCoins;
+            _meta.RecordRun(_run.Stats, _distance, _selVehicleId);
             SavePlayerData();
 
             Model.LastRun = new RunResult
@@ -456,7 +506,10 @@ namespace RoadBuilderGame
                 distance = _distance,
                 coinsWon = sessionCoins,
                 totalCoins = totalCoins,
-                newBest = newBest
+                newBest = newBest,
+                gems = _run.Stats.gems,
+                bonusCoins = _run.Stats.bonusCoins,
+                bonusLines = string.Join("\n", _run.Stats.lines)
             };
 
             SwitchScreen(ScreenState.GameOver);
@@ -472,7 +525,7 @@ namespace RoadBuilderGame
             switch (item.itemType)
             {
                 case Collectible.Type.Coin:
-                    sessionCoins += 10;
+                    sessionCoins += _run.CollectCoin();
                     if (SoundManager.Instance) SoundManager.Instance.PlayCoin();
                     if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(item.transform.position, new Color(1f, 0.85f, 0.2f), 12);
                     break;
@@ -483,12 +536,36 @@ namespace RoadBuilderGame
                     if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(item.transform.position, new Color(1f, 0.25f, 0.45f), 16);
                     break;
                 case Collectible.Type.Ink:
-                    currentInk = Mathf.Min(maxInk, currentInk + 45f);
+                    currentInk = Mathf.Min(maxInk, currentInk + _tuning.inkPickup);
                     UpdateInkUI();
                     if (SoundManager.Instance) SoundManager.Instance.PlayCoin();
                     if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(item.transform.position, new Color(0.6f, 0.2f, 0.9f), 14);
                     break;
+                default:      // gem and the power-ups
+                    _run.CollectPower(item.itemType);
+                    if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
+                    if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(item.transform.position, new Color(0.5f, 0.9f, 1f), 18);
+                    break;
             }
+        }
+
+        /// <summary>The run director paid out a bonus or announced an event: add the coins and show a toast.</summary>
+        private void OnRunBonus(string label, int coins)
+        {
+            sessionCoins += coins;
+            var m = Model;
+            m.Toast = coins > 0 ? label + "  +" + coins : label;
+            m.ToastId++;
+            if (coins > 0 && SoundManager.Instance) SoundManager.Instance.PlayCoin();
+            if (coins > 0 && ParticleManager.Instance && _car != null)
+                ParticleManager.Instance.SpawnBurst(_car.Body.position + Vector2.up, new Color(1f, 0.85f, 0.2f), 10);
+        }
+
+        private void ApplyTimeScale(float scale)
+        {
+            if (Mathf.Approximately(Time.timeScale, scale)) return;
+            Time.timeScale = scale;
+            Time.fixedDeltaTime = 0.02f * scale;
         }
 
         // ==================================================================== MODEL SYNC (UI reads this)
@@ -511,6 +588,26 @@ namespace RoadBuilderGame
             m.SelectedVehicleId = _selVehicleId;
             m.SelectedSurfaceId = _selSurfaceId;
             m.SelectedWorldId = _selWorldId;
+            m.Gems = _profile != null ? _profile.gems : 0;
+            m.BoostLevel = boostLevel;
+            if (_meta != null)
+            {
+                _meta.EnsureMissions();
+                m.DailyAvailable = _meta.DailyAvailable;
+                m.DailyDay = _meta.NextDailyDay;
+                m.DailyCoins = _tuning.dailyCoins[Mathf.Clamp(m.DailyDay - 1, 0, _tuning.dailyCoins.Length - 1)];
+                m.DailyGems = m.DailyDay == 7 ? _tuning.dailyGemsOnLastDay : 0;
+                m.RewardsAvailable = _meta.AnythingToClaim();
+                var views = new MissionView[_profile.missions.Count];
+                for (int i = 0; i < views.Length; i++)
+                {
+                    var ms = _profile.missions[i];
+                    views[i] = new MissionView { text = MetaProgress.Describe(ms), progress = ms.progress, target = ms.target, claimed = ms.claimed, rewardCoins = ms.rewardCoins, rewardGems = ms.rewardGems };
+                }
+                m.Missions = views;
+                int xp = _meta.Xp(string.IsNullOrEmpty(_selVehicleId) ? "vehicle-start" : _selVehicleId);
+                m.MasteryXp = xp; m.MasteryLevel = MetaProgress.LevelFromXp(xp);
+            }
             m.UnlockedVehicleIds.Clear();
             foreach (var id in _unlockedVehicleIds) m.UnlockedVehicleIds.Add(id);
             m.RaiseChanged();
@@ -525,6 +622,17 @@ namespace RoadBuilderGame
             m.Lives = currentLives;
             m.MaxLives = maxLives;
             m.Ink01 = maxInk > 0f ? Mathf.Clamp01(currentInk / maxInk) : 0f;
+            if (_run != null)
+            {
+                m.Boost01 = _run.Boost01;
+                m.BoostCost = _run.NextBoostCost;
+                m.BoostReady = _run.BoostReady(totalCoins + sessionCoins);
+                m.Combo = _run.Combo; m.Multiplier = _run.Multiplier;
+                m.SessionGems = _run.Stats.gems;
+                int key = (_run.Shield ? 1 : 0) + Mathf.CeilToInt(_run.MagnetLeft) * 2 + Mathf.CeilToInt(_run.DoubleLeft) * 128 + Mathf.CeilToInt(_run.SlowLeft) * 8192 + Mathf.CeilToInt(_run.GhostLeft) * 524288;
+                if (key != _powerKey) { _powerKey = key; _powerText = _run.PowerText(); }
+                m.PowerText = _powerText;
+            }
             m.RaiseHud();
         }
 
@@ -551,11 +659,52 @@ namespace RoadBuilderGame
 
         public void Boost()
         {
-            if (_car == null) return;
+            if (_car == null || _state != ScreenState.Playing) return;
+            var result = _run.TryBoost(totalCoins + sessionCoins, out int paid);
+            if (result == RunDirector.BoostResult.None) return;
+            if (result == RunDirector.BoostResult.Refused)
+            {
+                OnRunBonus("NEED " + _tuning.boostCoinCost + " COINS", 0);
+                return;
+            }
+            if (paid > 0)
+            {
+                int fromRun = Mathf.Min(sessionCoins, paid);      // spend this run's coins first
+                sessionCoins -= fromRun;
+                totalCoins -= paid - fromRun;
+            }
+            _car.BoostKick(_car.TargetSpeed + _tuning.boostSpeedBonus);
             if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
             if (ParticleManager.Instance)
                 ParticleManager.Instance.SpawnBurst(_car.Body.position, new Color(0.2f, 0.95f, 1f), 14);
-            _car.NudgeUnstick();
+            OnRunBonus(result == RunDirector.BoostResult.Free ? "FREE BOOST" : "BOOST", 0);
+            SyncHud();
+        }
+
+        public void OpenRewards() { SwitchScreen(ScreenState.Rewards); }
+
+        public void ClaimDaily()
+        {
+            SavePlayerData();
+            if (_meta.ClaimDaily(out int coins, out int gems))
+            {
+                totalCoins = _profile.coins;
+                SavePlayerData();
+                if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
+                SyncModel();
+            }
+        }
+
+        public void ClaimMission(int index)
+        {
+            SavePlayerData();
+            if (_meta.ClaimMission(index, out int coins, out int gems))
+            {
+                totalCoins = _profile.coins;
+                SavePlayerData();
+                if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
+                SyncModel();
+            }
         }
 
         public void CycleWorld(int dir)
@@ -617,7 +766,7 @@ namespace RoadBuilderGame
 
         public void UpgradeStat(int statIndex)
         {
-            int currentLevel = (statIndex == 0) ? engineLevel : ((statIndex == 1) ? suspensionLevel : inkTankLevel);
+            int currentLevel = (statIndex == 0) ? engineLevel : ((statIndex == 1) ? suspensionLevel : ((statIndex == 2) ? inkTankLevel : boostLevel));
             if (currentLevel >= GameCatalog.MaxUpgradeLevel) return;
 
             int cost = GameCatalog.UpgradeCost(currentLevel);
@@ -627,6 +776,7 @@ namespace RoadBuilderGame
                 if (statIndex == 0) engineLevel++;
                 else if (statIndex == 1) suspensionLevel++;
                 else if (statIndex == 2) inkTankLevel++;
+                else if (statIndex == 3) boostLevel++;
 
                 if (SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
                 SavePlayerData();

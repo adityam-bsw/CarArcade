@@ -25,6 +25,7 @@ namespace RoadBuilderGame.UI
             var parent = _rt.parent as RectTransform;
             if (parent == null) return;
             var size = parent.rect.size;
+            if (size.x < 1f || size.y < 1f) return;          // not laid out yet (inactive or zero-size parent): keep the last good values
             if (!force && size == _lastParent) return;
             _lastParent = size;
 

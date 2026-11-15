@@ -50,6 +50,7 @@ namespace RoadBuilderGame.UI.Editor
                 Save(BuildHud(), "HudScreen");
                 Save(BuildResult(), "ResultScreen");
                 Save(BuildSettings(), "SettingsScreen");
+                Save(BuildRewards(), "RewardsScreen");
                 Save(BuildCollection(cardPrefab, tabPrefab), "CollectionScreen");
                 SaveRoot(BuildRoot());
             }
@@ -125,6 +126,11 @@ namespace RoadBuilderGame.UI.Editor
             var worlds = ArtButton(controls, "WorldsButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "WORLDS",
                 44, ColorToken.TextPrimary, BC, BC, new Vector2(560, 70), new Vector2(360, 134), -3f, new Vector4(30, 30, 30, 30));
 
+            // Rewards: daily reward and missions, with a red sticker when something can be claimed (top right, left of the gear).
+            var rewards = ArtButton(hdrR, "RewardsButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "REWARDS",
+                32, ColorToken.TextPrimary, TR, TR, new Vector2(-190, -48), new Vector2(260, 104), -2f, new Vector4(26, 26, 26, 26));
+            var rewardsDot = ArtImg(rewards.rt, "Dot", SpriteSlot.DecoSticker, TR, TR, new Vector2(18, 18), new Vector2(60, 60), 10f);
+
             // Hand-stuck details that overlap the plates (never tappable).
             ArtImg(hdrL, "TapeCounter", SpriteSlot.DecoTape, TL, TL, new Vector2(300, -26), new Vector2(130, 40), -9f);
             ArtImg(hdrR, "TapeBest", SpriteSlot.DecoTape, TR, TR, new Vector2(-270, -158), new Vector2(130, 40), 11f);
@@ -135,7 +141,8 @@ namespace RoadBuilderGame.UI.Editor
             Ref(s, "playButton", play.button); Ref(s, "garageButton", garage.button);
             Ref(s, "worldsButton", worlds.button); Ref(s, "settingsButton", settings.button);
             Ref(s, "titlePlate", titlePlate.rectTransform);
-            Refs(s, "popIns", new Object[] { counter.rectTransform, settings.rt, bestPlate.rectTransform, garage.rt, play.rt, worlds.rt });
+            Ref(s, "rewardsButton", rewards.button); Ref(s, "rewardsDot", rewardsDot.gameObject);
+            Refs(s, "popIns", new Object[] { counter.rectTransform, settings.rt, bestPlate.rectTransform, garage.rt, play.rt, worlds.rt, rewards.rt });
             return root;
         }
 
@@ -543,12 +550,13 @@ namespace RoadBuilderGame.UI.Editor
             var back = BackBadge(header);
             CoinCounter(header, TR, TR, new Vector2(-36, -40), out var coinsText);
 
-            // Workshop plates for the three upgrades on the left wall; the door in the middle shows the showcase car.
+            // Workshop plates for the four upgrades on the left wall; the door in the middle shows the showcase car.
             var g = root.GetComponent<GarageScreen>();
-            string[] names = { "ENGINE", "SUSPENSION", "INK TANK" };
-            for (int i = 0; i < 3; i++)
+            string[] names = { "ENGINE", "SUSPENSION", "INK TANK", "BOOST" };
+            for (int i = 0; i < 4; i++)
             {
-                var plate = ArtImg(upgrades, "Upgrade_" + names[i], SpriteSlot.PlateUpgrade, TL, TL, new Vector2(34, -150 - i * 204), new Vector2(400, 194));
+                var plate = ArtImg(upgrades, "Upgrade_" + names[i], SpriteSlot.PlateUpgrade, TL, TL, new Vector2(34, -146 - i * 156), new Vector2(400, 194));
+                plate.rectTransform.localScale = new Vector3(0.78f, 0.78f, 1f);   // four plates fit above the card rail
                 var t = Label(plate.transform, "Title", names[i], TextStyle.Button, ColorToken.TextPrimary, 32, TextAlignmentOptions.MidlineLeft);
                 t.enableAutoSizing = true; t.fontSizeMin = 18; t.fontSizeMax = 32;
                 Place(t.rectTransform, TL, TL, new Vector2(30, -22), new Vector2(200, 42));
@@ -629,12 +637,36 @@ namespace RoadBuilderGame.UI.Editor
             Stretch(inkLabel.rectTransform);
 
             var boost = ArtButton(bottomRight, "BoostButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
-                "BOOST", 44, ColorToken.TextOnAccent, BR, BR, new Vector2(-40, 36), new Vector2(320, 125), 0f, new Vector4(66, 26, 26, 22));
+                "BOOST", 44, ColorToken.TextOnAccent, BR, BR, new Vector2(-40, 36), new Vector2(320, 125), 0f, new Vector4(66, 52, 26, 18));
+            var boostCost = Label(boost.rt, "Cost", "5 COINS", TextStyle.Caption, ColorToken.TextOnAccent, 24);
+            Place(boostCost.rectTransform, BC, BC, new Vector2(10, 26), new Vector2(220, 30));
+            // The free boost meter: fills from air time, flips and coin combos; full means the next boost costs nothing.
+            var meterFrame = ArtImg(bottomRight, "BoostMeterFrame", SpriteSlot.InkFrame, BR, BR, new Vector2(-40, 172), new Vector2(320, 36));
+            var meter = Rect("BoostMeter", meterFrame.transform);
+            Place(meter, TL, TL, new Vector2(10, -9), new Vector2(300, 18));
+            var meterFill = RawImg(meter, "Fill", SpriteSlot.PipOn, Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+            meterFill.preserveAspect = false;
+            meterFill.rectTransform.anchorMin = Vector2.zero; meterFill.rectTransform.anchorMax = Vector2.one;
+            meterFill.rectTransform.offsetMin = Vector2.zero; meterFill.rectTransform.offsetMax = Vector2.zero;
+
+            // Combo under the odometer, power-up timers above the ink bar, a toast for events, gems under the coin counter.
+            var combo = Label(topCenter, "Combo", "", TextStyle.Heading, ColorToken.Accent, 54);
+            Place(combo.rectTransform, TC, TC, new Vector2(0, -158), new Vector2(700, 70));
+            var power = Label(bottomCenter, "PowerUps", "", TextStyle.Caption, ColorToken.TextPrimary, 28);
+            Place(power.rectTransform, BC, BC, new Vector2(0, 112), new Vector2(900, 40));
+            var toast = Label(c, "Toast", "", TextStyle.Title, ColorToken.Accent, 64);
+            Place(toast.rectTransform, C, C, new Vector2(0, 200), new Vector2(1100, 100));
+            var gemsCap = Label(topRight, "GemsCaption", "GEMS", TextStyle.Caption, ColorToken.TextSecondary, 24, TextAlignmentOptions.MidlineRight);
+            Place(gemsCap.rectTransform, TR, TR, new Vector2(-120, -150), new Vector2(100, 36));
+            var gemsHud = Label(topRight, "GemsText", "0", TextStyle.Number, ColorToken.Accent, 40, TextAlignmentOptions.MidlineRight);
+            Place(gemsHud.rectTransform, TR, TR, new Vector2(-40, -146), new Vector2(80, 46));
 
             var s = root.GetComponent<HudScreen>();
             Ref(s, "distanceText", distance); Ref(s, "speedText", speed); Ref(s, "coinsText", coinsText);
             Refs(s, "hearts", hearts); Ref(s, "inkBar", inkBar); Ref(s, "inkFill", fill.rectTransform);
             Ref(s, "inkLabel", inkLabel); Ref(s, "boostButton", boost.button); Ref(s, "needle", needle.rectTransform);
+            Ref(s, "boostMeter", meterFill.rectTransform); Ref(s, "boostCostText", boostCost); Ref(s, "comboText", combo);
+            Ref(s, "powerText", power); Ref(s, "toastText", toast); Ref(s, "gemsText", gemsHud);
             return root;
         }
 
@@ -651,7 +683,7 @@ namespace RoadBuilderGame.UI.Editor
             Props(c, PropMode.Lamps);
 
             // An award certificate on the wall, with the verdict on its red banner and a wax seal at the bottom.
-            var cert = ArtImg(c, "Certificate", SpriteSlot.CertPaper, C, C, new Vector2(0, 76), new Vector2(920, 640), -1.5f);
+            var cert = ArtImg(c, "Certificate", SpriteSlot.CertPaper, C, C, new Vector2(-170, 76), new Vector2(920, 640), -1.5f);
             var reason = Label(cert.transform, "Reason", "FELL INTO THE CHASM!", TextStyle.Heading, ColorToken.TextPrimary, 40);
             reason.enableAutoSizing = true; reason.fontSizeMin = 22; reason.fontSizeMax = 40;
             Place(reason.rectTransform, C, C, new Vector2(0, 220), new Vector2(370, 64));
@@ -675,6 +707,16 @@ namespace RoadBuilderGame.UI.Editor
             var total = Label(cert.transform, "Total", "TOTAL 0", TextStyle.Caption, ColorToken.TextOnAccent, 28);
             Place(total.rectTransform, C, C, new Vector2(40, -240), new Vector2(400, 40));
 
+            // The bonus board pinned beside the certificate: flips, air time, chests and gems earned in the run.
+            var board = ArtImg(c, "BonusBoard", SpriteSlot.PanelBoard, C, C, new Vector2(640, 76), new Vector2(520, 315), 2f);
+            var boardTitle = Label(board.transform, "Title", "BONUSES", TextStyle.Heading, ColorToken.Accent, 36);
+            Place(boardTitle.rectTransform, C, C, new Vector2(0, 84), new Vector2(380, 50));
+            var bonus = Label(board.transform, "Lines", "", TextStyle.Caption, ColorToken.TextPrimary, 26);
+            bonus.enableAutoSizing = true; bonus.fontSizeMin = 14; bonus.fontSizeMax = 28; bonus.textWrappingMode = TextWrappingModes.Normal;
+            Place(bonus.rectTransform, C, C, new Vector2(0, -2), new Vector2(400, 150));
+            var gemsWon = Label(board.transform, "Gems", "", TextStyle.Number, ColorToken.Accent, 34);
+            Place(gemsWon.rectTransform, C, C, new Vector2(0, -102), new Vector2(380, 44));
+
             var retry = ArtButton(actions, "RetryButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
                 "PLAY AGAIN", 48, ColorToken.TextOnAccent, BC, BC, new Vector2(-250, 30), new Vector2(480, 187), 0f, new Vector4(100, 40, 40, 34));
             var menu = ArtButton(actions, "MenuButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate,
@@ -682,8 +724,69 @@ namespace RoadBuilderGame.UI.Editor
 
             var s = root.GetComponent<ResultScreen>();
             Ref(s, "reasonText", reason); Ref(s, "distanceText", dist); Ref(s, "newBestBadge", badge);
-            Ref(s, "coinsWonText", won); Ref(s, "totalText", total);
+            Ref(s, "coinsWonText", won); Ref(s, "totalText", total); Ref(s, "bonusText", bonus); Ref(s, "gemsText", gemsWon);
             Ref(s, "retryButton", retry.button); Ref(s, "menuButton", menu.button);
+            return root;
+        }
+
+        private static GameObject BuildRewards()
+        {
+            var root = ScreenRoot<RewardsScreen>("RewardsScreen", ShowStyle.Fade, out var c);
+            WallBackdrop(c, false);
+            c = DesignFrameRect(c);
+            var header = Group(c, "Header");
+            var daily = Group(c, "Daily");
+            var missionsGroup = Group(c, "Missions");
+
+            SmallTitle(header, "REWARDS", out _);
+            var back = BackBadge(header);
+            CoinCounter(header, TR, TR, new Vector2(-36, -40), out var coinsText);
+            var gemsCap = Label(header, "GemsCaption", "GEMS", TextStyle.Caption, ColorToken.TextSecondary, 26, TextAlignmentOptions.MidlineRight);
+            Place(gemsCap.rectTransform, TR, TR, new Vector2(-190, -166), new Vector2(110, 40));
+            var gems = Label(header, "GemsText", "0", TextStyle.Number, ColorToken.Accent, 44, TextAlignmentOptions.MidlineRight);
+            Place(gems.rectTransform, TR, TR, new Vector2(-40, -160), new Vector2(140, 52));
+
+            // Left: the daily reward board.
+            var board = ArtImg(daily, "DailyBoard", SpriteSlot.PanelBoard, C, C, new Vector2(-500, -50), new Vector2(700, 424), -1.5f);
+            var dTitle = Label(board.transform, "Caption", "DAILY REWARD", TextStyle.Heading, ColorToken.TextPrimary, 44);
+            Place(dTitle.rectTransform, C, C, new Vector2(0, 128), new Vector2(560, 60));
+            var dayText = Label(board.transform, "Day", "DAY 1 OF 7", TextStyle.Number, ColorToken.Accent, 48);
+            Place(dayText.rectTransform, C, C, new Vector2(0, 56), new Vector2(560, 60));
+            var dReward = Label(board.transform, "Reward", "+50 COINS", TextStyle.Caption, ColorToken.Coin, 34);
+            Place(dReward.rectTransform, C, C, new Vector2(0, -4), new Vector2(560, 50));
+            var dBtn = ArtButton(board.transform, "ClaimButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
+                "CLAIM", 40, ColorToken.TextOnAccent, C, C, new Vector2(0, -98), new Vector2(420, 130), 0f, new Vector4(66, 26, 26, 22));
+
+            // Right: three missions for the day.
+            var mBoard = ArtImg(missionsGroup, "MissionBoard", SpriteSlot.PanelBoard, C, C, new Vector2(440, -40), new Vector2(1000, 605), 1f);
+            var mTitle = Label(mBoard.transform, "Caption", "TODAY'S MISSIONS", TextStyle.Heading, ColorToken.TextPrimary, 44);
+            Place(mTitle.rectTransform, C, C, new Vector2(0, 232), new Vector2(700, 60));
+
+            var s = root.GetComponent<RewardsScreen>();
+            for (int i = 0; i < 3; i++)
+            {
+                float y = 120 - i * 140;
+                var rowRoot = Rect("Mission" + i, mBoard.transform);
+                Place(rowRoot, C, C, new Vector2(0, y), new Vector2(900, 120));
+                var t = Label(rowRoot, "Text", "", TextStyle.Button, ColorToken.TextPrimary, 32, TextAlignmentOptions.MidlineLeft);
+                t.enableAutoSizing = true; t.fontSizeMin = 18; t.fontSizeMax = 32;
+                Place(t.rectTransform, C, C, new Vector2(-190, 22), new Vector2(520, 50));
+                var rw = Label(rowRoot, "Reward", "", TextStyle.Caption, ColorToken.Coin, 26, TextAlignmentOptions.MidlineLeft);
+                Place(rw.rectTransform, C, C, new Vector2(-190, -24), new Vector2(520, 36));
+                var pr = Label(rowRoot, "Progress", "0 / 0", TextStyle.Number, ColorToken.Accent, 36);
+                Place(pr.rectTransform, C, C, new Vector2(120, 0), new Vector2(190, 50));
+                var cl = ArtButton(rowRoot, "ClaimButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
+                    "CLAIM", 32, ColorToken.TextOnAccent, C, C, new Vector2(350, 0), new Vector2(210, 96), 0f, new Vector4(48, 20, 20, 18));
+
+                string row = "missions.Array.data[" + i + "]";
+                Ref(s, row + ".root", rowRoot.gameObject); Ref(s, row + ".text", t); Ref(s, row + ".progress", pr); Ref(s, row + ".reward", rw);
+                Ref(s, row + ".claim", cl.button); Ref(s, row + ".claimLabel", cl.label); Ref(s, row + ".claimImage", cl.image);
+            }
+
+            Ref(s, "coinsText", coinsText); Ref(s, "gemsText", gems);
+            Ref(s, "dailyTitle", dayText); Ref(s, "dailyReward", dReward);
+            Ref(s, "dailyButton", dBtn.button); Ref(s, "dailyButtonLabel", dBtn.label); Ref(s, "dailyButtonImage", dBtn.image);
+            Ref(s, "backButton", back.button);
             return root;
         }
 

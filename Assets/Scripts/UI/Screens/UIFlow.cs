@@ -40,6 +40,7 @@ namespace RoadBuilderGame.UI
                 case ScreenState.GarageMenu: stack.Reset<GarageScreen>(); break;
                 case ScreenState.Playing: stack.Reset<HudScreen>(); break;
                 case ScreenState.GameOver: stack.Reset<ResultScreen>(); break;
+                case ScreenState.Rewards: stack.Reset<RewardsScreen>(); break;
             }
         }
 

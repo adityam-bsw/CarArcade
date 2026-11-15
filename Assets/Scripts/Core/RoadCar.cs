@@ -67,6 +67,27 @@ namespace RoadBuilderGame
         public Rigidbody2D Body { get; private set; }
         public bool HeadHit { get; set; }
 
+        private ContactFilter2D _groundFilter = new ContactFilter2D { useTriggers = false, useLayerMask = false };
+
+        /// <summary>True while a wheel or the body touches something solid (pickups, which are triggers, do not count).</summary>
+        public bool IsGrounded
+        {
+            get
+            {
+                if (Body == null) return true;
+                if (_wheels != null) foreach (var w in _wheels) if (w != null && w.IsTouching(_groundFilter)) return true;
+                return Body.IsTouching(_groundFilter);
+            }
+        }
+
+        /// <summary>Boost: raises forward speed to at least <paramref name="speed"/> without the unstick hop.</summary>
+        public void BoostKick(float speed)
+        {
+            if (Body == null) return;
+            var v = Body.linearVelocity;
+            if (v.x < speed) Body.linearVelocity = new Vector2(speed, v.y);
+        }
+
         private Rigidbody2D[] _wheels;
         private WheelJoint2D[] _joints;
         private float _wheelRadius = 0.42f;
@@ -159,14 +180,19 @@ namespace RoadBuilderGame
             BuildCore(position, bodySprite, wheelSprite, w, h, wr, mass, backAnchor, frontAnchor);
         }
 
+        // Shared by every car: creating them per car leaked two materials per run.
+        private static PhysicsMaterial2D _tyreMat, _bodyMat;
+        private static PhysicsMaterial2D TyreMaterial => _tyreMat != null ? _tyreMat : (_tyreMat = new PhysicsMaterial2D("Tyre") { friction = 2.4f, bounciness = 0.04f });
+        private static PhysicsMaterial2D BodyMaterial => _bodyMat != null ? _bodyMat : (_bodyMat = new PhysicsMaterial2D("CarBody") { friction = 0.0f, bounciness = 0.02f });
+
         void BuildCore(Vector2 position, Sprite bodySprite, Sprite wheelSprite, float w, float h, float wr, float mass,
             Vector2 backAnchor, Vector2 frontAnchor)
         {
             _wheelRadius = wr;
 
             // High-grip rubber tyres & zero-friction skidplate on chassis so the bumper never snags in dips!
-            var tyreMat = new PhysicsMaterial2D("Tyre") { friction = 2.4f, bounciness = 0.04f };
-            var bodyMat = new PhysicsMaterial2D("CarBody") { friction = 0.0f, bounciness = 0.02f };
+            var tyreMat = TyreMaterial;
+            var bodyMat = BodyMaterial;
 
             // ---- Body ----
             var bodyGo = new GameObject("Body");

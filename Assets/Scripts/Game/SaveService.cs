@@ -30,16 +30,32 @@ namespace RoadBuilderGame
         public string selectedSurfaceId = "";
         public string selectedWorldId = "";
 
+        // Rewards and meta progress
+        public int gems;
+        public int boostLevel = 1;
+        public string lastDailyClaim = "";           // yyyy-MM-dd of the last claimed daily reward
+        public int dailyStreak;                       // days in a row, 1 to 7
+        public string missionDate = "";               // the day the missions below belong to
+        public System.Collections.Generic.List<MissionState> missions = new System.Collections.Generic.List<MissionState>();
+        public System.Collections.Generic.List<VehicleXp> vehicleXp = new System.Collections.Generic.List<VehicleXp>();
+
         /// <summary>Clamp values to the ranges the game supports (same limits the old PlayerPrefs loader used).</summary>
         public void Sanitize()
         {
             engineLevel = Mathf.Clamp(engineLevel, 1, 5);
             suspensionLevel = Mathf.Clamp(suspensionLevel, 1, 5);
             inkTankLevel = Mathf.Clamp(inkTankLevel, 1, 5);
+            boostLevel = Mathf.Clamp(boostLevel, 1, 5);
+            if (gems < 0) gems = 0;
+            if (missions == null) missions = new System.Collections.Generic.List<MissionState>();
+            if (vehicleXp == null) vehicleXp = new System.Collections.Generic.List<VehicleXp>();
             if (coins < 0) coins = 0;
             if (bestDistance < 0f) bestDistance = 0f;
         }
     }
+
+    [Serializable] public class MissionState { public int kind; public int target; public int progress; public bool claimed; public int rewardCoins; public int rewardGems; }
+    [Serializable] public class VehicleXp { public string id; public int xp; }
 
     /// <summary>
     /// The only place that reads or writes player progress. Replaces the loose "HCD_*" PlayerPrefs keys.

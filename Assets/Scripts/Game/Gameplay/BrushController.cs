@@ -85,7 +85,14 @@ namespace RoadBuilderGame
             if (!down && !held && !up) return;
 
             Vector2 world = _cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, -_cam.transform.position.z));
+            Process(world, down, held, up);
+        }
 
+        /// <summary>Feed a pointer event in world space (tests and the debug auto-driver use this instead of a real pointer).</summary>
+        public void Inject(Vector2 world, bool down, bool held, bool up) { Process(world, down, held, up); }
+
+        private void Process(Vector2 world, bool down, bool held, bool up)
+        {
             if (down)
             {
                 StartStroke(world);

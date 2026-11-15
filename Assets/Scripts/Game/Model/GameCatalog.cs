@@ -30,12 +30,12 @@ namespace RoadBuilderGame
 
         public static string UpgradeName(int statIndex)
         {
-            return statIndex == 0 ? "ENGINE" : (statIndex == 1 ? "SUSPENSION" : "INK TANK");
+            return statIndex == 0 ? "ENGINE" : (statIndex == 1 ? "SUSPENSION" : (statIndex == 2 ? "INK TANK" : "BOOST"));
         }
 
         public static string UpgradeHint(int statIndex)
         {
-            return statIndex == 0 ? "More speed" : (statIndex == 1 ? "More grip" : "More road");
+            return statIndex == 0 ? "More speed" : (statIndex == 1 ? "More grip" : (statIndex == 2 ? "More road" : "Longer boost"));
         }
 
         public static void World(EnvironmentTheme t, out string title, out string description, out string previewResource)

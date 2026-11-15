@@ -24,6 +24,8 @@ namespace RoadBuilderGame
         private float _uScale;        // u units per world metre along the road
         private float _vCapMid;       // a point in the middle of the slab body, used for the flat end caps
 
+        private void OnDestroy() { if (_mesh != null) Destroy(_mesh); }      // the mesh is created in code, so it is ours to free
+
         public void Init()
         {
             _mesh = new Mesh { name = "RoadRibbonMesh" };

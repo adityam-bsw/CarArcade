@@ -44,6 +44,16 @@ namespace RoadBuilderGame
 
         public int SegmentCount => _segments.Count;
 
+        [Header("Performance")]
+        [Tooltip("A stroke is cut into chunks of at most this many knots, so a long road never means rebuilding a long mesh and collider.")]
+        public int maxKnotsPerChunk = 36;
+        [Tooltip("Minimum seconds between rebuilds caused only by the stretching live tip.")]
+        public float liveTipRebuildInterval = 0.04f;
+        private float _lastLiveRebuild;
+        private readonly List<Vector2> _working = new List<Vector2>(64);
+        /// <summary>Total sampled road points across all segments (diagnostics).</summary>
+        public int SampledPointCount { get { int n = 0; foreach (var s in _segments) n += s.sampledPoints.Count; return n; } }
+
         /// <summary>
         /// The furthest right X coordinate of any road built so far.
         /// New road points must always be >= FrontierMaxX to prevent overlapping!
@@ -189,7 +199,7 @@ namespace RoadBuilderGame
                     _activeSegment.liveTip = Vector2.Lerp(_activeSegment.liveTip, constrained, liveTipLerp);
                     _activeSegment.liveTip.x = Mathf.Max(lastKnot.x + minForwardDeltaX * 0.5f, _activeSegment.liveTip.x);
                     _activeSegment.hasLiveTip = true;
-                    RebuildActive();
+                    if (Time.unscaledTime - _lastLiveRebuild >= liveTipRebuildInterval) RebuildActive();
                 }
             }
         }
@@ -243,7 +253,32 @@ namespace RoadBuilderGame
             _activeSegment.maxX = Mathf.Max(_activeSegment.maxX, smoothPt.x);
             FrontierMaxX = Mathf.Max(FrontierMaxX, _activeSegment.maxX);
             RebuildActive();
+            if (_activeSegment.rawKnots.Count >= maxKnotsPerChunk) StartNextChunk();
             return true;
+        }
+
+        /// <summary>
+        /// The active chunk is full: it is finished (never rebuilt again) and the stroke goes on in a new chunk that starts at
+        /// the same point, so the road is continuous but each rebuild stays small.
+        /// </summary>
+        private void StartNextChunk()
+        {
+            var full = _activeSegment;
+            full.hasLiveTip = false;
+            Vector2 joint = full.rawKnots[full.rawKnots.Count - 1];
+
+            var next = new Segment();
+            next.rawKnots.Add(joint);
+            next.liveTip = joint;
+            next.hasLiveTip = false;
+            next.minX = joint.x;
+            next.maxX = joint.x;
+            var go = new GameObject("RoadSegment_" + _segments.Count);
+            go.transform.SetParent(transform, false);
+            next.chunk = go.AddComponent<RoadChunk>();
+            next.chunk.Init(_physicsMaterial);
+            _segments.Add(next);
+            _activeSegment = next;
         }
 
         private Vector2 ConstrainForwardAndTurn(Segment seg, Vector2 candidate)
@@ -333,9 +368,11 @@ namespace RoadBuilderGame
 
         void RebuildActive()
         {
-            if (_activeSegment == null) return;
 
-            var workingKnots = new List<Vector2>(_activeSegment.rawKnots);
+            _lastLiveRebuild = Time.unscaledTime;
+            var workingKnots = _working;
+            workingKnots.Clear();
+            workingKnots.AddRange(_activeSegment.rawKnots);
             if (_activeSegment.hasLiveTip && workingKnots.Count >= 1)
             {
                 Vector2 last = workingKnots[workingKnots.Count - 1];
@@ -416,23 +453,23 @@ namespace RoadBuilderGame
         public bool TryGetRoadYAtX(float x, out float roadY)
         {
             roadY = 0f;
-            foreach (var seg in _segments)
+            for (int s = 0; s < _segments.Count; s++)
             {
-                var pts = seg.sampledPoints;
-                if (pts.Count < 2) continue;
-                if (x < pts[0].x || x > pts[pts.Count - 1].x) continue;
+                var pts = _segments[s].sampledPoints;
+                int n = pts.Count;
+                if (n < 2 || x < pts[0].x || x > pts[n - 1].x) continue;
 
-                for (int i = 0; i < pts.Count - 1; i++)
+                // binary search for the span that contains x (points are strictly forward in x)
+                int lo = 0, hi = n - 1;
+                while (hi - lo > 1)
                 {
-                    Vector2 a = pts[i];
-                    Vector2 b = pts[i + 1];
-                    if (x >= a.x && x <= b.x)
-                    {
-                        float t = (b.x - a.x) > 1e-4f ? (x - a.x) / (b.x - a.x) : 0f;
-                        roadY = Mathf.Lerp(a.y, b.y, t);
-                        return true;
-                    }
+                    int mid = (lo + hi) >> 1;
+                    if (pts[mid].x <= x) lo = mid; else hi = mid;
                 }
+                Vector2 a = pts[lo], b = pts[hi];
+                float t = (b.x - a.x) > 1e-4f ? (x - a.x) / (b.x - a.x) : 0f;
+                roadY = Mathf.Lerp(a.y, b.y, Mathf.Clamp01(t));
+                return true;
             }
             return false;
         }
@@ -440,15 +477,15 @@ namespace RoadBuilderGame
         public float LowestY(float x0, float x1)
         {
             float min = float.MaxValue;
-            foreach (var seg in _segments)
+            for (int s = 0; s < _segments.Count; s++)
             {
+                var seg = _segments[s];
+                if (seg.maxX < x0 || seg.minX > x1) continue;           // chunk entirely outside the range
                 var pts = seg.sampledPoints.Count > 0 ? seg.sampledPoints : seg.rawKnots;
-                foreach (var pt in pts)
+                for (int i = 0; i < pts.Count; i++)
                 {
-                    if (pt.x >= x0 && pt.x <= x1)
-                    {
-                        if (pt.y < min) min = pt.y;
-                    }
+                    var pt = pts[i];
+                    if (pt.x >= x0 && pt.x <= x1 && pt.y < min) min = pt.y;
                 }
             }
             return (min == float.MaxValue) ? -10f : min;

@@ -15,6 +15,9 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Button garageButton;
         [SerializeField] private Button worldsButton;
         [SerializeField] private Button settingsButton;
+        [SerializeField] private Button rewardsButton;
+        [SerializeField] private GameObject rewardsDot;
+        [SerializeField] private TMP_Text gemsText;
         [Header("Entrance")]
         [SerializeField] private RectTransform titlePlate;
         [SerializeField] private RectTransform[] popIns;
@@ -30,6 +33,7 @@ namespace RoadBuilderGame.UI
             garageButton.onClick.AddListener(() => GameServices.Actions?.OpenGarage());
             worldsButton.onClick.AddListener(() => GameServices.Actions?.OpenWorlds());
             settingsButton.onClick.AddListener(() => Stack?.Push<SettingsScreen>());
+            if (rewardsButton != null) rewardsButton.onClick.AddListener(() => GameServices.Actions?.OpenRewards());
         }
 
         public override void OnShow(object args)
@@ -87,6 +91,8 @@ namespace RoadBuilderGame.UI
             if (_lastCoins >= 0 && m.Coins != _lastCoins) UIAnim.Punch(coinsText.transform.parent, 0.1f);
             _lastCoins = m.Coins;
             bestText.SetText("BEST {0} m", Mathf.RoundToInt(m.BestDistance));
+            if (rewardsDot != null) rewardsDot.SetActive(m.RewardsAvailable);
+            if (gemsText != null) gemsText.SetText("{0}", m.Gems);
         }
     }
 }

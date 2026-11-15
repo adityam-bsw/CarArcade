@@ -27,7 +27,7 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Button actionButton;
         [SerializeField] private Button backButton;
         [SerializeField] private CardRail rail;
-        [SerializeField] private UpgradeRow[] rows = new UpgradeRow[3];
+        [SerializeField] private UpgradeRow[] rows = new UpgradeRow[4];
 
         private int _lastCoins = -1;
         private CatalogEntry _focus;

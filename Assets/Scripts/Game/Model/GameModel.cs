@@ -8,7 +8,8 @@ namespace RoadBuilderGame
         StageSelect,
         GarageMenu,
         Playing,
-        GameOver
+        GameOver,
+        Rewards
     }
 
     /// <summary>Outcome of the last run, shown on the result screen.</summary>
@@ -19,6 +20,19 @@ namespace RoadBuilderGame
         public int coinsWon;
         public int totalCoins;
         public bool newBest;
+        public int gems;
+        public int bonusCoins;
+        /// <summary>One line per bonus earned in the run (flips, air time, chests...), for the result screen.</summary>
+        public string bonusLines;
+    }
+
+    /// <summary>One daily mission as the rewards screen shows it.</summary>
+    public sealed class MissionView
+    {
+        public string text;
+        public int progress, target, rewardCoins, rewardGems;
+        public bool claimed;
+        public bool Complete => progress >= target;
     }
 
     /// <summary>
@@ -57,6 +71,22 @@ namespace RoadBuilderGame
         public int SessionCoins;
         public int Lives, MaxLives = 3;
         public float Ink01 = 1f;
+        public float Boost01;                 // free boost meter, 0 to 1
+        public int BoostCost;                 // coins the next boost charges (0 = free)
+        public bool BoostReady;               // can boost right now
+        public int Combo, Multiplier = 1;
+        public int SessionGems;
+        public string PowerText = "";         // active power-ups, e.g. "SHIELD  MAGNET 8"
+        public string Toast = "";             // short event text; ToastId changes for every new one
+        public int ToastId;
+
+        // Rewards and progress
+        public int Gems, BoostLevel = 1;
+        public bool RewardsAvailable;         // something to claim
+        public bool DailyAvailable;
+        public int DailyDay = 1, DailyCoins, DailyGems;
+        public MissionView[] Missions = new MissionView[0];
+        public int MasteryLevel = 1, MasteryXp, MasteryNext = 100;
 
         public RunResult LastRun;
 
@@ -86,7 +116,7 @@ namespace RoadBuilderGame
 
         public int LevelOf(int statIndex)
         {
-            return statIndex == 0 ? EngineLevel : (statIndex == 1 ? SuspensionLevel : InkTankLevel);
+            return statIndex == 0 ? EngineLevel : (statIndex == 1 ? SuspensionLevel : (statIndex == 2 ? InkTankLevel : BoostLevel));
         }
     }
 
@@ -98,6 +128,9 @@ namespace RoadBuilderGame
         void OpenGarage();
         void OpenWorlds();
         void Boost();
+        void OpenRewards();
+        void ClaimDaily();
+        void ClaimMission(int index);
         void UpgradeStat(int statIndex);
         void SelectOrUnlockVehicle();
         void CycleVehicle(int dir);
