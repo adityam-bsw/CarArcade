@@ -18,7 +18,13 @@ MonoBehaviour:
     a: 3.5
     b: 0.8
     c: 0
-    d: 0
-  hintFull: Low gravity bounce.
+    d: 3
+  hintFull: 'Moon dust: low gravity bounce.'
   hintShort: Bouncy
-  hintIcon: 
+  hintIcon: icon-moon-dust
+  pieceLengthM: 4
+  safeEntryM: 6
+  warnTint: {r: 0.9, g: 0.82, b: 0.7, a: 1}
+  dangerTint: {r: 0.7, g: 0.45, b: 0.4, a: 1}
+  verb: Ride the bounce
+  consequence: long soft hops

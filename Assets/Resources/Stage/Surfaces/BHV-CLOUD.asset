@@ -15,10 +15,16 @@ MonoBehaviour:
   surfaceId: surface-cloud
   modules:
   - kind: 4
-    a: 1.2
+    a: 2
     b: 0
     c: 0
     d: 0
-  hintFull: Cloud melts under you. Do not stop.
+  hintFull: 'Cloud: it melts 2 s after you land.'
   hintShort: 'Cloud: keep going'
-  hintIcon: 
+  hintIcon: icon-cloud
+  pieceLengthM: 4
+  safeEntryM: 6
+  warnTint: {r: 0.9, g: 0.82, b: 0.7, a: 1}
+  dangerTint: {r: 0.7, g: 0.45, b: 0.4, a: 1}
+  verb: Do not stop
+  consequence: dissolves 2 s after contact

@@ -29,6 +29,8 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Image actionImage;
         [SerializeField] private Button actionButton;
         [SerializeField] private Button backButton;
+        [SerializeField] private Button masteryButton;
+        [SerializeField] private TMP_Text profileText;
         [SerializeField] private CardRail rail;
         [SerializeField] private UpgradeRow[] rows = new UpgradeRow[5];
 
@@ -40,6 +42,7 @@ namespace RoadBuilderGame.UI
         {
             actionButton.onClick.AddListener(OnActionPressed);
             backButton.onClick.AddListener(() => GameServices.Actions?.GoHome());
+            if (masteryButton != null) masteryButton.onClick.AddListener(() => Stack?.Push<ProgressHubScreen>(HubPage.Mastery));
             for (int i = 0; i < rows.Length; i++)
             {
                 int stat = i;
@@ -95,6 +98,7 @@ namespace RoadBuilderGame.UI
             if (scrapText != null) scrapText.SetText("SCRAP {0}", m.Scrap);
             rail.Refresh(m.SelectedVehicleId, _focus);
 
+            if (profileText != null) profileText.SetText(_focus != null ? m.VehicleLine(_focus.id) : string.Empty);
             if (_focus == null)
             {
                 carNameText.SetText(string.Empty);

@@ -17,6 +17,8 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button rewardsButton;
         [SerializeField] private GameObject rewardsDot;
+        [SerializeField] private Button progressButton;
+        [SerializeField] private GameObject progressDot;
         [SerializeField] private TMP_Text gemsText;
         [SerializeField] private TMP_Text scrapText;
         [SerializeField] private Button dailyButton;
@@ -58,6 +60,7 @@ namespace RoadBuilderGame.UI
             settingsButton.onClick.AddListener(() => Stack?.Push<SettingsScreen>());
             if (dailyButton != null) dailyButton.onClick.AddListener(OnDailyPressed);
             if (rewardsButton != null) rewardsButton.onClick.AddListener(() => GameServices.Actions?.OpenRewards());
+            if (progressButton != null) progressButton.onClick.AddListener(() => Stack?.Push<ProgressHubScreen>(HubPage.Journey));
         }
 
         public override void OnShow(object args)
@@ -126,6 +129,7 @@ namespace RoadBuilderGame.UI
             _lastCoins = m.Coins;
             bestText.SetText("BEST {0} m", Mathf.RoundToInt(m.BestDistance));
             if (rewardsDot != null) rewardsDot.SetActive(m.RewardsAvailable);
+            if (progressDot != null) progressDot.SetActive(m.HubWaiting > 0);
             if (gemsText != null) gemsText.SetText("{0}", m.Gems);
             if (scrapText != null) scrapText.SetText("SCRAP {0}", m.Scrap);
             if (dailyButton != null) dailyButton.gameObject.SetActive(m.DailyChallengeOn);

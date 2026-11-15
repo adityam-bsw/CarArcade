@@ -188,6 +188,19 @@ namespace RoadBuilderGame.UI
                 foot = _kind == CatalogKind.Vehicle ? "This is the vehicle you ride." :
                        _kind == CatalogKind.Surface ? "This is the road you ride on." : "Remembered. Worlds are not on the track yet.";
             }
+            else if (_kind != CatalogKind.Vehicle && model.LockLine(_current.id).Length > 0)
+            {
+                // A gated road or world: the card says what blocks it; once only coins are missing the button buys it.
+                string gate = model.LockLine(_current.id);
+                bool coinsOnly = gate.EndsWith("COINS");
+                label = coinsOnly ? "UNLOCK " + gate : gate; colour = coinsOnly ? ColorToken.Accent : ColorToken.TextSecondary; enabled = coinsOnly;
+                foot = "Locked. Distance counts your lifetime total.";
+            }
+            else if (_kind == CatalogKind.Vehicle && !model.IsVehicleUnlocked(_current) && model.LockLine(_current.id).Length > 0)
+            {
+                label = model.LockLine(_current.id); colour = ColorToken.TextSecondary; enabled = false;
+                foot = "Keep driving to unlock it. " + model.VehicleLine(_current.id);
+            }
             else if (_kind == CatalogKind.Vehicle && !model.IsVehicleUnlocked(_current))
             {
                 int missing = _current.cost - model.Coins;

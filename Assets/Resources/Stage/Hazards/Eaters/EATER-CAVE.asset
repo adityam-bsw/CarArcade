@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f9436f69df541ee8f70b887ffeb36d, type: 3}
+  m_Name: EATER-CAVE
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.EaterVariantSO
+  id: EATER-CAVE
+  worldId: cave
+  displayName: Stone Jaw
+  signature: 7
+  defeat: 2
+  tint: {r: 0.5, g: 0.5, b: 0.55, a: 1}
+  body: {fileID: 21300000, guid: 8da9952e47d50429b8f6ed916fb333ff, type: 3}
+  firstAfterSeconds: 4
+  everySeconds: 9
+  tellSeconds: 1.2
+  activeSeconds: 0.4
+  radius: 1.5
+  power: 14
+  range: 28
+  lureEverySeconds: 14
+  lureMaxGap: 24
+  spanEverySeconds: 18
+  spanAheadM: 18
+  spanLength: 5
+  heavyMass: 1.7
+  phaseSeconds: 14
+  gateAfterChaseM: 520
+  gateEscapeSeconds: 8
+  coinsFirst: 450
+  trophyId: trophy-eater-cave
+  announcerCueId: vo.rob0.eater.defeat.cave
+  announcerText: Stone Jaw crumbled!

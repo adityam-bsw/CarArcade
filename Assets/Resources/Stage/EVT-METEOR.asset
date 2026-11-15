@@ -47,6 +47,20 @@ MonoBehaviour:
   adjacentForbiddenWith: []
   adjacentMinGapM: 0
   modifierSlots: 0
+  effects: []
+  ruleText: 
+  counterplayText: 
+  signText: 
+  iconKey: 
+  suitableWorlds:
+  - mars
+  - moon
+  - hills
+  - desert
+  hazardFamily: sky
+  ladderTags:
+  - environment
+  - sky
   spawnerId: hz-meteor
   terrainSlopeMinDeg: -10
   terrainSlopeMaxDeg: 10

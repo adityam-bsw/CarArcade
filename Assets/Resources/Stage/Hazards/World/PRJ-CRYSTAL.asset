@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073c6270d302b4f0d9377d283630e7f3, type: 3}
+  m_Name: PRJ-CRYSTAL
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.ProjectileDefinitionSO
+  id: PRJ-CRYSTAL
+  kind: 3
+  tellSeconds: 1.2
+  lockLeadSeconds: 0.35
+  speed: 15
+  hitRadius: 0.40499997
+  carReach: 0.45
+  blastHeight: 2.2
+  activeSeconds: 3
+  flightSeconds: 1
+  launchDelay: 0.4
+  minMuzzleDistance: 9
+  spawnClearance: 2.6
+  nearMissRadius: 1.8
+  damage: 1
+  poolSize: 1
+  aimTurnRate:
+  - 15
+  - 20
+  - 25
+  tellCueId: vo.rob0.proj.bolt
+  fireSfxId: sfx.proj.fire.bolt
+  inkOnlyCounter: 0
+  worldId: cave
+  displayName: Crystal Spike
+  pattern: 1
+  telegraph: 3
+  telegraphLabel: ceiling glimmer
+  surfaceEffect: 9
+  surfaceSeconds: 2.5
+  surfaceRadius: 1.4
+  homingTurnRate: 28
+  homingSeconds: 1.6
+  splitCount: 2
+  splitAfterSeconds: 0.5
+  splitSpreadDeg: 22
+  maxBounces: 2
+  bounceDamping: 0.7
+  zigzagAmplitude: 1.6
+  zigzagHz: 1.4
+  arcHeight: 0
+  tint: {r: 0.55, g: 0.95, b: 0.9, a: 1}
+  scale: 0.9
+  sprite: {fileID: 21300000, guid: 07901e3ab44224b0fbda0fc35bc3f7ec, type: 3}
+  tellSprite: {fileID: 21300000, guid: 3ae7bd17a97504c6b956522ea3400ee9, type: 3}

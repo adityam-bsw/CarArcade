@@ -1,13 +1,28 @@
+using System;
 using UnityEngine;
 
 namespace RoadBuilderGame
 {
-    /// <summary>Events from the run flow that feed the extra unlock-gate counters and vehicle goals (blueprint D2, D3b, D4).</summary>
-    public enum ProgressionEvent { MonsterReached, MissionCompleted, CleanJump, BossReached, StageEventCompleted, SurvivalRun }
+    /// <summary>Events from the run flow that feed the extra unlock-gate counters and vehicle goals (blueprint D2, D3b, D4). Append new members at the end only.</summary>
+    public enum ProgressionEvent
+    {
+        MonsterReached, MissionCompleted, CleanJump, BossReached, StageEventCompleted, SurvivalRun,
+        /// <summary>A fragile road section was broken (glass bridge, fragile paper...). Raised by the surface and stage sections; feeds the tank and monster truck mastery goal.</summary>
+        FragileBroken,
+        /// <summary>A low-gravity stage was survived (rover mastery goal).</summary>
+        LowGravityStage,
+        LavaStageSurvived,
+        RhythmChallenge,
+        /// <summary>RO-B0 defeated: pays scrap (first or repeat) and raises the boss counters. Raised once per defeat by the manager's boss payout; section B does not need to raise it again.</summary>
+        BossDefeated,
+    }
 
     /// <summary>The single hook the run flow calls. Counters live in the profile (saved by SaveService); nothing is stored elsewhere.</summary>
     public static class ProgressionEvents
     {
+        /// <summary>The vehicle key of the run in progress (set by the manager at run start); vehicle goal events are credited to it.</summary>
+        public static string ActiveVehicle = "";
+
         public static ExtraGate GateFor(ProgressionEvent e)
         {
             switch (e)
@@ -17,14 +32,50 @@ namespace RoadBuilderGame
                 case ProgressionEvent.CleanJump: return ExtraGate.CleanJumps;
                 case ProgressionEvent.BossReached: return ExtraGate.BossEncounter;
                 case ProgressionEvent.StageEventCompleted: return ExtraGate.StageEvents;
-                default: return ExtraGate.SurvivalRuns;
+                case ProgressionEvent.SurvivalRun: return ExtraGate.SurvivalRuns;
+                case ProgressionEvent.LavaStageSurvived: return ExtraGate.SurviveLava;
+                case ProgressionEvent.RhythmChallenge: return ExtraGate.RhythmChallenge;
+                case ProgressionEvent.BossDefeated: return ExtraGate.BossDefeated;
+                default: return ExtraGate.None;
+            }
+        }
+
+        /// <summary>The per-vehicle goal counter an event feeds ("" = none).</summary>
+        public static string GoalFor(ProgressionEvent e)
+        {
+            switch (e)
+            {
+                case ProgressionEvent.FragileBroken: return "fragile-breaks";
+                case ProgressionEvent.LowGravityStage: return "low-gravity-stages";
+                case ProgressionEvent.CleanJump: return "clean-landings";
+                default: return "";
             }
         }
 
         public static void Record(PlayerProfile p, ProgressionEvent e, int n = 1)
         {
             if (p == null || n <= 0) return;
-            p.AddCounter(GateService.ExtraCounterId(GateFor(e)), n);
+            var g = GateFor(e);
+            if (e == ProgressionEvent.BossDefeated)
+            {
+                var t = ProgressionTuningSO.Load();
+                bool first = p.Counter(GateService.ExtraCounterId(ExtraGate.BossDefeated)) == 0 && p.bossDefeats <= 1;   // the hazard payout already counted this defeat
+                MasteryService.AddScrap(p, first ? t.scrapPerBossFirst : t.scrapPerBossRepeat);
+            }
+            if (g != ExtraGate.None) p.AddCounter(GateService.ExtraCounterId(g), n);
+            string goal = GoalFor(e);
+            if (e != ProgressionEvent.CleanJump && goal.Length > 0 && !string.IsNullOrEmpty(ActiveVehicle)) MasteryService.AddGoal(p, ActiveVehicle, goal, n);   // clean landings are credited at run end
+            if (e == ProgressionEvent.BossDefeated) WeeklyService.AddProgress(p, DateTime.UtcNow, WeeklyKind.BossDefeats, n);
+        }
+
+        /// <summary>A stage event ended: counts it, then raises any counter the data rules attach to its id (lava, rhythm, low gravity, fragile road).</summary>
+        public static void RecordStageEvent(PlayerProfile p, ProgressionTuningSO t, string eventId)
+        {
+            if (p == null) return;
+            Record(p, ProgressionEvent.StageEventCompleted);
+            if (t == null || t.eventRules == null || string.IsNullOrEmpty(eventId)) return;
+            for (int i = 0; i < t.eventRules.Length; i++)
+                if (!string.IsNullOrEmpty(t.eventRules[i].idContains) && eventId.IndexOf(t.eventRules[i].idContains, StringComparison.OrdinalIgnoreCase) >= 0) Record(p, t.eventRules[i].raises);
         }
 
         /// <summary>Run end: clean jumps, a survival run when the run reached the survival distance or finished, and the vehicle goal counters.</summary>
@@ -86,6 +137,9 @@ namespace RoadBuilderGame
                 case ExtraGate.StageEvents: return n + " STAGE EVENTS";
                 case ExtraGate.SurvivalRuns: return n + " SURVIVAL RUNS";
                 case ExtraGate.RhythmChallenge: return "RHYTHM CHALLENGE";
+                case ExtraGate.BossDefeated: return "DEFEAT RO-B0";
+                case ExtraGate.SurfaceTutorial: return "LEARN A SURFACE";
+                case ExtraGate.WorldMastery: return n + " WORLDS MASTERED";
                 default: return "";
             }
         }
@@ -105,6 +159,23 @@ namespace RoadBuilderGame
             var s = GateService.World(p, t, worldId);
             if (s.AlreadyUnlocked || t == null || !t.TryGet(worldId, out _)) return false;
             return !(s.CanBuy && s.CoinCost <= 0);
+        }
+
+        /// <summary>What still blocks a surface: distance, then the extra condition, then the coin price. Empty for owned and free surfaces.</summary>
+        public static string Surface(PlayerProfile p, SurfaceGateSO t, string surfaceId)
+        {
+            var s = GateService.Surface(p, t, surfaceId);
+            if (s.AlreadyUnlocked || t == null || !t.TryGet(surfaceId, out var g)) return "";
+            if (!s.DistanceMet) return "REACH " + g.unlockMetres + " m";
+            if (!s.ExtraMet) return ExtraName(g.extra, g.extraCount);
+            return g.coins > 0 ? g.coins + " COINS" : "";
+        }
+
+        public static bool SurfaceLocked(PlayerProfile p, SurfaceGateSO t, string surfaceId)
+        {
+            var s = GateService.Surface(p, t, surfaceId);
+            if (s.AlreadyUnlocked || t == null || !t.TryGet(surfaceId, out var g)) return false;
+            return !(s.CanBuy && g.coins <= 0);
         }
 
         public static string Vehicle(PlayerProfile p, VehicleGateSO t, string vehicleId)

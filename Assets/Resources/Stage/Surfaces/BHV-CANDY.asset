@@ -18,7 +18,13 @@ MonoBehaviour:
     a: 5
     b: 0.6
     c: 0
-    d: 0
-  hintFull: Candy springs you up.
+    d: 2
+  hintFull: 'Candy: springs you up.'
   hintShort: Bouncy
-  hintIcon: 
+  hintIcon: icon-candy
+  pieceLengthM: 4
+  safeEntryM: 6
+  warnTint: {r: 0.9, g: 0.82, b: 0.7, a: 1}
+  dangerTint: {r: 0.7, g: 0.45, b: 0.4, a: 1}
+  verb: Ride the bounce
+  consequence: you bounce up

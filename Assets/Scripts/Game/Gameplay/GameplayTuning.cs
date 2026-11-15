@@ -37,7 +37,7 @@ namespace RoadBuilderGame
         public int inkChance = 14;
 
         [Header("Coins and combo")]
-        public int coinValue = 10;
+        public int coinValue = 1;
         public float comboWindow = 2.2f;
         public int comboPerStep = 5;
         public int maxMultiplier = 5;
@@ -57,7 +57,8 @@ namespace RoadBuilderGame
         public int flipCoins = 25;
         public float flipDegrees = 300f;
         public float milestoneEvery = 250f;
-        public int milestoneCoins = 50;
+        public int milestoneCoins = 12;
+        [Tooltip("Chest k pays milestoneCoins x min(k, this). 0 = no cap (the old quadratic growth). Blueprint D5 needs a cap: uncapped chests alone pay about 26,000 coins by 8,000 m.")] public int milestoneIndexCap = 1;
         [Range(0f, 1f)] public float milestoneGemChance = 0.25f;
         public int recordBonus = 100;
 
@@ -92,8 +93,8 @@ namespace RoadBuilderGame
         public int nearMissEaterPay = 20;
 
         [Header("Stage events (vertical slice; Docs/design/stage-events.md)")]
-        [Tooltip("The one switch for the stage director in a real run. Off: the old game, unchanged. CountrysideOnly: events run only in the Countryside world. Always: every world.")]
-        public StageEventsSwitch stageEvents = StageEventsSwitch.CountrysideOnly;
+        [Tooltip("The one switch for the stage director in a real run. Off: the old game, unchanged. CountrysideOnly: events run only in the Countryside world. Always (default): Countryside runs the 7-slot slice and then the endless ladder; every other world runs the endless ladder.")]
+        public StageEventsSwitch stageEvents = StageEventsSwitch.Always;
         [Tooltip("Mud drag multiplier per slice vehicle (ClassicRed, SportCyan, MonsterTruck). The mud drag cap is 2.0 x this: Red 2.0, Cyan 2.5, Monster 1.2 m/s. Catalogue vehicles use 1.")]
         public float[] mudDragMulByVehicle = { 1f, 1.25f, 0.6f };
         [Tooltip("Haptic cue on the S3 warning. Default OFF, nothing is built on it until the open question is answered.")]

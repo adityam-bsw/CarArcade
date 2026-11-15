@@ -1,14 +1,58 @@
 using System;
+using UnityEngine;
 
 namespace RoadBuilderGame
 {
     public enum StageEventRole { Primary, Modifier, Monster, Boss, Reward }
     public enum StagePhase { Planned, Locked, Warning, Active, Recovery, Ended }
-    public enum StageLadderMode { FixedSpine, Weighted }
+    public enum StageLadderMode { FixedSpine, Weighted, Endless }
+    public enum StageTier { Easy, Medium, Hard, Extreme }
     public enum StageCompatRule { Forbid, Allow, Conditional }
     public enum StageCoinShape { Line, Lanes, LowRoute, AboveNextPiece, Rings }
     public enum StageSignal { Announcer, Sign, Cue }          // S1, S2, S3 (stage-events.md section 4)
     public enum StageRunOutcome { Finished, Died, Quit }
+
+    /// <summary>What a mutation event changes about the run. One entry per effect in <see cref="StageEventDefinition.effects"/>; the numbers live in the spec, not in code.</summary>
+    public enum StageEffectKind
+    {
+        None,
+        GravityMul,       // a: multiplier on the vehicle's gravity
+        SpeedMul,         // a: multiplier on the forward target speed
+        InkRegenMul,      // a: multiplier on ink regeneration
+        InkCapacityMul,   // a: multiplier on the tank size
+        BoostDrainMul,    // a: how many times faster a boost burns
+        CoinVacuum,       // a: radius m, b: drift speed m/s
+        WindSteady,       // a: acceleration m/s^2 (sign picked from the seed), b: modulation period s
+        WindGust,         // a: peak acceleration m/s^2, b: mean seconds between gusts (each gust lasts 1.2 s)
+        RoadTax,          // a: coins per checkpoint, b: checkpoint spacing m
+        Fragile,          // a: fraction of the reference impact that already cracks the car, b: reference impact m/s
+        VehicleScale      // a: uniform scale
+    }
+
+    [Serializable]
+    public struct StageEffectSpec
+    {
+        public StageEffectKind kind;
+        public float a;
+        public float b;
+        public StageEffectSpec(StageEffectKind kind, float a, float b = 0f) { this.kind = kind; this.a = a; this.b = b; }
+    }
+
+    /// <summary>World tags of one catalogue world id (for the suitable-worlds filter of the endless ladder).</summary>
+    [Serializable]
+    public struct StageWorldTagEntry { public string worldId; public string[] tags; }
+
+    /// <summary>One distance-table row of the endless ladder (blueprint A2). Stage k covers [k x stageLengthM, (k+1) x stageLengthM).</summary>
+    [Serializable]
+    public struct EndlessStageRow
+    {
+        public int stage;
+        public string label;
+        [Tooltip("Required ladderTag of the primary event (empty = any).")] public string tag;
+        [Tooltip("A fixed event (the Road-Eater at stage 1, RO-B0 at stage 8). Empty = drawn.")] public StageEventDefinition fixedEvent;
+        [Tooltip("Lowest and highest tier the primary may be drawn from.")] public StageTier minTier, maxTier;
+        [Tooltip("1 = one event, 2 = a stacked second compatible mutation (the blueprint 'two compatible modifiers').")] [Range(1, 2)] public int concurrent;
+    }
 
     /// <summary>What the director needs from a run. Stored by SaveService at run start (the director itself never saves).</summary>
     [Serializable]
@@ -56,6 +100,12 @@ namespace RoadBuilderGame
         public bool SignalS2Fired, SignalS3Fired;
         public bool IsNone => Definition == null;
         public string Id => Definition != null ? Definition.id : string.Empty;
+
+        /// <summary>A state for a single event outside a plan (behaviour tests, the QA probe).</summary>
+        public static StageEventState For(StageEventDefinition d, float startM = 0f, float endM = 0f, uint terrainSeed = 1u)
+        {
+            return new StageEventState { Definition = d, StartM = startM, EndM = endM > startM ? endM : startM + (d != null ? d.lengthM : 0f), TerrainSeed = terrainSeed, Phase = StagePhase.Active };
+        }
 
         public static readonly StageEventState None = new StageEventState { Phase = StagePhase.Ended };
     }

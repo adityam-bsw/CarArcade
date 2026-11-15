@@ -27,7 +27,8 @@ namespace RoadBuilderGame
             if (record.runSeed == 0u) { record.runSeed = StageSeed.FallbackRunSeed; plan.Log.Add(new StageLogEntry("run_seed_fallback", -1, string.Empty, "runSeed was 0")); }
             plan.Record = record;
             if (ladder == null) return plan;
-            if (ladder.ladderMode == StageLadderMode.Weighted) BuildWeighted(ladder, plan);
+            if (ladder.ladderMode == StageLadderMode.Endless) EndlessLadderPlanner.Fill(ladder, plan, 0f, default);
+            else if (ladder.ladderMode == StageLadderMode.Weighted) BuildWeighted(ladder, plan);
             else BuildSpine(ladder, plan);
             plan.Events.Sort(CompareByStart);
             plan.FinishM = ComputeFinish(ladder, plan);
@@ -89,10 +90,10 @@ namespace RoadBuilderGame
         private static bool MatrixAllows(StageLadderDefinition l, string a, string b) { return l.matrix != null && l.matrix.CanOverlap(a, b); }
 
         /// <summary>Null when the candidate is legal at <paramref name="start"/>, otherwise the rejection reason.</summary>
-        private static string Evaluate(StagePlan plan, StageLadderDefinition L, StageEventDefinition def, float start, float len)
+        internal static string Evaluate(StagePlan plan, StageLadderDefinition L, StageEventDefinition def, float start, float len, bool endless = false)
         {
-            if (start < def.minDistanceM - Eps) return "window_min";
-            if (def.maxDistanceM > 0f && start + len > def.maxDistanceM + Eps) return "window_max";
+            if (!endless && start < def.minDistanceM - Eps) return "window_min";
+            if (!endless && def.maxDistanceM > 0f && start + len > def.maxDistanceM + Eps) return "window_max";
             if (def.role != StageEventRole.Reward && def.role != StageEventRole.Modifier && start < L.noHazardUntilM - Eps) return "warmup";
             var t = new StageEventState { Definition = def, StartM = start, EndM = start + len };
             FillDistances(L, t);
@@ -112,7 +113,7 @@ namespace RoadBuilderGame
                     if (gap < need - Eps) return "adjacent:" + def.id + "/" + e.Id;
                 }
             }
-            if (def.role != StageEventRole.Modifier && def.requires != null)
+            if (!endless && def.role != StageEventRole.Modifier && def.requires != null)
                 foreach (var r in def.requires)
                 {
                     bool met = false;
@@ -122,14 +123,14 @@ namespace RoadBuilderGame
             return null;
         }
 
-        private static StageEventState MakeState(StageLadderDefinition L, StageEventDefinition def, int slot, float start, float len, int variant, uint terrain)
+        internal static StageEventState MakeState(StageLadderDefinition L, StageEventDefinition def, int slot, float start, float len, int variant, uint terrain)
         {
             var st = new StageEventState { Definition = def, SlotIndex = slot, StartM = start, EndM = start + len, Variant = variant, TerrainSeed = terrain, Phase = StagePhase.Planned };
             FillDistances(L, st);
             return st;
         }
 
-        private static int VariantOf(uint draw, StageEventDefinition def) { return (int)(draw % (uint)Mathf.Max(1, def.variantCount)); }
+        internal static int VariantOf(uint draw, StageEventDefinition def) { return (int)(draw % (uint)Mathf.Max(1, def.variantCount)); }
 
         // ------------------------------------------------------------------ fixed spine (the slice)
 

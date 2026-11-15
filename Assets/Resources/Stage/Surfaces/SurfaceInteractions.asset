@@ -1,0 +1,339 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ea5df6ce8bb34bfe8ab01f6c65e18f9, type: 3}
+  m_Name: SurfaceInteractions
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.SurfaceInteractionTable
+  projectileRows:
+  - surfaceId: '*'
+    effect: 1
+    patch: 1
+    strength: 1
+    note: 'boulder: breaks glass and weak bridges (heavy impact on the piece)'
+  - surfaceId: '*'
+    effect: 2
+    patch: 2
+    strength: 1
+    note: 2 s sand mound slows
+  - surfaceId: '*'
+    effect: 3
+    patch: 3
+    strength: 1
+    note: 3 s slippery patch
+  - surfaceId: '*'
+    effect: 4
+    patch: 13
+    strength: 1
+    note: gravity distorted 1.5 s
+  - surfaceId: '*'
+    effect: 5
+    patch: 4
+    strength: 1
+    note: crater bump
+  - surfaceId: '*'
+    effect: 6
+    patch: 5
+    strength: 1
+    note: lava bomb burns wooden roads (fire hazard on the piece)
+  - surfaceId: '*'
+    effect: 7
+    patch: 12
+    strength: 1
+    note: bubble lifts light vehicles
+  - surfaceId: '*'
+    effect: 8
+    patch: 6
+    strength: 1
+    note: 'gumdrop: sticky road'
+  - surfaceId: '*'
+    effect: 9
+    patch: 7
+    strength: 1
+    note: 'crystal spike: temporary road spike, boost or weight smashes it'
+  - surfaceId: '*'
+    effect: 10
+    patch: 8
+    strength: 1
+    note: neon bolt charges the grid
+  - surfaceId: '*'
+    effect: 11
+    patch: 9
+    strength: 1
+    note: 'shadow orb: road invisible for 1 s (stays solid)'
+  - surfaceId: '*'
+    effect: 12
+    patch: 10
+    strength: 1
+    note: 'thorn ball: temporary snag'
+  - surfaceId: '*'
+    effect: 13
+    patch: 8
+    strength: 1
+    note: 'drone: electric barrier'
+  - surfaceId: '*'
+    effect: 14
+    patch: 8
+    strength: 1
+    note: storm pearl charges metal
+  - surfaceId: '*'
+    effect: 15
+    patch: 11
+    strength: 1
+    note: acid glob weakens road durability
+  - surfaceId: surface-sea-water
+    effect: 6
+    patch: 0
+    strength: 1
+    note: water puts the fire out
+  - surfaceId: surface-river
+    effect: 6
+    patch: 0
+    strength: 1
+    note: water puts the fire out
+  - surfaceId: surface-ice
+    effect: 6
+    patch: 3
+    strength: 1
+    note: fire melts ice to a wet slick
+  - surfaceId: surface-ice-bridge
+    effect: 6
+    patch: 3
+    strength: 1
+    note: fire melts ice to a wet slick
+  - surfaceId: surface-snow
+    effect: 6
+    patch: 3
+    strength: 1
+    note: fire melts snow to a wet slick
+  - surfaceId: surface-sea-water
+    effect: 2
+    patch: 0
+    strength: 1
+    note: sand sinks in water
+  - surfaceId: surface-river
+    effect: 2
+    patch: 0
+    strength: 1
+    note: sand sinks in water
+  - surfaceId: surface-lava-river
+    effect: 2
+    patch: 0
+    strength: 1
+    note: sand sinks in lava
+  - surfaceId: surface-honey
+    effect: 8
+    patch: 6
+    strength: 0.5
+    note: 'honey is already sticky: milder'
+  - surfaceId: surface-sticky-candy
+    effect: 8
+    patch: 6
+    strength: 0.5
+    note: 'candy is already sticky: milder'
+  - surfaceId: surface-ice
+    effect: 3
+    patch: 3
+    strength: 0.8
+    note: 'ice is already slick: shorter effect'
+  - surfaceId: surface-oil
+    effect: 3
+    patch: 3
+    strength: 0.8
+    note: oil is already slick
+  - surfaceId: surface-sea-water
+    effect: 13
+    patch: 8
+    strength: 1.5
+    note: 'water conducts: longer shock window'
+  - surfaceId: surface-ice-crystals
+    effect: 9
+    patch: 7
+    strength: 1
+    note: more crystals
+  - surfaceId: surface-oil
+    effect: 6
+    patch: 5
+    strength: 1
+    note: 'oil plus fire: ignites (warning shown by the compatibility rule)'
+  - surfaceId: surface-fragile-paper
+    effect: 1
+    patch: 1
+    strength: 1
+    note: a boulder tears paper
+  monsterRows:
+  - surfaceId: surface-mud
+    slowMul: 0.7
+    stunSeconds: 0
+    eatMul: 0.8
+    stunStage: 0
+    note: mud slows the monster and it eats slower
+  - surfaceId: surface-honey
+    slowMul: 0.6
+    stunSeconds: 0
+    eatMul: 0.7
+    stunStage: 0
+    note: honey holds the monster
+  - surfaceId: surface-sand
+    slowMul: 0.85
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: soft sand slows it a little
+  - surfaceId: surface-snow
+    slowMul: 0.9
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: drifts slow it a little
+  - surfaceId: surface-sticky-candy
+    slowMul: 0.6
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: it sticks
+  - surfaceId: surface-ice
+    slowMul: 0.95
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: 'ice: nearly unchanged'
+  - surfaceId: surface-ice-crystals
+    slowMul: 0.9
+    stunSeconds: 0.8
+    eatMul: 1
+    stunStage: 1
+    note: 'spikes up: the monster is stunned'
+  - surfaceId: surface-glass
+    slowMul: 1
+    stunSeconds: 0
+    eatMul: 1.4
+    stunStage: 0
+    note: glass is eaten faster
+  - surfaceId: surface-cloud
+    slowMul: 1
+    stunSeconds: 0
+    eatMul: 1.3
+    stunStage: 0
+    note: cloud is eaten faster
+  - surfaceId: surface-fragile-paper
+    slowMul: 1
+    stunSeconds: 0
+    eatMul: 1.6
+    stunStage: 0
+    note: paper is eaten much faster
+  - surfaceId: surface-wooden-bridge
+    slowMul: 1
+    stunSeconds: 0
+    eatMul: 1.2
+    stunStage: 0
+    note: wood is eaten faster
+  - surfaceId: surface-electric-rail
+    slowMul: 1
+    stunSeconds: 1
+    eatMul: 1
+    stunStage: 2
+    note: a charged window stuns the monster
+  - surfaceId: surface-metal-plates
+    slowMul: 0.9
+    stunSeconds: 0.6
+    eatMul: 1
+    stunStage: 2
+    note: hot plates stun it briefly
+  - surfaceId: surface-lava-crust
+    slowMul: 0.8
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: 'hot: slows it'
+  - surfaceId: surface-magma-bridge
+    slowMul: 0.8
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: 'hot: slows it'
+  - surfaceId: surface-lava-river
+    slowMul: 0.8
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: 'hot: slows it'
+  - surfaceId: surface-acid
+    slowMul: 0.85
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: acid slows it
+  - surfaceId: surface-oil
+    slowMul: 1.1
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: it skids faster
+  - surfaceId: surface-sea-water
+    slowMul: 0.85
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: water slows it
+  - surfaceId: surface-river
+    slowMul: 0.85
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: current slows it
+  - surfaceId: surface-magnetic-rail
+    slowMul: 0.9
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: magnet drags it
+  - surfaceId: surface-spring-road
+    slowMul: 1
+    stunSeconds: 0.5
+    eatMul: 1
+    stunStage: 0
+    note: springs make it stumble
+  - surfaceId: surface-neon-grid
+    slowMul: 1.1
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: pads speed it too
+  - surfaceId: surface-haunted-shadow
+    slowMul: 1
+    stunSeconds: 0
+    eatMul: 0.9
+    stunStage: 0
+    note: it loses the road in the shadow
+  - surfaceId: surface-cobblestone
+    slowMul: 0.95
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: bumps slow it a little
+  - surfaceId: surface-gravel
+    slowMul: 0.95
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: loose stones slow it a little
+  - surfaceId: surface-conveyor
+    slowMul: 1
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: belt carries it along
+  - surfaceId: surface-floating-islands
+    slowMul: 1
+    stunSeconds: 0
+    eatMul: 1
+    stunStage: 0
+    note: unchanged

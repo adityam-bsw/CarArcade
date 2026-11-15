@@ -88,8 +88,61 @@ namespace RoadBuilderGame
             if (v.x < speed) Body.linearVelocity = new Vector2(speed, v.y);
         }
 
+        // ---- Stage-event hooks (Gravity Shift, Wind Canyon, Tiny/Giant, Fragile). Plain data in, nothing about events in here.
+        /// <summary>Extra acceleration in m/s^2 applied every physics step (wind). Zero is free.</summary>
+        public Vector2 WindAccel;
+        /// <summary>Gravity multiplier on the car (body and wheels only; the world gravity is never touched).</summary>
+        public float GravityMul { get; private set; } = 1f;
+        /// <summary>Uniform vehicle scale (1 = normal). Colliders, wheels, joints, mass and torque follow it.</summary>
+        public float Scale { get; private set; } = 1f;
+        private float _impactMps;
+
+        /// <summary>Largest collision speed along a contact normal since the last call (m/s), then reset. Wheels and body both report.</summary>
+        public float ConsumeImpact() { float v = _impactMps; _impactMps = 0f; return v; }
+        internal void NoteImpact(float normalSpeed) { if (normalSpeed > _impactMps) _impactMps = normalSpeed; }
+
+        public void SetGravityMul(float g)
+        {
+            if (Mathf.Approximately(g, GravityMul) || Body == null) { GravityMul = g; return; }
+            GravityMul = g;
+            Body.gravityScale = g;
+            if (_wheels != null) for (int i = 0; i < _wheels.Length; i++) if (_wheels[i] != null) _wheels[i].gravityScale = g;
+        }
+
+        /// <summary>
+        /// Physics-safe uniform scale: body and wheel transforms scale (their colliders follow), mass and torque scale with the area (s^2) so the car keeps its
+        /// feel, the wheel joints are rebuilt on the scaled anchors and the wheels are re-seated under the body. Reverts exactly with SetScale(1).
+        /// </summary>
+        public void SetScale(float s)
+        {
+            s = Mathf.Clamp(s, 0.3f, 3f);
+            if (Body == null || Mathf.Approximately(s, Scale)) return;
+            float r = s / Scale;
+            float mr = r * r;
+            Scale = s;
+            Body.transform.localScale = new Vector3(s, s, 1f);
+            Body.mass *= mr;
+            maxTorquePerWheel *= mr;
+            _wheelRadius = _baseWheelRadius * s;
+            _backAnchor *= r; _frontAnchor *= r;
+            if (r > 1f) Body.position += Vector2.up * ((r - 1f) * (_baseWheelRadius + 0.35f));      // a growing car is lifted so the bigger wheels do not start inside the road
+            Quaternion rot = Quaternion.Euler(0f, 0f, Body.rotation);
+            for (int i = 0; i < 2 && _wheels != null && i < _wheels.Length; i++)
+            {
+                var w = _wheels[i];
+                if (w == null) continue;
+                w.transform.localScale = new Vector3(s, s, 1f);
+                w.mass *= mr;
+                Vector2 pos = Body.position + (Vector2)(rot * (i == 0 ? _backAnchor : _frontAnchor));
+                w.position = pos; w.transform.position = pos;
+                w.linearVelocity = Body.linearVelocity;
+            }
+            if (_joints != null) for (int i = 0; i < _joints.Length; i++) if (_joints[i] != null) { _joints[i].enabled = false; _joints[i].enabled = true; }   // rebuilds the joint on the scaled anchor
+        }
+
         private Rigidbody2D[] _wheels;
         private WheelJoint2D[] _joints;
+        private float _baseWheelRadius = 0.42f;
         private float _wheelRadius = 0.42f;
         private Vector2 _backAnchor;
         private Vector2 _frontAnchor;
@@ -200,7 +253,7 @@ namespace RoadBuilderGame
         void BuildCore(Vector2 position, Sprite bodySprite, Sprite wheelSprite, float w, float h, float wr, float mass,
             Vector2 backAnchor, Vector2 frontAnchor)
         {
-            _wheelRadius = wr;
+            _wheelRadius = wr; _baseWheelRadius = wr;
 
             // High-grip rubber tyres & zero-friction skidplate on chassis so the bumper never snags in dips!
             var tyreMat = TyreMaterial;
@@ -236,6 +289,7 @@ namespace RoadBuilderGame
             var poly = bodyGo.AddComponent<PolygonCollider2D>();
             poly.points = shape;
             poly.sharedMaterial = bodyMat;
+            bodyGo.AddComponent<CarImpactSensor>().car = this;
 
             var bodySr = SpriteFactory.CreateSprite("BodySprite", bodyGo.transform,
                 bodySprite != null ? bodySprite : SpriteFactory.Box(new Color(0.9f, 0.2f, 0.2f)), Color.white, 5);
@@ -278,6 +332,7 @@ namespace RoadBuilderGame
             var col = go.AddComponent<CircleCollider2D>();
             col.radius = radius;
             col.sharedMaterial = mat;
+            go.AddComponent<CarImpactSensor>().car = this;
 
             // Catalogue vehicles have their wheels drawn into the body picture, so their physics wheels stay invisible.
             var art = name == "BackWheel" ? _artBack : (name == "FrontWheel" ? _artFront : null);
@@ -353,6 +408,12 @@ namespace RoadBuilderGame
         {
             if (_wheels == null || Body == null) return;
 
+            if (WindAccel.x != 0f || WindAccel.y != 0f)
+            {
+                Body.AddForce(WindAccel * Body.mass);
+                for (int i = 0; i < _wheels.Length; i++) if (_wheels[i] != null) _wheels[i].AddForce(WindAccel * _wheels[i].mass);
+            }
+
             if (!MotorOn)
             {
                 if (_joints != null)
@@ -363,7 +424,7 @@ namespace RoadBuilderGame
                 return;
             }
 
-            float targetDeg = -TargetSpeed / Mathf.Max(0.25f, _wheelRadius) * Mathf.Rad2Deg;
+            float targetDeg = -TargetSpeed / Mathf.Max(0.25f * Scale, _wheelRadius) * Mathf.Rad2Deg;      // the 0.25 floor scales with the car (a Tiny wheel is smaller than 0.25 m)
 
             // 1. Drive both WheelJoint2D motors AND direct wheel torque for unstoppable hill climbing
             if (_joints != null)
@@ -485,6 +546,18 @@ namespace RoadBuilderGame
         {
             Vector2 b = sr.sprite.bounds.size;
             sr.transform.localScale = new Vector3(width / b.x, height / b.y, 1f);
+        }
+    }
+
+    /// <summary>Reports the speed of every solid collision along its contact normal to the car (Fragile Vehicle reads it). No allocation.</summary>
+    public class CarImpactSensor : MonoBehaviour
+    {
+        public RoadCar car;
+
+        void OnCollisionEnter2D(Collision2D c)
+        {
+            if (car == null || c.contactCount == 0) return;
+            car.NoteImpact(Mathf.Abs(Vector2.Dot(c.relativeVelocity, c.GetContact(0).normal)));
         }
     }
 

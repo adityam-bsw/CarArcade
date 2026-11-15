@@ -12,7 +12,7 @@ namespace RoadBuilderGame
     public class PlayerProfile
     {
         public int version = CurrentVersion;
-        public const int CurrentVersion = 2;
+        public const int CurrentVersion = 3;
         public int coins = 150;
         public float bestDistance;
         public int engineLevel = 1;
@@ -35,6 +35,9 @@ namespace RoadBuilderGame
         public StageRunRecord lastStageRun;
         /// <summary>Times the Road-Eater was escaped or timed out, and RO-B0 defeated or timed out. Repeat clears pay half (brief section 14). Saved with the profile, no PlayerPrefs.</summary>
         public int eaterEscapes, eaterTimeouts, bossDefeats, bossTimeouts;
+        /// <summary>Gap list B: exclusive RO-B0 tier cosmetics earned (first defeat of each tier) and Road-Eater trophies (one per world variant). Additive lists, old saves load empty.</summary>
+        public System.Collections.Generic.List<string> robotCosmetics = new System.Collections.Generic.List<string>();
+        public System.Collections.Generic.List<string> eaterTrophies = new System.Collections.Generic.List<string>();
 
         // Rewards and meta progress
         public int gems;
@@ -58,6 +61,20 @@ namespace RoadBuilderGame
         public string adDate = ""; public int adDoubleUsed, adExtraDailyUsed;           // rewarded-ad offers used on adDate (UTC)
         public System.Collections.Generic.List<string> firstHourClaimed = new System.Collections.Generic.List<string>();
 
+        // ---- Section D gap work (version 3). All additive; old saves load with these at their defaults and are migrated in Sanitize.
+        public System.Collections.Generic.List<string> cosmeticsOwned = new System.Collections.Generic.List<string>();     // sticker:<vehicle>, colour:<vehicle>, trim:<vehicle>, shop and album ids
+        public System.Collections.Generic.List<EquipEntry> equips = new System.Collections.Generic.List<EquipEntry>();       // equipped colour, sticker and trim per vehicle
+        public System.Collections.Generic.List<string> scrapUpgrades = new System.Collections.Generic.List<string>();         // scrap:<vehicle> (the vehicle-specific reinforce upgrade)
+        public System.Collections.Generic.List<string> unlockedSurfaceIds = new System.Collections.Generic.List<string> { "surface-asphalt", "surface-dirt" };
+        public System.Collections.Generic.List<string> claims = new System.Collections.Generic.List<string>();               // one-off claims: album:<day>, ach:<id>, weekly:<key>:<id>, weeklytokens:<key>
+        public System.Collections.Generic.List<BoardEntry> dailyBoard = new System.Collections.Generic.List<BoardEntry>();   // local daily leaderboard, top entries per day
+        public string weeklyKey = "";                                                                                       // Monday (UTC) of the week the weekly token count belongs to
+        public string albumStart = "";                                                                                      // UTC date the Road Trip Album was first opened
+        public int gemsBought;                                                                                              // gems from the optional purchase flow (kept for support, never gating)
+
+        public bool HasClaim(string id) { return claims != null && claims.Contains(id); }
+        public bool AddClaim(string id) { if (claims == null) claims = new System.Collections.Generic.List<string>(); if (claims.Contains(id)) return false; claims.Add(id); return true; }
+
         /// <summary>Upgrade levels for a vehicle key. A vehicle never seen before inherits the old global levels (legacy 1..5 becomes 0..4), so no purchase is lost.</summary>
         public UpgradeEntry UpgradesFor(string key)
         {
@@ -78,6 +95,17 @@ namespace RoadBuilderGame
             vehicleProgress.Add(v);
             return v;
         }
+
+        /// <summary>Adaptive Challenge (Settings, opt-in, default off): after three fails at the same stage the stage is eased on the next try.</summary>
+        public bool adaptiveChallenge;
+
+        /// <summary>Times a mutation event was met (tutorial-preview rule). Stored as a counter, so no new save structure.</summary>
+        public int EventSeen(string eventId) { return Counter("evtseen:" + eventId); }
+        /// <summary>Counts one sighting and returns the count before it (0 = first time).</summary>
+        public int MarkEventSeen(string eventId) { int before = EventSeen(eventId); if (before < 99) AddCounter("evtseen:" + eventId, 1); return before; }
+        public int StageFails(int stage) { return Counter("stagefail:" + stage); }
+        public void AddStageFail(int stage) { if (StageFails(stage) < 99) AddCounter("stagefail:" + stage, 1); }
+        public void ClearStageFail(int stage) { int c = StageFails(stage); if (c > 0) AddCounter("stagefail:" + stage, -c); }
 
         public int Counter(string id) { if (counters != null) for (int i = 0; i < counters.Count; i++) if (counters[i].id == id) return counters[i].count; return 0; }
         public void AddCounter(string id, int n)
@@ -118,6 +146,27 @@ namespace RoadBuilderGame
                 foreach (var w in new[] { "world-rolling-hills", "world-desert", "world-night-city", selectedWorldId })
                     if (!string.IsNullOrEmpty(w) && !unlockedWorldIds.Contains(w)) unlockedWorldIds.Add(w);
             }
+            if (version < 3)
+            {
+                // Migration 2 -> 3: vehicles that were free in the old catalogue (bicycle, scooter, golf cart) and the road in use stay owned now that they have prices;
+                // the starter roads stay free. Nothing owned becomes locked.
+                version = 3;
+                if (unlockedVehicleIds == null) unlockedVehicleIds = new System.Collections.Generic.List<string>();
+                foreach (var v in new[] { "vehicle-bicycle", "vehicle-scooter", "vehicle-golf-cart" })
+                    if (!unlockedVehicleIds.Contains(v)) unlockedVehicleIds.Add(v);
+                if (unlockedSurfaceIds == null) unlockedSurfaceIds = new System.Collections.Generic.List<string>();
+                foreach (var sf in new[] { "surface-asphalt", "surface-dirt", "surface-neon-grid", selectedSurfaceId })
+                    if (!string.IsNullOrEmpty(sf) && !unlockedSurfaceIds.Contains(sf)) unlockedSurfaceIds.Add(sf);
+            }
+            if (cosmeticsOwned == null) cosmeticsOwned = new System.Collections.Generic.List<string>();
+            if (equips == null) equips = new System.Collections.Generic.List<EquipEntry>();
+            if (scrapUpgrades == null) scrapUpgrades = new System.Collections.Generic.List<string>();
+            if (unlockedSurfaceIds == null) unlockedSurfaceIds = new System.Collections.Generic.List<string> { "surface-asphalt", "surface-dirt" };
+            if (claims == null) claims = new System.Collections.Generic.List<string>();
+            if (dailyBoard == null) dailyBoard = new System.Collections.Generic.List<BoardEntry>();
+            if (weeklyKey == null) weeklyKey = "";
+            if (albumStart == null) albumStart = "";
+            if (gemsBought < 0) gemsBought = 0;
             if (upgrades == null) upgrades = new System.Collections.Generic.List<UpgradeEntry>();
             foreach (var u in upgrades)
             {
@@ -155,6 +204,8 @@ namespace RoadBuilderGame
     [Serializable] public class UpgradeEntry { public string id; public int[] levels; }
     [Serializable] public class VehicleProgress { public string id; public float metres; public int masteryClaimedMask; }
     [Serializable] public class CounterEntry { public string id; public int count; }
+    [Serializable] public class EquipEntry { public string vehicleId, colour = "", sticker = "", trim = ""; }
+    [Serializable] public class BoardEntry { public string date, vehicleId; public int score; }
     [Serializable] public class VehicleXp { public string id; public int xp; }
 
     /// <summary>

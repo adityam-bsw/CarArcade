@@ -3,7 +3,7 @@
 Assets/Art/Catalog/catalog.json (the list the Unity catalogue builder reads). Standard library only.
 Safe to re-run any time (after more assets are forged or approved). Previews are crops/composites of project art.
 
-  python3 tools/assets/make_previews.py
+  python3 tools/assets/make_previews.py [<output dir>]   # default Assets/Art/Catalog; a dir gets Previews/ and catalog.json
 """
 import json
 import pathlib
@@ -16,6 +16,9 @@ import pixel  # noqa: E402
 ITEMS = ROOT / "Docs" / "asset-manifest" / "items"
 OUT = ROOT / "Assets" / "Art" / "Catalog"
 PREV = OUT / "Previews"
+if len(sys.argv) > 1:
+    OUT = pathlib.Path(sys.argv[1]).resolve()
+    PREV = OUT / "Previews"
 A = "Assets/Art/"
 KEN = A + "Vehicles/Kenney/Cars/"
 
@@ -128,9 +131,39 @@ def downscale2(rows):
     return [row[::2] for row in rows[::2]]
 
 
+def single_cloud_sky(sky_path):
+    """The shipped sky layer tiles five identical half-dome clouds across 384 px (a flat-bottomed clump), which reads badly as a
+    thumbnail. Use the cloud-free <name>_0_sky_clean.png when present and add ONE soft cloud drawn here (overlapping ellipses,
+    feathered edge, flat shading); a preview-only decoration, the real layer is untouched."""
+    clean_path = sky_path.replace("_sky.png", "_sky_clean.png")
+    if not pathlib.Path(clean_path).exists():
+        return None
+    _, _, clean = pixel.read_png(clean_path)
+    out = [list(r) for r in clean]
+    puffs = [(0, 0, 30, 11), (-22, 3, 20, 8), (24, 4, 22, 8), (-8, -7, 17, 9), (12, -6, 14, 8)]   # dx, dy, rx, ry around the centre
+    cx, cy = 262, 52
+    for y in range(24, 84):
+        for x in range(cx - 70, cx + 70):
+            cov = 0.0
+            for dx, dy, rx, ry in puffs:
+                d = ((x - cx - dx) / rx) ** 2 + ((y - cy - dy) / ry) ** 2
+                cov = max(cov, min(1.0, max(0.0, (1.0 - d) * 3.0)))
+            if cov > 0:
+                shade = min(1.0, max(0.0, (y - (cy - 8)) / 22.0))          # lower part a touch bluer
+                base = (250 - 34 * shade, 252 - 28 * shade, 255 - 12 * shade)
+                o = out[y][x]
+                out[y][x] = tuple(int(o[i] * (1 - cov) + base[i] * cov) for i in range(3)) + (255,)
+    return out
+
+
 def world_composite(layer_paths):
     canvas = pixel.blank(384, 216, (0, 0, 0, 255))
-    for p in layer_paths:
+    for i, p in enumerate(layer_paths):
+        if i == 0 and p.endswith("_sky.png"):
+            one = single_cloud_sky(p)
+            if one:
+                pixel.paste(canvas, one, 0, 0)
+                continue
         w, h, rows = pixel.read_png(p)
         if (w, h) != (384, 216):
             return None

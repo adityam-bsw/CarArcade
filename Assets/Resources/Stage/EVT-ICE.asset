@@ -47,6 +47,19 @@ MonoBehaviour:
   adjacentForbiddenWith: []
   adjacentMinGapM: 0
   modifierSlots: 0
+  effects: []
+  ruleText: 
+  counterplayText: 
+  signText: 
+  iconKey: 
+  suitableWorlds:
+  - snow
+  - hills
+  - moon
+  hazardFamily: surface
+  ladderTags:
+  - surface
+  - environment
   spawnerId: hz-ice
   terrainSlopeMinDeg: -12
   terrainSlopeMaxDeg: 15

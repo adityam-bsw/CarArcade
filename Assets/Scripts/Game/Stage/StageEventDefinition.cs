@@ -51,6 +51,18 @@ namespace RoadBuilderGame
         [Range(0f, 600f)] public float adjacentMinGapM = 0f;
         [Range(0, 2)] public int modifierSlots = 0;
 
+        [Header("Mutation effects (data-driven; one registered behaviour per event id applies and reverts them)")]
+        public StageEffectSpec[] effects = new StageEffectSpec[0];
+        [Tooltip("The rule in one line for the first-sighting preview (the 3-step learning rule).")] public string ruleText;
+        [Tooltip("What the player can do about it. Every mutation has one.")] public string counterplayText;
+        [Tooltip("Short sign word and icon key (S2 sign); the word is the non-colour shape channel.")] public string signText, iconKey;
+
+        [Header("Endless ladder selection")]
+        [Tooltip("World tags this event suits (moon, mars, earth, hills, synthwave, desert, volcano, candy, cave, snow ...). 'all' suits every world. Empty = never drawn by the endless ladder.")]
+        public string[] suitableWorlds = new string[0];
+        [Tooltip("Hazard family: the endless ladder allows a family at most twice in four stages.")] public string hazardFamily;
+        [Tooltip("Stage-table tags: physics, movement, environment, economy, body, surface, sky ...")] public string[] ladderTags = new string[0];
+
         [Header("Spawning and terrain")]
         [Tooltip("Which hazard spawner this event enables (the director answers CanSpawnHazard with it).")] public string spawnerId;
         [Range(-20f, 20f)] public float terrainSlopeMinDeg = -10f;
@@ -76,6 +88,9 @@ namespace RoadBuilderGame
         public string telemetryId;
 
         public bool IsHard => difficultyCost >= HardCostThreshold;
+        /// <summary>Selection tier from the difficulty cost: 1-5 Easy, 6-7 Medium, 8-9 Hard, 10 Extreme (blueprint weights 40/35/20/5).</summary>
+        public StageTier Tier => difficultyCost >= 10 ? StageTier.Extreme : (difficultyCost >= 8 ? StageTier.Hard : (difficultyCost >= 6 ? StageTier.Medium : StageTier.Easy));
+        public bool HasTag(string tag) { if (ladderTags != null) for (int i = 0; i < ladderTags.Length; i++) if (ladderTags[i] == tag) return true; return false; }
         public bool IsModifier => role == StageEventRole.Modifier;
 
         /// <summary>Pure-data check. Returns true when valid; messages are appended to <paramref name="errors"/> (may be null).</summary>

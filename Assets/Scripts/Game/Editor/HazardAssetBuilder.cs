@@ -22,13 +22,58 @@ namespace RoadBuilderGame.Editor
             for (int i = 0; i < def.pool2.Length; i++) def.pool2[i] = Pat(def.pool2[i]);
             for (int i = 0; i < def.pool3.Length; i++) def.pool3[i] = Pat(def.pool3[i]);
             Save(def, Dir + "/BossDef-RoB0.asset");
-            foreach (ProjectileKind k in System.Enum.GetValues(typeof(ProjectileKind)))
+            for (ProjectileKind k = ProjectileKind.Bolt; k <= ProjectileKind.Roller; k++)
             {
                 var skin = BossController.DefaultSkin(k);
                 Save(skin, Dir + "/Skin-country-" + skin.archetypeId + ".asset");
             }
+            BuildWorldAssets();
             AssetDatabase.SaveAssets(); AssetDatabase.Refresh();
             Debug.Log("[Hazards] assets written to " + Dir);
+        }
+
+
+        public const string ArtDir = "Assets/Art/Smooth/Hazards";
+
+        private static Sprite Spr(string name, float ppu)
+        {
+            string path = ArtDir + "/" + name + ".png";
+            var imp = AssetImporter.GetAtPath(path) as TextureImporter; if (imp == null) return null;
+            if (imp.textureType != TextureImporterType.Sprite || !Mathf.Approximately(imp.spritePixelsPerUnit, ppu))
+            {
+                imp.textureType = TextureImporterType.Sprite; imp.spriteImportMode = SpriteImportMode.Single; imp.spritePixelsPerUnit = ppu; imp.mipmapEnabled = false; imp.filterMode = FilterMode.Bilinear; imp.alphaIsTransparency = true;
+                imp.textureCompression = TextureImporterCompression.Compressed; imp.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+        }
+
+        /// <summary>15 world projectiles, 5 boss tiers, 10 Road-Eater variants and the art set (sprites imported as Sprite, own procedural art, see tools/art/make_hazard_art.py).</summary>
+        [MenuItem("Road Builder/Stage/Build World Hazard Assets")]
+        public static void BuildWorldAssets()
+        {
+            foreach (var d in new[] { Dir + "/World", Dir + "/Tiers", Dir + "/Eaters" }) if (!AssetDatabase.IsValidFolder(d)) AssetDatabase.CreateFolder(Dir, Path.GetFileName(d));
+            var art = ScriptableObject.CreateInstance<HazardArtSet>();
+            art.robotBody = Spr("robo_body", 85f); art.robotTrim = Spr("robo_trim", 85f); art.robotEye = Spr("robo_eye", 100f); art.robotAntenna = Spr("robo_antenna", 130f); art.robotJet = Spr("robo_jet", 80f);
+            art.tellRing = Spr("tell_ring", 96f); art.tellMarker = Spr("tell_marker", 96f); art.tellGlow = Spr("tell_glow", 96f); art.trapStrip = Spr("trap_strip", 96f); art.finishGate = Spr("finish_gate", 32f); art.vignette = Spr("vignette", 128f);
+            var eaters = new System.Collections.Generic.List<HazardArtSet.EaterSprite>();
+            foreach (var v in EaterVariantSO.Defaults())
+            {
+                var body = Spr("eater_" + v.worldId, 53f); eaters.Add(new HazardArtSet.EaterSprite { variantId = v.id, body = body });
+                var row = Object.Instantiate(v); row.name = v.id; row.body = body; Save(row, Dir + "/Eaters/" + v.id + ".asset");
+            }
+            art.eaters = eaters.ToArray(); Save(art, Dir + "/HazardArt.asset");
+            var sprites = new System.Collections.Generic.Dictionary<string, string> {
+                { "hills", "prj_boulder" }, { "desert", "prj_sandspike" }, { "snow", "prj_iceshard" }, { "moon", "prj_gravityorb" }, { "mars", "prj_meteorcore" }, { "volcano", "prj_lavabomb" }, { "underwater", "prj_bubble" }, { "candy", "prj_gumdrop" },
+                { "cave", "prj_crystal" }, { "synthwave", "prj_neonbolt" }, { "haunted", "prj_shadoworb" }, { "forest", "prj_thornball" }, { "city", "prj_drone" }, { "cloud", "prj_stormpearl" }, { "toxic", "prj_acidglob" } };
+            foreach (var p in WorldProjectiles.Defaults())
+            {
+                var row = Object.Instantiate(p); row.name = p.id; row.sprite = Spr(sprites[p.worldId], 96f);
+                row.tellSprite = p.telegraph == TelegraphShape.Marker ? art.tellMarker : p.telegraph == TelegraphShape.Ring ? art.tellRing : p.telegraph == TelegraphShape.Line ? null : art.tellGlow;
+                Save(row, Dir + "/World/" + p.id + ".asset");
+            }
+            foreach (var t in BossTierSO.Defaults()) { var row = Object.Instantiate(t); row.name = t.id; Save(row, Dir + "/Tiers/" + t.id + ".asset"); }
+            AssetDatabase.SaveAssets(); AssetDatabase.Refresh();
+            Debug.Log("[Hazards] world projectiles, tiers, eater variants and art set written");
         }
 
         private static T Save<T>(T so, string path) where T : ScriptableObject

@@ -1,6 +1,8 @@
+using UnityEngine;
+
 namespace RoadBuilderGame
 {
-    public struct HazardPay { public int Coins, Gems; public float Frenzy; public bool First; public string Label; }
+    public struct HazardPay { public int Coins, Gems, Mastery; public float Frenzy; public bool First; public string Label, CosmeticId, TrophyId, CueId; }
 
     /// <summary>Payouts for clearing the Road-Eater and RO-B0 with the approved repeat half-pay rule (brief section 14). Counters live on <see cref="PlayerProfile"/> and are saved by SaveService; pure functions, no scene.</summary>
     public static class HazardRewards
@@ -30,5 +32,37 @@ namespace RoadBuilderGame
         }
 
         public static void RecordBoss(PlayerProfile p, bool timeout) { if (timeout) p.bossTimeouts++; else p.bossDefeats++; }
+
+        /// <summary>Tier defeat: 500 coins + 5 gems first time (guaranteed) with the exclusive cosmetic and +250 coins; repeats pay coins and a mastery point. Gap list B2.</summary>
+        public static HazardPay BossTier(BossTierSO t, PlayerProfile p)
+        {
+            bool first = !p.robotCosmetics.Contains(t.cosmeticId);
+            return new HazardPay
+            {
+                Coins = first ? t.coinsFirst + t.firstBonusCoins : t.coinsRepeat, Gems = first ? t.gemsFirst : 0, Mastery = t.masteryPoints, Frenzy = 0.5f, First = first,
+                Label = first ? "FIRST " + t.displayName.ToUpperInvariant() + " DEFEAT!" : "OVERLOAD!", CosmeticId = first ? t.cosmeticId : null, CueId = t.announcerCueId
+            };
+        }
+
+        public static void RecordBossTier(PlayerProfile p, BossTierSO t)
+        {
+            p.bossDefeats++;
+            if (!p.robotCosmetics.Contains(t.cosmeticId)) p.robotCosmetics.Add(t.cosmeticId);
+            p.masteryPoints += Mathf.Max(0, t.masteryPoints);
+        }
+
+        /// <summary>Road-Eater defeat through a counterplay option: 250 to 500 coins (repeat pays half), a trophy per world, one mastery point.</summary>
+        public static HazardPay EaterDefeat(EaterVariantSO v, PlayerProfile p)
+        {
+            bool first = !p.eaterTrophies.Contains(v.trophyId);
+            return new HazardPay { Coins = first ? v.coinsFirst : v.coinsFirst / 2, Mastery = 1, Frenzy = 0.5f, First = first, Label = "DEFEATED " + v.displayName.ToUpperInvariant(), TrophyId = first ? v.trophyId : null, CueId = v.announcerCueId };
+        }
+
+        public static void RecordEaterDefeat(PlayerProfile p, EaterVariantSO v)
+        {
+            p.eaterEscapes++;
+            if (!p.eaterTrophies.Contains(v.trophyId)) p.eaterTrophies.Add(v.trophyId);
+            p.masteryPoints += 1;
+        }
     }
 }

@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d83ac4d6c60f40adacb3f09d607cf85, type: 3}
+  m_Name: HazardArt
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.HazardArtSet
+  robotBody: {fileID: 21300000, guid: ebc3a64fc84c446a4b4e4dc942986cd8, type: 3}
+  robotTrim: {fileID: 21300000, guid: 8fd36e8e5a4d744a5a88a7a5275eb994, type: 3}
+  robotEye: {fileID: 21300000, guid: f6d7155cc041b497995abea213b8eb70, type: 3}
+  robotAntenna: {fileID: 21300000, guid: 55390dbfedc964f72b37955e60d4f1d8, type: 3}
+  robotJet: {fileID: 21300000, guid: 0359037e8acad461ead8300a2b8784a0, type: 3}
+  tellRing: {fileID: 21300000, guid: 33665d39858cb4ae9aa5d82455caab93, type: 3}
+  tellMarker: {fileID: 21300000, guid: 88cec6bc7700b4548bd62b1fd3669bf4, type: 3}
+  tellGlow: {fileID: 21300000, guid: 3ae7bd17a97504c6b956522ea3400ee9, type: 3}
+  trapStrip: {fileID: 21300000, guid: f1965f6387a1f4d97885cebca754cf9b, type: 3}
+  finishGate: {fileID: 21300000, guid: d60d3769f12564c1b897ae51470313c2, type: 3}
+  vignette: {fileID: 21300000, guid: 7c440c7a98c774282a42265ee6acf04d, type: 3}
+  eaters:
+  - variantId: EATER-HILLS
+    body: {fileID: 21300000, guid: ea83767714e2e4d4a84b5ccb7bc1a3ee, type: 3}
+  - variantId: EATER-DESERT
+    body: {fileID: 21300000, guid: 46595d6a3a30a4b6d8c9a94f2cec7762, type: 3}
+  - variantId: EATER-MOON
+    body: {fileID: 21300000, guid: 9f604e44c2a3a4dfba707d9b0417be5b, type: 3}
+  - variantId: EATER-MARS
+    body: {fileID: 21300000, guid: b6bbea8884b514de687f5ed6cfbe3c48, type: 3}
+  - variantId: EATER-VOLCANO
+    body: {fileID: 21300000, guid: 14af213fcbe3e45e083afb3f68eab561, type: 3}
+  - variantId: EATER-UNDERWATER
+    body: {fileID: 21300000, guid: 4c1877c13c12241499426ce3f7055a31, type: 3}
+  - variantId: EATER-CANDY
+    body: {fileID: 21300000, guid: 0452c069dfc4846eabb4f4d22f981b86, type: 3}
+  - variantId: EATER-CAVE
+    body: {fileID: 21300000, guid: 8da9952e47d50429b8f6ed916fb333ff, type: 3}
+  - variantId: EATER-SYNTHWAVE
+    body: {fileID: 21300000, guid: f2d1fdcee47544e1e9be971a9daf14d8, type: 3}
+  - variantId: EATER-HAUNTED
+    body: {fileID: 21300000, guid: 95c81a1f1d5f54e2abcc928743530ed2, type: 3}

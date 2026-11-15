@@ -28,6 +28,12 @@ namespace RoadBuilderGame
         /// <summary>The collider's points in local space, exposed so tests can prove skins do not affect physics.</summary>
         public IReadOnlyList<Vector2> ColliderPoints => _edgePoints;
 
+        /// <summary>Tints the part of this chunk between world x0 and x1 (looks only).</summary>
+        public void TintRange(float x0, float x1, Color c) { if (_renderer != null) _renderer.TintRange(x0, x1, c); }
+        public void ClearTint() { if (_renderer != null) _renderer.ClearTint(); }
+        /// <summary>Lifts or sinks the whole chunk (rope sway, floating rocks). Collider and mesh move together as they share the transform.</summary>
+        public void SetOffsetY(float dy) { var t = transform.localPosition; if (Mathf.Abs(t.y - dy) > 0.0005f) { t.y = dy; transform.localPosition = t; } }
+
         public void Init(PhysicsMaterial2D physicsMaterial)
         {
             _renderer = GetComponent<RoadRenderer>();

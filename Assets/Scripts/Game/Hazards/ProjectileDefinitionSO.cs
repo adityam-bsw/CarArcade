@@ -2,7 +2,12 @@ using UnityEngine;
 
 namespace RoadBuilderGame
 {
-    public enum ProjectileKind { Bolt, Bomb, Roller }
+    public enum ProjectileKind { Bolt, Bomb, Roller, World }
+    /// <summary>Flight pattern of a world projectile (blueprint B2).</summary>
+    public enum ProjectilePattern { Arc, Straight, Splitting, Homing, Bouncing, Zigzag }
+    /// <summary>Persistent surface effect a world projectile may leave behind (at most one per projectile). C implements <see cref="IProjectileSurfaceHook"/>.</summary>
+    public enum ProjectileSurfaceEffect { None, BreakWeak, SandMound, SlipperyPatch, GravityDistort, Crater, BurnWood, LiftLight, Sticky, TempSpike, ChargeGrid, Invisible, Snag, ElectricBarrier, ChargeMetal, WeakenRoad }
+    public enum TelegraphShape { Line, Ring, Marker, Glow, Flash }
     public enum BeatMode { Aimed, Lead, Direct }
 
     /// <summary>One projectile archetype (hazards.md 4.5). Behaviour numbers never change per world; the skin only changes the look.</summary>
@@ -30,9 +35,29 @@ namespace RoadBuilderGame
         public string fireSfxId = "sfx.proj.fire.bolt";
         [Tooltip("True when a drawn gap is the only counter (roller): the FR-4 gate needs ink then.")] public bool inkOnlyCounter;
 
+        [Header("World projectile (B2). Pattern None-equivalent defaults leave the Countryside archetypes untouched.")]
+        public string worldId = "";
+        public string displayName = "";
+        public ProjectilePattern pattern = ProjectilePattern.Straight;
+        public TelegraphShape telegraph = TelegraphShape.Line;
+        public string telegraphLabel = "";
+        public ProjectileSurfaceEffect surfaceEffect = ProjectileSurfaceEffect.None;
+        public float surfaceSeconds = 2f, surfaceRadius = 1.6f;
+        [Tooltip("Homing turn rate deg/s per boss phase. Slower than a player can out-turn: never faster than evadable.")] public float homingTurnRate = 28f;
+        public float homingSeconds = 1.6f;
+        public int splitCount = 2; public float splitAfterSeconds = 0.5f, splitSpreadDeg = 22f;
+        public int maxBounces = 2; public float bounceDamping = 0.7f;
+        public float zigzagAmplitude = 1.6f, zigzagHz = 1.4f;
+        public float arcHeight = 3.5f;
+        public Color tint = Color.white;
+        public float scale = 0.9f;
+        [Tooltip("Own procedural sprite (Assets/Art/Smooth/Hazards); null falls back to a code circle.")] public Sprite sprite;
+        public Sprite tellSprite;
+        public bool IsWorld => !string.IsNullOrEmpty(worldId);
+
         public float HitCentre => hitRadius + carReach;
         public float PerfectEdge => HitCentre + (nearMissRadius - HitCentre) * 0.5f;
-        public int NearMissSource => kind == ProjectileKind.Bolt ? 1 : kind == ProjectileKind.Bomb ? 2 : 3;
+        public int NearMissSource => kind == ProjectileKind.Bolt || kind == ProjectileKind.World ? 1 : kind == ProjectileKind.Bomb ? 2 : 3;
 
         public static ProjectileDefinitionSO Make(ProjectileKind k)
         {

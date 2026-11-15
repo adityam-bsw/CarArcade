@@ -1,0 +1,21 @@
+{
+  "id": "smooth-road-strips-3",
+  "category": "surface",
+  "name": "Smooth road strips batch 3 (spring_road, magnetic_rail, acid, oil, conveyor, conveyor_b, lava_river, sticky_candy, honey, metal_plates, ice_crystals, haunted_shadow, electric_rail, electric_rail_off, fragile_paper, fragile_paper_torn)",
+  "status": "ready",
+  "requirements": "Smooth art per Docs/design/ART_BIBLE.md 5 and 7.1; behaviour surfaces of section C2.",
+  "notes": "Ratings: honey 4, electric_rail 4, spring_road 3.5, magnetic_rail 3.5, acid 3.5, conveyor 3.5, conveyor_b 3.5, sticky_candy 3.5, metal_plates 3.5, electric_rail_off 3.5, fragile_paper 3.5, fragile_paper_torn 3.5, oil 3, lava_river 3, ice_crystals 3, haunted_shadow 3. Lip rows for RoadSkin.lipPx (forge-measured, inspector-checked): spring_road 2, magnetic_rail 1, acid 7, oil 5, conveyor 2, conveyor_b 2, lava_river 11, sticky_candy 7, honey 6, metal_plates 2, ice_crystals 20-26 (crystal tips at y=3, slab top y=26; use ~26 as the safe collider, art peeks above), haunted_shadow 8, electric_rail 9, electric_rail_off 11, fragile_paper 5, fragile_paper_torn 7 (three ragged gaps, min 0 max 82). conveyor/conveyor_b are animation frames 0/1 (2 frames at pitch 64 is direction-ambiguous, use 4 frames if it matters). spring_road has transparent gaps between coils (collider is a flat line). 17 weak greyscale pairs, mostly variants of one surface; every strip separable by silhouette or pattern in the sheet. Lava and haunted are the weakest art. Not wired in code.",
+  "source": "tools/art/make_road3.py (own code, tools/art/smoothart)",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Roads/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": 1219056,
+  "sha256": "fe09c104f628a99cbdc02e805f28c84506f0059a42a82a9bee7af24139a13328",
+  "project_path": "Assets/Art/Smooth/Roads",
+  "quality": 3.5,
+  "have": [],
+  "history": [
+    {"date": "2026-11-16", "from": "forged", "to": "imported", "note": "inspector: make_road3.py re-run byte-identical for all 16, imported under Assets/Art/Smooth/Roads"},
+    {"date": "2026-11-16", "from": "imported", "to": "ready", "note": "inspector: seams viewed at 3x tiling, wrap column diff measured, import settings checked, ledger+licence ok, q3.5"}
+  ]
+}

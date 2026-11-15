@@ -44,7 +44,7 @@ namespace RoadBuilderGame.Tests
             var json = "{\"version\":1,\"coins\":10,\"bestDistance\":1234.5,\"engineLevel\":3,\"suspensionLevel\":1,\"inkTankLevel\":5,\"boostLevel\":2,\"selectedWorldId\":\"world-farm\"}";
             var p = JsonUtility.FromJson<PlayerProfile>(json);
             p.Sanitize();
-            Assert.AreEqual(2, p.version);
+            Assert.AreEqual(PlayerProfile.CurrentVersion, p.version);
             Assert.AreEqual(1234.5f, p.lifetimeDistance, 1e-3f);
             Assert.IsTrue(p.unlockedWorldIds.Contains("world-desert") && p.unlockedWorldIds.Contains("world-night-city") && p.unlockedWorldIds.Contains("world-farm"));
             var e = p.UpgradesFor("vehicle-car");

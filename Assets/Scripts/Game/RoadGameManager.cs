@@ -59,11 +59,21 @@ namespace RoadBuilderGame
         private StageRunController _stage;
         private StageWarningPresenter _stagePresenter;
         private readonly SurfaceZoneModel _zone = new SurfaceZoneModel();
+        // Section C: the player-selected surface runs its behaviour set on the real road (per-piece pooled state, outputs applied to the car), and projectile patches act through it.
+        private readonly SurfaceRuntime _surf = new SurfaceRuntime();
+        private float _surfBaseFriction = 1.25f; private bool _surfCut;
         private bool _stageOn;
+        // Mutation events (gap list A1): folded effect values, the two ladders, the keep-going switch and the adaptive eased stages of this run.
+        private readonly StageEffectState _fx = new StageEffectState();
+        private StageLadderDefinition _sliceLadder, _endlessLadder;
+        private bool _sliceCleared;
+        private float _baseMaxInk = 100f;
+        private StageWorldContext _worldCtx;
         // Road-Eater, RO-B0, near-miss economy (phase B2). Inert unless the stage director runs.
         private RoadEaterController _eater;
         private BossController _boss;
         private MonsterDefinitionSO _eaterData;
+        private Announcer _announcer; private readonly HitStop _hitStop = new HitStop(); private readonly FinishGateProp _gateProp = new FinishGateProp(); private string _hazardWorldId = "";
         private BossDefinitionSO _bossData;
         private readonly NearMissLedger _nearLedger = new NearMissLedger();
         private float _hitGraceLeft, _recentSpeed, _bossEndS = -1f, _meteorWarnDist;
@@ -110,7 +120,7 @@ namespace RoadBuilderGame
         private Rect _lastSafeArea;
 
         private void OnEnable() { Collectible.Collected += OnCollectItem; }
-        private void OnDisable() { Collectible.Collected -= OnCollectItem; AudioListener.pause = false; Time.timeScale = 1f; Time.fixedDeltaTime = 0.02f; Collectible.MagnetTarget = null; }
+        private void OnDisable() { Collectible.Collected -= OnCollectItem; AudioListener.pause = false; Time.timeScale = 1f; Time.fixedDeltaTime = 0.02f; Collectible.MagnetTarget = null; Collectible.RepelTarget = null; }
 
         private void Awake()
         {
@@ -205,7 +215,7 @@ namespace RoadBuilderGame
                 Tuning = _tuning,
                 Ink01 = () => maxInk > 0f ? currentInk / maxInk : 1f,
                 InkUnits = () => currentInk,
-                InkPerMeter = () => inkCostPerMeter * _trackInk,
+                InkPerMeter = () => inkCostPerMeter * _trackInk * _vp.ink,
                 NeedsHeart = () => currentLives < maxLives
             };
             _cameraRig = new GameCameraRig(_cam, _background);
@@ -217,13 +227,20 @@ namespace RoadBuilderGame
             _meteors.Impacted += OnMeteorImpact;
             _run.CueRaised += OnRunCue;
             SetupStageEvents();
+            _surf.Bind(new RoadBuilderSurfaceRoad(_road), SurfaceBehaviourLibrary.Interactions);
+            _surf.Debris = (p, c, n) => { if (ParticleManager.Instance == null) return; if (_road.TryGetRoadYAtX(p.x, out float ry)) p.y = ry + 0.3f; ParticleManager.Instance.SpawnBurst(p, c, n); };
+            ProjectileSurfaceHooks.Current = new SurfaceProjectileHook(_surf);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             gameObject.AddComponent<QaJumpOverlay>().Init(this);
 #endif
 
+            VehicleEconomy.SyncCatalog(AssetCatalog.Load(), VehicleGateSO.Load());   // blueprint D2 prices into the catalogue (idempotent)
             LoadPlayerData();
             _meta = new MetaProgress(_profile, _tuning);
             _tree = UpgradeTreeSO.Load(); _prog = ProgressionTuningSO.Load(); _worldGates = WorldGateSO.Load(); _vehicleGates = VehicleGateSO.Load();
+            _surfaceGates = SurfaceGateSO.Load(); _vehicleProfiles = VehicleProfileSO.Load();
+            Cosmetics.Reconcile(_profile, _prog);
+            _hub = new ProgressionController(_profile) { Purchases = FakePurchaseService.CreateDefault() };
             _offers = new AdOffers(_profile, _prog, AdOffers.CreateDefaultService(), null);
             _meta.EnsureMissions();
             ApplyWorld();
@@ -307,6 +324,10 @@ namespace RoadBuilderGame
         private int _shieldLevel;
         private WorldGateSO _worldGates;
         private VehicleGateSO _vehicleGates;
+        private SurfaceGateSO _surfaceGates;
+        private VehicleProfileSO _vehicleProfiles;
+        private ProgressionController _hub;
+        private VehicleStats _vp = VehicleStats.Identity;   // strength and weakness of the vehicle in the run (VehicleProfile + scrap reinforce)
         private AdOffers _offers;
         // Daily challenge run and post-run offers (section D part 2)
         private bool _dailyActive, _reviving, _canRevive, _runDoubled, _finishedRun;
@@ -362,7 +383,7 @@ namespace RoadBuilderGame
             _stateTime = 0f;
             if (newState != ScreenState.Playing)
             {
-                ApplyTimeScale(1f); Collectible.MagnetTarget = null;
+                ApplyTimeScale(1f); Collectible.MagnetTarget = null; Collectible.RepelTarget = null;
                 if (newState != ScreenState.GameOver) EndDaily();
                 EndStageRun(StageRunOutcome.Quit);       // no-op when the run already ended as Died
             }
@@ -446,8 +467,13 @@ namespace RoadBuilderGame
             float engineBonus = _engineBonus = _tree.Bonus(UpgradeBranch.Engine, _upgradeKey, engineLevel);
             _car.TargetSpeed = (baseStartSpeed + engineBonus) * _car.SpeedMultiplier * _trackSpeed;
             _car.maxTorquePerWheel += _tree.Bonus(UpgradeBranch.Suspension, _upgradeKey, suspensionLevel);
+            _vp = VehicleEconomy.Effective(_profile, _prog, _vehicleProfiles, _upgradeKey);
+            VehicleEconomy.Active = _vp; ProgressionEvents.ActiveVehicle = _upgradeKey;
+            _car.maxTorquePerWheel *= _vp.torque;
+            _car.TargetSpeed *= _vp.speed;
 
             maxInk = _tree.Base(UpgradeBranch.InkTank, _upgradeKey) + _tree.Bonus(UpgradeBranch.InkTank, _upgradeKey, inkTankLevel);
+            _baseMaxInk = maxInk;
             currentInk = maxInk;
 
             _startX = _car.Body.position.x;
@@ -459,6 +485,7 @@ namespace RoadBuilderGame
             currentLives = maxLives;
             sessionCoins = 0;
             _run.Begin(boostLevel, _bestScore);
+            _run.BoostMult = _vp.boost;
             _run.UpShield.Begin(_shieldLevel, _tree.ShieldRecharge(_shieldLevel));
             _offers.BeginRun(_reviving);
             _runDoubled = false;
@@ -484,17 +511,18 @@ namespace RoadBuilderGame
                 if (_paused) return;                   // paused: no gameplay system ticks (scaled time is 0 as well; this also stops the unscaled run director)
                 _brush.SmoothingSpeed = brushSmoothingSpeed;
                 _brush.DragSpacing = dragSpacing;
-                _brush.InkCostPerMeter = _run.Ghost ? 0f : inkCostPerMeter * _trackInk;
+                _brush.InkCostPerMeter = _run.Ghost ? 0f : inkCostPerMeter * _trackInk * _vp.ink;
                 _brush.Tick();
 
-                currentInk = Mathf.Min(maxInk, currentInk + _tuning.inkRegenPerSec * Time.deltaTime);
+                currentInk = Mathf.Min(maxInk, currentInk + _tuning.inkRegenPerSec * _fx.InkRegenMul * Time.deltaTime);
 
                 if (_car == null) return;
 
                 Vector2 carPos = _car.Body.position;
                 _distance = Mathf.Max(_distance, carPos.x - _startX);
                 float speedRatio = Mathf.InverseLerp(baseStartSpeed, baseMaxSpeed + _engineBonus, _car.TargetSpeed);
-                float baseTarget = Mathf.Min(baseMaxSpeed + _engineBonus, baseStartSpeed + _engineBonus + _distance * speedGainPerMetre) * _trackSpeed;
+                float baseTarget = Mathf.Min(baseMaxSpeed + _engineBonus, baseStartSpeed + _engineBonus + _distance * speedGainPerMetre * _vp.accel) * _trackSpeed * _vp.speed;
+                _fx.DistanceM = _distance;
                 if (_stage.Active)
                 {
                     _stage.Tick(_distance, _car.Body.linearVelocity.x, Time.deltaTime);     // scaled time: slow-mo stretches a warning, never shortens it
@@ -508,7 +536,11 @@ namespace RoadBuilderGame
                         _car.MotorOn = !_zone.DriveCut;                                     // ice slip: the car coasts, no damage
                     }
                 }
-                _car.TargetSpeed = baseTarget + _run.BoostSpeedBonus;
+                _run.BoostDrainMul = _fx.BoostDrainMul;
+                ApplyStageEffects();
+                baseTarget = TickSurfaceRuntime(carPos, baseTarget);
+                if (_state != ScreenState.Playing) return;                  // a durability hit ended the run
+                _car.TargetSpeed = baseTarget * _fx.SpeedMul + _run.BoostSpeedBonus;
                 _run.Tick(Time.unscaledDeltaTime, _car, _distance);
                 Collectible.MagnetTarget = _run.MagnetOn ? _car.Body.transform : null;
                 Collectible.MagnetRadius = _tuning.magnetRadius;
@@ -519,6 +551,8 @@ namespace RoadBuilderGame
                 _meteors.Tick(Time.deltaTime, _car, _distance);
                 _audio.InkLevel(maxInk > 0f ? currentInk / maxInk : 1f);
                 if (_run.Frenzying) FrenzyTrail(carPos);
+
+                if (CheckFragileImpact()) return;                       // a hard hit while the Fragile Vehicle event runs
 
                 // Fail conditions:
                 // Only check chasm drop against a real road under or behind the car, or an absolute abyss floor (-12f)
@@ -544,7 +578,7 @@ namespace RoadBuilderGame
                 else
                 {
                     _upsideDownTime = _car.IsUpsideDown ? _upsideDownTime + Time.deltaTime : 0f;
-                    if (_upsideDownTime > flipLoseTime)
+                    if (_upsideDownTime > flipLoseTime * _vp.flip)
                     {
                         HandleLifeLoss("VEHICLE FLIPPED!");
                     }
@@ -568,6 +602,7 @@ namespace RoadBuilderGame
             if (_state != ScreenState.Playing || _paused || _car == null) return;
             _paused = true;
             _brush.Cancel();
+            _hitStop.Release();
             Time.timeScale = 0f;                       // not ApplyTimeScale: fixedDeltaTime must never become 0
             AudioListener.pause = true;
             _stage?.OnPause(true);
@@ -634,11 +669,12 @@ namespace RoadBuilderGame
                 // Build a guaranteed flat safety runway at the frontier so the car never drops into nothingness!
                 Vector2 safeSurfacePt = _road.CreateSafetyPlatformAndFindRespawn(_car.Body.position.x, 0f);
                 _car.RespawnSafely(safeSurfacePt);
+                _surf.OnRespawn();
                 _upsideDownTime = 0f;
                 if (_stage.Active)
                 {
                     _stage.OnRespawn(_distance);
-                    _hitGraceLeft = 1.5f;                       // FR-7 and FR-9: no further hazard damage for 1.5 s after any hit, shielded or not
+                    _hitGraceLeft = 1.5f * _vp.impact;                       // FR-7 and FR-9: no further hazard damage for 1.5 s after any hit, shielded or not
                     _nearLedger.NoteDamage(); _nearLedger.NoteRespawn();
                     _eater.OnLifeLost(_car.Body.position.x);    // push-back (no-op unless the Eater is chasing)
                     _boss.OnRespawn();                          // clear projectiles, 3 s lull (no-op unless RO-B0 is fighting)
@@ -649,6 +685,8 @@ namespace RoadBuilderGame
 
         private void TriggerGameOver(string reason, bool finished = false, bool toMenu = false)
         {
+            RecordStageFail(finished, toMenu);
+            bool cleared = finished || _sliceCleared;
             EndStageRun(finished ? StageRunOutcome.Finished : StageRunOutcome.Died);
             bool newBest = _distance > _bestScore;
             if (newBest) _bestScore = _distance;
@@ -657,11 +695,12 @@ namespace RoadBuilderGame
             RefreshUpgradeLevels();
             _profile.coins = totalCoins;   // mastery pays coins into the profile; keep the manager's balance authoritative
             MasteryService.RecordDistance(_profile, _prog, VehicleKey(), _distance);
-            ProgressionEvents.RecordRunEnd(_profile, _prog, VehicleKey(), _distance, finished, _run.Stats.cleanJumps, _run.Stats.nearMisses);
+            ProgressionEvents.RecordRunEnd(_profile, _prog, VehicleKey(), _distance, cleared, _run.Stats.cleanJumps, _run.Stats.nearMisses);
             _offers.EndRun();
             _deathDistance = _distance; _finishedRun = finished;
             _canRevive = _stageOn && !finished && !toMenu;
             if (_dailyActive) DailyChallenge.SubmitScore(_profile, System.DateTime.UtcNow, Mathf.FloorToInt(_distance));
+            RunProgress.Record(_profile, _prog, _surfaceGates, new RunSummary { vehicleKey = VehicleKey(), worldId = _selWorldId, surfaceId = _selSurfaceId, distance = _distance, cleanJumps = _run.Stats.cleanJumps, nearMisses = _run.Stats.nearMisses, flips = _run.Stats.flips, coins = sessionCoins, finished = finished, daily = _dailyActive, utc = System.DateTime.UtcNow });
             totalCoins = _profile.coins;
             SavePlayerData();
 
@@ -699,6 +738,11 @@ namespace RoadBuilderGame
                     UpdateHeartsUI();
                     if (SoundManager.Instance) SoundManager.Instance.PlayHeart();
                     if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(item.transform.position, new Color(1f, 0.25f, 0.45f), 16);
+                    break;
+                case Collectible.Type.CoinGate:
+                    _fx.TaxGatesCrossed++;                                  // Road Tax: this gate pays the next checkpoint
+                    if (SoundManager.Instance) SoundManager.Instance.PlaySfx("ring", 0.8f);
+                    if (ParticleManager.Instance) ParticleManager.Instance.SpawnBurst(item.transform.position, new Color(1f, 0.85f, 0.3f), 16);
                     break;
                 case Collectible.Type.Ink:
                     currentInk = Mathf.Min(maxInk, currentInk + _tuning.inkPickup);
@@ -769,6 +813,7 @@ namespace RoadBuilderGame
 
         private void ApplyTimeScale(float scale)
         {
+            if (_hitStop.Active) return;               // a perfect near miss holds the frame for a few hundredths of a second
             if (Mathf.Approximately(Time.timeScale, scale)) return;
             Time.timeScale = scale;
             Time.fixedDeltaTime = 0.02f * scale;
@@ -792,6 +837,7 @@ namespace RoadBuilderGame
             m.SportUnlocked = sportUnlocked;
             m.TruckUnlocked = truckUnlocked;
             m.SoundEnabled = _soundEnabled;
+            m.AdaptiveChallenge = _profile != null && _profile.adaptiveChallenge;
             m.SelectedVehicleId = _selVehicleId;
             m.SelectedSurfaceId = _selSurfaceId;
             m.SelectedWorldId = _selWorldId;
@@ -836,10 +882,13 @@ namespace RoadBuilderGame
                     string t = "";
                     if (e.kind == CatalogKind.World) t = GateText.World(_profile, _worldGates, e.id);
                     else if (e.kind == CatalogKind.Vehicle && !_unlockedVehicleIds.Contains(e.id)) t = GateText.Vehicle(_profile, _vehicleGates, e.id);
+                    else if (e.kind == CatalogKind.Surface) t = GateText.Surface(_profile, _surfaceGates, e.id);
+                    if (e.kind == CatalogKind.Vehicle) m.VehicleLines[e.id] = VehicleEconomy.ProfileLine(_vehicleProfiles, _vehicleGates, e.id);
                     if (t.Length > 0) m.LockText[e.id] = t;
                 }
+            if (_hub != null) { _hub.SelectedVehicle = _selVehicleId; m.HubWaiting = _hub.Waiting(); }
             var now = System.DateTime.UtcNow;
-            var d = DailyChallenge.Build(now, _prog, _stage != null && _stage.Ladder != null ? _stage.Ladder.matrix : null);
+            var d = DailyChallenge.Build(now, _prog, _sliceLadder != null ? _sliceLadder.matrix : null);
             string key = DailyChallenge.DateKey(now);
             bool today = _profile.dailyDate == key;
             m.DailyChallengeOn = !string.IsNullOrEmpty(d.vehicleId) && !string.IsNullOrEmpty(d.worldId);
@@ -902,11 +951,12 @@ namespace RoadBuilderGame
         {
             if (_state == ScreenState.Playing) return;
             var cat = AssetCatalog.Load();
-            _daily = DailyChallenge.Build(System.DateTime.UtcNow, _prog, _stage != null && _stage.Ladder != null ? _stage.Ladder.matrix : null);
+            _daily = DailyChallenge.Build(System.DateTime.UtcNow, _prog, _sliceLadder != null ? _sliceLadder.matrix : null);
             _dailySavedVehicle = _selVehicleId; _dailySavedWorld = _selWorldId;
             var v = cat?.Find(_daily.vehicleId); if (v != null && v.kind == CatalogKind.Vehicle && v.playable) _selVehicleId = v.id;
             var w = cat?.Find(_daily.worldId); if (w != null && w.kind == CatalogKind.World && w.playable) _selWorldId = w.id;
             _dailyActive = true;
+            ForcedEvents.Current = new FixedForcedEventList(_daily.eventIds);   // section A's ladder reads this for the three daily events
             SwitchScreen(ScreenState.Playing);
         }
 
@@ -914,6 +964,7 @@ namespace RoadBuilderGame
         {
             if (!_dailyActive) return;
             _dailyActive = false;
+            ForcedEvents.Current = null;
             _selVehicleId = _dailySavedVehicle; _selWorldId = _dailySavedWorld;
             ApplyWorld(); ApplySurface();
         }
@@ -955,6 +1006,32 @@ namespace RoadBuilderGame
                 else { _canRevive = false; _reviving = true; SwitchScreen(ScreenState.Playing); return; }
                 SyncModel();
             });
+        }
+
+        // ---- Progression hub (mastery, journey, daily, weekly, album, shop, unlocks, workshop): rows come from ProgressionController, actions change the profile.
+        public HubView BuildHub(HubPage page)
+        {
+            if (_hub == null) return new HubView { page = page };
+            _profile.coins = totalCoins; _hub.P = _profile; _hub.SelectedVehicle = _selVehicleId; _hub.Matrix = _stage != null && _stage.Ladder != null ? _stage.Ladder.matrix : null;
+            return _hub.Build(page);
+        }
+
+        public string HubAction(string action)
+        {
+            if (_hub == null || _state == ScreenState.Playing) return "";
+            SavePlayerData();                                   // pushes the manager's wallet and unlocked vehicles into the profile
+            _hub.P = _profile; _hub.SelectedVehicle = _selVehicleId;
+            string msg = _hub.Act(action, out var effect);
+            totalCoins = _profile.coins;
+            _unlockedVehicleIds.Clear();
+            if (_profile.unlockedVehicleIds != null) foreach (var id in _profile.unlockedVehicleIds) _unlockedVehicleIds.Add(id);
+            if (sportUnlocked) _unlockedVehicleIds.Add("vehicle-sports-car");
+            if (truckUnlocked) _unlockedVehicleIds.Add("vehicle-monster-truck");
+            if (msg.Length > 0 && SoundManager.Instance) SoundManager.Instance.PlayUpgrade();
+            SavePlayerData();
+            SyncModel();
+            if (effect == HubEffect.StartDaily) StartDaily();
+            return msg;
         }
 
         public void GoHome() { SwitchScreen(ScreenState.HomeDashboard); }
@@ -1084,6 +1161,12 @@ namespace RoadBuilderGame
                 if (!GateService.TryUnlockWorld(_profile, _worldGates, id)) { if (SoundManager.Instance) SoundManager.Instance.PlayCrash(); return; }
                 totalCoins = _profile.coins;
             }
+            if (kind == CatalogKind.Surface && entry != null && GateText.SurfaceLocked(_profile, _surfaceGates, id))
+            {
+                _profile.coins = totalCoins;
+                if (!GateService.TryUnlockSurface(_profile, _surfaceGates, id)) { if (SoundManager.Instance) SoundManager.Instance.PlayCrash(); return; }
+                totalCoins = _profile.coins;
+            }
             if (kind == CatalogKind.Vehicle)
             {
                 if (entry != null && !_unlockedVehicleIds.Contains(id) && GateText.Vehicle(_profile, _vehicleGates, id).Length > 0)
@@ -1138,7 +1221,9 @@ namespace RoadBuilderGame
         {
             var e = CatalogVehicle();
             if (e == null) return RoadCar.Create(pos, SelectedVehicle, _worldArt);   // slice vehicles follow the world's art style; catalogue vehicles keep their own art
-            return RoadCar.Create(pos, e.MakeRig(_worldArt));   // Smooth worlds: smooth body and wheels for vehicles whose smooth art is ready; same size, mass, torque
+            var made = RoadCar.Create(pos, e.MakeRig(_worldArt));
+            CosmeticApplier.Apply(made.gameObject, _profile, _prog, e.id);
+            return made;   // Smooth worlds: smooth body and wheels for vehicles whose smooth art is ready; same size, mass, torque
         }
 
         /// <summary>The scenery for the current world pick: a remix of its mood, or one scene shown as drawn.</summary>
@@ -1178,12 +1263,12 @@ namespace RoadBuilderGame
             var e = string.IsNullOrEmpty(_selSurfaceId) ? null : AssetCatalog.Load()?.Find(_selSurfaceId);
             if (e != null && e.kind == CatalogKind.Surface && e.playable)
             {
-                _roadMaterial.friction = e.friction;
+                _roadMaterial.friction = e.friction; _surfBaseFriction = e.friction;
                 _roadMaterial.bounciness = e.bounce;
                 SetSurfaceTuning(e);   // gameplay numbers always come from the selected surface, whatever strip is drawn
                 if (ApplyEntrySkin(e)) return;
             }
-            _roadMaterial.friction = 1.25f;
+            _roadMaterial.friction = 1.25f; _surfBaseFriction = 1.25f;
             _roadMaterial.bounciness = 0f;
             _trackSpeed = 1f; _trackInk = 1f; _run.CoinFactor = 1f;
             var legacySmooth = SmoothDisplaySkin(RoadSkins.SurfaceIdOf(SelectedRoadStyle));
@@ -1240,12 +1325,22 @@ namespace RoadBuilderGame
         private void SetupStageEvents()
         {
             var ladder = Resources.Load<StageLadderDefinition>("Stage/StageLadder");
+            _sliceLadder = ladder;
+            _endlessLadder = Resources.Load<StageLadderDefinition>("Stage/EndlessLadder");
             _stage = new StageRunController(ladder);
             _stage.Register("EVT-ICE", new SurfaceZoneBehaviour(EnterZone, ExitZone));
             _stage.Register("EVT-MUD", new SurfaceZoneBehaviour(EnterZone, ExitZone));
             _stage.Register("EVT-GLASS", new SurfaceZoneBehaviour(EnterZone, ExitZone));
             _stage.Register("EVT-METEOR", new MeteorWindowBehaviour(_meteors));
             _stage.Register("EVT-RINGS", new RingWindowBehaviour(PlaceRingGauntlet));
+            // Mutation events: one registered behaviour per event id, built from the event data (effects, rule, counterplay).
+            var hooks = new StageEffectHooks
+            {
+                PlaceCoinGate = (dist, h) => _pickups?.PlaceCoinGate(_startX + dist, h),
+                ChargeCoins = n => { int take = Mathf.Clamp(n, 0, sessionCoins); sessionCoins -= take; return take; },
+                Banner = ShowStageBanner
+            };
+            if (_endlessLadder != null) StageEffectRegistry.RegisterAll(_stage, _fx, _endlessLadder.eventPool, hooks);
             _stagePresenter = new StageWarningPresenter(_stage, _audio, _tuning);
             _meteors.CanStrike = () => _stage.CanSpawnHazard("hz-meteor");
             SetupHazards();
@@ -1261,18 +1356,29 @@ namespace RoadBuilderGame
             _nearLedger.PerfectMultiplier = _tuning.nearMissPerfectMultiplier; _nearLedger.ChainWindowS = _tuning.nearMissChainWindow;
             _nearLedger.RunCapFraction = _tuning.nearMissRunCapFraction; _nearLedger.EaterPay = _tuning.nearMissEaterPay;
 
+            _announcer = new Announcer
+            {
+                PlaySfx = id => _audio?.StageCue(id),
+                Subtitle = (t, secs, urgent) => { var mm = Model; mm.Subtitle = t; mm.SubtitleSeconds = secs; mm.SubtitleId++; },
+                ThreatActive = () => (_eater != null && _eater.Model.Chasing && _eater.Model.Band != EaterBand.Calm) || (_boss != null && (_boss.Model.State == BossState.Pattern || _boss.World.AliveCount > 0))
+            };
             _eater = new RoadEaterController(_road, _eaterData, _cam)
             {
-                Cue = id => _audio?.StageCue(id),
+                Cue = id => _announcer.Say(id),
                 Banner = ShowStageBanner,
                 Shake = a => _cameraRig?.Shake(a, 0.4f),
                 Bite = () => HandleLifeLoss("EATEN BY THE ROAD-EATER!"),
                 Cleared = OnEaterCleared,
-                NearMissed = OnEaterNearMiss
+                NearMissed = OnEaterNearMiss,
+                Ink01 = () => maxInk > 0f ? currentInk / maxInk : 1f,
+                RescueInk = () => { if (_pickups != null && _car != null) _pickups.PlaceInkAt(_car.Body.position.x + 7f + Mathf.Max(0f, _car.Body.linearVelocity.x)); }
             };
+            _eater.Host.Damage = r => HandleLifeLoss(r); _eater.Host.CanDamage = () => _hitGraceLeft <= 0f && !_stage.HazardGraceActive;
+            _eater.Host.CarForce = f => { if (_car != null) _car.Body.AddForce(f); };
+            _eater.Host.Shake = a => _cameraRig?.Shake(a, 0.4f); _eater.Host.Cue = id => _announcer.Say(id); _eater.Host.Banner = ShowStageBanner;
             _boss = new BossController(_road, _bossData)
             {
-                Cue = id => _audio?.StageCue(id),
+                Cue = id => _announcer.Say(id),
                 Banner = ShowStageBanner,
                 Shake = a => _cameraRig?.Shake(a, 0.4f),
                 CanDamage = () => _hitGraceLeft <= 0f && !_stage.HazardGraceActive,
@@ -1281,7 +1387,8 @@ namespace RoadBuilderGame
                 InkAvailable = () => maxInk > 0f && currentInk / maxInk >= _bossData.counterInk01,
                 NearMissed = (src, perfect, travel) => ResolveNearMiss(src, perfect, travel),
                 RingTaken = () => _run.CollectPower(Collectible.Type.Ring),
-                Decided = OnBossDecided
+                Decided = OnBossDecided,
+                Overpowered = () => { _announcer.Say(StageCues.BossRetreat); }
             };
             _boss.Model.Raised += e => { if (e == BossEvent.Gone) _bossEndS = _distance; };
 
@@ -1290,11 +1397,12 @@ namespace RoadBuilderGame
                 s => { ProgressionEvents.Record(_profile, ProgressionEvent.MonsterReached); _eater.StartChase(_car.Body.position.x); },
                 s => { if (!_runEnding && _eater.Model.Chasing) _eater.Model.Retreat(true); }));      // the window ended at 1750 m: timeout retreat
             _stage.Register("BOS-ROB0", new DelegateBehaviour(
-                s => { ProgressionEvents.Record(_profile, ProgressionEvent.BossReached); _boss.Start(_car.Body.position); },
+                s => { ProgressionEvents.Record(_profile, ProgressionEvent.BossReached); _boss.Start(_car.Body.position, _distance, _hazardWorldId); },
                 s => { },                                                                              // the fight outlives its planned window: it ends by Overload or the 105 s timeout
                 (s, d) => _boss.OnRespawn()));
             _stage.Signal += (e, sig) => { if (sig == StageSignal.Announcer && e.Definition.role == StageEventRole.Monster) _eater.Warn(); };
-            _stage.EventEnded += e => { if (!_runEnding) ProgressionEvents.Record(_profile, ProgressionEvent.StageEventCompleted); };
+            _stage.EventEnded += e => { if (!_runEnding) ProgressionEvents.RecordStageEvent(_profile, _prog, e.Definition != null ? e.Definition.id : ""); };
+            _stage.EventStarted += OnMutationStarted;
             _stage.EventStarted += e => { if (e.Definition.noEat) _road.AddNoEatRange(_startX + e.StartM, _startX + e.EndM); };
         }
 
@@ -1310,14 +1418,21 @@ namespace RoadBuilderGame
             _nearLedger.Tick(dt);
             Vector2 vel = _car.Body.linearVelocity;
             _recentSpeed += (vel.x - _recentSpeed) * Mathf.Min(1f, dt);                      // about a 1 s average
+            _hitStop.Tick(Time.unscaledDeltaTime); _announcer.Tick(Time.unscaledDeltaTime);
+            _eater.Host.CarVel = vel; _eater.Host.CarMass = _car.Body.mass;
             _eater.Tick(dt, carPos.x, carPos.y, vel.x, !_car.IsGrounded, _run.Boosting);
             if (!_stage.Active) return;                                                       // the bite or a hit may have ended the run
             _boss.Tick(dt, carPos, vel);
             var m = Model; var em = _eater.Model; var bm = _boss.Model;
             m.EaterOn = em.Chasing; m.EaterGapM = em.Gap; m.EaterBand = (int)em.Band; m.EaterEscape01 = em.EscapeProgress01;
             m.BossOn = bm.Fighting; m.BossOverload01 = bm.Meter01; m.BossPhase = bm.Phase;
-            if (!_finishing && _distance >= FinishGateM() && !bm.Fighting && bm.State != BossState.Intro && bm.State != BossState.Defeat)
+            m.BossTier = _boss.Tier != null ? _boss.Tier.displayName : ""; m.BossHits = bm.Hits; m.BossMaxHits = _boss.Tier != null ? _boss.Tier.maxHits : 3;
+            m.EaterVariant = _eaterVariant_Name(); m.EaterPhase = _eater.PursuitPhase;
+            if (_gateProp != null) { float gx = FinishGateM(); if (gx > 0f) _gateProp.Place(_road, _startX + gx, carPos.x, 60f); else _gateProp.Hide(); }
+            float gate = FinishGateM();
+            if (!_finishing && gate > 0f && _distance >= gate && !bm.Fighting && bm.State != BossState.Intro && bm.State != BossState.Defeat)
             {
+                if (KeepGoingAvailable()) { KeepGoing(); return; }
                 _finishing = true;
                 _audio?.StageCue(StageCues.Finish);
                 TriggerGameOver("COURSE COMPLETE!", true);
@@ -1327,6 +1442,7 @@ namespace RoadBuilderGame
         /// <summary>Finish gate: max(2750, boss end + 150) (brief X7); before the boss has ended it is the planned finish.</summary>
         private float FinishGateM()
         {
+            if (_stage.OnEndless) return 0f;                       // the endless ladder has no finish gate
             float planned = _stage.Director.FinishM;
             return _bossEndS >= 0f ? Mathf.Max(planned, _bossEndS + _stage.Ladder.finishAfterBossM) : planned;
         }
@@ -1335,8 +1451,10 @@ namespace RoadBuilderGame
         {
             int non = _run.Stats.coins + _run.Stats.bonusCoins - _nearLedger.Paid;
             var r = _nearLedger.Resolve(source, perfect, travelM, _recentSpeed, non);
-            if (r.Valid) _run.NearMissPaid(r.Coins, (r.Perfect ? "PERFECT CLOSE!" : "CLOSE!") + (r.Chain > 1 ? " x" + r.Chain : ""));
+            if (r.Valid) { _run.NearMissPaid(r.Coins, (r.Perfect ? "PERFECT CLOSE!" : "CLOSE!") + (r.Chain > 1 ? " x" + r.Chain : "")); if (r.Perfect) _hitStop.Request(0.07f); _announcer.Say("vo.rob0.nearmiss"); }
         }
+
+        private string _eaterVariant_Name() { var v = _eater.Variant; return v != null ? v.displayName : ""; }
 
         private void OnMeteorNearMiss(float d)
         {
@@ -1352,8 +1470,10 @@ namespace RoadBuilderGame
 
         private void OnEaterCleared(bool timeout)
         {
-            var pay = HazardRewards.Eater(_eaterData, _profile, timeout);
-            HazardRewards.RecordEater(_profile, timeout);
+            var dv = timeout ? null : _eater.DefeatedVariant;
+            var pay = dv != null ? HazardRewards.EaterDefeat(dv, _profile) : HazardRewards.Eater(_eaterData, _profile, timeout);
+            if (dv != null) HazardRewards.RecordEaterDefeat(_profile, dv); else HazardRewards.RecordEater(_profile, timeout);
+            if (pay.TrophyId != null) ShowStageBanner("TROPHY!");
             SavePlayerData();
             ShowStageBanner(StageCues.BannerText(timeout ? "banner.eater.retreat" : "banner.eater.escape"));
             _run.AwardEvent(pay.Label, pay.Coins, pay.Gems, pay.Frenzy);
@@ -1361,9 +1481,11 @@ namespace RoadBuilderGame
 
         private void OnBossDecided(bool timeout)
         {
-            var pay = HazardRewards.Boss(_bossData, _profile, timeout);
-            HazardRewards.RecordBoss(_profile, timeout);
-            if (!timeout) { RefreshUpgradeLevels(); MasteryService.AddScrap(_profile, pay.First ? _prog.scrapPerBossFirst : _prog.scrapPerBossRepeat); }
+            var tier = _boss.Tier;
+            var pay = !timeout && tier != null ? HazardRewards.BossTier(tier, _profile) : HazardRewards.Boss(_bossData, _profile, timeout);
+            if (!timeout && tier != null) HazardRewards.RecordBossTier(_profile, tier); else HazardRewards.RecordBoss(_profile, timeout);
+            if (!timeout) { RefreshUpgradeLevels(); ProgressionEvents.Record(_profile, ProgressionEvent.BossDefeated); }
+            if (pay.CosmeticId != null) ShowStageBanner("NEW ROBOT COSMETIC!");
             SavePlayerData();
             _run.AwardEvent(pay.Label, pay.Coins, pay.Gems, pay.Frenzy);
         }
@@ -1379,37 +1501,140 @@ namespace RoadBuilderGame
         private void BeginStageRun(bool retry)
         {
             _zone.Exit();
+            BeginSurfaceRun();
             _stagePresenter.Reset();
-            _stageOn = StageRunController.ShouldRun(_tuning.stageEvents, IsCountrysideWorld()) && _stage.HasData;
+            _fx.Reset(); ApplyStageEffects(); _sliceCleared = false;
+            bool country = IsCountrysideWorld();
+            // The 7-slot slice ladder runs in Countryside; every other world (stageEvents = Always) runs the endless ladder from the start.
+            var ladder = country ? (_sliceLadder != null ? _sliceLadder : _endlessLadder) : _endlessLadder;
+            if (ladder != null) _stage.UseLadder(ladder);
+            _stageOn = ladder != null && StageRunController.ShouldRun(_tuning.stageEvents, country) && _stage.HasData;
             _meteors.StageDriven = _stageOn;
-            _eater.Stop(); _boss.Stop();
+            _eater.Stop(); _boss.Stop(); _hitStop.Release(); _announcer?.Clear(); _gateProp.Hide();
             _road.ClearNoEatRanges();
             _nearLedger.Reset(); _hitGraceLeft = 0f; _recentSpeed = 0f; _bossEndS = -1f; _finishing = false; _runEnding = false;
             Model.EaterOn = false; Model.BossOn = false;
             if (!_stageOn) return;
+            bool endless = _stage.OnEndless;
+            int modeId = endless ? StageRunController.ModeIdEndless : StageRunController.ModeIdCountryside;
             // Retry reuses the saved seed (same ladder); a new run draws a new one. The record is saved through SaveService only.
             var saved = _profile.lastStageRun;
             StageRunRecord rec;
-            if (_dailyActive) { rec = StageRunController.NewRecord(_daily.seed, _stage.Ladder.layoutVersion); _profile.lastStageRun = rec; }
-            else if (retry && saved.runSeed != 0u && saved.layoutVersion == _stage.Ladder.layoutVersion) { rec = saved; rec.debugJumped = false; }
+            if (_dailyActive) { rec = StageRunController.NewRecord(_daily.seed, ladder.layoutVersion, modeId); _profile.lastStageRun = rec; }
+            else if (retry && saved.runSeed != 0u && saved.layoutVersion == ladder.layoutVersion) { rec = saved; rec.debugJumped = false; rec.modeId = modeId; }
             else
             {
-                rec = StageRunController.NewRecord((ulong)System.DateTime.UtcNow.Ticks, _stage.Ladder.layoutVersion);
+                rec = StageRunController.NewRecord((ulong)System.DateTime.UtcNow.Ticks, ladder.layoutVersion, modeId);
                 _profile.lastStageRun = rec;
                 SavePlayerData();
             }
-            _stage.Begin(rec);
+            if (endless) { _worldCtx = BuildWorldContext(ladder); _stage.BeginEndless(rec, _worldCtx); }
+            else { _worldCtx = default; _stage.Begin(rec); }
+            _hazardWorldId = HazardWorlds.Resolve(_selWorldId, IsCountrysideWorld()); _announcer.Reset(); _hitStop.Release();
+            _eater.Configure(EaterVariantSO.ForWorld(_hazardWorldId));
             _eater.Begin(_startX, rec.runSeed ^ 0x00E47E8u);
             _boss.Begin(rec.runSeed ^ 0x00B055u);
         }
 
+        /// <summary>World tags (suitable-worlds filter) and, with the opt-in on, the stages the player keeps failing (adaptive easing).</summary>
+        private StageWorldContext BuildWorldContext(StageLadderDefinition ladder)
+        {
+            var ctx = new StageWorldContext();
+            string[] tags = ladder.TagsForWorld(_selWorldId);
+            if (tags == null) tags = SelectedTheme == EnvironmentTheme.Desert ? ladder.themeTagsDesert : (SelectedTheme == EnvironmentTheme.CyberNight ? ladder.themeTagsCyber : ladder.themeTagsCountry);
+            ctx.Tags = tags;
+            if (_profile != null && _profile.adaptiveChallenge)
+            {
+                var eased = new List<int>();
+                for (int k = 1; k <= ladder.endlessStageCount; k++) if (_profile.StageFails(k) >= ladder.adaptiveFailsToEase) eased.Add(k);
+                ctx.EasedStages = eased.ToArray();
+            }
+            return ctx;
+        }
+
+        // ------------------------------------------------------------------ mutation events (gap list A1)
+
+        /// <summary>Pushes the folded effect values into the car, the ink tank and the pickups. Cheap compares only; runs every frame while playing and on every reset.</summary>
+        private void ApplyStageEffects()
+        {
+            float cap = _baseMaxInk * _fx.InkCapMul;
+            if (_baseMaxInk > 0f && !Mathf.Approximately(maxInk, cap))
+            {
+                maxInk = cap;
+                if (currentInk > maxInk) currentInk = maxInk;
+                UpdateInkUI();
+            }
+            if (_car != null)
+            {
+                _car.SetGravityMul(_fx.GravityMul);
+                if (!Mathf.Approximately(_car.Scale, _fx.CarScale))
+                {
+                    _car.SetScale(_fx.CarScale);
+                    if (ParticleManager.Instance && _car.Body != null) ParticleManager.Instance.SpawnBurst(_car.Body.position, new Color(0.65f, 0.85f, 0.3f), 14);
+                }
+                _car.WindAccel = new Vector2(_fx.WindAccelX, 0f);
+            }
+            Collectible.RepelTarget = _fx.CoinVacuum && _car != null && _car.Body != null ? _car.Body.transform : null;
+            if (_fx.CoinVacuum) { Collectible.RepelRadius = _fx.VacuumRadius; Collectible.RepelSpeed = _fx.VacuumSpeed; }
+        }
+
+        /// <summary>Fragile Vehicle: a collision harder than the threshold costs a heart. Returns true when that ended the run.</summary>
+        private bool CheckFragileImpact()
+        {
+            float imp = _car.ConsumeImpact();
+            if (_fx.FragileThreshold01 <= 0f || imp < _fx.FragileThreshold01 * _fx.FragileRefMps) return false;
+            if (_car.IsInvincible || _hitGraceLeft > 0f || _stage.HazardGraceActive) return false;
+            HandleLifeLoss("VEHICLE CRACKED!");
+            return _state != ScreenState.Playing;
+        }
+
+        /// <summary>The 3-step learning rule for a mutation (counted through SaveService) and the adaptive indicator.</summary>
+        private void OnMutationStarted(StageEventState e)
+        {
+            var d = e.Definition;
+            bool eased = _stage.OnEndless && _profile.adaptiveChallenge && e.SlotIndex % 10 == 0 && _worldCtx.IsEased(e.SlotIndex / 10);
+            string text = string.Empty;
+            if (d.effects != null && d.effects.Length > 0)
+            {
+                int before = _profile.MarkEventSeen(d.id);
+                SavePlayerData();
+                text = StageCues.Preview(d, before);
+            }
+            if (eased) text = string.IsNullOrEmpty(text) ? "EASIER STAGE (ADAPTIVE)" : text + " (EASIER)";
+            if (!string.IsNullOrEmpty(text)) ShowStageBanner(text);
+        }
+
+        private bool KeepGoingAvailable() { return _stage.Active && !_stage.OnEndless && _endlessLadder != null && !_sliceCleared; }
+
+        /// <summary>The slice finish gate no longer ends the run: the course counts as complete and the endless ladder takes over from the gate (same run, same seed).</summary>
+        private void KeepGoing()
+        {
+            _sliceCleared = true;
+            _audio?.StageCue(StageCues.Finish);
+            ShowStageBanner("COURSE COMPLETE! KEEP GOING");
+            _worldCtx = BuildWorldContext(_endlessLadder);
+            _stage.ContinueEndless(_endlessLadder, _distance, _worldCtx);
+            Debug.Log("[Stage] slice cleared at " + _distance.ToString("0") + " m, endless ladder continues (" + _stage.Director.Plan.Events.Count + " events planned)");
+        }
+
+        /// <summary>Adaptive Challenge: a death in an endless stage counts as a fail of that stage; passing a stage clears its fails. Only while the opt-in is on.</summary>
+        private void RecordStageFail(bool finished, bool toMenu)
+        {
+            if (!_stageOn || finished || toMenu || !_profile.adaptiveChallenge || !_stage.OnEndless) return;
+            int stage = Mathf.FloorToInt(_distance / Mathf.Max(1f, _stage.Ladder.stageLengthM));
+            if (stage >= 1) _profile.AddStageFail(stage);
+            for (int k = 1; k < stage; k++) _profile.ClearStageFail(k);
+        }
+
         private void EndStageRun(StageRunOutcome outcome)
         {
-            if (_stage == null || !_stage.Active) return;
+            if (_stage == null) return;
+            if (!_stage.Active) { _fx.Reset(); ApplyStageEffects(); return; }
             _runEnding = true;
             _stage.End(outcome);                 // Ended is raised for the Active zone or window, which clears them
             _runEnding = false;
-            _eater.Stop(); _boss.Stop();
+            _fx.Reset(); ApplyStageEffects();    // nothing a mutation changed outlives the run (death, restart, quit)
+            _eater.Stop(); _boss.Stop(); _hitStop.Release(); _announcer?.Clear(); _gateProp.Hide();
             Model.EaterOn = false; Model.BossOn = false;
             _stagePresenter.Reset();
             _zone.Exit();
@@ -1425,6 +1650,49 @@ namespace RoadBuilderGame
             if (_pickups != null) _pickups.PlaceInkAt(_startX + startM + 6f);         // ink at zone entry (stage-events.md section 6)
             ShowSurfaceHint(rule);
         }
+
+        /// <summary>Section C: the road of this run is the player's selected surface. Binds its behaviour set to the runtime and shows the 3-step hint.</summary>
+        private void BeginSurfaceRun()
+        {
+            _surf.Paused = false;
+            var e = string.IsNullOrEmpty(_selSurfaceId) ? null : AssetCatalog.Load()?.Find(_selSurfaceId);
+            if (e == null || e.kind != CatalogKind.Surface || !e.playable || _car == null) { _surf.SetSurface("", null, null, _car != null ? _startX : 0f); return; }   // unmapped or no surface: the old friction and speed stay
+            var set = SurfaceBehaviourLibrary.Find(e.id);
+            _surfBaseFriction = e.friction;
+            _surf.SetSurface(e.id, set, null, _startX);
+            if (set == null) return;
+            int before = _profile.MarkSurfaceSeen(e.id);
+            SavePlayerData();
+            string hint = SurfaceLearning.Hint(set, SurfaceLearning.Level(before));
+            if (!string.IsNullOrEmpty(hint)) ShowStageBanner(hint);
+        }
+
+        /// <summary>Per frame: feeds the car to the surface runtime and applies what the modules ask for (speed, drive cut, bounce impulse, torque, buoyancy or magnet pull, grip, durability hits). Returns the target speed.</summary>
+        private float TickSurfaceRuntime(Vector2 carPos, float baseTarget)
+        {
+            _surf.Paused = _zone.Active;
+            _surf.SurfaceId = _zone.Active ? _zone.Rule.surfaceId : (_selSurfaceId ?? "");
+            var s = new SurfaceCarSample { X = carPos.x, Speed = _car.Body.linearVelocity.x, Boosting = _run.Boosting, Airborne = !_car.IsGrounded, MudDragMul = _tuning.MudDragMul(MudVehicleIndex()) };
+            s.Heavy = SurfaceVehicleClass.IsHeavy(_car.Body.mass); s.Metallic = SurfaceVehicleClass.IsMetallic(VehicleKey());
+            if (_surf.Active) SampleRoadShape(carPos.x, 4f, out s.UphillDeg, out s.TurnDeg);
+            float dt = Time.deltaTime;
+            _surf.Tick(dt, in s, baseTarget);
+            var o = _surf.Out;
+            if (_zone.Active) return baseTarget;
+            if (o.DriveCut != _surfCut) { _surfCut = o.DriveCut; _car.MotorOn = !o.DriveCut; }
+            var body = _car.Body;
+            if (o.Impulse > 0f) { var v = body.linearVelocity; v.y = Mathf.Max(v.y, 0f) + o.Impulse; body.linearVelocity = v; }
+            if (o.VerticalAccel != 0f) { var v = body.linearVelocity; v.y += o.VerticalAccel * dt; body.linearVelocity = v; }
+            if (o.Torque != 0f) body.angularVelocity += o.Torque * dt;
+            float fr = _surfBaseFriction * o.GripMul;
+            if (Mathf.Abs(_roadMaterial.friction - fr) > 0.02f) _roadMaterial.friction = fr;
+            for (int i = 0; i < o.Damage; i++)
+                if (_hitGraceLeft <= 0f && (_stage == null || !_stage.Active || !_stage.HazardGraceActive)) { HandleLifeLoss("DURABILITY LOST!"); break; }
+            return o.TargetSpeed;
+        }
+
+        /// <summary>Section B calls this to let the surface under the Road-Eater slow, stun or speed it up.</summary>
+        public IMonsterSurfaceQuery MonsterSurfaces { get { return _surf; } }
 
         /// <summary>The 3-step learning rule on the existing banner: first sighting full preview, second the short line, then nothing. Counted through SaveService.</summary>
         private void ShowSurfaceHint(SurfaceRuleSO rule)
@@ -1471,6 +1739,38 @@ namespace RoadBuilderGame
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public StageRunController DebugStage => _stage;
+        // ---- QA probe accessors (gap list A1): they read and drive the real run, nothing is faked.
+        public StageEffectState DebugFx => _fx;
+        public bool DebugPlaying => _state == ScreenState.Playing && _car != null;
+        public int DebugLives => currentLives;
+        public int DebugSessionCoins { get => sessionCoins; set => sessionCoins = value; }
+        public float DebugInk { get => currentInk; set => currentInk = value; }
+        public float DebugMaxInk => maxInk;
+        public float DebugBaseMaxInk => _baseMaxInk;
+        public float DebugInkRegenPerSec => _tuning.inkRegenPerSec * _fx.InkRegenMul;
+        public float DebugBoostDrainMul => _run.BoostDrainMul;
+        public bool DebugBoosting => _run.Boosting;
+        public float DebugBoostLeft => _run.BoostLeft;
+        public void DebugStartBoost() { _run.BoostLeft = 1.4f; }
+        public float DebugTargetSpeed => _car != null ? _car.TargetSpeed : 0f;
+        public StageLadderDefinition DebugEndlessLadder => _endlessLadder;
+        public bool DebugSliceCleared => _sliceCleared;
+        public string DebugBanner => Model.StageBanner;
+        public int DebugEventSeen(string id) { return _profile.EventSeen(id); }
+        public void DebugResetEventSeen(string id) { _profile.AddCounter("evtseen:" + id, -_profile.EventSeen(id)); }
+        /// <summary>Replaces the live plan with one event at <paramref name="startM"/> and returns it (the director, signals and behaviours then run for real).</summary>
+        public StageEventState DebugInjectEvent(StageEventDefinition d, float startM) { return _stage.Active ? _stage.Director.DebugInject(d, startM, true) : null; }
+        /// <summary>Takes hearts until the run ends (the real death path: game over, effects must revert).</summary>
+        public void DebugKill() { for (int i = 0; i < 6 && _state == ScreenState.Playing; i++) HandleLifeLoss("QA PROBE"); }
+        public void DebugLoseLife() { HandleLifeLoss("QA PROBE (one life)"); }
+        public bool DebugKeepGoingNow() { if (!KeepGoingAvailable()) return false; KeepGoing(); return true; }
+        public float DebugFinishGate() { return FinishGateM(); }
+        public int DebugStageFails(int stage) { return _profile.StageFails(stage); }
+        public void DebugClearStageFail(int stage) { _profile.ClearStageFail(stage); }
+        public int[] DebugEasedStages() { return _worldCtx.EasedStages ?? new int[0]; }
+        public void DebugSetDistanceAtLeast(float d) { if (_car != null) _distance = Mathf.Max(_distance, d); }
+        /// <summary>Teleports the car to the end of the slice (QA) so the finish gate logic runs in the real tick.</summary>
+        public void DebugJumpToGate() { DebugJumpToStage(FinishGateM() - 12f); }
         public bool DebugStageOn => _stageOn;
         public float DebugDistance => _distance;
         /// <summary>Flat runway laid ahead of a QA jump (metres): long enough to ride through a whole zone without drawing.</summary>
@@ -1495,16 +1795,27 @@ namespace RoadBuilderGame
             _zone.Exit();
             ApplySurface();
             _stagePresenter.Reset();
-            _eater.Stop(); _boss.Stop(); _finishing = false; _bossEndS = -1f;
+            _eater.Stop(); _boss.Stop(); _hitStop.Release(); _announcer?.Clear(); _gateProp.Hide(); _finishing = false; _bossEndS = -1f;
             _road.ResetRoad(worldX - 14f, worldX + QaRunwayAheadM, 0f);
             _car.RespawnSafely(new Vector2(worldX, 0f));
+            _surf.OnRespawn();
             _distance = distanceM;
             _pickups.Reset(worldX + 16f);
             _meteors.Reset();
             currentInk = maxInk; currentLives = maxLives;
             UpdateHeartsUI(); UpdateInkUI();
-            _runEnding = true; _stage.JumpTo(distanceM); _runEnding = false;      // ending zones here is not a completed event
+            _fx.DistanceM = distanceM;
+            _runEnding = true; _stage.JumpTo(distanceM); _runEnding = false;
+            _stage.NotifyPickupsCleared(distanceM);                              // Road Tax gates were cleared with the other pickups
             _cameraRig.Snap(_car);
+        }
+
+        public void SetAdaptiveChallenge(bool enabled)
+        {
+            if (_profile == null) return;
+            _profile.adaptiveChallenge = enabled;
+            SavePlayerData();
+            SyncModel();
         }
 
         public void SetSoundEnabled(bool enabled)

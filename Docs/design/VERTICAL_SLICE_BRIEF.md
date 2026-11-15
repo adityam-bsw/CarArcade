@@ -555,4 +555,4 @@ event warns now trigger at S1 (5.0 s), not "40 m ahead".
   | Boost price 5 or 10 | Unchanged at 5 | `GameplayTuning.boostCoinCost` |
   | Mud drag cap per vehicle | Scales: Red 2.0, Cyan 2.5, Monster 1.2 m/s (`mudDragMul` 1 / 1.25 / 0.6 times the 2.0 cap) | `GameplayTuning.mudDragMulByVehicle`, `SurfaceRuleSO.mudDragCapMps` |
   | Eater model and boss meter | As in `hazards.md` (32 m start gap, 18 m target, 1.25x cap; Overload meter). Built in phase B2 (`GAMEPLAY_RULES.md`, section Road-Eater, RO-B0) | done |
-  | Stage events in a real run | `GameplayTuning.stageEvents` = CountrysideOnly (ON by default in the Countryside world, off elsewhere; Off restores the old game exactly) | `GameplayTuning.stageEvents` |
+  | Stage events in a real run | `GameplayTuning.stageEvents` = Always since batch A1 (Countryside slice then endless; other worlds endless; Off restores the old game exactly; was CountrysideOnly) | `GameplayTuning.stageEvents` |

@@ -48,6 +48,19 @@ MonoBehaviour:
   - EVT-GLASS
   adjacentMinGapM: 300
   modifierSlots: 0
+  effects: []
+  ruleText: 
+  counterplayText: 
+  signText: 
+  iconKey: 
+  suitableWorlds:
+  - hills
+  - candy
+  - cave
+  hazardFamily: surface
+  ladderTags:
+  - surface
+  - environment
   spawnerId: hz-mud
   terrainSlopeMinDeg: 0
   terrainSlopeMaxDeg: 14

@@ -1,0 +1,367 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84584774f4f05451aae937b58b179add, type: 3}
+  m_Name: VehicleProfiles
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.VehicleProfileSO
+  profiles:
+  - vehicleId: vehicle-car
+    ink: 1
+    flip: 1
+    boost: 1
+    impact: 1
+    speed: 1
+    torque: 1
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-sports-car
+    ink: 1
+    flip: 0.9
+    boost: 1
+    impact: 0.85
+    speed: 1.08
+    torque: 1
+    accel: 1.05
+    crushesFragile: 0
+    goalId: near-misses
+    goalTarget: 15
+  - vehicleId: vehicle-police-car
+    ink: 1.1
+    flip: 1
+    boost: 1
+    impact: 1
+    speed: 1.05
+    torque: 1.05
+    accel: 1
+    crushesFragile: 0
+    goalId: near-misses
+    goalTarget: 15
+  - vehicleId: vehicle-taxi
+    ink: 0.92
+    flip: 1
+    boost: 1
+    impact: 1.05
+    speed: 0.96
+    torque: 1
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-tuk-tuk
+    ink: 0.9
+    flip: 0.85
+    boost: 1
+    impact: 1.05
+    speed: 1
+    torque: 0.9
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-golf-cart
+    ink: 0.9
+    flip: 1.1
+    boost: 1
+    impact: 1
+    speed: 0.9
+    torque: 1
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-dune-buggy
+    ink: 1.05
+    flip: 1.05
+    boost: 0.95
+    impact: 1
+    speed: 1
+    torque: 1.1
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-race-car
+    ink: 1
+    flip: 0.9
+    boost: 1
+    impact: 0.8
+    speed: 1.12
+    torque: 1.1
+    accel: 1
+    crushesFragile: 0
+    goalId: near-misses
+    goalTarget: 15
+  - vehicleId: vehicle-pickup
+    ink: 1.1
+    flip: 1
+    boost: 1
+    impact: 1.15
+    speed: 0.93
+    torque: 1.1
+    accel: 1
+    crushesFragile: 0
+    goalId: fragile-breaks
+    goalTarget: 20
+  - vehicleId: vehicle-tractor
+    ink: 1
+    flip: 1
+    boost: 0.9
+    impact: 1.1
+    speed: 0.8
+    torque: 1.25
+    accel: 0.8
+    crushesFragile: 0
+    goalId: fragile-breaks
+    goalTarget: 20
+  - vehicleId: vehicle-camper
+    ink: 1.1
+    flip: 1.1
+    boost: 1
+    impact: 1.1
+    speed: 0.88
+    torque: 1
+    accel: 0.85
+    crushesFragile: 0
+    goalId: fragile-breaks
+    goalTarget: 20
+  - vehicleId: vehicle-monster-truck
+    ink: 1.25
+    flip: 1.15
+    boost: 1
+    impact: 1.25
+    speed: 0.95
+    torque: 1.15
+    accel: 1
+    crushesFragile: 1
+    goalId: fragile-breaks
+    goalTarget: 20
+  - vehicleId: vehicle-bus
+    ink: 1.3
+    flip: 1.15
+    boost: 1.1
+    impact: 1.2
+    speed: 0.85
+    torque: 1
+    accel: 0.8
+    crushesFragile: 0
+    goalId: fragile-breaks
+    goalTarget: 20
+  - vehicleId: vehicle-fire-truck
+    ink: 1.25
+    flip: 0.95
+    boost: 1.15
+    impact: 1.2
+    speed: 0.88
+    torque: 1
+    accel: 1
+    crushesFragile: 0
+    goalId: fragile-breaks
+    goalTarget: 20
+  - vehicleId: vehicle-semi-truck
+    ink: 1.35
+    flip: 0.8
+    boost: 1
+    impact: 1.3
+    speed: 0.85
+    torque: 1.2
+    accel: 0.75
+    crushesFragile: 0
+    goalId: fragile-breaks
+    goalTarget: 20
+  - vehicleId: vehicle-tank
+    ink: 1.15
+    flip: 1.4
+    boost: 0.85
+    impact: 1.6
+    speed: 0.8
+    torque: 1.2
+    accel: 0.85
+    crushesFragile: 1
+    goalId: fragile-breaks
+    goalTarget: 20
+  - vehicleId: vehicle-bicycle
+    ink: 0.7
+    flip: 0.75
+    boost: 0.9
+    impact: 0.8
+    speed: 0.95
+    torque: 1
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-scooter
+    ink: 0.8
+    flip: 0.85
+    boost: 1
+    impact: 1
+    speed: 0.92
+    torque: 1
+    accel: 1.1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-skateboard
+    ink: 0.65
+    flip: 0.6
+    boost: 1
+    impact: 0.7
+    speed: 1
+    torque: 1
+    accel: 1.2
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-motorcycle
+    ink: 0.9
+    flip: 0.7
+    boost: 1
+    impact: 0.75
+    speed: 1.1
+    torque: 1
+    accel: 1.15
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-quad-atv
+    ink: 1.1
+    flip: 1
+    boost: 1
+    impact: 0.9
+    speed: 0.97
+    torque: 1.2
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-sled
+    ink: 0.75
+    flip: 1
+    boost: 1
+    impact: 0.85
+    speed: 1.05
+    torque: 0.7
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-toboggan
+    ink: 0.8
+    flip: 1.1
+    boost: 1
+    impact: 1
+    speed: 1.03
+    torque: 0.75
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-snowboard
+    ink: 0.7
+    flip: 0.7
+    boost: 1
+    impact: 0.8
+    speed: 1
+    torque: 1
+    accel: 1.15
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-snowmobile
+    ink: 1.2
+    flip: 1
+    boost: 1
+    impact: 0.9
+    speed: 1.1
+    torque: 1.1
+    accel: 1
+    crushesFragile: 0
+    goalId: near-misses
+    goalTarget: 15
+  - vehicleId: vehicle-hovercraft
+    ink: 0.9
+    flip: 1.5
+    boost: 1.05
+    impact: 0.85
+    speed: 1
+    torque: 0.65
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-jet-ski
+    ink: 1
+    flip: 0.85
+    boost: 1.25
+    impact: 0.8
+    speed: 1.1
+    torque: 0.8
+    accel: 1
+    crushesFragile: 0
+    goalId: near-misses
+    goalTarget: 15
+  - vehicleId: vehicle-speedboat
+    ink: 1.15
+    flip: 0.9
+    boost: 1.2
+    impact: 0.9
+    speed: 1.15
+    torque: 0.75
+    accel: 1
+    crushesFragile: 0
+    goalId: near-misses
+    goalTarget: 15
+  - vehicleId: vehicle-handcar
+    ink: 0.8
+    flip: 1
+    boost: 0.8
+    impact: 1.1
+    speed: 0.85
+    torque: 1
+    accel: 0.9
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10
+  - vehicleId: vehicle-moon-rover
+    ink: 0.95
+    flip: 1.35
+    boost: 1
+    impact: 1
+    speed: 1
+    torque: 0.9
+    accel: 0.6
+    crushesFragile: 0
+    goalId: low-gravity-stages
+    goalTarget: 5
+  - vehicleId: vehicle-rocket-sled
+    ink: 1.3
+    flip: 0.7
+    boost: 1.3
+    impact: 0.7
+    speed: 1.2
+    torque: 0.8
+    accel: 1.2
+    crushesFragile: 0
+    goalId: near-misses
+    goalTarget: 15
+  - vehicleId: vehicle-shopping-cart
+    ink: 0.75
+    flip: 0.8
+    boost: 1.1
+    impact: 0.85
+    speed: 0.9
+    torque: 1
+    accel: 1
+    crushesFragile: 0
+    goalId: clean-landings
+    goalTarget: 10

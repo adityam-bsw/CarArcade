@@ -19,6 +19,12 @@ MonoBehaviour:
     b: 0.8
     c: 0
     d: 0
-  hintFull: Rope bridge sways as you cross.
+  hintFull: 'Rope bridge: it sways as you cross.'
   hintShort: Sways
-  hintIcon: 
+  hintIcon: icon-rope-bridge
+  pieceLengthM: 4
+  safeEntryM: 6
+  warnTint: {r: 0.9, g: 0.82, b: 0.7, a: 1}
+  dangerTint: {r: 0.7, g: 0.45, b: 0.4, a: 1}
+  verb: Stay steady
+  consequence: the bridge sways

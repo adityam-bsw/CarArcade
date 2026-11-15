@@ -6,6 +6,7 @@
         "UnityEditor.TestRunner",
         "RB.Core",
         "RB.Game",
+        "RB.Game.Editor",
         "RB.UI",
         "Unity.TextMeshPro",
         "UnityEngine.UI"

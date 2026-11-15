@@ -10,6 +10,10 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Button soundButton;
         [SerializeField] private Image soundButtonImage;
         [SerializeField] private TMP_Text soundLabel;
+        [Tooltip("Adaptive Challenge opt-in (default off). Optional so an older prefab still works.")]
+        [SerializeField] private Button adaptiveButton;
+        [SerializeField] private Image adaptiveButtonImage;
+        [SerializeField] private TMP_Text adaptiveLabel;
         [SerializeField] private Button closeButton;
 
         public override bool IsPopup => true;
@@ -18,6 +22,8 @@ namespace RoadBuilderGame.UI
         {
             soundButton.onClick.AddListener(() =>
                 GameServices.Actions?.SetSoundEnabled(!GameServices.Model.SoundEnabled));
+            if (adaptiveButton != null)
+                adaptiveButton.onClick.AddListener(() => GameServices.Actions?.SetAdaptiveChallenge(!GameServices.Model.AdaptiveChallenge));
             closeButton.onClick.AddListener(() => Stack?.Pop());
         }
 
@@ -40,6 +46,12 @@ namespace RoadBuilderGame.UI
             bool on = GameServices.Model.SoundEnabled;
             soundLabel.SetText(on ? "ON" : "OFF");
             soundButtonImage.sprite = UIThemeManager.Current.GetSprite(on ? SpriteSlot.ToggleOn : SpriteSlot.ToggleOff);
+            if (adaptiveButton != null)
+            {
+                bool ad = GameServices.Model.AdaptiveChallenge;
+                if (adaptiveLabel != null) adaptiveLabel.SetText(ad ? "ON" : "OFF");       // the visible opt-in indicator
+                if (adaptiveButtonImage != null) adaptiveButtonImage.sprite = UIThemeManager.Current.GetSprite(ad ? SpriteSlot.ToggleOn : SpriteSlot.ToggleOff);
+            }
         }
     }
 }

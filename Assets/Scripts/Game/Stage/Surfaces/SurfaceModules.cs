@@ -4,7 +4,11 @@ using UnityEngine;
 namespace RoadBuilderGame
 {
     /// <summary>The composable surface behaviours. A surface lists kinds; a kind never knows which surface uses it.</summary>
-    public enum SurfaceModuleKind { Sliding = 0, Sinking = 1, Breakable = 2, Bounce = 3, Dissolve = 4, Oscillation = 5, SpeedPad = 6, Heat = 7, Conveyor = 8 }
+    public enum SurfaceModuleKind { Sliding = 0, Sinking = 1, Breakable = 2, Bounce = 3, Dissolve = 4, Oscillation = 5, SpeedPad = 6, Heat = 7, Conveyor = 8,
+        Magnetic = 9, Decay = 10, Torque = 11, Instability = 12, Sticky = 13, MetalHeat = 14, Spikes = 15, Fade = 16, Charge = 17, Tear = 18, Buoyancy = 19, Bump = 20, Cycle = 21 }
+
+    /// <summary>What a hazard or projectile did to a piece of road, beyond a plain impact. Modules react only to the kinds they know.</summary>
+    public enum SurfaceHazardKind { Fire = 0, Charge = 1, Acid = 2, Cold = 3 }
 
     /// <summary>
     /// One entry of a surface's module list. Shared data, never mutated at runtime. a..d are documented per kind in <see cref="SurfaceModuleFactory"/>.
@@ -29,6 +33,10 @@ namespace RoadBuilderGame
         public float ZoneMetres;       // how far into the surface the front wheel is (entry platform rule)
         public bool Airborne;
         public float Aux;              // module-specific one-shot input, unused by the host
+        public float TimeS;            // run clock in seconds: cyclic modules (fade, charge, spikes, cycle) share one phase so neighbouring pieces stay in step
+        public int PieceIndex;         // index of the road piece this host is bound to (phase offset)
+        public float Speed;            // car speed m/s
+        public bool Heavy, Metallic;   // vehicle class flags from the vehicle data
     }
 
     /// <summary>Lifecycle of one surface behaviour. Instances own all runtime state; <see cref="SurfaceModuleSpec"/> and the rule stay read-only.</summary>
@@ -42,6 +50,14 @@ namespace RoadBuilderGame
         bool Gone { get; }                           // the piece is broken or dissolved
         float Sway { get; }                          // road sway offset in metres (rope bridge)
         float TakeImpulse();                         // one-shot upward impulse in m/s (bounce); reading clears it
+        /// <summary>True when the state belongs to one road piece (cracks, dissolve, burn, spikes, fade, pads): the runtime keeps one instance per piece. False: the state follows the vehicle across pieces (mud dwell, acid durability, sticky).</summary>
+        bool PieceLocal { get; }
+        float Torque { get; }                        // angular acceleration in deg/s^2 added to the car (oil, gravel); positive = nose up
+        float VerticalAccel { get; }                 // m/s^2 along world up (magnetic pull is negative, buoyancy positive)
+        float GripMul { get; }                       // multiplier on the road friction, 1 = unchanged
+        float Alpha { get; }                         // 1 = fully visible; looks only (haunted fade)
+        int TakeDamage();                            // durability hits since the last call (acid, burning oil); reading clears it
+        void OnHazardEffect(SurfaceHazardKind kind, float strength);
         void Configure(in SurfaceModuleSpec spec, SurfaceRuleSO rule);
         void OnVehicleEnter();
         void OnVehicleExit();
@@ -62,6 +78,13 @@ namespace RoadBuilderGame
         public virtual bool Gone => false;
         public virtual float Sway => 0f;
         public virtual float TakeImpulse() => 0f;
+        public virtual bool PieceLocal => false;
+        public virtual float Torque => 0f;
+        public virtual float VerticalAccel => 0f;
+        public virtual float GripMul => 1f;
+        public virtual float Alpha => 1f;
+        public virtual int TakeDamage() => 0;
+        public virtual void OnHazardEffect(SurfaceHazardKind kind, float strength) { }
         public abstract void Configure(in SurfaceModuleSpec spec, SurfaceRuleSO rule);
         public virtual void OnVehicleEnter() { }
         public virtual void OnVehicleExit() { }
@@ -107,9 +130,11 @@ namespace RoadBuilderGame
     public sealed class SinkingModule : RoadBehaviourBase
     {
         private float _dragPerSec = 1f, _cap = 2f, _floor = 3f, _stallDeg = 18f; private bool _boostIgnores = true;
-        private float _dwell;
+        private float _dwell; private bool _on;
         public override bool TickEveryFrame => true;
         public float DwellS => _dwell;
+        public override void OnVehicleEnter() { _on = true; }
+        public override void OnVehicleExit() { _on = false; }
         public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r)
         {
             if (r != null) { _dragPerSec = r.dragPerSec; _cap = r.mudDragCapMps; _floor = r.dragFloorSpeed; _stallDeg = r.stallAngleDeg; _boostIgnores = r.mudBoostIgnoresDrag; }
@@ -117,7 +142,7 @@ namespace RoadBuilderGame
             Reset();
         }
         public static float Drag(float dragPerSec, float cap, float dwellS, float mudDragMul) { return mudDragMul * Mathf.Min(cap, dragPerSec * Mathf.Max(0f, dwellS)); }
-        public override void Tick(float dt, SurfaceFrame f) { _dwell += dt; }
+        public override void Tick(float dt, SurfaceFrame f) { if (_on) _dwell += dt; }
         public override float ApplyTarget(float target, SurfaceFrame f)
         {
             if (f.Boosting && _boostIgnores) return target;
@@ -125,7 +150,7 @@ namespace RoadBuilderGame
             if (f.UphillDeg > _stallDeg) v = Mathf.Min(v, _floor);
             return v;
         }
-        public override void Reset() { _dwell = 0f; }
+        public override void Reset() { _dwell = 0f; _on = false; }
     }
 
     /// <summary>
@@ -136,11 +161,13 @@ namespace RoadBuilderGame
     {
         private float _hair = 0.8f, _web = 1.6f, _drop = 2.6f, _safeEntryM = 6f, _heavy = 3f;
         private float _dwell; private bool _on;
+        public override bool PieceLocal => true;
         public override int Stage => _dwell >= _drop ? 3 : _dwell >= _web ? 2 : _dwell >= _hair ? 1 : 0;
         public override bool Gone => _dwell >= _drop;
         public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r)
         {
             if (r != null) { _hair = r.glassDwellHairline; _web = r.glassDwellWeb; _drop = r.glassDwellDrop; _safeEntryM = r.safeEntryPlatformMetres; }
+            else if (s.b > 0f) { _drop = s.b; _hair = s.b * 0.3f; _web = s.b * 0.65f; _safeEntryM = s.c > 0f ? s.c : 6f; }     // spec driven (lava crust: drop after b seconds)
             else { _hair = 0.8f; _web = 1.6f; _drop = 2.6f; _safeEntryM = 6f; }
             if (s.a > 0f) _heavy = s.a;
             Reset();
@@ -159,65 +186,73 @@ namespace RoadBuilderGame
         public override void Reset() { _dwell = 0f; _on = false; }
     }
 
-    /// <summary>Spring pad: every entry gives one upward impulse, then a short cooldown. a = impulse m/s, b = cooldown s.</summary>
+    /// <summary>Spring pad: entering the piece gives one upward impulse, then a short cooldown. a = impulse m/s, b = cooldown s, d = only every d-th piece is a spring (sand dunes, spring road; 0 or 1 = every piece).</summary>
     public sealed class BounceModule : RoadBehaviourBase
     {
-        private float _impulse = 6f, _cooldown = 0.5f, _cdLeft, _pending;
-        public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r) { _impulse = s.a > 0f ? s.a : 6f; _cooldown = s.b; Reset(); }
-        public override void OnVehicleEnter() { if (_cdLeft <= 0f) { _pending = _impulse; _cdLeft = _cooldown; } }
+        private float _impulse = 6f, _cooldown = 0.5f, _cdLeft, _pending; private int _stride = 1, _piece;
+        public override bool PieceLocal => true;
+        public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r) { _impulse = s.a > 0f ? s.a : 6f; _cooldown = s.b; _stride = s.d > 1f ? (int)s.d : 1; Reset(); }
+        public override void OnVehicleEnter() { if (_cdLeft <= 0f && (_stride <= 1 || ((_piece % _stride) + _stride) % _stride == 0)) { _pending = _impulse; _cdLeft = _cooldown; } }
         public override float TakeImpulse() { float p = _pending; _pending = 0f; return p; }
-        public override void Tick(float dt, SurfaceFrame f) { if (_cdLeft > 0f) _cdLeft -= dt; }
-        public override void Reset() { _cdLeft = 0f; _pending = 0f; }
+        public override void Tick(float dt, SurfaceFrame f) { _piece = f.PieceIndex; if (_cdLeft > 0f) _cdLeft -= dt; }
+        public override void Reset() { _cdLeft = 0f; _pending = 0f; _piece = 0; }
     }
 
     /// <summary>Cloud: dissolves after the vehicle has stood on it for a seconds (stage 1 at half, Gone at a). b = seconds to re-form after leaving, 0 = never in this run.</summary>
     public sealed class DissolveModule : RoadBehaviourBase
     {
-        private float _after = 1.2f, _reform = 0f, _dwell, _goneFor; private bool _on;
+        private float _after = 1.2f, _reform = 0f, _dwell, _goneFor; private bool _on, _touched;
+        public override bool PieceLocal => true;
         public override int Stage => _dwell >= _after ? 2 : _dwell >= _after * 0.5f ? 1 : 0;
+        public override float Alpha => _dwell >= _after ? 0f : 1f - 0.7f * Mathf.Clamp01(_dwell / _after);
         public override bool Gone => _dwell >= _after;
         public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r) { _after = s.a > 0f ? s.a : 1.2f; _reform = s.b; Reset(); }
-        public override void OnVehicleEnter() { _on = true; }
+        public override void OnVehicleEnter() { _on = true; _touched = true; }
         public override void OnVehicleExit() { _on = false; }
         public override void Tick(float dt, SurfaceFrame f)
         {
-            if (_on && _dwell < _after) _dwell += dt;
-            else if (_dwell >= _after && _reform > 0f) { _goneFor += dt; if (_goneFor >= _reform) { _dwell = 0f; _goneFor = 0f; } }
+            if ((_on || _touched) && _dwell < _after) _dwell += dt;                 // the clock starts at first contact and runs on after the car left (blueprint: dissolves 2 s after contact)
+            else if (_dwell >= _after && _reform > 0f) { _goneFor += dt; if (_goneFor >= _reform) { _dwell = 0f; _goneFor = 0f; _touched = false; } }
         }
-        public override void Reset() { _dwell = 0f; _goneFor = 0f; _on = false; }
+        public override void Reset() { _dwell = 0f; _goneFor = 0f; _on = false; _touched = false; }
     }
 
     /// <summary>Rope bridge sway. a = amplitude metres, b = frequency Hz, c = extra amplitude per m/s of speed is not used; amplitude grows with the vehicle on it.</summary>
     public sealed class OscillationModule : RoadBehaviourBase
     {
         private float _amp = 0.12f, _hz = 0.8f, _phase, _on;
-        public override float Sway => _amp * _on * Mathf.Sin(_phase);
+        private float _heavyMul = 1f;
+        public override float Sway => _amp * _on * _heavyMul * Mathf.Sin(_phase);
         public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r) { _amp = s.a > 0f ? s.a : 0.12f; _hz = s.b > 0f ? s.b : 0.8f; Reset(); }
         public override void OnVehicleEnter() { _on = 1f; }
         public override void OnVehicleExit() { _on = 0f; }
-        public override void Tick(float dt, SurfaceFrame f) { _phase += dt * _hz * 6.2831853f; if (_phase > 6.2831853f) _phase -= 6.2831853f; }
-        public override void Reset() { _phase = 0f; _on = 0f; }
+        public override void Tick(float dt, SurfaceFrame f) { _phase += dt * _hz * 6.2831853f; if (_phase > 6.2831853f) _phase -= 6.2831853f; _heavyMul = f.Heavy ? 0.5f : 1f; }   // rope + heavy vehicle: the stronger bridge variant sways half as much
+        public override void Reset() { _phase = 0f; _on = 0f; _heavyMul = 1f; }
     }
 
-    /// <summary>Neon pad: a speed bonus on entry for b seconds. a = bonus m/s.</summary>
+    /// <summary>Neon pad: a speed bonus on entering a pad piece for b seconds. a = bonus m/s, b = seconds, d = every d-th piece is a pad (aligned pads, 0 or 1 = every piece).</summary>
     public sealed class SpeedPadModule : RoadBehaviourBase
     {
-        private float _bonus = 2.5f, _durS = 1.2f, _left;
+        private float _bonus = 2.5f, _durS = 1.2f, _left; private int _stride = 1, _piece;
+        public override bool PieceLocal => true;
         public override float SpeedDelta => _left > 0f ? _bonus : 0f;
-        public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r) { _bonus = s.a > 0f ? s.a : 2.5f; _durS = s.b > 0f ? s.b : 1.2f; Reset(); }
-        public override void OnVehicleEnter() { _left = _durS; }
-        public override void Tick(float dt, SurfaceFrame f) { if (_left > 0f) _left -= dt; }
-        public override void Reset() { _left = 0f; }
+        public override int Stage => _left > 0f ? 1 : 0;
+        public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r) { _bonus = s.a > 0f ? s.a : 2.5f; _durS = s.b > 0f ? s.b : 1.2f; _stride = s.d > 1f ? (int)s.d : 1; Reset(); }
+        public override void OnVehicleEnter() { if (_stride <= 1 || ((_piece % _stride) + _stride) % _stride == 0) _left = _durS; }
+        public override void Tick(float dt, SurfaceFrame f) { _piece = f.PieceIndex; if (_left > 0f) _left -= dt; }
+        public override void Reset() { _left = 0f; _piece = 0; }
     }
 
     /// <summary>Wooden bridge: an incendiary hit sets it burning for a seconds; while burning Stage is 1, afterwards the planks are Gone. b = seconds of fire before collapse.</summary>
     public sealed class HeatModule : RoadBehaviourBase
     {
         private float _burnS = 2.5f, _left, _collapseS = 4f, _burnt; private bool _burning;
+        public override bool PieceLocal => true;
         public override int Stage => _burning ? 1 : 0;
         public override bool Gone => _burnt >= _collapseS;
         public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r) { _burnS = s.a > 0f ? s.a : 2.5f; _collapseS = s.b > 0f ? s.b : 4f; Reset(); }
         public override void OnProjectileImpact(float energy, bool fire) { if (fire) { _burning = true; _left = _burnS; } }
+        public override void OnHazardEffect(SurfaceHazardKind kind, float strength) { if (kind == SurfaceHazardKind.Fire) { _burning = true; _left = _burnS; } }
         public override void Tick(float dt, SurfaceFrame f)
         {
             if (!_burning) return;
@@ -241,13 +276,20 @@ namespace RoadBuilderGame
     /// <summary>Kind to module instance. A table of constructors, not a switch on surface type.</summary>
     public static class SurfaceModuleFactory
     {
-        public const int KindCount = 9;
+        public const int KindCount = 22;
         private static readonly Func<IRoadBehaviour>[] Ctors =
         {
             () => new SlidingModule(), () => new SinkingModule(), () => new BreakableModule(), () => new BounceModule(), () => new DissolveModule(),
             () => new OscillationModule(), () => new SpeedPadModule(), () => new HeatModule(), () => new ConveyorModule(),
+            () => new MagneticModule(), () => new DecayModule(), () => new TorqueModule(), () => new InstabilityModule(), () => new StickyModule(), () => new MetalHeatModule(),
+            () => new SpikesModule(), () => new FadeModule(), () => new ChargeModule(), () => new TearModule(), () => new BuoyancyModule(), () => new BumpModule(), () => new CycleModule(),
         };
         public static IRoadBehaviour Create(SurfaceModuleKind kind) { return Ctors[(int)kind](); }
+
+        private static readonly bool[] Local = BuildLocal();
+        private static bool[] BuildLocal() { var l = new bool[KindCount]; for (int i = 0; i < KindCount; i++) l[i] = Ctors[i]().PieceLocal; return l; }
+        /// <summary>True for kinds whose state is per road piece (see <see cref="IRoadBehaviour.PieceLocal"/>).</summary>
+        public static bool IsPieceLocal(SurfaceModuleKind kind) { return Local[(int)kind]; }
 
         /// <summary>The modules the three event surfaces had before the refactor, used only when a rule has no behaviour set assigned yet.</summary>
         public static SurfaceModuleSpec[] LegacySpecs(SurfaceRuleSO rule)

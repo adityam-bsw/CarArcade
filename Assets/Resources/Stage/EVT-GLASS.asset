@@ -48,6 +48,14 @@ MonoBehaviour:
   - EVT-MUD
   adjacentMinGapM: 300
   modifierSlots: 1
+  effects: []
+  ruleText: 
+  counterplayText: 
+  signText: 
+  iconKey: 
+  suitableWorlds: []
+  hazardFamily: 
+  ladderTags: []
   spawnerId: hz-glass
   terrainSlopeMinDeg: -12
   terrainSlopeMaxDeg: 12

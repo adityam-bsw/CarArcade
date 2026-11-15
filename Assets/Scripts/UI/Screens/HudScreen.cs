@@ -55,6 +55,7 @@ namespace RoadBuilderGame.UI
         private void Awake()
         {
             boostButton.onClick.AddListener(() => GameServices.Actions?.Boost());
+            var hazardHud = Resources.Load<HazardHudView>("UI/HazardHud"); if (hazardHud != null) Instantiate(hazardHud, transform, false);      // boss meter, vignette and announcer subtitle (gap list B)
             if (pauseButton != null) pauseButton.onClick.AddListener(() => GameServices.Actions?.PauseRun());
         }
 

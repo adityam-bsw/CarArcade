@@ -73,7 +73,7 @@ namespace RoadBuilderGame
         {
             _cooldown = Mathf.Max(0f, _cooldown - dt);
             UpShield.Tick(dt);
-            BoostLeft = Mathf.Max(0f, BoostLeft - dt);
+            BoostLeft = Mathf.Max(0f, BoostLeft - dt * BoostDrainMul);
             MagnetLeft = Mathf.Max(0f, MagnetLeft - dt);
             DoubleLeft = Mathf.Max(0f, DoubleLeft - dt);
             SlowLeft = Mathf.Max(0f, SlowLeft - dt);
@@ -99,7 +99,7 @@ namespace RoadBuilderGame
             {
                 int index = ++Stats.milestones;
                 _nextMilestone += _t.milestoneEvery;
-                int coins = _t.milestoneCoins * index;
+                int coins = _t.milestoneCoins * (_t.milestoneIndexCap > 0 ? Mathf.Min(index, _t.milestoneIndexCap) : index);
                 Pay("CHEST " + Mathf.RoundToInt(distance) + " m", coins); Raise(Cue.Chest);
                 if (UnityEngine.Random.value < _t.milestoneGemChance) { Stats.gems++; Bonus?.Invoke("GEM FOUND", 0); }
             }
@@ -159,6 +159,10 @@ namespace RoadBuilderGame
         /// <summary>A coin was picked up. Returns what it is worth with combo and double coins applied.</summary>
         /// <summary>Value multiplier of the current track surface (set by the manager).</summary>
         public float CoinFactor = 1f;
+        /// <summary>Boost duration multiplier of the vehicle (VehicleProfile.boost). 1 = unchanged.</summary>
+        public float BoostMult = 1f;
+        /// <summary>Boost Drain event: how many times faster a running boost burns (1 = normal).</summary>
+        public float BoostDrainMul = 1f;
 
         public int CollectCoin()
         {
@@ -208,7 +212,7 @@ namespace RoadBuilderGame
             if (Boost01 >= 1f) { Boost01 = 0f; result = BoostResult.Free; }
             else if (coinsAvailable >= _t.boostCoinCost) { coinsPaid = _t.boostCoinCost; result = BoostResult.Paid; }
             else return BoostResult.Refused;
-            BoostLeft = _t.boostDuration + _t.boostDurationPerLevel * _boostLevel;
+            BoostLeft = (_t.boostDuration + _t.boostDurationPerLevel * _boostLevel) * BoostMult;
             _cooldown = BoostLeft + _t.boostCooldown;
             Stats.boosts++;
             Raise(Cue.Boost);

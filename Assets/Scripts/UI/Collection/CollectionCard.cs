@@ -161,7 +161,7 @@ namespace RoadBuilderGame.UI
             preview.color = usable ? Color.white : new Color(1f, 1f, 1f, 0.4f);
 
             string gate = GameServices.Model.LockLine(entry.id);
-            bool locked = (entry.kind == CatalogKind.Vehicle && usable && !GameServices.Model.IsVehicleUnlocked(entry)) || (entry.kind == CatalogKind.World && gate.Length > 0);
+            bool locked = (entry.kind == CatalogKind.Vehicle && usable && !GameServices.Model.IsVehicleUnlocked(entry)) || ((entry.kind == CatalogKind.World || entry.kind == CatalogKind.Surface) && gate.Length > 0);
             lockTag.gameObject.SetActive(locked);
             if (locked)
             {

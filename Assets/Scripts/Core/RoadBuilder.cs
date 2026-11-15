@@ -35,6 +35,7 @@ namespace RoadBuilderGame
             /// <summary>Never deleted by <see cref="RoadBuilder.EatBefore"/> (safety platforms).</summary>
             public bool noEat;
         }
+        private float _offsetY;
 
         private readonly List<Segment> _segments = new List<Segment>();
         private Segment _activeSegment;
@@ -99,6 +100,7 @@ namespace RoadBuilderGame
             }
             _segments.Clear();
             _noEat.Clear();
+            _offsetY = 0f;
             _activeSegment = null;
             FrontierMaxX = startX;
 
@@ -173,6 +175,7 @@ namespace RoadBuilderGame
             go.transform.SetParent(transform, false);
             _activeSegment.chunk = go.AddComponent<RoadChunk>();
             _activeSegment.chunk.Init(_physicsMaterial);
+            _activeSegment.chunk.SetOffsetY(_offsetY);
 
             _segments.Add(_activeSegment);
             return true;
@@ -493,6 +496,82 @@ namespace RoadBuilderGame
                 }
             }
             return (min == float.MaxValue) ? -10f : min;
+        }
+
+        // ------------------------------------------------------------------ Surface break / tint / sway API (section C: Break, Dissolve, Burn)
+        private static void DestroyNow(GameObject go)
+        {
+            if (go == null) return;
+            go.SetActive(false);                                   // collider and mesh are gone this very frame
+            if (Application.isPlaying) Destroy(go); else DestroyImmediate(go);
+        }
+
+        /// <summary>True when any no-eat range or no-eat segment overlaps [x0, x1] (Road-Eater and finish-gate road, owned by section B). Break must not touch it.</summary>
+        public bool IsRangeProtected(float x0, float x1)
+        {
+            for (int i = 0; i < _noEat.Count; i++) if (x1 >= _noEat[i].x0 && x0 <= _noEat[i].x1) return true;
+            for (int i = 0; i < _segments.Count; i++) { var s = _segments[i]; if (s.noEat && s.maxX >= x0 && s.minX <= x1) return true; }
+            return false;
+        }
+
+        /// <summary>
+        /// Removes the road between world x0 and x1 (a broken, dissolved or burnt piece). A chunk that straddles the cut is split: the left part is rebuilt in place,
+        /// the right part becomes a new chunk, and both mesh and collider are rebuilt in this same call. The active (being drawn) chunk is never cut.
+        /// Returns true when road was removed. Allocates only when it actually cuts (a one-off event, never per frame).
+        /// </summary>
+        public bool CutRange(float x0, float x1)
+        {
+            if (x1 <= x0) return false;
+            bool any = false;
+            for (int i = _segments.Count - 1; i >= 0; i--)
+            {
+                var seg = _segments[i];
+                if (seg == _activeSegment || seg.chunk == null || seg.maxX <= x0 || seg.minX >= x1) continue;
+                var pts = seg.sampledPoints; int n = pts.Count;
+                if (n < 2) continue;
+                int a = 0; while (a < n && pts[a].x < x0) a++;
+                int b = a; while (b < n && pts[b].x <= x1) b++;
+                if (a == b) continue;
+                Segment right = null;
+                if (n - b >= 2)
+                {
+                    right = new Segment { noEat = seg.noEat };
+                    right.sampledPoints.AddRange(pts.GetRange(b, n - b));
+                    right.rawKnots.AddRange(right.sampledPoints);
+                    right.minX = right.sampledPoints[0].x; right.maxX = right.sampledPoints[right.sampledPoints.Count - 1].x;
+                    var go = new GameObject("RoadSegment_cut");
+                    go.transform.SetParent(transform, false);
+                    right.chunk = go.AddComponent<RoadChunk>();
+                    right.chunk.Init(_physicsMaterial);
+                    right.chunk.Build(right.sampledPoints, 0, right.sampledPoints.Count - 1, roadThickness, supportDepth, CurrentSkin);
+                    right.chunk.SetOffsetY(_offsetY);
+                }
+                int insertAt = i + 1;
+                if (a >= 2)
+                {
+                    pts.RemoveRange(a, n - a);
+                    seg.maxX = pts[pts.Count - 1].x;
+                    seg.chunk.Build(pts, 0, pts.Count - 1, roadThickness, supportDepth, CurrentSkin);
+                }
+                else { DestroyNow(seg.chunk.gameObject); _segments.RemoveAt(i); insertAt = i; }
+                if (right != null) _segments.Insert(insertAt, right);
+                any = true;
+            }
+            return any;           // FrontierMaxX is left alone: nothing may be drawn behind the old frontier
+        }
+
+        /// <summary>Tints the road between x0 and x1 (crack stage, burn, fade). Looks only.</summary>
+        public void TintRange(float x0, float x1, Color c)
+        {
+            for (int i = 0; i < _segments.Count; i++) { var s = _segments[i]; if (s.chunk != null && s.maxX >= x0 && s.minX <= x1) s.chunk.TintRange(x0, x1, c); }
+        }
+
+        /// <summary>Lifts or sinks every road chunk by dy metres (rope sway, floating rocks, lava river). One value for all chunks so joins never step.</summary>
+        public void SetOffsetY(float dy)
+        {
+            if (Mathf.Abs(dy - _offsetY) < 0.004f) return;
+            _offsetY = dy;
+            for (int i = 0; i < _segments.Count; i++) if (_segments[i].chunk != null) _segments[i].chunk.SetOffsetY(dy);
         }
 
         // ------------------------------------------------------------------ Road-Eater trim API (hazards.md 2.5)

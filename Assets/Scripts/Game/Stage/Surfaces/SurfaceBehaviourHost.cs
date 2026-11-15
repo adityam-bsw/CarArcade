@@ -18,8 +18,12 @@ namespace RoadBuilderGame
         public int Count => _count;
         public IRoadBehaviour this[int i] => _active[i];
 
-        public void Enter(SurfaceRuleSO rule, SurfaceModuleSpec[] specs)
+        private bool _vehicleOn;
+
+        /// <summary>Binds the module list. <paramref name="vehicleOn"/> false builds the host for a road piece the vehicle is not on yet (neighbour pieces): call <see cref="SetVehicleOn"/> when it arrives.</summary>
+        public void Enter(SurfaceRuleSO rule, SurfaceModuleSpec[] specs, bool vehicleOn = true)
         {
+            _vehicleOn = vehicleOn;
             _count = 0; _slowAcc = 0f;
             if (specs == null) return;
             for (int i = 0; i < specs.Length && _count < _active.Length; i++)
@@ -30,7 +34,7 @@ namespace RoadBuilderGame
                 for (int j = 0; j < _count; j++) if (_active[j] == m) dup = true;
                 if (dup) continue;                       // one instance per kind in a list
                 m.Configure(specs[i], rule);
-                m.OnVehicleEnter();
+                if (vehicleOn) m.OnVehicleEnter();
                 _active[_count++] = m;
             }
         }
@@ -38,7 +42,23 @@ namespace RoadBuilderGame
         public void Exit()
         {
             for (int i = 0; i < _count; i++) { _active[i].OnVehicleExit(); _active[i].Reset(); _active[i] = null; }
-            _count = 0; _slowAcc = 0f;
+            _count = 0; _slowAcc = 0f; _vehicleOn = false;
+        }
+
+        public bool VehicleOn => _vehicleOn;
+
+        /// <summary>Back to the intact state, modules stay bound (a piece that could not be cut because it is protected road).</summary>
+        public void ResetState()
+        {
+            for (int i = 0; i < _count; i++) { _active[i].Reset(); if (_vehicleOn) _active[i].OnVehicleEnter(); }
+        }
+
+        /// <summary>The vehicle arrives on or leaves this road piece. Modules keep their state either way (dissolve and burn run on after the vehicle left).</summary>
+        public void SetVehicleOn(bool on)
+        {
+            if (on == _vehicleOn) return;
+            _vehicleOn = on;
+            for (int i = 0; i < _count; i++) { if (on) _active[i].OnVehicleEnter(); else _active[i].OnVehicleExit(); }
         }
 
         public void Tick(SurfaceFrame f)
@@ -71,6 +91,12 @@ namespace RoadBuilderGame
         public float Sway { get { float s = 0f; for (int i = 0; i < _count; i++) s += _active[i].Sway; return s; } }
         public float TakeImpulse() { float p = 0f; for (int i = 0; i < _count; i++) p += _active[i].TakeImpulse(); return p; }
         public void ProjectileImpact(float energy, bool fire) { for (int i = 0; i < _count; i++) _active[i].OnProjectileImpact(energy, fire); }
+        public float Torque { get { float s = 0f; for (int i = 0; i < _count; i++) s += _active[i].Torque; return s; } }
+        public float VerticalAccel { get { float s = 0f; for (int i = 0; i < _count; i++) s += _active[i].VerticalAccel; return s; } }
+        public float GripMul { get { float s = 1f; for (int i = 0; i < _count; i++) s *= _active[i].GripMul; return s; } }
+        public float Alpha { get { float s = 1f; for (int i = 0; i < _count; i++) s = Mathf.Min(s, _active[i].Alpha); return s; } }
+        public int TakeDamage() { int h = 0; for (int i = 0; i < _count; i++) h += _active[i].TakeDamage(); return h; }
+        public void HazardEffect(SurfaceHazardKind kind, float strength) { for (int i = 0; i < _count; i++) _active[i].OnHazardEffect(kind, strength); }
         public T Find<T>() where T : class { for (int i = 0; i < _count; i++) if (_active[i] is T t) return t; return null; }
     }
 }

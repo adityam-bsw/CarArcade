@@ -84,6 +84,35 @@ MonoBehaviour:
   weightedRecoveryMinM: 100
   weightedRecoveryMaxM: 200
   weightedBreatherM: 200
+  stageLengthM: 1000
+  endlessStageCount: 40
+  endlessStages: []
+  endlessRandomRow:
+    stage: 0
+    label: 
+    tag: 
+    fixedEvent: {fileID: 0}
+    minTier: 0
+    maxTier: 0
+    concurrent: 0
+  tierWeights:
+  - 40
+  - 35
+  - 20
+  - 5
+  endlessModifierCap: 2
+  stackGapFromM: 5000
+  activationGapM: 100
+  endlessHardCost: 7
+  familyWindowStages: 4
+  familyMaxInWindow: 2
+  endlessStartJitterM: 60
+  adaptiveFailsToEase: 3
+  adaptiveHardMul: 0.35
+  worldTags: []
+  themeTagsCountry: []
+  themeTagsDesert: []
+  themeTagsCyber: []
   debugJumpPointsM:
   - 0
   - 220

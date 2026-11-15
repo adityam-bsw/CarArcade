@@ -49,6 +49,7 @@ namespace RoadBuilderGame.Editor
                 e.terrainSlopeMinDeg = -12; e.terrainSlopeMaxDeg = 15; e.terrainLongestGapM = 6; e.coinShape = StageCoinShape.Line; e.ringCount = 1; e.ringMaxHeightM = 6; e.variantCount = 2;
                 Cues(e, "ice", StageCues.S1Ice, "ZoneIce");
                 e.forbiddenWith = new[] { "EVT-MUD", "EVT-METEOR", "EVT-GLASS", "EVT-RINGS", "MON-EATER", "BOS-ROB0" };
+                Endless(e, "surface", new[] { "snow", "hills", "moon" }, "surface", "environment");
             });
             var evMeteor = Event("EVT-METEOR", e =>
             {
@@ -58,6 +59,7 @@ namespace RoadBuilderGame.Editor
                 e.strikeIntervalSecMin = 3.5f; e.strikeIntervalSecMax = 5.5f; e.strikeMaxCount = 3;
                 Cues(e, "meteor", StageCues.S1Meteor, "ZoneMeteor");
                 e.forbiddenWith = new[] { "EVT-ICE", "EVT-MUD", "EVT-GLASS", "EVT-RINGS", "MON-EATER", "BOS-ROB0" };
+                Endless(e, "sky", new[] { "mars", "moon", "hills", "desert" }, "environment", "sky");
             });
             var evMud = Event("EVT-MUD", e =>
             {
@@ -67,6 +69,7 @@ namespace RoadBuilderGame.Editor
                 Cues(e, "mud", StageCues.S1Mud, "ZoneMud");
                 e.forbiddenWith = new[] { "EVT-ICE", "EVT-METEOR", "EVT-GLASS", "EVT-RINGS", "MON-EATER", "BOS-ROB0" };
                 e.adjacentForbiddenWith = new[] { "EVT-GLASS" }; e.adjacentMinGapM = 300;
+                Endless(e, "surface", new[] { "hills", "candy", "cave" }, "surface", "environment");
             });
             var evEater = Event("MON-EATER", e =>
             {   // schedule anchor only in B1: the director plans and signals it, no behaviour is registered, so nothing is shown or done until phase B2
@@ -74,6 +77,7 @@ namespace RoadBuilderGame.Editor
                 e.spawnerId = "hz-eater"; e.terrainSlopeMinDeg = -12; e.terrainSlopeMaxDeg = 12; e.terrainLongestGapM = 6; e.coinShape = StageCoinShape.Line; e.variantCount = 1;
                 Cues(e, "eater", StageCues.S1Eater, "ZoneMeteor");
                 e.forbiddenWith = new[] { "EVT-ICE", "EVT-MUD", "EVT-METEOR", "EVT-RINGS", "BOS-ROB0" };
+                Endless(e, "monster", new[] { "all" });
             });
             var evGlass = Event("EVT-GLASS", e =>
             {
@@ -98,6 +102,7 @@ namespace RoadBuilderGame.Editor
                 e.spawnerId = "hz-boss"; e.terrainSlopeMinDeg = -8; e.terrainSlopeMaxDeg = 8; e.terrainLongestGapM = 6; e.variantCount = 1;
                 Cues(e, "boss", StageCues.S1Boss, "ZoneMeteor");
                 e.forbiddenWith = new[] { "EVT-ICE", "EVT-MUD", "EVT-METEOR", "EVT-GLASS", "EVT-RINGS", "MON-EATER" };
+                Endless(e, "boss", new[] { "all" });
             });
 
             var matrix = LoadOrCreate<EventCompatibilityMatrix>(MatrixPath);
@@ -139,6 +144,8 @@ namespace RoadBuilderGame.Editor
             var ladder = AssetDatabase.LoadAssetAtPath<StageLadderDefinition>(LadderPath);
             if (ladder == null) { errors.Add("No ladder at " + LadderPath + " (run Road Builder / Stage / Build Slice Assets)"); return errors; }
             ladder.Validate(errors);
+            var endless = AssetDatabase.LoadAssetAtPath<StageLadderDefinition>(MutationPackBuilder.EndlessLadderPath);
+            if (endless != null) endless.Validate(errors);
             foreach (var g in AssetDatabase.FindAssets("t:StageEventDefinition", new[] { Dir }))
                 AssetDatabase.LoadAssetAtPath<StageEventDefinition>(AssetDatabase.GUIDToAssetPath(g)).Validate(errors);
             foreach (var g in AssetDatabase.FindAssets("t:SurfaceRuleSO", new[] { Dir }))
@@ -177,6 +184,12 @@ namespace RoadBuilderGame.Editor
             fill(e);
             EditorUtility.SetDirty(e);
             return e;
+        }
+
+        /// <summary>Endless-ladder selection data for a slice event (suitable worlds, hazard family, stage-table tags). The slice ladder itself ignores it.</summary>
+        private static void Endless(StageEventDefinition e, string family, string[] worlds, params string[] tags)
+        {
+            e.hazardFamily = family; e.suitableWorlds = worlds; e.ladderTags = tags;
         }
 
         private static void Cues(StageEventDefinition e, string key, string s1, string tint)

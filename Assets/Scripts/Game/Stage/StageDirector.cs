@@ -14,7 +14,7 @@ namespace RoadBuilderGame
         /// <summary>FR-9: the respawn platform is never shorter than this (metres).</summary>
         public const float MinRespawnPlatformM = 6f;
 
-        private readonly StageLadderDefinition _ladder;
+        private StageLadderDefinition _ladder;
         private StagePlan _plan;
         private bool _enabled;
         private float _distanceM;
@@ -29,6 +29,8 @@ namespace RoadBuilderGame
         public StageDirector(StageLadderDefinition ladder) { _ladder = ladder; }
 
         public bool Enabled => _enabled;
+        public StageLadderDefinition Ladder => _ladder;
+        public void SetLadder(StageLadderDefinition l) { _ladder = l; }
         public StagePlan Plan => _plan;
         public IReadOnlyList<StageLogEntry> Log => _plan != null ? _plan.Log : null;
         public StageRunRecord Record => _plan != null ? _plan.Record : default;
@@ -131,6 +133,28 @@ namespace RoadBuilderGame
             }
         }
 
+        /// <summary>
+        /// Plans the endless ladder from <paramref name="fromM"/> on (0 = a fresh run, or the finish gate of the slice) and makes it the current plan. Events of the old
+        /// plan that are Active end first. Pure planning: the same seed, world tags and eased stages always give the same plan.
+        /// </summary>
+        public void BeginEndless(StageLadderDefinition endless, StageRunRecord run, float fromM, StageWorldContext ctx)
+        {
+            if (_plan != null)
+            {
+                var old = _plan.Events;
+                for (int i = 0; i < old.Count; i++) if (old[i].Phase == StagePhase.Active) { old[i].Phase = StagePhase.Ended; if (Ended != null) Ended(old[i]); }
+            }
+            if (endless != null) _ladder = endless;
+            _plan = EndlessLadderPlanner.Plan(_ladder, run, fromM, ctx);
+            _enabled = _ladder != null && _plan.Events.Count > 0;
+            if (fromM <= 0f) { _distanceM = 0f; _graceLeftS = 0f; _holdLeftS = 0f; _respawnM = 0f; _respawnClearM = 0f; _respawnPlatformM = 0f; }
+            for (int i = 0; i < _plan.Events.Count; i++)
+            {
+                var e = _plan.Events[i];
+                e.Phase = PhaseAt(e, _distanceM); e.SignalS2Fired = e.SignalS3Fired = false;
+            }
+        }
+
         public void Tick(float carDistanceM, float carSpeedMps, float scaledDt)
         {
             if (!_enabled) return;
@@ -203,6 +227,26 @@ namespace RoadBuilderGame
             }
 #endif
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary>QA only: puts <paramref name="d"/> into the live plan at <paramref name="startM"/> (optionally replacing every other event) so a real run can be driven through exactly that event.</summary>
+        public StageEventState DebugInject(StageEventDefinition d, float startM, bool clearOthers)
+        {
+            if (_plan == null || d == null) return null;
+            if (clearOthers)
+            {
+                for (int i = 0; i < _plan.Events.Count; i++)
+                    if (_plan.Events[i].Phase == StagePhase.Active) { _plan.Events[i].Phase = StagePhase.Ended; if (Ended != null) Ended(_plan.Events[i]); }
+                _plan.Events.Clear();
+            }
+            var st = StageLadderPlanner.MakeState(_ladder, d, 9000 + _plan.Events.Count, startM, d.lengthM, 0, 777u);
+            _plan.Events.Add(st);
+            _plan.Events.Sort((x, y) => x.StartM.CompareTo(y.StartM));
+            st.Phase = PhaseAt(st, _distanceM);
+            _enabled = true;
+            return st;
+        }
+#endif
 
         // ------------------------------------------------------------------ internals
 

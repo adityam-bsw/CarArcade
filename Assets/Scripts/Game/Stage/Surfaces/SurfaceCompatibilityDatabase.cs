@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace RoadBuilderGame
 {
-    public enum SurfaceCombo { Allowed = 0, Forbidden = 1, Merge = 2 }
+    /// <summary>Allowed: plain. Forbidden: never generated together. Merge: the pair becomes one surface (mergeId). AllowedWarn: allowed with a visible warning (oil plus fire, glass plus heavy). Reduced: allowed, the modifier is scaled by factor (ice plus wind).</summary>
+    public enum SurfaceCombo { Allowed = 0, Forbidden = 1, Merge = 2, AllowedWarn = 3, Reduced = 4 }
 
     [Serializable]
     public struct SurfacePairRule
@@ -13,6 +14,8 @@ namespace RoadBuilderGame
         public SurfaceCombo combo;
         [Tooltip("Surface id the pair becomes when combo is Merge (water + lava = obsidian).")] public string mergeId;
         public string note;
+        [Tooltip("Reduced: multiplier on the modifier (wind force 0.5).")] public float factor;
+        [Tooltip("AllowedWarn: short banner text shown before the combination appears.")] public string warning;
     }
 
     /// <summary>
@@ -36,6 +39,22 @@ namespace RoadBuilderGame
             return SurfaceCombo.Allowed;
         }
 
+        /// <summary>The full rule of a pair (warning text, factor), false when the pair is not listed (then it is plain Allowed).</summary>
+        public bool TryRule(string a, string b, out SurfacePairRule rule)
+        {
+            rule = default;
+            if (pairs == null) return false;
+            for (int i = 0; i < pairs.Length; i++)
+            {
+                var p = pairs[i];
+                if ((p.a == a && p.b == b) || (p.a == b && p.b == a)) { rule = p; return true; }
+            }
+            return false;
+        }
+
+        /// <summary>True when the pair may appear (anything but Forbidden). A Merge counts as allowed: the generator uses its mergeId.</summary>
+        public bool MayCombine(string a, string b) { return Query(a, b, out _) != SurfaceCombo.Forbidden; }
+
         /// <summary>Fails on empty ids, self pairs, duplicate unordered pairs, a Merge without result, a result that is one of its own inputs, or an id outside <paramref name="known"/> (when given).</summary>
         public bool Validate(List<string> errors, ICollection<string> known = null)
         {
@@ -50,6 +69,8 @@ namespace RoadBuilderGame
                 if (p.a == p.b) Fail("pair " + i + " pairs " + p.a + " with itself");
                 string key = string.CompareOrdinal(p.a, p.b) < 0 ? p.a + "|" + p.b : p.b + "|" + p.a;
                 if (!seen.Add(key)) Fail("duplicate pair " + key);
+                if (p.combo == SurfaceCombo.AllowedWarn && string.IsNullOrEmpty(p.warning)) Fail(key + " is AllowedWarn without warning text");
+                if (p.combo == SurfaceCombo.Reduced && (p.factor <= 0f || p.factor >= 1f)) Fail(key + " is Reduced without a factor in (0,1)");
                 if (p.combo == SurfaceCombo.Merge)
                 {
                     if (string.IsNullOrEmpty(p.mergeId)) Fail(key + " is a Merge without mergeId");

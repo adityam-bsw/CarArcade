@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8d0b075ece164694abb4b216a39b7b3, type: 3}
+  m_Name: TIER-COMMANDER
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.BossTierSO
+  tier: 3
+  id: TIER-COMMANDER
+  displayName: Commander
+  minDistanceM: 8000
+  encounterSeconds: 42
+  counterPointsToDisable: 10
+  maxHits: 3
+  phases: 3
+  windowsPerPhase: 2
+  alternatePatterns: 1
+  trapAttack: 1
+  trapEverySeconds: 9
+  trapTellSeconds: 1.4
+  trapActiveSeconds: 2.5
+  trapWidth: 3.2
+  dodge: 0.8
+  near: 1.2
+  perfect: 1.6
+  ring: 2
+  hitPenalty: -1
+  passivePerSec: 0.04
+  pattern1:
+  - AP-2
+  - AP-3
+  pattern2:
+  - AP-3
+  - AP-4
+  pattern3:
+  - AP-4
+  - AP-5
+  coinsFirst: 500
+  gemsFirst: 5
+  firstBonusCoins: 250
+  coinsRepeat: 250
+  masteryPoints: 1
+  cosmeticId: robot-cos-commander
+  announcerCueId: vo.rob0.boss.defeat

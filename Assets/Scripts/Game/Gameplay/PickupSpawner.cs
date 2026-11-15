@@ -140,6 +140,15 @@ namespace RoadBuilderGame
             if (_nextSpawnX < startX + count * spacingM + 8f) _nextSpawnX = startX + count * spacingM + 8f;   // the random spawner stays out of the gauntlet
         }
 
+        /// <summary>A Road Tax coin gate at world <paramref name="x"/>; <paramref name="h01"/> picks its height (0..1) above the ground wave.</summary>
+        public void PlaceCoinGate(float x, float h01)
+        {
+            var g = Place(Collectible.Type.CoinGate, "Pickup_Ring", x, GroundY(x) + 0.5f + 1.5f * h01);
+            var sr = g.GetComponent<SpriteRenderer>();
+            if (sr != null) sr.color = new Color(1f, 0.85f, 0.3f, 1f);
+            if (_nextSpawnX < x + 4f) _nextSpawnX = x + 4f;
+        }
+
         /// <summary>One ink canister at <paramref name="x"/> (zone entry: ice and mud are the ink-hungry stretches).</summary>
         public void PlaceInkAt(float x) { Place(Collectible.Type.Ink, "InkCanister", x, GroundY(x) + 1.0f); _lastInkX = x; }
 

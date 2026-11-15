@@ -26,6 +26,29 @@ namespace RoadBuilderGame
 
         private void OnDestroy() { if (_mesh != null) Destroy(_mesh); }      // the mesh is created in code, so it is ours to free
 
+        private readonly List<Color> _baseColors = new List<Color>();
+
+        /// <summary>Multiplies the vertex colours of every vertex whose world x lies in [x0, x1] by <paramref name="c"/> (surface crack, burn and fade looks). Looks only; no allocation.</summary>
+        public void TintRange(float x0, float x1, Color c)
+        {
+            if (_mesh == null || _verts.Count == 0 || _baseColors.Count != _verts.Count) return;
+            float ox = transform.position.x;
+            for (int i = 0; i < _verts.Count; i++)
+            {
+                float x = _verts[i].x + ox;
+                if (x >= x0 && x <= x1) _colors[i] = _baseColors[i] * c;
+            }
+            _mesh.SetColors(_colors);
+        }
+
+        /// <summary>Restores the untinted vertex colours.</summary>
+        public void ClearTint()
+        {
+            if (_mesh == null || _baseColors.Count != _verts.Count || _verts.Count == 0) return;
+            for (int i = 0; i < _colors.Count; i++) _colors[i] = _baseColors[i];
+            _mesh.SetColors(_colors);
+        }
+
         public void Init()
         {
             _mesh = new Mesh { name = "RoadRibbonMesh" };
@@ -127,6 +150,7 @@ namespace RoadBuilderGame
             if (g.EndTangent.sqrMagnitude > 1e-4f)
                 AddRoundCap(g.Spine[g.Count - 1], g.EndTangent, g.Normals[g.Count - 1], g.HalfThick, skin, textured, g.Arc[g.Count - 1]);
 
+            _baseColors.Clear(); _baseColors.AddRange(_colors);      // untinted copy for TintRange (section C surfaces)
             _mesh.Clear();
             _mesh.SetVertices(_verts);
             _mesh.SetColors(_colors);

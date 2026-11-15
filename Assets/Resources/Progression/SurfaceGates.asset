@@ -1,0 +1,171 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c9ac2eaa1574c01b2253dbf580cce0, type: 3}
+  m_Name: SurfaceGates
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.SurfaceGateSO
+  gates:
+  - surfaceId: surface-asphalt
+    category: 0
+    unlockMetres: 0
+    coins: 0
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-dirt
+    category: 0
+    unlockMetres: 0
+    coins: 0
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-neon-grid
+    category: 0
+    unlockMetres: 2500
+    coins: 600
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-gravel
+    category: 0
+    unlockMetres: 1000
+    coins: 300
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-cobblestone
+    category: 0
+    unlockMetres: 1200
+    coins: 350
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-grass-trail
+    category: 0
+    unlockMetres: 1400
+    coins: 400
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-sand
+    category: 0
+    unlockMetres: 1600
+    coins: 450
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-beach
+    category: 0
+    unlockMetres: 1800
+    coins: 500
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-wooden-bridge
+    category: 0
+    unlockMetres: 2000
+    coins: 500
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-rail-track
+    category: 0
+    unlockMetres: 2200
+    coins: 550
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-snow
+    category: 0
+    unlockMetres: 2500
+    coins: 600
+    extra: 0
+    extraCount: 0
+  - surfaceId: surface-mud
+    category: 1
+    unlockMetres: 3000
+    coins: 900
+    extra: 11
+    extraCount: 1
+  - surfaceId: surface-salt-flat
+    category: 1
+    unlockMetres: 3500
+    coins: 1000
+    extra: 11
+    extraCount: 1
+  - surfaceId: surface-river
+    category: 1
+    unlockMetres: 4000
+    coins: 1200
+    extra: 11
+    extraCount: 1
+  - surfaceId: surface-moon-dust
+    category: 1
+    unlockMetres: 4500
+    coins: 1400
+    extra: 11
+    extraCount: 1
+  - surfaceId: surface-rope-bridge
+    category: 1
+    unlockMetres: 5000
+    coins: 1500
+    extra: 11
+    extraCount: 1
+  - surfaceId: surface-ice
+    category: 2
+    unlockMetres: 6000
+    coins: 2200
+    extra: 2
+    extraCount: 5
+  - surfaceId: surface-glass
+    category: 2
+    unlockMetres: 7000
+    coins: 2800
+    extra: 2
+    extraCount: 5
+  - surfaceId: surface-coral
+    category: 2
+    unlockMetres: 8000
+    coins: 3200
+    extra: 2
+    extraCount: 5
+  - surfaceId: surface-magma-bridge
+    category: 2
+    unlockMetres: 10000
+    coins: 3800
+    extra: 2
+    extraCount: 5
+  - surfaceId: surface-ice-bridge
+    category: 3
+    unlockMetres: 12000
+    coins: 5500
+    extra: 10
+    extraCount: 1
+  - surfaceId: surface-sea-water
+    category: 3
+    unlockMetres: 15000
+    coins: 7000
+    extra: 10
+    extraCount: 1
+  - surfaceId: surface-lava-crust
+    category: 3
+    unlockMetres: 18000
+    coins: 8500
+    extra: 10
+    extraCount: 1
+  - surfaceId: surface-cloud
+    category: 4
+    unlockMetres: 20000
+    coins: 10000
+    extra: 12
+    extraCount: 2
+  - surfaceId: surface-candy
+    category: 4
+    unlockMetres: 25000
+    coins: 12500
+    extra: 12
+    extraCount: 3
+  - surfaceId: surface-floating-islands
+    category: 4
+    unlockMetres: 30000
+    coins: 15000
+    extra: 12
+    extraCount: 4

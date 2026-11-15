@@ -1,0 +1,29 @@
+Roads batch 3 (Section C2 behaviour surfaces). Generator: tools/art/make_road3.py (own code, smoothart helpers, Python stdlib only).
+No generative AI, no downloads, no third-party art. Colours are our own hex values (ART_BIBLE-style warm/cel ramps).
+Regenerate: python3 tools/art/make_road3.py --output <dir> [--surface a,b]. Checked with tools/art/check_roads2.py <new> Assets/Art/Smooth/Roads.
+All strips 1024x192, seamless in X (wrap masks, periodic noise), 4 px bleed from write_png. Staging only; nothing under Assets/ touched.
+
+surface (cue)                                   lipPx  quality  notes
+spring_road   (yellow deck, up-chevrons, coils)   2     3.5   gaps between coils are transparent (like wooden_bridge)
+magnetic_rail (red/silver poles, copper coils)    1     3.5   body fades quickly; sparks are small
+acid          (lime, bubble domes, drips)         7     3.5
+oil           (black slick, rainbow sheen)        5     3     drips are funnel-shaped, not teardrops
+conveyor / conveyor_b (animation frames 0/1)      2     3.5   B = belt chevrons +32 px (half pitch) and spokes +45 deg. With only
+                                                              2 frames at pitch 64 the direction is ambiguous; use 4 frames (shift 16) if it matters.
+lava_river    (lava + dark crust islands)        11     3     islands read as rock slabs but look pill-like; lip glow white above lip is transparent
+sticky_candy  (raspberry taffy, strings, drips)   7     3.5   drips are funnel-shaped
+honey         (amber, honeycomb, fat drips)       6     4
+metal_plates  (riveted plates, heat gradient)     2     3.5   seam score 3.4 is a ratio artefact on a smooth image (pixels match across the seam)
+ice_crystals  (crystal crest, shards)            20*    3     *mean lip is 19.6 because crystal tips dominate; base slab top is y=26, tips reach y=3.
+                                                              Use lipPx ~ 20-26 for the collider (base 26 is the safe surface), art peeks above it.
+haunted_shadow(dark violet, dissolving, dashed ghost line) 8  3  body alpha dips 4x per strip (visible fade telegraph); tendrils are plain
+electric_rail / electric_rail_off                 9/11   4/3.5  on: segments 0 and 2 charged (arcs, cyan glow, red lamp), 1 and 3 safe (green lamp). off: all dormant (grey, dark lamp).
+                                                              Lip mean is 9 because rail head is y=11..22; arcs above it add the min of 2.
+fragile_paper / fragile_paper_torn                5/7   3.5   perforation dots, tear cracks, fold creases; _torn has three ragged gaps (min lip 0, max 82)
+
+Limits / honesty
+- Greyscale check (CHECK_RESULTS.txt): 17 weak pairs remain, mostly variants of the same surface (conveyor/_b, electric on/off) and neighbours at similar
+  luminance with low texture energy (lava vs dirt/moon, acid vs honey, sand vs snow already existed). In the side-by-side greyscale sheet
+  (_sheet_grey.png) every strip is separable by silhouette or pattern; the metric is crude. Revisit if playtests show confusion.
+- Lava and haunted are the weakest art. Nothing here is hand drawn; it is procedural.
+- Surface icons, import settings, manifest items, catalogue entries were NOT created (out of scope). Import as Assets/Art/Smooth/Roads (SmoothArtImporter).

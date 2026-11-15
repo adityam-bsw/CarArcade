@@ -1,0 +1,263 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8a5f8e4d19441fd9ef25e5cead25c8, type: 3}
+  m_Name: EndlessLadder
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.StageLadderDefinition
+  ladderMode: 2
+  layoutVersion: 1
+  matrix: {fileID: 11400000, guid: 542272f1f7302494ab330cd5469b5025, type: 2}
+  slots: []
+  eventPool:
+  - {fileID: 11400000, guid: a1493d85669c14df08b286fd905fec11, type: 2}
+  - {fileID: 11400000, guid: 724a183bd5a5f4a57bf6be82fd5dfde6, type: 2}
+  - {fileID: 11400000, guid: 1fef01b4b572a458a9886c50e04d3366, type: 2}
+  - {fileID: 11400000, guid: c5e3caa0c25e541e3b081d5e70784be5, type: 2}
+  - {fileID: 11400000, guid: d27dee5b70665422bbb34b6e00b60394, type: 2}
+  - {fileID: 11400000, guid: 6733d14b0de75463cadc31848d2d541f, type: 2}
+  - {fileID: 11400000, guid: bae8f11cd7fa74f08af4b29d544bb5b4, type: 2}
+  - {fileID: 11400000, guid: ed51ce44f8f9947b388e7a34b605f988, type: 2}
+  - {fileID: 11400000, guid: 8a6884d2e3b3f4bca8c3d6b5e9651f9f, type: 2}
+  - {fileID: 11400000, guid: 6fc4e0d65b1d6442fa463dfd368f6c02, type: 2}
+  - {fileID: 11400000, guid: 37dacf872a8bf4caf93944587358e189, type: 2}
+  - {fileID: 11400000, guid: e752781bacb014a8d82a3243e11fb920, type: 2}
+  - {fileID: 11400000, guid: 579a41379817b49408ab7c329290b1c1, type: 2}
+  - {fileID: 11400000, guid: 61c28f157c3924ce6bf23e4022dc8f99, type: 2}
+  - {fileID: 11400000, guid: 80f65c2bb100b491fa38207fbfc9bcba, type: 2}
+  - {fileID: 11400000, guid: 33d50d383f1b04c9b835fe8e7facf960, type: 2}
+  - {fileID: 11400000, guid: 2baeae25d45c04f4fa9b19d6387570bd, type: 2}
+  startPlatformM: 30
+  noHazardUntilM: 190
+  eaterWarnM: 940
+  eaterStartM: 1000
+  eaterTimeoutM: 1750
+  finishMinM: 2750
+  finishAfterBossM: 150
+  rewardMinGapM: 50
+  modifierEndMarginM: 200
+  finishSlowmoScale: 0.65
+  finishSlowmoS: 1.5
+  maxModifiers: 2
+  hardStagesBeforeBreather: 2
+  respawnGraceS: 1.5
+  respawnEffectHoldS: 3
+  signalSpeedFloorMps: 16
+  eaterWarnLeadM: 60
+  paceStartSpeedMps: 4.2
+  paceGainMpsPerM: 0.02
+  paceCapSpeedMps: 11.5
+  weightedLengthM: 6000
+  weightedMaxEvents: 64
+  weightedRecoveryMinM: 100
+  weightedRecoveryMaxM: 200
+  weightedBreatherM: 200
+  stageLengthM: 1000
+  endlessStageCount: 40
+  endlessStages:
+  - stage: 1
+    label: Road-Eater
+    tag: 
+    fixedEvent: {fileID: 11400000, guid: 33d50d383f1b04c9b835fe8e7facf960, type: 2}
+    minTier: 0
+    maxTier: 3
+    concurrent: 1
+  - stage: 2
+    label: First physics mutation
+    tag: physics
+    fixedEvent: {fileID: 0}
+    minTier: 0
+    maxTier: 1
+    concurrent: 1
+  - stage: 3
+    label: New movement mechanic
+    tag: movement
+    fixedEvent: {fileID: 0}
+    minTier: 0
+    maxTier: 1
+    concurrent: 1
+  - stage: 4
+    label: Environmental hazard
+    tag: environment
+    fixedEvent: {fileID: 0}
+    minTier: 1
+    maxTier: 2
+    concurrent: 1
+  - stage: 5
+    label: Two compatible modifiers
+    tag: 
+    fixedEvent: {fileID: 0}
+    minTier: 1
+    maxTier: 2
+    concurrent: 2
+  - stage: 6
+    label: Elite hazard
+    tag: 
+    fixedEvent: {fileID: 0}
+    minTier: 2
+    maxTier: 3
+    concurrent: 1
+  - stage: 7
+    label: Advanced surface combo
+    tag: surface
+    fixedEvent: {fileID: 0}
+    minTier: 0
+    maxTier: 2
+    concurrent: 2
+  - stage: 8
+    label: Boss
+    tag: 
+    fixedEvent: {fileID: 11400000, guid: 2baeae25d45c04f4fa9b19d6387570bd, type: 2}
+    minTier: 0
+    maxTier: 3
+    concurrent: 1
+  - stage: 9
+    label: Extreme
+    tag: 
+    fixedEvent: {fileID: 0}
+    minTier: 2
+    maxTier: 3
+    concurrent: 2
+  - stage: 10
+    label: Survival gauntlet
+    tag: 
+    fixedEvent: {fileID: 0}
+    minTier: 1
+    maxTier: 3
+    concurrent: 2
+  endlessRandomRow:
+    stage: 11
+    label: Endless controlled random
+    tag: 
+    fixedEvent: {fileID: 0}
+    minTier: 0
+    maxTier: 3
+    concurrent: 2
+  tierWeights:
+  - 40
+  - 35
+  - 20
+  - 5
+  endlessModifierCap: 2
+  stackGapFromM: 5000
+  activationGapM: 100
+  endlessHardCost: 7
+  familyWindowStages: 4
+  familyMaxInWindow: 2
+  endlessStartJitterM: 60
+  adaptiveFailsToEase: 3
+  adaptiveHardMul: 0.35
+  worldTags:
+  - worldId: world-moon
+    tags:
+    - moon
+  - worldId: world-mars
+    tags:
+    - mars
+  - worldId: world-rolling-hills
+    tags:
+    - hills
+    - earth
+  - worldId: world-desert
+    tags:
+    - desert
+    - earth
+  - worldId: world-canyon
+    tags:
+    - desert
+    - hills
+    - earth
+  - worldId: world-wild-west
+    tags:
+    - desert
+    - earth
+  - worldId: world-night-city
+    tags:
+    - synthwave
+    - earth
+  - worldId: world-synthwave
+    tags:
+    - synthwave
+  - worldId: world-industrial
+    tags:
+    - earth
+  - worldId: world-candy-land
+    tags:
+    - candy
+  - worldId: world-cave
+    tags:
+    - cave
+  - worldId: world-volcano
+    tags:
+    - volcano
+  - worldId: world-arctic
+    tags:
+    - snow
+    - earth
+  - worldId: world-winter
+    tags:
+    - snow
+    - earth
+  - worldId: world-christmas
+    tags:
+    - snow
+    - earth
+  - worldId: world-haunted-halloween
+    tags:
+    - haunted
+  - worldId: world-underwater
+    tags:
+    - underwater
+  - worldId: world-cloud-kingdom
+    tags:
+    - cloud
+  - worldId: world-farm
+    tags:
+    - hills
+    - earth
+  - worldId: world-jungle
+    tags:
+    - hills
+    - earth
+  - worldId: world-coast
+    tags:
+    - hills
+    - earth
+  - worldId: world-summer
+    tags:
+    - hills
+    - earth
+  - worldId: world-spring-blossom
+    tags:
+    - hills
+    - earth
+  - worldId: world-autumn-leaves
+    tags:
+    - hills
+    - earth
+  themeTagsCountry:
+  - hills
+  - earth
+  themeTagsDesert:
+  - desert
+  - earth
+  themeTagsCyber:
+  - synthwave
+  - earth
+  debugJumpPointsM:
+  - 0
+  - 220
+  - 480
+  - 640
+  - 710
+  - 1000
+  - 1350
+  - 1800
+  - 2000

@@ -13,7 +13,7 @@ namespace RoadBuilderGame.UI.Editor
     /// Lays out every screen as a prefab from themed components (nothing is built at runtime). Re-run any time:
     /// it rewrites the prefabs in place. Menu: Road Builder > UI > Build Screen Prefabs.
     /// </summary>
-    public static class UIPrefabBuilder
+    public static partial class UIPrefabBuilder
     {
         public const string Dir = "Assets/Prefabs/UI";
         public const string ScreensDir = Dir + "/Screens";
@@ -69,6 +69,7 @@ namespace RoadBuilderGame.UI.Editor
                 Save(BuildSettings(), "SettingsScreen");
                 Save(BuildRewards(), "RewardsScreen");
                 Save(BuildPause(), "PauseScreen");
+                Save(BuildProgressHub(), "ProgressHubScreen");
                 Save(BuildCollection(cardPrefab, tabPrefab), "CollectionScreen");
                 SaveRoot(BuildRoot());
             }
@@ -147,6 +148,11 @@ namespace RoadBuilderGame.UI.Editor
                 32, ColorToken.TextPrimary, TR, TR, new Vector2(-190, -48), new Vector2(260, 104), -2f, new Vector4(26, 26, 26, 26));
             var rewardsDot = ArtImg(rewards.rt, "Dot", SpriteSlot.DecoSticker, TR, TR, new Vector2(18, 18), new Vector2(60, 60), 10f);
 
+            // Progress hub entry (mastery, journey, weekly, album, shop, roads, scrap) under the best plate, with a dot when something waits.
+            var progress = ArtButton(hdrR, "ProgressButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "PROGRESS",
+                32, ColorToken.TextPrimary, TR, TR, new Vector2(-40, -300), new Vector2(300, 100), 2f, new Vector4(26, 26, 26, 26));
+            var progressDot = ArtImg(progress.rt, "Dot", SpriteSlot.DecoSticker, TR, TR, new Vector2(18, 18), new Vector2(56, 56), 10f);
+
             // Scrap beside the coins, and the Daily Challenge entry under them (hidden by the screen when there is no daily).
             var scrap = Label(hdrL, "ScrapText", "SCRAP 0", TextStyle.Button, ColorToken.TextPrimary, 28, TextAlignmentOptions.MidlineLeft);
             Place(scrap.rectTransform, TL, TL, new Vector2(52, -152), new Vector2(220, 40));
@@ -177,8 +183,9 @@ namespace RoadBuilderGame.UI.Editor
             Ref(s, "worldsButton", worlds.button); Ref(s, "settingsButton", settings.button);
             Ref(s, "titlePlate", titlePlate.rectTransform);
             Ref(s, "rewardsButton", rewards.button); Ref(s, "rewardsDot", rewardsDot.gameObject);
+            Ref(s, "progressButton", progress.button); Ref(s, "progressDot", progressDot.gameObject);
             Ref(s, "scrapText", scrap); Ref(s, "dailyButton", daily.button); Ref(s, "dailyText", dailyInfo); Ref(s, "exitHint", exitLabel);
-            Refs(s, "popIns", new Object[] { counter.rectTransform, settings.rt, bestPlate.rectTransform, garage.rt, play.rt, worlds.rt, rewards.rt });
+            Refs(s, "popIns", new Object[] { counter.rectTransform, settings.rt, bestPlate.rectTransform, garage.rt, play.rt, worlds.rt, rewards.rt, progress.rt });
             return root;
         }
 
@@ -662,6 +669,12 @@ namespace RoadBuilderGame.UI.Editor
             var action = ArtButton(rightPanel, "ActionButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
                 "EQUIP", 48, ColorToken.TextOnAccent, TR, TR, new Vector2(-40, -312), new Vector2(480, 187), 0f, new Vector4(100, 40, 40, 34), manualSprite: true);
             ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -298), new Vector2(84, 84), 14f);
+            // Tier, strength and weakness of the focused vehicle, and the way into its mastery (stickers, colours, trim) and the scrap workshop.
+            var mastery = ArtButton(rightPanel, "MasteryButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "MASTERY AND STYLE",
+                32, ColorToken.TextPrimary, TR, TR, new Vector2(-40, -516), new Vector2(480, 100), 0f, new Vector4(26, 26, 26, 26));
+            var profileText = Label(rightPanel, "ProfileText", "", TextStyle.Button, ColorToken.Accent, 26, TextAlignmentOptions.TopRight);
+            profileText.enableAutoSizing = true; profileText.fontSizeMin = 16; profileText.fontSizeMax = 26;
+            Place(profileText.rectTransform, TR, TR, new Vector2(-44, -630), new Vector2(480, 130));
 
             // The vehicle rail runs along the floor.
             var rail = BuildRail(full, "VehicleRail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 290));
@@ -670,6 +683,7 @@ namespace RoadBuilderGame.UI.Editor
             Ref(g, "coinsText", coinsText); Ref(g, "scrapText", scrapG); Ref(g, "carNameText", carName); Ref(g, "actionLabel", action.label);
             Ref(g, "actionImage", action.image); Ref(g, "actionButton", action.button);
             Ref(g, "backButton", back.button);
+            Ref(g, "masteryButton", mastery.button); Ref(g, "profileText", profileText);
             return root;
         }
 
@@ -954,6 +968,18 @@ namespace RoadBuilderGame.UI.Editor
             return line;
         }
 
+        [MenuItem("Road Builder/UI/Rebuild Settings Prefab Only")]
+        public static void RebuildSettingsOnly()
+        {
+            Directory.CreateDirectory(ScreensDir);
+            _scene = EditorSceneManager.NewPreviewScene();
+            try { Save(BuildSettings(), "SettingsScreen"); }
+            finally { EditorSceneManager.ClosePreviewScene(_scene); }
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[UIPrefabBuilder] SettingsScreen rebuilt (with the Adaptive Challenge toggle)");
+        }
+
         private static GameObject BuildSettings()
         {
             var root = ScreenRoot<SettingsScreen>("SettingsScreen", ShowStyle.Pop, out var c);
@@ -961,25 +987,34 @@ namespace RoadBuilderGame.UI.Editor
             c = DesignFrameRect(c);
 
             // A workshop control board with a hanging title plate and one big switch.
-            var board = ArtImg(c, "Board", SpriteSlot.PanelBoard, C, C, Vector2.zero, new Vector2(860, 520));
+            var board = ArtImg(c, "Board", SpriteSlot.PanelBoard, C, C, Vector2.zero, new Vector2(860, 640));
             var plate = ArtImg(board.transform, "TitlePlate", SpriteSlot.PlateTitleSmall, TC, TC, new Vector2(0, 52), new Vector2(480, 120));
             var title = Label(plate.transform, "Title", "SETTINGS", TextStyle.Title, ColorToken.TextPrimary, 48);
             title.enableAutoSizing = true; title.fontSizeMin = 28; title.fontSizeMax = 48;
             Place(title.rectTransform, C, C, new Vector2(0, -3), new Vector2(350, 56));
 
             var soundLabelStatic = Label(board.transform, "SoundCaption", "SOUND", TextStyle.Heading, ColorToken.TextPrimary, 48, TextAlignmentOptions.MidlineLeft);
-            Place(soundLabelStatic.rectTransform, C, C, new Vector2(-190, 50), new Vector2(280, 70));
+            Place(soundLabelStatic.rectTransform, C, C, new Vector2(-190, 100), new Vector2(280, 70));
             var sound = ArtButton(board.transform, "SoundButton", SpriteSlot.ToggleOn, SpriteSlot.ToggleOn, SpriteSlot.ToggleOff, "ON", 36,
-                ColorToken.TextPrimary, C, C, new Vector2(170, 50), new Vector2(210, 104), 0f, new Vector4(24, 20, 100, 20));
+                ColorToken.TextPrimary, C, C, new Vector2(170, 100), new Vector2(210, 104), 0f, new Vector4(24, 20, 100, 20));
             sound.button.transition = Selectable.Transition.None;
             sound.label.alignment = TextAlignmentOptions.MidlineLeft;
+            // Adaptive Challenge opt-in (gap list A1): default OFF; ON eases a stage the player keeps failing. The ON/OFF switch is the visible indicator.
+            var adaptiveCap = Label(board.transform, "AdaptiveCaption", "ADAPTIVE CHALLENGE", TextStyle.Heading, ColorToken.TextPrimary, 40, TextAlignmentOptions.MidlineLeft);
+            adaptiveCap.enableAutoSizing = true; adaptiveCap.fontSizeMin = 22; adaptiveCap.fontSizeMax = 40;
+            Place(adaptiveCap.rectTransform, C, C, new Vector2(-140, -15), new Vector2(380, 90));
+            var adaptive = ArtButton(board.transform, "AdaptiveButton", SpriteSlot.ToggleOff, SpriteSlot.ToggleOn, SpriteSlot.ToggleOff, "OFF", 36,
+                ColorToken.TextPrimary, C, C, new Vector2(170, -15), new Vector2(210, 104), 0f, new Vector4(24, 20, 100, 20));
+            adaptive.button.transition = Selectable.Transition.None;
+            adaptive.label.alignment = TextAlignmentOptions.MidlineLeft;
             var close = ArtButton(board.transform, "CloseButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
                 "DONE", 44, ColorToken.TextOnAccent, BC, BC, new Vector2(0, 30), new Vector2(330, 128), 0f, new Vector4(70, 30, 30, 26));
             var credits = Label(board.transform, "Credits", "Fonts: Lilita One and Baloo 2 (SIL OFL 1.1)", TextStyle.Button, ColorToken.TextSecondary, 22);
-            Place(credits.rectTransform, C, C, new Vector2(0, -62), new Vector2(700, 36));
+            Place(credits.rectTransform, C, C, new Vector2(0, -130), new Vector2(700, 36));
 
             var s = root.GetComponent<SettingsScreen>();
             Ref(s, "soundButton", sound.button); Ref(s, "soundButtonImage", sound.image); Ref(s, "soundLabel", sound.label);
+            Ref(s, "adaptiveButton", adaptive.button); Ref(s, "adaptiveButtonImage", adaptive.image); Ref(s, "adaptiveLabel", adaptive.label);
             Ref(s, "closeButton", close.button);
             return root;
         }
@@ -1188,7 +1223,7 @@ namespace RoadBuilderGame.UI.Editor
             var stack = safe.gameObject.AddComponent<ScreenStack>();
             var flow = safe.gameObject.AddComponent<UIFlow>();
 
-            string[] names = { "HomeScreen", "WorldsScreen", "GarageScreen", "HudScreen", "ResultScreen", "SettingsScreen", "CollectionScreen", "RewardsScreen", "PauseScreen" };
+            string[] names = { "HomeScreen", "WorldsScreen", "GarageScreen", "HudScreen", "ResultScreen", "SettingsScreen", "CollectionScreen", "RewardsScreen", "PauseScreen", "ProgressHubScreen" };
             var screens = new Object[names.Length];
             for (int i = 0; i < names.Length; i++)
                 screens[i] = AssetDatabase.LoadAssetAtPath<GameObject>(ScreensDir + "/" + names[i] + ".prefab").GetComponent<UIScreen>();

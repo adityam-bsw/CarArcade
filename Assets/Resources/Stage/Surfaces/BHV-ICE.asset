@@ -19,6 +19,12 @@ MonoBehaviour:
     b: 0
     c: 0
     d: 0
-  hintFull: 'Ice: sharp bends make you slide. Draw gentle curves.'
+  hintFull: 'Ice: draw gentle bends or you slide.'
   hintShort: 'Ice: gentle bends'
-  hintIcon: 
+  hintIcon: icon-ice
+  pieceLengthM: 4
+  safeEntryM: 6
+  warnTint: {r: 0.9, g: 0.82, b: 0.7, a: 1}
+  dangerTint: {r: 0.7, g: 0.45, b: 0.4, a: 1}
+  verb: Draw gentle bends
+  consequence: sharp bends cut your drive

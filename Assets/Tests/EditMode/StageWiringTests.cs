@@ -104,7 +104,7 @@ namespace RoadBuilderGame.Tests
         public void W05_GameplayTuning_StageSwitch_DefaultsAndGate()
         {
             var t = ScriptableObject.CreateInstance<GameplayTuning>();
-            Assert.AreEqual(StageEventsSwitch.CountrysideOnly, t.stageEvents);
+            Assert.AreEqual(StageEventsSwitch.Always, t.stageEvents, "A1: events default to Always now that the features exist; Off stays a switch");
             Assert.IsFalse(t.stageHaptics, "haptics default off");
             Assert.AreEqual(5, t.boostCoinCost, "boost price unchanged");
             Assert.IsTrue(StageRunController.ShouldRun(StageEventsSwitch.CountrysideOnly, true));

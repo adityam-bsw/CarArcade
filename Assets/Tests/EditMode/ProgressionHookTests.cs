@@ -75,7 +75,7 @@ namespace RoadBuilderGame.Tests
             ProgressionEvents.Record(p, ProgressionEvent.MonsterReached); Assert.AreEqual("2000 COINS", GateText.World(p, g, "world-desert"));
             Assert.IsTrue(GateText.WorldLocked(p, g, "world-desert"));
             Assert.IsFalse(GateText.WorldLocked(p, g, "world-rolling-hills"));          // free and met
-            Assert.IsFalse(GateText.WorldLocked(p, g, "world-night-city"));             // not in the table
+            Assert.IsFalse(GateText.WorldLocked(p, g, "world-not-in-table"));             // not in the table (every catalogue world is gated now)
             p.unlockedWorldIds.Add("world-moon"); Assert.AreEqual("", GateText.World(p, g, "world-moon"));   // owned stays unlocked
             Assert.IsFalse(GateText.WorldLocked(p, g, "world-moon"));
             var v = ScriptableObject.CreateInstance<VehicleGateSO>();

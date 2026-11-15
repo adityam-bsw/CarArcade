@@ -5,7 +5,7 @@ namespace RoadBuilderGame
 {
     public enum BossState { Dormant, Intro, Pattern, Lull, PhaseChange, Defeat, Retreat, Done }
     public enum BossOutcome { None, Dodged, Near, Perfect, Hit, HitShielded }
-    public enum BossEvent { IntroStart, PatternStart, RingDue, PhaseTelegraph, PhaseChanged, Cleared, Defeated, TimedOut, Gone }
+    public enum BossEvent { IntroStart, PatternStart, RingDue, PhaseTelegraph, PhaseChanged, Cleared, Defeated, TimedOut, Gone, Overpowered }
 
     /// <summary>One beat the controller must show and fire (the model has already applied the phase, stationary and counter-gate rules).</summary>
     public struct BeatRequest
@@ -41,10 +41,18 @@ namespace RoadBuilderGame
         private float _t, _stateLeft, _fightClock, _patternClock, _quietLeft;
         private int _nextBeat;
 
+        // effective numbers: the boss definition, overridden by the tier (counter points, timeout, hit cap)
+        private float _max, _gDodge, _gNear, _gPerfect, _gRing, _gHit, _gPassive, _timeout; private float[] _thresholds;
+        private int _maxHits = 99, _windowsPerPhase, _windowsDone, _maxPhase = 3; private bool _alternate; private int _altIndex; private BossTierSO _tier; private string[] _ids;
+        public BossTierSO Tier => _tier;
+        public int Hits { get; private set; }
+        public int WindowsInPhase => _windowsDone;
+
         public BossState State { get; private set; }
         public float Meter { get; private set; }
         public int Phase { get; private set; } = 1;
-        public float Meter01 => _d.meterMax > 0f ? Mathf.Clamp01(Meter / _d.meterMax) : 0f;
+        public float Meter01 => _max > 0f ? Mathf.Clamp01(Meter / _max) : 0f;
+        public float MeterMax => _max;
         public float FightClock => _fightClock;
         /// <summary>No projectile may start while this is above zero (lull after a hit, phase quiet).</summary>
         public float QuietLeft => _quietLeft;
@@ -56,12 +64,26 @@ namespace RoadBuilderGame
         public event Action<BossEvent> Raised;
         public event Action<BeatRequest> Beat;
 
-        public BossModel(BossDefinitionSO d) { _d = d; }
+        public BossModel(BossDefinitionSO d) { _d = d; Defaults(); }
+
+        private void Defaults()
+        {
+            _max = _d.meterMax; _gDodge = _d.meterDodge; _gNear = _d.meterNear; _gPerfect = _d.meterPerfect; _gRing = _d.meterRing; _gHit = _d.meterHitPenalty; _gPassive = _d.meterPassivePerSec;
+            _timeout = _d.timeoutSeconds; _thresholds = _d.phaseThresholds; _maxHits = 99; _windowsPerPhase = 0; _alternate = false; _tier = null; _maxPhase = 3; _ids = null;
+        }
+
+        /// <summary>Use a tier's counter points, thresholds (a third and two thirds of the points), timeout, hit cap and pattern selection. Call after <see cref="Reset"/>.</summary>
+        public void ApplyTier(BossTierSO t)
+        {
+            Defaults(); if (t == null) return;
+            _tier = t; _max = t.counterPointsToDisable; _gDodge = t.dodge; _gNear = t.near; _gPerfect = t.perfect; _gRing = t.ring; _gHit = t.hitPenalty; _gPassive = t.passivePerSec;
+            _timeout = t.encounterSeconds; _thresholds = new[] { _max * 0.33f, _max * 0.66f }; _maxHits = t.maxHits; _windowsPerPhase = t.windowsPerPhase; _alternate = t.alternatePatterns; _maxPhase = Mathf.Clamp(t.phases, 1, 3);
+        }
 
         public void Reset(uint seed)
         {
             State = BossState.Dormant; Meter = 0f; Phase = 1; _pattern = _previous = null; _fightClock = _patternClock = _quietLeft = _stateLeft = 0f; _nextBeat = 0;
-            PatternsStarted = 0; _rng = new Pcg32(seed == 0u ? 1u : seed);
+            PatternsStarted = 0; Hits = 0; _windowsDone = 0; _altIndex = 0; _rng = new Pcg32(seed == 0u ? 1u : seed); Defaults();
         }
 
         public void Begin() { if (State != BossState.Dormant) return; State = BossState.Intro; _stateLeft = _d.introSeconds; Raised?.Invoke(BossEvent.IntroStart); }
@@ -69,8 +91,8 @@ namespace RoadBuilderGame
         public int PhaseFor(float meter)
         {
             int p = 1;
-            if (_d.phaseThresholds != null) for (int i = 0; i < _d.phaseThresholds.Length; i++) if (meter >= _d.phaseThresholds[i]) p = i + 2;
-            return Mathf.Min(p, 3);
+            if (_thresholds != null) for (int i = 0; i < _thresholds.Length; i++) if (meter >= _thresholds[i]) p = i + 2;
+            return Mathf.Min(p, _maxPhase);
         }
 
         /// <summary>A projectile aimed at the car resolved. Only dodges, near misses and hits change the meter; a hit also clears the field and starts a lull.</summary>
@@ -79,15 +101,18 @@ namespace RoadBuilderGame
             if (!Fighting && State != BossState.Intro) return;
             switch (o)
             {
-                case BossOutcome.Dodged: AddMeter(_d.meterDodge); break;
-                case BossOutcome.Near: AddMeter(_d.meterNear); break;
-                case BossOutcome.Perfect: AddMeter(_d.meterPerfect); break;
-                case BossOutcome.Hit: Meter = Mathf.Max(0f, Meter + _d.meterHitPenalty); Interrupt(); break;
+                case BossOutcome.Dodged: AddMeter(_gDodge); break;
+                case BossOutcome.Near: AddMeter(_gNear); break;
+                case BossOutcome.Perfect: AddMeter(_gPerfect); break;
+                case BossOutcome.Hit:
+                    Meter = Mathf.Max(0f, Meter + _gHit); Hits++;
+                    if (Hits >= _maxHits && State != BossState.Defeat && State != BossState.Done) { State = BossState.Retreat; _stateLeft = 1.5f; _pattern = null; _quietLeft = _stateLeft; Raised?.Invoke(BossEvent.Cleared); Raised?.Invoke(BossEvent.Overpowered); return; }
+                    Interrupt(); break;
                 case BossOutcome.HitShielded: Interrupt(); break;        // a shield-absorbed hit costs no meter
             }
         }
 
-        public void RingPassed() { if (Fighting) AddMeter(_d.meterRing); }
+        public void RingPassed() { if (Fighting) AddMeter(_gRing); }
 
         /// <summary>Hit, shield hit or respawn: projectiles cleared, 3 s lull plus 0.5 s grace, no ring for the aborted pattern.</summary>
         public void Interrupt()
@@ -100,8 +125,8 @@ namespace RoadBuilderGame
 
         private void AddMeter(float v)
         {
-            Meter = Mathf.Clamp(Meter + v, 0f, _d.meterMax);
-            if (Meter >= _d.meterMax && State != BossState.Defeat && State != BossState.Done)
+            Meter = Mathf.Clamp(Meter + v, 0f, _max);
+            if (Meter >= _max && State != BossState.Defeat && State != BossState.Done)
             {
                 State = BossState.Defeat; _stateLeft = _d.defeatSeconds; _pattern = null; _quietLeft = _stateLeft;
                 Raised?.Invoke(BossEvent.Cleared); Raised?.Invoke(BossEvent.Defeated);
@@ -125,17 +150,18 @@ namespace RoadBuilderGame
                     return;
             }
             _fightClock += dt;
-            AddMeter(_d.meterPassivePerSec * dt);
+            AddMeter(_gPassive * dt);
             if (State == BossState.Defeat) return;
-            if (_fightClock >= _d.timeoutSeconds) { State = BossState.Retreat; _stateLeft = 1.5f; _pattern = null; Raised?.Invoke(BossEvent.Cleared); Raised?.Invoke(BossEvent.TimedOut); return; }
+            if (_fightClock >= _timeout) { State = BossState.Retreat; _stateLeft = 1.5f; _pattern = null; Raised?.Invoke(BossEvent.Cleared); Raised?.Invoke(BossEvent.TimedOut); return; }
 
             if (State == BossState.Lull)
             {
                 _stateLeft -= dt;
                 if (_stateLeft <= 0f)
                 {
-                    if (PhaseFor(Meter) > Phase)
+                    if (PhaseFor(Meter) > Phase && _windowsDone >= _windowsPerPhase)
                     {
+                        _windowsDone = 0;
                         State = BossState.PhaseChange; _stateLeft = Mathf.Max(_d.phaseQuiet, _d.phaseTelegraph); _quietLeft = _stateLeft; Phase = PhaseFor(Meter);
                         Raised?.Invoke(BossEvent.PhaseTelegraph);
                     }
@@ -160,6 +186,19 @@ namespace RoadBuilderGame
             }
         }
 
+        /// <summary>Tier pattern ids resolved against all three boss pools: random pick, or in order when the tier alternates; never the previous one when another exists.</summary>
+        private AttackPatternSO ResolveIds(string[] ids, AttackPatternSO[] fallback)
+        {
+            int n = ids.Length, start = _alternate ? _altIndex++ % n : _rng.NextInt(n);
+            for (int k = 0; k < n; k++)
+            {
+                string id = ids[(start + k) % n]; var found = Find(id, _d.pool1) ?? Find(id, _d.pool2) ?? Find(id, _d.pool3);
+                if (found != null && (n == 1 || found != _previous || k == n - 1)) return found;
+            }
+            return fallback != null && fallback.Length > 0 ? fallback[0] : null;
+        }
+        private static AttackPatternSO Find(string id, AttackPatternSO[] a) { if (a != null) for (int i = 0; i < a.Length; i++) if (a[i] != null && a[i].id == id) return a[i]; return null; }
+
         private void StartLull(float seconds, bool ring)
         {
             State = BossState.Lull; _stateLeft = seconds; _pattern = null;
@@ -170,12 +209,15 @@ namespace RoadBuilderGame
         {
             var pool = _d.Pool(Phase);
             AttackPatternSO pick = null;
-            if (pool != null && pool.Length > 0)
+            var ids = _tier != null ? _tier.Patterns(Phase) : null;
+            if (ids != null && ids.Length > 0) pick = ResolveIds(ids, pool);
+            else if (pool != null && pool.Length > 0)
             {
-                int i = _rng.NextInt(pool.Length);
+                int i = _alternate ? _altIndex++ % pool.Length : _rng.NextInt(pool.Length);
                 pick = pool[i];
-                if (pool.Length > 1 && pick == _previous) pick = pool[(i + 1) % pool.Length];       // never repeat the previous pattern
+                if (!_alternate && pool.Length > 1 && pick == _previous) pick = pool[(i + 1) % pool.Length];       // never repeat the previous pattern
             }
+            if (pick != null) _windowsDone++;
             _pattern = pick; _previous = pick; _patternClock = 0f; _nextBeat = 0; PatternsStarted++;
             if (_pattern == null) { StartLull(_d.lullSeconds, false); return; }
             State = BossState.Pattern;

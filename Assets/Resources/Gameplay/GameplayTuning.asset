@@ -29,7 +29,7 @@ MonoBehaviour:
   powerUpChance: 10
   gemChance: 3
   inkChance: 14
-  coinValue: 10
+  coinValue: 1
   comboWindow: 2.2
   comboPerStep: 5
   maxMultiplier: 5
@@ -45,7 +45,7 @@ MonoBehaviour:
   flipCoins: 25
   flipDegrees: 300
   milestoneEvery: 250
-  milestoneCoins: 50
+  milestoneCoins: 12
   milestoneGemChance: 0.25
   recordBonus: 100
   frenzyDuration: 7

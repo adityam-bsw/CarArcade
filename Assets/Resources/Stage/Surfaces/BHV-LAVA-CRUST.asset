@@ -14,11 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: RB.Game::RoadBuilderGame.SurfaceBehaviourSetSO
   surfaceId: surface-lava-crust
   modules:
-  - kind: 7
-    a: 1
-    b: 2
-    c: 0
+  - kind: 2
+    a: 3
+    b: 3
+    c: 4
     d: 0
-  hintFull: Hot crust. Do not linger.
-  hintShort: Hot
-  hintIcon: 
+  hintFull: 'Lava crust: breaks after 3 s. Keep moving.'
+  hintShort: 'Crust: keep moving'
+  hintIcon: icon-lava-crust
+  pieceLengthM: 4
+  safeEntryM: 6
+  warnTint: {r: 0.9, g: 0.82, b: 0.7, a: 1}
+  dangerTint: {r: 0.7, g: 0.45, b: 0.4, a: 1}
+  verb: Keep moving
+  consequence: crust breaks after 3 s

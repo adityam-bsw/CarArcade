@@ -37,6 +37,35 @@ MonoBehaviour:
   - vehicle-race-car:near-misses
   - vehicle-moon-rover:low-gravity-stages
   goalTargets: 0a000000140000000f00000005000000
+  dismantleCoinsPerScrap: 200
+  dismantleMinScrap: 5
+  dismantleMaxScrap: 250
+  reinforceScrapBase: 20
+  reinforceScrapPerTier: 15
+  reinforceFraction: 0.5
+  lowGravityWorldIds:
+  - world-moon
+  - world-mars
+  lowGravityStageMetres: 1000
+  waterSurfaceIds:
+  - surface-river
+  - surface-sea-water
+  - surface-coral
+  lavaSurfaceIds:
+  - surface-lava-crust
+  - surface-magma-bridge
+  waterMasteryMetres: 1000
+  worldMasteryMetres: 3000
+  lavaSurviveMetres: 500
+  fallbackForMissingEvents: 1
+  fallbackLongRunMetres: 3000
+  eventRules:
+  - idContains: LOWGRAV
+    raises: 7
+  - idContains: LAVA
+    raises: 8
+  - idContains: RHYTHM
+    raises: 9
   survivalRunMetres: 1000
   dailyVehicleIds:
   - vehicle-car
@@ -57,9 +86,338 @@ MonoBehaviour:
   dailyMasteryPoints: 1
   dailyWeeklyTokens: 1
   dailyEventCount: 3
+  leaderboardSize: 10
   weeklyTokensNeeded: 5
   weeklyCoins: 500
   weeklyGems: 2
+  weeklyThemed:
+  - id: w-distance
+    label: DRIVE FAR
+    kind: 0
+    target: 6000
+    coins: 250
+  - id: w-air
+    label: 'AIR WEEK: CLEAN JUMPS'
+    kind: 1
+    target: 40
+    coins: 250
+  - id: w-near
+    label: NEAR-MISS WEEK
+    kind: 2
+    target: 25
+    coins: 250
+  - id: w-flips
+    label: FLIP WEEK
+    kind: 3
+    target: 20
+    coins: 250
+  - id: w-coins
+    label: COIN WEEK
+    kind: 4
+    target: 1500
+    coins: 250
+  weeklyBoss:
+    id: w-boss
+    label: 'BOSS CHALLENGE: DEFEAT RO-B0'
+    kind: 6
+    target: 1
+    coins: 400
+  weeklySurface:
+    id: w-surface
+    label: 'SPECIAL SURFACE: METRES ON ADVANCED ROADS'
+    kind: 5
+    target: 1500
+    coins: 400
+  album:
+  - day: 1
+    coins: 50
+    gems: 0
+    cosmeticId: 
+  - day: 2
+    coins: 50
+    gems: 0
+    cosmeticId: 
+  - day: 3
+    coins: 50
+    gems: 0
+    cosmeticId: 
+  - day: 4
+    coins: 50
+    gems: 0
+    cosmeticId: 
+  - day: 5
+    coins: 0
+    gems: 0
+    cosmeticId: paint-trip-1
+  - day: 6
+    coins: 75
+    gems: 0
+    cosmeticId: 
+  - day: 7
+    coins: 75
+    gems: 1
+    cosmeticId: 
+  - day: 8
+    coins: 0
+    gems: 0
+    cosmeticId: sticker-trip-1
+  - day: 9
+    coins: 75
+    gems: 0
+    cosmeticId: 
+  - day: 10
+    coins: 100
+    gems: 0
+    cosmeticId: 
+  - day: 11
+    coins: 0
+    gems: 0
+    cosmeticId: paint-trip-2
+  - day: 12
+    coins: 100
+    gems: 0
+    cosmeticId: 
+  - day: 13
+    coins: 100
+    gems: 0
+    cosmeticId: 
+  - day: 14
+    coins: 0
+    gems: 0
+    cosmeticId: trim-trip
+  - day: 15
+    coins: 125
+    gems: 0
+    cosmeticId: 
+  - day: 16
+    coins: 125
+    gems: 0
+    cosmeticId: 
+  - day: 17
+    coins: 0
+    gems: 0
+    cosmeticId: sticker-trip-2
+  - day: 18
+    coins: 125
+    gems: 0
+    cosmeticId: 
+  - day: 19
+    coins: 125
+    gems: 0
+    cosmeticId: 
+  - day: 20
+    coins: 0
+    gems: 0
+    cosmeticId: paint-trip-3
+  - day: 21
+    coins: 150
+    gems: 1
+    cosmeticId: 
+  - day: 22
+    coins: 150
+    gems: 0
+    cosmeticId: 
+  - day: 23
+    coins: 0
+    gems: 0
+    cosmeticId: sticker-star
+  - day: 24
+    coins: 150
+    gems: 0
+    cosmeticId: 
+  - day: 25
+    coins: 175
+    gems: 0
+    cosmeticId: 
+  - day: 26
+    coins: 0
+    gems: 0
+    cosmeticId: paint-sunset
+  - day: 27
+    coins: 175
+    gems: 0
+    cosmeticId: 
+  - day: 28
+    coins: 175
+    gems: 1
+    cosmeticId: 
+  - day: 29
+    coins: 0
+    gems: 0
+    cosmeticId: paint-ocean
+  - day: 30
+    coins: 0
+    gems: 0
+    cosmeticId: paint-gold
+  cosmetics:
+  - id: paint-sunset
+    label: SUNSET PAINT
+    kind: 1
+    color: {r: 1, g: 0.55, b: 0.25, a: 1}
+    gems: 5
+  - id: paint-ocean
+    label: OCEAN PAINT
+    kind: 1
+    color: {r: 0.3, g: 0.75, b: 0.95, a: 1}
+    gems: 5
+  - id: paint-lime
+    label: LIME PAINT
+    kind: 1
+    color: {r: 0.65, g: 0.95, b: 0.3, a: 1}
+    gems: 5
+  - id: paint-midnight
+    label: MIDNIGHT PAINT
+    kind: 1
+    color: {r: 0.35, g: 0.35, b: 0.7, a: 1}
+    gems: 8
+  - id: paint-gold
+    label: GOLD PAINT
+    kind: 1
+    color: {r: 1, g: 0.82, b: 0.25, a: 1}
+    gems: 15
+  - id: sticker-flame
+    label: FLAME STICKER
+    kind: 0
+    color: {r: 1, g: 0.4, b: 0.2, a: 1}
+    gems: 4
+  - id: sticker-bolt
+    label: BOLT STICKER
+    kind: 0
+    color: {r: 1, g: 0.9, b: 0.2, a: 1}
+    gems: 4
+  - id: sticker-star
+    label: STAR STICKER
+    kind: 0
+    color: {r: 0.95, g: 0.95, b: 1, a: 1}
+    gems: 4
+  - id: trim-chrome
+    label: CHROME TRIM
+    kind: 2
+    color: {r: 0.85, g: 0.9, b: 0.95, a: 1}
+    gems: 10
+  - id: paint-trip-1
+    label: ROAD TRIP GREEN
+    kind: 1
+    color: {r: 0.4, g: 0.85, b: 0.5, a: 1}
+    gems: 0
+  - id: paint-trip-2
+    label: ROAD TRIP PLUM
+    kind: 1
+    color: {r: 0.7, g: 0.4, b: 0.85, a: 1}
+    gems: 0
+  - id: paint-trip-3
+    label: ROAD TRIP CORAL
+    kind: 1
+    color: {r: 1, g: 0.5, b: 0.5, a: 1}
+    gems: 0
+  - id: sticker-trip-1
+    label: SUNNY STICKER
+    kind: 0
+    color: {r: 1, g: 0.85, b: 0.3, a: 1}
+    gems: 0
+  - id: sticker-trip-2
+    label: WAVE STICKER
+    kind: 0
+    color: {r: 0.3, g: 0.8, b: 1, a: 1}
+    gems: 0
+  - id: trim-trip
+    label: ROAD TRIP TRIM
+    kind: 2
+    color: {r: 1, g: 0.8, b: 0.3, a: 1}
+    gems: 0
+  achievements:
+  - id: ach-dist-1k
+    label: DRIVE 1,000 M
+    metric: 0
+    target: 1000
+    gems: 1
+  - id: ach-dist-5k
+    label: DRIVE 5,000 M
+    metric: 0
+    target: 5000
+    gems: 2
+  - id: ach-dist-20k
+    label: DRIVE 20,000 M
+    metric: 0
+    target: 20000
+    gems: 3
+  - id: ach-run-1k
+    label: ONE RUN OF 1,000 M
+    metric: 8
+    target: 1000
+    gems: 1
+  - id: ach-run-3k
+    label: ONE RUN OF 3,000 M
+    metric: 8
+    target: 3000
+    gems: 2
+  - id: ach-boss
+    label: DEFEAT RO-B0
+    metric: 1
+    target: 1
+    gems: 2
+  - id: ach-missions
+    label: FINISH 10 MISSIONS
+    metric: 2
+    target: 10
+    gems: 2
+  - id: ach-jumps
+    label: 50 CLEAN JUMPS
+    metric: 3
+    target: 50
+    gems: 1
+  - id: ach-garage
+    label: OWN 3 VEHICLES
+    metric: 4
+    target: 3
+    gems: 1
+  - id: ach-worlds
+    label: OWN 3 WORLDS
+    metric: 5
+    target: 3
+    gems: 2
+  - id: ach-upgrades
+    label: BUY 10 UPGRADES
+    metric: 6
+    target: 10
+    gems: 2
+  - id: ach-mastery
+    label: REACH MASTERY LEVEL 3
+    metric: 7
+    target: 3
+    gems: 2
+  - id: ach-daily
+    label: CLAIM 5 DAILY CHALLENGES
+    metric: 9
+    target: 5
+    gems: 2
+  gemPacks:
+  - id: gems-small
+    gems: 20
+    priceLabel: SMALL PACK
+  - id: gems-medium
+    gems: 60
+    priceLabel: MEDIUM PACK
+  - id: gems-large
+    gems: 140
+    priceLabel: LARGE PACK
+  shopEnabled: 1
+  runBands:
+  - metres: 500
+    minCoins: 80
+    maxCoins: 120
+  - metres: 1500
+    minCoins: 180
+    maxCoins: 300
+  - metres: 3000
+    minCoins: 350
+    maxCoins: 500
+  - metres: 5000
+    minCoins: 600
+    maxCoins: 900
+  - metres: 8000
+    minCoins: 1000
+    maxCoins: 1400
   doubleCoinsPerDay: 2
   revivePerRun: 1
   extraDailyRewardPerDay: 1

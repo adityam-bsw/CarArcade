@@ -1,10 +1,10 @@
 # Asset status
 
-Generated 2026-11-15 from `Docs/asset-manifest/items/*.json` by `tools/assets/report.py`. Do not edit by hand.
+Generated 2026-11-16 from `Docs/asset-manifest/items/*.json` by `tools/assets/report.py`. Do not edit by hand.
 
 | Category | have | todo | scouting | found | downloaded | imported | not_found | forging | forged | ready | rejected | total |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| surface | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 25 | 1 | 29 |
+| surface | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 26 | 1 | 30 |
 | world | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 19 | 1 | 29 |
 | vehicle | 14 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 | 14 | 1 | 34 |
 
@@ -13,6 +13,7 @@ Generated 2026-11-15 from `Docs/asset-manifest/items/*.json` by `tools/assets/re
 | Item | Status | Source | Licence | Project path | Notes |
 |---|---|---|---|---|---|
 | Smooth road strips batch 2 (sand, snow, gravel, cobblestone, moon dust, neon grid, wooden bridge, rail track) | ready | tools/art/make_road2.py (own code, tools/art/smoothart) | own work (procedural, no generative AI, no third-party pixels) | Assets/Art/Smooth/Roads | Ratings: cobblestone 4, snow 4, wooden_bridge 4, neon_grid 4, sand 3.5, gravel 3 |
+| Smooth road strips batch 3 (spring_road, magnetic_rail, acid, oil, conveyor, conveyor_b, lava_river, sticky_candy, honey, metal_plates, ice_crystals, haunted_shadow, electric_rail, electric_rail_off, fragile_paper, fragile_paper_torn) | ready | tools/art/make_road3.py (own code, tools/art/smoothart) | own work (procedural, no generative AI, no third-party pixels) | Assets/Art/Smooth/Roads | Ratings: honey 4, electric_rail 4, spring_road 3.5, magnetic_rail 3.5, acid 3.5, |
 | Smooth road strips (asphalt, dirt, grass, ice, mud, glass + 3 crack stages) | ready | tools/art/make_road.py (own code, tools/art/smoothart) | own work (procedural, no generative AI, no third-party pixels) | Assets/Art/Smooth/Roads | Does not replace the pixel surface-* items (still used by the game until the imp |
 | Asphalt | have |  |  |  | flat colours today; ambientCG textures planned |
 | Beach | ready | https://opengameart.org/content/seasonal-platformer-tiles | own work (procedural; palette reference Blaze sea tileset and GrafxKid seasonal tropical column (CC0)) | Assets/Art/Surfaces/Forged/surface-beach/surface-beach.png | GrafxKid Tiles_4.png tropical seaside ground column (sand top, 16px) plus blaze  |

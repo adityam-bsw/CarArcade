@@ -14,26 +14,130 @@ MonoBehaviour:
   m_EditorClassIdentifier: RB.Game::RoadBuilderGame.VehicleGateSO
   gates:
   - vehicleId: vehicle-car
+    tier: 1
     unlockMetres: 0
     coins: 0
   - vehicleId: vehicle-sports-car
+    tier: 1
     unlockMetres: 0
     coins: 600
   - vehicleId: vehicle-monster-truck
+    tier: 5
     unlockMetres: 0
     coins: 2000
+  - vehicleId: vehicle-scooter
+    tier: 2
+    unlockMetres: 200
+    coins: 800
+  - vehicleId: vehicle-skateboard
+    tier: 2
+    unlockMetres: 250
+    coins: 900
+  - vehicleId: vehicle-golf-cart
+    tier: 2
+    unlockMetres: 300
+    coins: 1000
+  - vehicleId: vehicle-sled
+    tier: 2
+    unlockMetres: 350
+    coins: 1100
+  - vehicleId: vehicle-shopping-cart
+    tier: 2
+    unlockMetres: 400
+    coins: 1200
+  - vehicleId: vehicle-toboggan
+    tier: 2
+    unlockMetres: 450
+    coins: 1300
   - vehicleId: vehicle-bicycle
+    tier: 2
     unlockMetres: 500
     coins: 1500
+  - vehicleId: vehicle-snowboard
+    tier: 2
+    unlockMetres: 700
+    coins: 1800
+  - vehicleId: vehicle-handcar
+    tier: 3
+    unlockMetres: 800
+    coins: 2200
+  - vehicleId: vehicle-taxi
+    tier: 3
+    unlockMetres: 1000
+    coins: 2800
+  - vehicleId: vehicle-tuk-tuk
+    tier: 3
+    unlockMetres: 1100
+    coins: 3000
+  - vehicleId: vehicle-motorcycle
+    tier: 3
+    unlockMetres: 1200
+    coins: 3400
   - vehicleId: vehicle-dune-buggy
+    tier: 3
     unlockMetres: 1500
     coins: 4000
+  - vehicleId: vehicle-police-car
+    tier: 4
+    unlockMetres: 2000
+    coins: 5000
+  - vehicleId: vehicle-quad-atv
+    tier: 4
+    unlockMetres: 2200
+    coins: 5500
+  - vehicleId: vehicle-tractor
+    tier: 4
+    unlockMetres: 2400
+    coins: 6000
+  - vehicleId: vehicle-pickup
+    tier: 4
+    unlockMetres: 2600
+    coins: 6500
+  - vehicleId: vehicle-camper
+    tier: 4
+    unlockMetres: 2800
+    coins: 7000
+  - vehicleId: vehicle-snowmobile
+    tier: 4
+    unlockMetres: 2900
+    coins: 7500
   - vehicleId: vehicle-race-car
+    tier: 4
     unlockMetres: 3000
     coins: 8000
+  - vehicleId: vehicle-bus
+    tier: 5
+    unlockMetres: 4000
+    coins: 10000
+  - vehicleId: vehicle-fire-truck
+    tier: 5
+    unlockMetres: 4500
+    coins: 11000
+  - vehicleId: vehicle-semi-truck
+    tier: 5
+    unlockMetres: 5500
+    coins: 14000
+  - vehicleId: vehicle-hovercraft
+    tier: 5
+    unlockMetres: 6000
+    coins: 16000
+  - vehicleId: vehicle-jet-ski
+    tier: 5
+    unlockMetres: 6500
+    coins: 18000
+  - vehicleId: vehicle-speedboat
+    tier: 6
+    unlockMetres: 7000
+    coins: 20000
   - vehicleId: vehicle-tank
+    tier: 6
     unlockMetres: 8000
     coins: 28000
+  - vehicleId: vehicle-rocket-sled
+    tier: 6
+    unlockMetres: 10000
+    coins: 40000
   - vehicleId: vehicle-moon-rover
+    tier: 7
     unlockMetres: 12000
     coins: 50000

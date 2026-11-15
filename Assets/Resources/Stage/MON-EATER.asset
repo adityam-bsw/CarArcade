@@ -46,6 +46,15 @@ MonoBehaviour:
   adjacentForbiddenWith: []
   adjacentMinGapM: 0
   modifierSlots: 0
+  effects: []
+  ruleText: 
+  counterplayText: 
+  signText: 
+  iconKey: 
+  suitableWorlds:
+  - all
+  hazardFamily: monster
+  ladderTags: []
   spawnerId: hz-eater
   terrainSlopeMinDeg: -12
   terrainSlopeMaxDeg: 12

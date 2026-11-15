@@ -18,41 +18,111 @@ MonoBehaviour:
     coins: 0
     extra: 0
     extraCount: 0
+  - worldId: world-summer
+    unlockMetres: 500
+    coins: 1000
+    extra: 0
+    extraCount: 0
+  - worldId: world-spring-blossom
+    unlockMetres: 700
+    coins: 1500
+    extra: 2
+    extraCount: 1
+  - worldId: world-farm
+    unlockMetres: 900
+    coins: 1800
+    extra: 0
+    extraCount: 0
   - worldId: world-desert
     unlockMetres: 1000
     coins: 2000
     extra: 1
     extraCount: 1
+  - worldId: world-coast
+    unlockMetres: 1500
+    coins: 2500
+    extra: 2
+    extraCount: 2
+  - worldId: world-autumn-leaves
+    unlockMetres: 1800
+    coins: 3000
+    extra: 7
+    extraCount: 3
   - worldId: world-winter
     unlockMetres: 2500
     coins: 4000
     extra: 2
     extraCount: 3
+  - worldId: world-canyon
+    unlockMetres: 3000
+    coins: 5000
+    extra: 3
+    extraCount: 3
+  - worldId: world-night-city
+    unlockMetres: 3500
+    coins: 5500
+    extra: 2
+    extraCount: 4
   - worldId: world-moon
     unlockMetres: 4000
     coins: 6000
     extra: 3
     extraCount: 5
+  - worldId: world-wild-west
+    unlockMetres: 4500
+    coins: 7000
+    extra: 7
+    extraCount: 5
+  - worldId: world-jungle
+    unlockMetres: 5000
+    coins: 7500
+    extra: 8
+    extraCount: 2
   - worldId: world-mars
     unlockMetres: 5500
     coins: 8000
     extra: 4
     extraCount: 1
+  - worldId: world-arctic
+    unlockMetres: 6000
+    coins: 9000
+    extra: 8
+    extraCount: 3
   - worldId: world-volcano
     unlockMetres: 7000
     coins: 12000
     extra: 5
+    extraCount: 1
+  - worldId: world-cave
+    unlockMetres: 7500
+    coins: 12000
+    extra: 7
+    extraCount: 6
+  - worldId: world-industrial
+    unlockMetres: 8000
+    coins: 13000
+    extra: 10
     extraCount: 1
   - worldId: world-underwater
     unlockMetres: 8500
     coins: 15000
     extra: 6
     extraCount: 1
+  - worldId: world-christmas
+    unlockMetres: 9000
+    coins: 16000
+    extra: 2
+    extraCount: 8
   - worldId: world-candy-land
     unlockMetres: 10000
     coins: 18000
     extra: 7
     extraCount: 10
+  - worldId: world-cloud-kingdom
+    unlockMetres: 11000
+    coins: 20000
+    extra: 3
+    extraCount: 15
   - worldId: world-haunted-halloween
     unlockMetres: 12000
     coins: 22000

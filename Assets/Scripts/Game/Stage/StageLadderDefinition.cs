@@ -64,10 +64,43 @@ namespace RoadBuilderGame
         public float weightedRecoveryMaxM = 200f;
         public float weightedBreatherM = 200f;
 
+        [Header("Endless ladder (StageLadderMode.Endless; blueprint A2 distance table)")]
+        public float stageLengthM = 1000f;
+        [Tooltip("Stages planned ahead (stage 0 is the training stage, no events).")] public int endlessStageCount = 40;
+        [Tooltip("Rows for stages 1..10; any stage above uses the random row.")] public EndlessStageRow[] endlessStages = new EndlessStageRow[0];
+        public EndlessStageRow endlessRandomRow;
+        [Tooltip("Selection weights Easy, Medium, Hard, Extreme (40/35/20/5).")] public float[] tierWeights = { 40f, 35f, 20f, 5f };
+        [Tooltip("At most this many mutations are active together (blueprint: max 2 modifiers).")] public int endlessModifierCap = 2;
+        [Tooltip("From this distance a stacked second event is allowed, and activations are at least activationGapM apart.")] public float stackGapFromM = 5000f;
+        public float activationGapM = 100f;
+        [Tooltip("A stage whose primary costs at least this much counts as hard (two in a row are followed by a breather).")] public int endlessHardCost = 7;
+        [Tooltip("A hazard family may appear at most familyMaxInWindow times in familyWindowStages stages.")] public int familyWindowStages = 4, familyMaxInWindow = 2;
+        [Tooltip("Largest start offset into a stage (whole 10 m steps).")] public float endlessStartJitterM = 60f;
+        [Header("Adaptive challenge (opt-in, Settings)")]
+        public int adaptiveFailsToEase = 3;
+        [Tooltip("Hard and Extreme tier weights are multiplied by this for a stage the player keeps failing.")] [Range(0f, 1f)] public float adaptiveHardMul = 0.35f;
+        [Header("World tags")]
+        public StageWorldTagEntry[] worldTags = new StageWorldTagEntry[0];
+        [Tooltip("Tags of a built-in theme world (Country, Desert, CyberNight) that has no catalogue id.")] public string[] themeTagsCountry = new string[0], themeTagsDesert = new string[0], themeTagsCyber = new string[0];
+
         [Header("Debug (debug builds only)")]
         public float[] debugJumpPointsM = { 0f, 220f, 480f, 640f, 710f, 1000f, 1350f, 1800f, 2000f };
 
         public StagePace Pace => new StagePace(paceStartSpeedMps, paceGainMpsPerM, paceCapSpeedMps);
+
+        /// <summary>Row for a stage number of the endless ladder (stages above the table use the random row).</summary>
+        public EndlessStageRow RowFor(int stage)
+        {
+            if (endlessStages != null) for (int i = 0; i < endlessStages.Length; i++) if (endlessStages[i].stage == stage) return endlessStages[i];
+            return endlessRandomRow;
+        }
+
+        /// <summary>The tags of a catalogue world (empty when the id is unknown). Allocation free.</summary>
+        public string[] TagsForWorld(string worldId)
+        {
+            if (worldTags != null && !string.IsNullOrEmpty(worldId)) for (int i = 0; i < worldTags.Length; i++) if (worldTags[i].worldId == worldId) return worldTags[i].tags;
+            return null;
+        }
 
         public bool Validate(List<string> errors)
         {
@@ -80,6 +113,13 @@ namespace RoadBuilderGame
             if (paceStartSpeedMps <= 0f || paceCapSpeedMps < paceStartSpeedMps || paceGainMpsPerM < 0f) { Fail("pace model invalid"); bad = true; }
             if (eaterWarnM >= eaterStartM) { Fail("eaterWarnM must be below eaterStartM"); bad = true; }
             if (slots == null) { Fail("slots is null"); bad = true; }
+            if (ladderMode == StageLadderMode.Endless)
+            {
+                if (tierWeights == null || tierWeights.Length != 4) { Fail("tierWeights needs 4 entries (Easy, Medium, Hard, Extreme)"); bad = true; }
+                if (stageLengthM < 500f) { Fail("stageLengthM below 500"); bad = true; }
+                if (endlessModifierCap < 1 || endlessModifierCap > 2) { Fail("endlessModifierCap outside 1..2"); bad = true; }
+                if (eventPool == null || eventPool.Length == 0) { Fail("an endless ladder needs an event pool"); bad = true; }
+            }
             var ids = new HashSet<string>();
             if (slots != null)
                 for (int i = 0; i < slots.Length; i++)

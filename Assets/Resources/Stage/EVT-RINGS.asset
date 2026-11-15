@@ -47,6 +47,14 @@ MonoBehaviour:
   adjacentForbiddenWith: []
   adjacentMinGapM: 0
   modifierSlots: 0
+  effects: []
+  ruleText: 
+  counterplayText: 
+  signText: 
+  iconKey: 
+  suitableWorlds: []
+  hazardFamily: 
+  ladderTags: []
   spawnerId: 
   terrainSlopeMinDeg: -8
   terrainSlopeMaxDeg: 12

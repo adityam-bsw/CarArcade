@@ -17,64 +17,230 @@ MonoBehaviour:
     b: surface-lava-crust
     combo: 2
     mergeId: surface-obsidian
-    note: water cools lava into obsidian
+    note: 'lava crust plus water: one obsidian behaviour'
+    factor: 0
+    warning: 
   - a: surface-sea-water
     b: surface-magma-bridge
     combo: 2
     mergeId: surface-obsidian
-    note: water cools lava into obsidian
+    note: 'lava crust plus water: one obsidian behaviour'
+    factor: 0
+    warning: 
+  - a: surface-sea-water
+    b: surface-lava-river
+    combo: 2
+    mergeId: surface-obsidian
+    note: 'lava crust plus water: one obsidian behaviour'
+    factor: 0
+    warning: 
   - a: surface-river
     b: surface-lava-crust
     combo: 2
     mergeId: surface-obsidian
-    note: water cools lava into obsidian
+    note: 'lava crust plus water: one obsidian behaviour'
+    factor: 0
+    warning: 
   - a: surface-river
     b: surface-magma-bridge
     combo: 2
     mergeId: surface-obsidian
-    note: water cools lava into obsidian
+    note: 'lava crust plus water: one obsidian behaviour'
+    factor: 0
+    warning: 
+  - a: surface-river
+    b: surface-lava-river
+    combo: 2
+    mergeId: surface-obsidian
+    note: 'lava crust plus water: one obsidian behaviour'
+    factor: 0
+    warning: 
   - a: surface-ice
     b: surface-lava-crust
     combo: 2
     mergeId: surface-sea-water
     note: ice melts to water
+    factor: 0
+    warning: 
   - a: surface-ice
     b: surface-magma-bridge
     combo: 2
     mergeId: surface-sea-water
     note: ice melts to water
+    factor: 0
+    warning: 
+  - a: surface-oil
+    b: mod-fire
+    combo: 3
+    mergeId: 
+    note: 'oil plus fire: allowed, visible ignition warning'
+    factor: 0
+    warning: Oil can catch fire
+  - a: surface-ice
+    b: mod-wind
+    combo: 4
+    mergeId: 
+    note: 'ice plus wind: allowed, wind force reduced'
+    factor: 0.5
+    warning: 
+  - a: surface-ice-bridge
+    b: mod-wind
+    combo: 4
+    mergeId: 
+    note: 'ice plus wind: allowed, wind force reduced'
+    factor: 0.5
+    warning: 
+  - a: surface-glass
+    b: mod-heavy
+    combo: 3
+    mergeId: 
+    note: 'glass plus a heavy vehicle: only with a long warning'
+    factor: 0
+    warning: 'Heavy on glass: it cracks sooner'
+  - a: surface-cloud
+    b: mod-gravity-inversion
+    combo: 1
+    mergeId: 
+    note: cloud plus gravity inversion is disallowed
+    factor: 0
+    warning: 
+  - a: surface-magnetic-rail
+    b: surface-electric-rail
+    combo: 2
+    mergeId: surface-electromagnetic
+    note: 'magnetic plus electric rail: one electrical-magnetic behaviour'
+    factor: 0
+    warning: 
+  - a: surface-rope-bridge
+    b: mod-heavy
+    combo: 2
+    mergeId: surface-rope-bridge-strong
+    note: 'rope bridge plus a heavy vehicle: the stronger bridge variant'
+    factor: 0
+    warning: 
+  - a: surface-acid
+    b: surface-lava-crust
+    combo: 1
+    mergeId: 
+    note: acid plus lava is disallowed unless a designed chemical hazard
+    factor: 0
+    warning: 
+  - a: surface-acid
+    b: surface-magma-bridge
+    combo: 1
+    mergeId: 
+    note: acid plus lava is disallowed unless a designed chemical hazard
+    factor: 0
+    warning: 
+  - a: surface-acid
+    b: surface-lava-river
+    combo: 1
+    mergeId: 
+    note: acid plus lava is disallowed unless a designed chemical hazard
+    factor: 0
+    warning: 
   - a: surface-ice
     b: surface-mud
     combo: 1
     mergeId: 
     note: two slow-down events never touch (stage-events.md)
+    factor: 0
+    warning: 
   - a: surface-ice
     b: surface-glass
     combo: 1
     mergeId: 
     note: slide plus break is unfair
+    factor: 0
+    warning: 
   - a: surface-mud
     b: surface-glass
     combo: 1
     mergeId: 
     note: adjacent mud and glass are forbidden (stage-events.md)
+    factor: 0
+    warning: 
   - a: surface-cloud
     b: surface-glass
     combo: 1
     mergeId: 
     note: two breaking surfaces in a row
+    factor: 0
+    warning: 
   - a: surface-neon-grid
     b: surface-ice
     combo: 1
     mergeId: 
     note: speed pad on ice cannot be steered
+    factor: 0
+    warning: 
   - a: surface-wooden-bridge
     b: surface-lava-crust
     combo: 1
     mergeId: 
     note: wood on lava burns at once
+    factor: 0
+    warning: 
   - a: surface-wooden-bridge
     b: surface-magma-bridge
     combo: 1
     mergeId: 
     note: wood on lava burns at once
+    factor: 0
+    warning: 
+  - a: surface-wooden-bridge
+    b: surface-lava-river
+    combo: 1
+    mergeId: 
+    note: wood on lava burns at once
+    factor: 0
+    warning: 
+  - a: surface-honey
+    b: surface-sticky-candy
+    combo: 1
+    mergeId: 
+    note: two sticky slowers in a row
+    factor: 0
+    warning: 
+  - a: surface-honey
+    b: surface-mud
+    combo: 1
+    mergeId: 
+    note: two sinking slowers in a row
+    factor: 0
+    warning: 
+  - a: surface-oil
+    b: surface-ice
+    combo: 1
+    mergeId: 
+    note: two low-grip surfaces cannot be steered
+    factor: 0
+    warning: 
+  - a: surface-electric-rail
+    b: surface-sea-water
+    combo: 1
+    mergeId: 
+    note: electricity on water
+    factor: 0
+    warning: 
+  - a: surface-oil
+    b: surface-lava-crust
+    combo: 1
+    mergeId: 
+    note: oil on lava ignites at once
+    factor: 0
+    warning: 
+  - a: surface-ice-crystals
+    b: surface-lava-crust
+    combo: 2
+    mergeId: surface-sea-water
+    note: crystals melt to water
+    factor: 0
+    warning: 
+  - a: surface-fragile-paper
+    b: mod-fire
+    combo: 1
+    mergeId: 
+    note: paper plus fire burns away at once
+    factor: 0
+    warning: 

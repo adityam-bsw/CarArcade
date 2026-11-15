@@ -18,7 +18,13 @@ MonoBehaviour:
     a: 2.5
     b: 1.2
     c: 0
-    d: 0
-  hintFull: Neon pads give a burst of speed.
-  hintShort: Speed pad
-  hintIcon: 
+    d: 3
+  hintFull: 'Neon grid: pads give a burst of speed.'
+  hintShort: Speed pads
+  hintIcon: icon-neon-grid
+  pieceLengthM: 4
+  safeEntryM: 6
+  warnTint: {r: 0.9, g: 0.82, b: 0.7, a: 1}
+  dangerTint: {r: 0.7, g: 0.45, b: 0.4, a: 1}
+  verb: Hit the pads
+  consequence: speed burst

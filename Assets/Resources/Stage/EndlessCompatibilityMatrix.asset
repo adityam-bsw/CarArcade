@@ -1,0 +1,831 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9446adbc9cc254fdcbd6cda01d90f383, type: 3}
+  m_Name: EndlessCompatibilityMatrix
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.EventCompatibilityMatrix
+  pairs:
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-HEAVYG
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: same gravity channel
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-TUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-INKSTORM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: low gravity + wind gusts is uncontrollable
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-BOOSTDRAIN
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-VACUUM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-CANYON
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: low gravity + wind is uncontrollable
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-LOWINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-TAX
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-FRAGILE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-GIANT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-ICE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-MUD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-METEOR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-GRAVSHIFT
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-HEAVYG
+    idB: EVT-TUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-INKSTORM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-BOOSTDRAIN
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-VACUUM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-CANYON
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-LOWINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-TAX
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-FRAGILE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: heavy landings crack a fragile car unfairly
+  - idA: EVT-HEAVYG
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-GIANT
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: heavy + giant bogs the car
+  - idA: EVT-HEAVYG
+    idB: EVT-ICE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-HEAVYG
+    idB: EVT-MUD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-HEAVYG
+    idB: EVT-METEOR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-HEAVYG
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-HEAVYG
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-TUNNEL
+    idB: EVT-INKSTORM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + wind gusts
+  - idA: EVT-TUNNEL
+    idB: EVT-BOOSTDRAIN
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-VACUUM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-CANYON
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + wind
+  - idA: EVT-TUNNEL
+    idB: EVT-LOWINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-TAX
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-FRAGILE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + fragile
+  - idA: EVT-TUNNEL
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-GIANT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-ICE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-TUNNEL
+    idB: EVT-MUD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-METEOR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-TUNNEL
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-TUNNEL
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-INKSTORM
+    idB: EVT-BOOSTDRAIN
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-VACUUM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-CANYON
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: two winds
+  - idA: EVT-INKSTORM
+    idB: EVT-LOWINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: ink starvation
+  - idA: EVT-INKSTORM
+    idB: EVT-TAX
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-FRAGILE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: wind + fragile
+  - idA: EVT-INKSTORM
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-GIANT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-ICE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-INKSTORM
+    idB: EVT-MUD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-INKSTORM
+    idB: EVT-METEOR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-INKSTORM
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-INKSTORM
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-VACUUM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-CANYON
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-LOWINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-TAX
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-FRAGILE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-GIANT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-ICE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-MUD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-METEOR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-BOOSTDRAIN
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-VACUUM
+    idB: EVT-CANYON
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-LOWINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-TAX
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: drifting coins + tax is brutal
+  - idA: EVT-VACUUM
+    idB: EVT-FRAGILE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-GIANT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-ICE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-MUD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-METEOR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-VACUUM
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-CANYON
+    idB: EVT-LOWINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-TAX
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-FRAGILE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: wind + fragile
+  - idA: EVT-CANYON
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-GIANT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-ICE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-CANYON
+    idB: EVT-MUD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-CANYON
+    idB: EVT-METEOR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-CANYON
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-CANYON
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-LOWINK
+    idB: EVT-TAX
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-FRAGILE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-GIANT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-ICE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-LOWINK
+    idB: EVT-MUD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-LOWINK
+    idB: EVT-METEOR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-LOWINK
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-TAX
+    idB: EVT-FRAGILE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-GIANT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-ICE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-MUD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-METEOR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-TAX
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-FRAGILE
+    idB: EVT-TINY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-GIANT
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: giant impacts crack a fragile car
+  - idA: EVT-FRAGILE
+    idB: EVT-ICE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-FRAGILE
+    idB: EVT-MUD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-FRAGILE
+    idB: EVT-METEOR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-FRAGILE
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-FRAGILE
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-TINY
+    idB: EVT-GIANT
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'never stack: tiny + giant'
+  - idA: EVT-TINY
+    idB: EVT-ICE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-MUD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-TINY
+    idB: EVT-METEOR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-TINY
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-GIANT
+    idB: EVT-ICE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-GIANT
+    idB: EVT-MUD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-METEOR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-GIANT
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: EVT-ICE
+    idB: EVT-MUD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-METEOR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-METEOR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: MON-EATER
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack

@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 634c9d957539d4372bcab5333602aa35, type: 3}
+  m_Name: SurfaceUnlockCategories
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.SurfaceUnlockCategoriesSO
+  categories:
+  - id: basic
+    displayName: Basic
+    minDistanceM: 1000
+    maxDistanceM: 2500
+    extraGate: early distance
+    surfaceIds:
+    - surface-asphalt
+    - surface-dirt
+    - surface-grass-trail
+    - surface-gravel
+    - surface-beach
+    - surface-cobblestone
+    - surface-salt-flat
+    - surface-rail-track
+    - surface-conveyor
+  - id: unstable
+    displayName: Unstable
+    minDistanceM: 3000
+    maxDistanceM: 5000
+    extraGate: after the surface tutorial
+    surfaceIds:
+    - surface-sand
+    - surface-mud
+    - surface-ice
+    - surface-ice-bridge
+    - surface-snow
+    - surface-wooden-bridge
+    - surface-rope-bridge
+    - surface-sea-water
+    - surface-river
+  - id: advanced
+    displayName: Advanced
+    minDistanceM: 6000
+    maxDistanceM: 10000
+    extraGate: 5 missions
+    surfaceIds:
+    - surface-glass
+    - surface-cloud
+    - surface-neon-grid
+    - surface-spring-road
+    - surface-honey
+    - surface-sticky-candy
+    - surface-metal-plates
+    - surface-ice-crystals
+    - surface-candy
+    - surface-moon-dust
+    - surface-floating-islands
+    - surface-coral
+  - id: special
+    displayName: Special
+    minDistanceM: 12000
+    maxDistanceM: 18000
+    extraGate: boss reward
+    surfaceIds:
+    - surface-lava-crust
+    - surface-magma-bridge
+    - surface-lava-river
+    - surface-oil
+    - surface-acid
+    - surface-magnetic-rail
+    - surface-electric-rail
+  - id: exotic
+    displayName: Exotic
+    minDistanceM: 20000
+    maxDistanceM: 30000
+    extraGate: world mastery
+    surfaceIds:
+    - surface-haunted-shadow
+    - surface-fragile-paper

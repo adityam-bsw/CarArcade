@@ -38,8 +38,19 @@ namespace RoadBuilderGame
             EaterChew, EaterJumpChew, EaterEscapeTick, EaterPushback, FireBolt, FireBomb, FireSaw, PhaseFlare
         };
 
+        /// <summary>Event keys of the mutation pack (gap list A, batch A1). Each gets vo.rob0.s1.KEY, sfx.KEY.sign, sfx.KEY.cue, banner.KEY and a sign word.</summary>
+        public static readonly string[] MutationKeys = { "gravshift", "heavyg", "tunnel", "inkstorm", "boostdrain", "vacuum", "canyon", "lowink", "tax", "fragile", "tiny", "giant" };
+
+        static StageCues()
+        {
+            foreach (var k in MutationKeys) { Registry.Add("vo.rob0.s1." + k); Registry.Add("sfx." + k + ".sign"); Registry.Add("sfx." + k + ".cue"); }
+        }
+
         private static readonly Dictionary<string, string> Banner = new Dictionary<string, string>
         {
+            { "banner.gravshift", "LOW GRAVITY" }, { "banner.heavyg", "HEAVY GRAVITY" }, { "banner.tunnel", "SPEED TUNNEL" }, { "banner.inkstorm", "INK STORM" },
+            { "banner.boostdrain", "BOOST DRAIN" }, { "banner.vacuum", "COIN VACUUM" }, { "banner.canyon", "WIND CANYON" }, { "banner.lowink", "LOW INK" },
+            { "banner.tax", "ROAD TAX" }, { "banner.fragile", "FRAGILE CAR" }, { "banner.tiny", "TINY MODE" }, { "banner.giant", "GIANT MODE" },
             { "banner.ice", "ICE AHEAD" }, { "banner.mud", "MUD AHEAD" }, { "banner.meteor", "METEORS!" }, { "banner.glass", "GLASS ROAD" },
             { "banner.rings", "RING RUN" }, { "banner.eater", "ROAD-EATER" }, { "banner.boss", "RO-B0" },
             { "banner.eater.pushback", "PHEW!" }, { "banner.eater.escape", "ESCAPED" }, { "banner.eater.retreat", "IT WANDERED OFF" },
@@ -48,9 +59,21 @@ namespace RoadBuilderGame
         /// <summary>Short tag shown on the S2 sign (a word is the non-colour shape channel).</summary>
         private static readonly Dictionary<string, string> Sign = new Dictionary<string, string>
         {
+            { "banner.gravshift", "LOW-G" }, { "banner.heavyg", "HEAVY" }, { "banner.tunnel", "FAST" }, { "banner.inkstorm", "STORM" },
+            { "banner.boostdrain", "DRAIN" }, { "banner.vacuum", "VACUUM" }, { "banner.canyon", "WIND" }, { "banner.lowink", "LOW INK" },
+            { "banner.tax", "TAX" }, { "banner.fragile", "FRAGILE" }, { "banner.tiny", "TINY" }, { "banner.giant", "GIANT" },
             { "banner.ice", "ICE" }, { "banner.mud", "MUD" }, { "banner.meteor", "ROCKS" }, { "banner.glass", "GLASS" },
             { "banner.rings", "RINGS" }, { "banner.eater", "EATER" }, { "banner.boss", "RO-B0" },
         };
+
+        /// <summary>The 3-step learning rule for a mutation (same as the surface hints): first sighting the rule and the counterplay, second the counterplay only, then nothing.</summary>
+        public static string Preview(StageEventDefinition d, int seenBefore)
+        {
+            if (d == null) return string.Empty;
+            if (seenBefore <= 0) return (d.ruleText ?? string.Empty) + (string.IsNullOrEmpty(d.counterplayText) ? string.Empty : " - " + d.counterplayText);
+            if (seenBefore == 1) return d.counterplayText ?? string.Empty;
+            return string.Empty;
+        }
 
         public static string BannerText(string bannerKey) { return bannerKey != null && Banner.TryGetValue(bannerKey, out var t) ? t : string.Empty; }
         public static string SignText(string bannerKey) { return bannerKey != null && Sign.TryGetValue(bannerKey, out var t) ? t : string.Empty; }

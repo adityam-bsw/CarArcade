@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85f9436f69df541ee8f70b887ffeb36d, type: 3}
+  m_Name: EATER-MARS
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.EaterVariantSO
+  id: EATER-MARS
+  worldId: mars
+  displayName: Iron Worm
+  signature: 3
+  defeat: 3
+  tint: {r: 0.75, g: 0.35, b: 0.25, a: 1}
+  body: {fileID: 21300000, guid: b6bbea8884b514de687f5ed6cfbe3c48, type: 3}
+  firstAfterSeconds: 4
+  everySeconds: 9
+  tellSeconds: 1.3
+  activeSeconds: 2.5
+  radius: 1.9
+  power: 12
+  range: 24
+  lureEverySeconds: 14
+  lureMaxGap: 24
+  spanEverySeconds: 18
+  spanAheadM: 18
+  spanLength: 5
+  heavyMass: 1.7
+  phaseSeconds: 14
+  gateAfterChaseM: 520
+  gateEscapeSeconds: 8
+  coinsFirst: 350
+  trophyId: trophy-eater-mars
+  announcerCueId: vo.rob0.eater.defeat.mars
+  announcerText: Iron Worm is rusted!

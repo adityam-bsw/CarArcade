@@ -21,6 +21,7 @@ namespace RoadBuilderGame
             public Transform Body, Tell; public SpriteRenderer BodySr, TellSr;
         }
 
+        private sealed class Trap { public bool Active; public int Stage; public float T, X, Y, MinD = 999f; public Transform Tr; public SpriteRenderer Sr; }
         private sealed class Ring { public bool Active; public Vector2 Pos; public float Age; public Transform T; public SpriteRenderer Sr; }
 
         private readonly RoadBuilder _road;
@@ -29,6 +30,9 @@ namespace RoadBuilderGame
         private readonly Proj[] _pool;
         private readonly int[] _poolStart = new int[3], _poolCount = new int[3];
         private readonly Ring[] _rings = new Ring[2];
+        private readonly Trap[] _traps = new Trap[2];
+        private readonly WorldProjectileRunner _world;
+        private BossTierSO[] _tiers; private BossTierSO _tier; private HazardArtSet _art; private float _lastTrap = -99f; private uint _seed;
         private readonly float[] _lastFire = new float[3] { -10f, -10f, -10f };
         private readonly ProjectileSkinSO[] _skins = new ProjectileSkinSO[3];
         private Transform _boss; private SpriteRenderer _bossBody, _bossTrim;
@@ -47,12 +51,22 @@ namespace RoadBuilderGame
         public Action<string> Cue, Banner;
         public Action<float> Shake;
         public Action RingTaken;
+        /// <summary>The boss won this round (three hits taken): no reward.</summary>
+        public Action Overpowered;
+        public BossTierSO Tier => _tier;
+        public WorldProjectileRunner World => _world;
+        public void SetTiers(BossTierSO[] tiers) { _tiers = tiers; }
+        public static bool IsTrapActive(BossController c) { return c != null && c.TrapActive; }
+        public bool TrapActive { get { for (int i = 0; i < _traps.Length; i++) if (_traps[i] != null && _traps[i].Active) return true; return false; } }
         /// <summary>The fight is decided: true = timeout retreat, false = Overload defeat.</summary>
         public Action<bool> Decided;
 
         public BossController(RoadBuilder road, BossDefinitionSO data)
         {
-            _road = road; _d = data; _model = new BossModel(data);
+            _road = road; _d = data; _model = new BossModel(data); _world = new WorldProjectileRunner(road);
+            _world.CanDamage = () => CanDamage(); _world.Hit = r => Hit(r); _world.Cue = id => Cue?.Invoke(id); _world.Shake = a => Shake?.Invoke(a);
+            _world.Struck = shielded => _model.Resolve(shielded ? BossOutcome.HitShielded : BossOutcome.Hit);
+            _world.Passed = OnWorldPassed;
             _pool = new Proj[Count(data.bolt) + Count(data.bomb) + Count(data.roller)];
             _model.Beat += OnBeat;
             _model.Raised += OnEvent;
@@ -78,7 +92,7 @@ namespace RoadBuilderGame
         public void Begin(uint seed)
         {
             Build();
-            _model.Reset(seed); _rng = new Pcg32(seed ^ 0x9E3779B9u); _clock = 0f; _gone = false; _charge = 1f;
+            _seed = seed; _model.Reset(seed); _rng = new Pcg32(seed ^ 0x9E3779B9u); _world.Begin(); _lastTrap = -99f; _clock = 0f; _gone = false; _charge = 1f;
             _phx = _rng.NextFloat01() * 6.283f; _phy = _rng.NextFloat01() * 6.283f;
             for (int i = 0; i < _lastFire.Length; i++) _lastFire[i] = -10f;
             ClearAll(); _boss.gameObject.SetActive(false);
@@ -87,9 +101,16 @@ namespace RoadBuilderGame
         public void Stop() { if (!_built) return; _model.Reset(1u); ClearAll(); _boss.gameObject.SetActive(false); }
 
         /// <summary>The boss event started: hover in, 2 s intro, then phase 1.</summary>
-        public void Start(Vector2 carPos)
+        public void Start(Vector2 carPos) { Start(carPos, 0f, null); }
+
+        /// <summary>Start with the tier for <paramref name="distanceM"/> and the world's projectile (null world id = the Countryside archetypes).</summary>
+        public void Start(Vector2 carPos, float distanceM, string worldId)
         {
             Build();
+            if (_tiers == null || _tiers.Length == 0) _tiers = BossTierSO.LoadAll();
+            _tier = BossTierSO.ForDistance(_tiers, distanceM);
+            _model.Reset(_seed); _model.ApplyTier(_tier);
+            _world.Configure(WorldProjectiles.ForWorld(worldId)); _world.Begin();
             _pos = carPos + new Vector2(16f, 13f); _vel = Vector2.zero; _gone = false;
             _boss.gameObject.SetActive(true);
             _model.Begin();
@@ -122,7 +143,14 @@ namespace RoadBuilderGame
                 var r = new Ring(); r.Sr = SpriteFactory.CreateSprite("OverloadRing" + i, null, SpriteFactory.Circle, new Color(1f, 0.84f, 0.2f, 0.9f), 20); r.T = r.Sr.transform;
                 r.T.localScale = new Vector3(1.6f, 1.6f, 1f); r.T.gameObject.SetActive(false); _rings[i] = r;
             }
+            _art = HazardArtSet.Load();
+            for (int i = 0; i < _traps.Length; i++)
+            {
+                var t = new Trap(); t.Sr = SpriteFactory.CreateSprite("BossTrap" + i, null, _art != null && _art.trapStrip != null ? _art.trapStrip : SpriteFactory.Box(Color.white), new Color(1f, 0.25f, 0.2f, 0.8f), 13);
+                t.Tr = t.Sr.transform; t.Tr.gameObject.SetActive(false); _traps[i] = t;
+            }
             _boss = new GameObject("RO-B0").transform;
+            if (_art != null && _art.robotBody != null) { BuildArtBoss(); _boss.gameObject.SetActive(false); _built = true; return; }
             _bossTrim = SpriteFactory.CreateSprite("Trim", _boss, SpriteFactory.Circle, new Color(0.3f, 0.6f, 1f), 24); _bossTrim.transform.localScale = new Vector3(2.2f, 1.7f, 1f);
             _bossBody = SpriteFactory.CreateSprite("Body", _boss, SpriteFactory.Circle, new Color(0.55f, 0.6f, 0.68f), 25); _bossBody.transform.localScale = new Vector3(1.9f, 1.4f, 1f);
             var eye = SpriteFactory.CreateSprite("Eye", _boss, SpriteFactory.Circle, Color.white, 26); eye.transform.localPosition = new Vector3(-0.35f, 0.1f, 0f); eye.transform.localScale = new Vector3(0.6f, 0.6f, 1f);
@@ -141,10 +169,12 @@ namespace RoadBuilderGame
             {
                 CarSpeed = carVel.x, CounterAvailable = CounterAvailable(), InkAvailable = InkAvailable(),
                 RoadAheadForRoller = _road.FrontierMaxX - carPos.x >= carVel.x * 1.4f + carVel.x + 9.7f + 8f,
-                Alive = AliveCount(), SinceBolt = _clock - _lastFire[0], SinceBomb = _clock - _lastFire[1], SinceRoller = _clock - _lastFire[2]
+                Alive = AliveCount() + _world.AliveCount, SinceBolt = _clock - _lastFire[0], SinceBomb = _clock - _lastFire[1], SinceRoller = _clock - _lastFire[2]
             };
             _model.Tick(dt, ctx);
             Hover(dt, carPos);
+            _world.Tick(dt, carPos, carVel, _pos, _model.Phase);
+            TickTraps(dt, carPos, carVel);
             for (int i = 0; i < _pool.Length; i++) { var p = _pool[i]; if (p.Active) UpdateProj(p, dt, carPos, carVel); }
             for (int i = 0; i < _rings.Length; i++) { var r = _rings[i]; if (r.Active) UpdateRing(r, dt, carPos); }
         }
@@ -171,18 +201,77 @@ namespace RoadBuilderGame
             if (_gone && Mathf.Abs(_pos.x - ax) < 1f) _boss.gameObject.SetActive(false);
         }
 
+        private void BuildArtBoss()
+        {
+            var a = _art; float ppu = 1f;
+            Transform jet = a.robotJet != null ? SpriteFactory.CreateSprite("Jet", _boss, a.robotJet, Color.white, 23).transform : null;
+            if (jet != null) jet.localPosition = new Vector3(0f, -0.95f, 0f);
+            _bossTrim = SpriteFactory.CreateSprite("Trim", _boss, a.robotTrim != null ? a.robotTrim : SpriteFactory.Circle, new Color(0.3f, 0.6f, 1f), 24);
+            _bossBody = SpriteFactory.CreateSprite("Body", _boss, a.robotBody, Color.white, 25);
+            if (a.robotEye != null) { var e = SpriteFactory.CreateSprite("Eye", _boss, a.robotEye, Color.white, 26); e.transform.localPosition = new Vector3(-0.35f, 0.1f, 0f); }
+            if (a.robotAntenna != null) { var t = SpriteFactory.CreateSprite("Antenna", _boss, a.robotAntenna, Color.white, 26); t.transform.localPosition = new Vector3(0.2f, 0.95f, 0f); }
+            _ = ppu;
+        }
+
+        // ------------------------------------------------------------------ world projectile outcomes and road traps
+        private void OnWorldPassed(float minDist, float travel)
+        {
+            var def = _world.Definition; if (def == null) return;
+            if (minDist <= def.PerfectEdge) { _model.Resolve(BossOutcome.Perfect); NearMissed?.Invoke(def.NearMissSource, true, travel); }
+            else if (minDist <= def.nearMissRadius) { _model.Resolve(BossOutcome.Near); NearMissed?.Invoke(def.NearMissSource, false, travel); }
+            else _model.Resolve(BossOutcome.Dodged);
+        }
+
+        private void TickTraps(float dt, Vector2 car, Vector2 vel)
+        {
+            var tier = _tier;
+            if (tier != null && tier.trapAttack && _model.State == BossState.Pattern && !TrapActive && _clock - _lastTrap >= tier.trapEverySeconds && vel.x >= 1f) SpawnTrap(car, vel, tier);
+            for (int i = 0; i < _traps.Length; i++)
+            {
+                var t = _traps[i]; if (!t.Active) continue;
+                t.T += dt; var tr = t.Tr;
+                if (_road.TryGetRoadYAtX(t.X, out float ry)) t.Y = ry;
+                tr.position = new Vector3(t.X, t.Y + 0.12f, 0f); tr.localScale = new Vector3(tier.trapWidth, t.Stage == 0 ? 0.25f : 0.55f, 1f);
+                var c = t.Stage == 0 ? new Color(1f, 0.7f, 0.2f, 0.35f + 0.4f * Mathf.Abs(Mathf.Sin(t.T * 12f))) : new Color(1f, 0.2f, 0.15f, 0.95f); t.Sr.color = c;
+                if (t.Stage == 0)
+                {
+                    if (t.T >= tier.trapTellSeconds) { t.Stage = 1; t.T = 0f; Shake?.Invoke(0.15f); Cue?.Invoke(StageCues.FireSaw); }
+                    continue;
+                }
+                float dx = Mathf.Abs(car.x - t.X), dist = Vector2.Distance(car, new Vector2(t.X, t.Y)); if (dist < t.MinD) t.MinD = dist;
+                if (dx <= tier.trapWidth * 0.5f + 0.45f && car.y - t.Y <= 1.3f && CanDamage())
+                {
+                    bool shielded = Hit("ROAD TRAP!"); Deactivate(t); _model.Resolve(shielded ? BossOutcome.HitShielded : BossOutcome.Hit); continue;
+                }
+                if (car.x > t.X + tier.trapWidth * 0.5f + 1f || t.T >= tier.trapActiveSeconds) { Deactivate(t); _model.Resolve(BossOutcome.Dodged); }
+            }
+        }
+
+        private static void Deactivate(Trap t) { t.Active = false; t.Tr.gameObject.SetActive(false); }
+
+        private void SpawnTrap(Vector2 car, Vector2 vel, BossTierSO tier)
+        {
+            Trap t = null; for (int i = 0; i < _traps.Length; i++) if (!_traps[i].Active) { t = _traps[i]; break; }
+            if (t == null) return;
+            float x = car.x + vel.x * tier.trapTellSeconds + 10f + vel.x;                 // at least 1 s of reaction after the tell
+            if (!FindRoad(ref x)) return;
+            t.X = x; t.Y = _road.TryGetRoadYAtX(x, out float ry) ? ry : car.y; t.Stage = 0; t.T = 0f; t.MinD = 999f; t.Active = true; t.Tr.gameObject.SetActive(true);
+            _lastTrap = _clock; Cue?.Invoke(StageCues.ProjSaw);
+        }
+
         // ------------------------------------------------------------------ events from the model
         private void OnEvent(BossEvent e)
         {
             switch (e)
             {
-                case BossEvent.IntroStart: Banner?.Invoke("RO-B0"); Cue?.Invoke("vo.rob0.s1.boss"); break;
+                case BossEvent.IntroStart: Banner?.Invoke(_tier != null ? "RO-B0 " + _tier.displayName.ToUpperInvariant() : "RO-B0"); Cue?.Invoke("vo.rob0.s1.boss"); break;
                 case BossEvent.RingDue: SpawnRing(); break;
                 case BossEvent.PhaseTelegraph: Cue?.Invoke("vo.rob0.boss.phase"); Cue?.Invoke("sfx.boss.phaseFlare"); Shake?.Invoke(0.3f); Banner?.Invoke("PHASE " + _model.Phase); break;
                 case BossEvent.Cleared: ClearAll(); break;
                 case BossEvent.Defeated: Cue?.Invoke("vo.rob0.boss.defeat"); Shake?.Invoke(0.5f); Decided?.Invoke(false); break;
                 case BossEvent.TimedOut: Cue?.Invoke("vo.rob0.boss.retreat"); Decided?.Invoke(true); break;
                 case BossEvent.Gone: _gone = true; break;
+                case BossEvent.Overpowered: Cue?.Invoke("vo.rob0.boss.retreat"); Banner?.Invoke("RO-B0 WINS THIS ROUND"); Overpowered?.Invoke(); break;
             }
         }
 
@@ -195,6 +284,11 @@ namespace RoadBuilderGame
 
         private void OnBeat(BeatRequest req)
         {
+            if (req.Kind == ProjectileKind.Bolt && _world.Has)
+            {
+                if (_world.Fire(_pos, CarPosCache, CarVelCache, req.WarningOnly, _seed ^ (uint)(_clock * 997f))) _lastFire[0] = _clock;
+                return;
+            }
             var p = Free(req.Kind); if (p == null) return;
             var def = p.Def; var car = CarPosCache; var vel = CarVelCache;
             p.Warning = req.WarningOnly; p.Mode = req.Mode; p.Dud = false; p.Resolved = false; p.Stage = 0; p.T = 0f; p.MinDist = 999f; p.NoRoadFor = 0f; p.Locked = false; p.SpawnCarX = car.x;
@@ -383,6 +477,8 @@ namespace RoadBuilderGame
         {
             if (_pool == null) return;
             for (int i = 0; i < _pool.Length; i++) if (_pool[i] != null && _pool[i].Body != null) Deactivate(_pool[i]);
+            _world.ClearAll();
+            for (int i = 0; i < _traps.Length; i++) if (_traps[i] != null) { _traps[i].Active = false; _traps[i].Tr.gameObject.SetActive(false); }
             for (int i = 0; i < _rings.Length; i++) if (_rings[i] != null) { _rings[i].Active = false; _rings[i].T.gameObject.SetActive(false); }
         }
 
@@ -416,6 +512,8 @@ namespace RoadBuilderGame
             if (!_built) return;
             for (int i = 0; i < _pool.Length; i++) { UnityEngine.Object.Destroy(_pool[i].Body.gameObject); UnityEngine.Object.Destroy(_pool[i].Tell.gameObject); }
             for (int i = 0; i < _rings.Length; i++) UnityEngine.Object.Destroy(_rings[i].T.gameObject);
+            for (int i = 0; i < _traps.Length; i++) if (_traps[i] != null) UnityEngine.Object.Destroy(_traps[i].Tr.gameObject);
+            _world.Destroy();
             UnityEngine.Object.Destroy(_boss.gameObject); _built = false;
         }
     }

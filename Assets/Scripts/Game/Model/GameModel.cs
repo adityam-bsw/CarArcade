@@ -52,6 +52,8 @@ namespace RoadBuilderGame
         public RoadStyle RoadStyle;
         public bool SportUnlocked, TruckUnlocked;
         public bool SoundEnabled = true;
+        /// <summary>Settings opt-in: ease a stage the player keeps failing (visible indicator in Settings and on the HUD banner).</summary>
+        public bool AdaptiveChallenge;
 
         // Catalogue picks (manifest ids). Saved with the profile; applying them to the track is a later step.
         public string SelectedVehicleId = "";
@@ -98,6 +100,14 @@ namespace RoadBuilderGame
         public bool BossOn;
         public float BossOverload01;
         public int BossPhase;
+        // Hazards HUD (gap list B): boss tier, hits, counter points and the announcer subtitle (written by the manager, displayed by HazardHudView). Counter meter = BossOverload01.
+        public string BossTier = "";
+        public int BossHits, BossMaxHits = 3;
+        public string EaterVariant = "";
+        public int EaterPhase;
+        public string Subtitle = "";          // announcer subtitle; SubtitleId changes for every new line
+        public int SubtitleId;
+        public float SubtitleSeconds;
 
         // Rewards and progress
         public int Gems, BoostLevel;
@@ -107,6 +117,11 @@ namespace RoadBuilderGame
         /// <summary>Text for what still blocks a world or vehicle (catalogue id to requirement). Absent or empty = nothing blocks it.</summary>
         public readonly System.Collections.Generic.Dictionary<string, string> LockText = new System.Collections.Generic.Dictionary<string, string>();
         public string LockLine(string id) { return id != null && LockText.TryGetValue(id, out var t) ? t : string.Empty; }
+        /// <summary>One line per catalogue vehicle: tier, strength and weakness (blueprint D2). Filled by the game for the garage.</summary>
+        public readonly System.Collections.Generic.Dictionary<string, string> VehicleLines = new System.Collections.Generic.Dictionary<string, string>();
+        public string VehicleLine(string id) { return id != null && VehicleLines.TryGetValue(id, out var t) ? t : string.Empty; }
+        /// <summary>How many progression rewards are waiting to be claimed (the dot on the Home progress button).</summary>
+        public int HubWaiting;
         // Daily challenge (the home entry)
         public bool DailyChallengeOn;
         public string DailyChallengeInfo = "";
@@ -187,12 +202,17 @@ namespace RoadBuilderGame
         void UpgradeStat(int statIndex);
         void SelectOrUnlockVehicle();
         void SetSoundEnabled(bool enabled);
+        void SetAdaptiveChallenge(bool enabled);
         void SelectCatalogItem(CatalogKind kind, string id);
         /// <summary>Starts today's daily challenge run (fixed seed, vehicle and world).</summary>
         void StartDaily();
         void ClaimDailyChallenge();
         /// <summary>An optional rewarded offer on the result screen. Does nothing while a run is active or past its limit.</summary>
         void WatchOffer(AdPlacement placement);
+        /// <summary>The rows of a progression hub page (mastery, journey, daily, weekly, album, shop, unlocks, workshop).</summary>
+        HubView BuildHub(HubPage page);
+        /// <summary>Carries out a hub row action and returns a short message ("" = nothing happened). Not available during a run.</summary>
+        string HubAction(string action);
     }
 
     /// <summary>Where the UI finds the model and actions. Set up by the game when it starts.</summary>

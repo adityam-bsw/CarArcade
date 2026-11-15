@@ -36,8 +36,28 @@ namespace RoadBuilderGame
             if (t == null || !t.TryGet(worldId, out var g)) { s.DistanceMet = s.ExtraMet = true; return s; }
             s.CoinCost = g.coins;
             s.DistanceMet = p.lifetimeDistance >= g.unlockMetres;
-            s.ExtraMet = g.extra == ExtraGate.None || p.Counter(ExtraCounterId(g.extra)) >= g.extraCount;
+            s.ExtraMet = g.extra == ExtraGate.None || GateCounters.Value(p, g.extra) >= g.extraCount;
             return s;
+        }
+
+        public static GateStatus Surface(PlayerProfile p, SurfaceGateSO t, string surfaceId)
+        {
+            var s = new GateStatus { AlreadyUnlocked = p.unlockedSurfaceIds != null && p.unlockedSurfaceIds.Contains(surfaceId) };
+            if (t == null || !t.TryGet(surfaceId, out var g)) { s.DistanceMet = s.ExtraMet = true; return s; }
+            s.CoinCost = g.coins;
+            s.DistanceMet = p.lifetimeDistance >= g.unlockMetres;
+            s.ExtraMet = g.extra == ExtraGate.None || GateCounters.Value(p, g.extra) >= g.extraCount;
+            return s;
+        }
+
+        public static bool TryUnlockSurface(PlayerProfile p, SurfaceGateSO t, string surfaceId)
+        {
+            var s = Surface(p, t, surfaceId);
+            if (s.AlreadyUnlocked) return true;
+            if (!s.CanBuy || p.coins < s.CoinCost) return false;
+            p.coins -= s.CoinCost;
+            p.unlockedSurfaceIds.Add(surfaceId);
+            return true;
         }
 
         public static GateStatus Vehicle(PlayerProfile p, VehicleGateSO t, string vehicleId)
@@ -97,8 +117,10 @@ namespace RoadBuilderGame
                 if (v.metres < t.mastery[i].metres || (v.masteryClaimedMask & bit) != 0) continue;
                 v.masteryClaimedMask |= bit;
                 claimed++;
-                if (t.mastery[i].reward == MasteryReward.Coins) p.coins += t.mastery[i].amount;
-                else if (t.mastery[i].reward == MasteryReward.Gem) p.gems += t.mastery[i].amount;
+                var reward = t.mastery[i].reward;
+                if (reward == MasteryReward.Coins) p.coins += t.mastery[i].amount;
+                else if (reward == MasteryReward.Gem) p.gems += t.mastery[i].amount;
+                else Cosmetics.Grant(p, t, Cosmetics.MasteryId(reward, string.IsNullOrEmpty(vehicleId) ? "vehicle-start" : vehicleId));
             }
             return claimed;
         }
@@ -107,6 +129,8 @@ namespace RoadBuilderGame
         public static bool GoalDone(PlayerProfile p, ProgressionTuningSO t, string vehicleId, string goal)
         {
             string key = vehicleId + ":" + goal;
+            var vp = VehicleProfileSO.Load().Find(vehicleId);
+            if (vp != null && vp.goalId == goal) return p.Counter(key) >= vp.goalTarget;
             for (int i = 0; i < t.goalIds.Length && i < t.goalTargets.Length; i++) if (t.goalIds[i] == key) return p.Counter(key) >= t.goalTargets[i];
             return false;
         }
@@ -180,6 +204,8 @@ namespace RoadBuilderGame
             coins = 0;
             if (!CanClaim(p, utc, minScore)) return false;
             coins = Build(utc, t).rewardCoins;
+            WeeklyService.Roll(p, utc);
+            p.AddCounter("daily-claims", 1);
             p.coins += coins; p.masteryPoints += t.dailyMasteryPoints; p.weeklyTokens += t.dailyWeeklyTokens; p.dailyClaimed = true;
             return true;
         }
