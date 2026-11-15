@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbe5e444f07f6411faa2d3463ef0a5d3, type: 3}
+  m_Name: SurfaceCompatibility
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.SurfaceCompatibilityDatabase
+  pairs:
+  - a: surface-sea-water
+    b: surface-lava-crust
+    combo: 2
+    mergeId: surface-obsidian
+    note: water cools lava into obsidian
+  - a: surface-sea-water
+    b: surface-magma-bridge
+    combo: 2
+    mergeId: surface-obsidian
+    note: water cools lava into obsidian
+  - a: surface-river
+    b: surface-lava-crust
+    combo: 2
+    mergeId: surface-obsidian
+    note: water cools lava into obsidian
+  - a: surface-river
+    b: surface-magma-bridge
+    combo: 2
+    mergeId: surface-obsidian
+    note: water cools lava into obsidian
+  - a: surface-ice
+    b: surface-lava-crust
+    combo: 2
+    mergeId: surface-sea-water
+    note: ice melts to water
+  - a: surface-ice
+    b: surface-magma-bridge
+    combo: 2
+    mergeId: surface-sea-water
+    note: ice melts to water
+  - a: surface-ice
+    b: surface-mud
+    combo: 1
+    mergeId: 
+    note: two slow-down events never touch (stage-events.md)
+  - a: surface-ice
+    b: surface-glass
+    combo: 1
+    mergeId: 
+    note: slide plus break is unfair
+  - a: surface-mud
+    b: surface-glass
+    combo: 1
+    mergeId: 
+    note: adjacent mud and glass are forbidden (stage-events.md)
+  - a: surface-cloud
+    b: surface-glass
+    combo: 1
+    mergeId: 
+    note: two breaking surfaces in a row
+  - a: surface-neon-grid
+    b: surface-ice
+    combo: 1
+    mergeId: 
+    note: speed pad on ice cannot be steered
+  - a: surface-wooden-bridge
+    b: surface-lava-crust
+    combo: 1
+    mergeId: 
+    note: wood on lava burns at once
+  - a: surface-wooden-bridge
+    b: surface-magma-bridge
+    combo: 1
+    mergeId: 
+    note: wood on lava burns at once

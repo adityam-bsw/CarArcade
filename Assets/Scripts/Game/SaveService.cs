@@ -43,6 +43,25 @@ namespace RoadBuilderGame
         public string missionDate = "";               // the day the missions below belong to
         public System.Collections.Generic.List<MissionState> missions = new System.Collections.Generic.List<MissionState>();
         public System.Collections.Generic.List<VehicleXp> vehicleXp = new System.Collections.Generic.List<VehicleXp>();
+        public System.Collections.Generic.List<SurfaceSeen> surfaceSeenCount = new System.Collections.Generic.List<SurfaceSeen>();   // how often each surface was met, for the 3-step hint rule
+
+        public int SurfaceSeen(string id)
+        {
+            if (surfaceSeenCount == null) return 0;
+            for (int i = 0; i < surfaceSeenCount.Count; i++) if (surfaceSeenCount[i].id == id) return surfaceSeenCount[i].count;
+            return 0;
+        }
+
+        /// <summary>Counts one sighting and returns the count before it (0 = first time).</summary>
+        public int MarkSurfaceSeen(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return 0;
+            if (surfaceSeenCount == null) surfaceSeenCount = new System.Collections.Generic.List<SurfaceSeen>();
+            for (int i = 0; i < surfaceSeenCount.Count; i++)
+                if (surfaceSeenCount[i].id == id) { int before = surfaceSeenCount[i].count; surfaceSeenCount[i] = new SurfaceSeen { id = id, count = Mathf.Min(before + 1, 99) }; return before; }
+            surfaceSeenCount.Add(new SurfaceSeen { id = id, count = 1 });
+            return 0;
+        }
 
         /// <summary>Clamp values to the ranges the game supports (same limits the old PlayerPrefs loader used).</summary>
         public void Sanitize()
@@ -53,6 +72,7 @@ namespace RoadBuilderGame
             boostLevel = Mathf.Clamp(boostLevel, 1, 5);
             if (gems < 0) gems = 0;
             if (missions == null) missions = new System.Collections.Generic.List<MissionState>();
+            if (surfaceSeenCount == null) surfaceSeenCount = new System.Collections.Generic.List<SurfaceSeen>();
             if (vehicleXp == null) vehicleXp = new System.Collections.Generic.List<VehicleXp>();
             if (coins < 0) coins = 0;
             if (bestDistance < 0f) bestDistance = 0f;
@@ -60,6 +80,7 @@ namespace RoadBuilderGame
     }
 
     [Serializable] public class MissionState { public int kind; public int target; public int progress; public bool claimed; public int rewardCoins; public int rewardGems; }
+    [Serializable] public struct SurfaceSeen { public string id; public int count; }
     [Serializable] public class VehicleXp { public string id; public int xp; }
 
     /// <summary>

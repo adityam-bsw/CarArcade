@@ -1243,6 +1243,17 @@ namespace RoadBuilderGame
             var e = AssetCatalog.Load()?.Find(rule.surfaceId);
             if (e != null && e.kind == CatalogKind.Surface) ApplyEntrySkin(e);       // the road drawn in the zone looks like the zone
             if (_pickups != null) _pickups.PlaceInkAt(_startX + startM + 6f);         // ink at zone entry (stage-events.md section 6)
+            ShowSurfaceHint(rule);
+        }
+
+        /// <summary>The 3-step learning rule on the existing banner: first sighting full preview, second the short line, then nothing. Counted through SaveService.</summary>
+        private void ShowSurfaceHint(SurfaceRuleSO rule)
+        {
+            if (rule == null) return;
+            int before = _profile.MarkSurfaceSeen(rule.surfaceId);
+            SavePlayerData();
+            string hint = SurfaceLearning.Hint(rule.behaviours, SurfaceLearning.Level(before));
+            if (!string.IsNullOrEmpty(hint)) ShowStageBanner(hint);
         }
 
         private void ExitZone()

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aec917056028d42a594f7cfd180de3eb, type: 3}
+  m_Name: BHV-NEON-GRID
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.SurfaceBehaviourSetSO
+  surfaceId: surface-neon-grid
+  modules:
+  - kind: 6
+    a: 2.5
+    b: 1.2
+    c: 0
+    d: 0
+  hintFull: Neon pads give a burst of speed.
+  hintShort: Speed pad
+  hintIcon: 

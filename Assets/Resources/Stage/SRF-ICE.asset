@@ -19,6 +19,7 @@ MonoBehaviour:
   coinFactor: 1.5
   tintColorToken: ZoneIce
   warnMetres: 40
+  behaviours: {fileID: 11400000, guid: b10ec8f5a121640cebfe2861585d9078, type: 2}
   downhillBoost: 1.3
   uphillBrake: 0.7
   slipAngleDeg: 25

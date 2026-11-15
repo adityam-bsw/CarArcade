@@ -19,6 +19,7 @@ namespace RoadBuilderGame
         [Range(0.5f, 2f)] public float coinFactor = 1f;
         [Tooltip("UITheme colour token name for the S2 tint (a ColorToken, never a hex).")] public string tintColorToken = "ZoneIce";
         [Range(10f, 60f)] public float warnMetres = 40f;
+        [Tooltip("Module list and hints of this surface. Empty: the legacy ice, mud and glass modules are inferred from surfaceId.")] public SurfaceBehaviourSetSO behaviours;
 
         [Header("Ice (hazards.md 3.1)")]
         [Tooltip("Along-slope gain going downhill. Stored; the car is motor-driven so only slip is consumed in B1.")] public float downhillBoost = 1.3f;
