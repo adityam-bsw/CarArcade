@@ -7,7 +7,7 @@ namespace RoadBuilderGame
     public static class GameCatalog
     {
         public const int MaxUpgradeLevel = 5;
-        public const int UpgradeCostPerLevel = 50;
+        
 
         public static string VehicleName(VehicleType t)
         {
@@ -26,7 +26,8 @@ namespace RoadBuilderGame
             return 0;
         }
 
-        public static int UpgradeCost(int currentLevel) { return currentLevel * UpgradeCostPerLevel; }
+        /// <summary>Coins for the next level when currentLevel (0..5) are owned; costs come from the UpgradeTreeSO (500/900/1500/2500/4000).</summary>
+        public static int UpgradeCost(int currentLevel) { return UpgradeTreeSO.Load().Cost(currentLevel); }
 
         public static string UpgradeName(int statIndex)
         {

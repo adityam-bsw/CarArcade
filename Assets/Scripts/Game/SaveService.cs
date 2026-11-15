@@ -11,7 +11,8 @@ namespace RoadBuilderGame
     [Serializable]
     public class PlayerProfile
     {
-        public int version = 1;
+        public int version = CurrentVersion;
+        public const int CurrentVersion = 2;
         public int coins = 150;
         public float bestDistance;
         public int engineLevel = 1;
@@ -45,6 +46,47 @@ namespace RoadBuilderGame
         public System.Collections.Generic.List<VehicleXp> vehicleXp = new System.Collections.Generic.List<VehicleXp>();
         public System.Collections.Generic.List<SurfaceSeen> surfaceSeenCount = new System.Collections.Generic.List<SurfaceSeen>();   // how often each surface was met, for the 3-step hint rule
 
+        // ---- Section D progression (version 2). All additive: old saves load with these at their defaults and are migrated in Sanitize.
+        public int scrap;
+        public float lifetimeDistance;                                              // cumulative metres, gates new unlocks only
+        public System.Collections.Generic.List<UpgradeEntry> upgrades = new System.Collections.Generic.List<UpgradeEntry>();            // per vehicle, levels owned 0..5 per branch
+        public System.Collections.Generic.List<VehicleProgress> vehicleProgress = new System.Collections.Generic.List<VehicleProgress>();   // per vehicle mastery
+        public System.Collections.Generic.List<string> unlockedWorldIds = new System.Collections.Generic.List<string> { "world-rolling-hills" };
+        public System.Collections.Generic.List<CounterEntry> counters = new System.Collections.Generic.List<CounterEntry>();            // gate and goal counters
+        public string dailyDate = ""; public int dailyBest; public bool dailyClaimed;   // UTC yyyy-MM-dd of the daily challenge below
+        public int masteryPoints, weeklyTokens;
+        public string adDate = ""; public int adDoubleUsed, adExtraDailyUsed;           // rewarded-ad offers used on adDate (UTC)
+        public System.Collections.Generic.List<string> firstHourClaimed = new System.Collections.Generic.List<string>();
+
+        /// <summary>Upgrade levels for a vehicle key. A vehicle never seen before inherits the old global levels (legacy 1..5 becomes 0..4), so no purchase is lost.</summary>
+        public UpgradeEntry UpgradesFor(string key)
+        {
+            if (upgrades == null) upgrades = new System.Collections.Generic.List<UpgradeEntry>();
+            for (int i = 0; i < upgrades.Count; i++) if (upgrades[i].id == key) return upgrades[i];
+            var e = new UpgradeEntry { id = key, levels = new int[UpgradeTreeSO.Branches] };
+            e.levels[0] = Mathf.Clamp(engineLevel - 1, 0, 4); e.levels[1] = Mathf.Clamp(suspensionLevel - 1, 0, 4);
+            e.levels[2] = Mathf.Clamp(inkTankLevel - 1, 0, 4); e.levels[3] = Mathf.Clamp(boostLevel - 1, 0, 4);
+            upgrades.Add(e);
+            return e;
+        }
+
+        public VehicleProgress ProgressFor(string id)
+        {
+            if (vehicleProgress == null) vehicleProgress = new System.Collections.Generic.List<VehicleProgress>();
+            for (int i = 0; i < vehicleProgress.Count; i++) if (vehicleProgress[i].id == id) return vehicleProgress[i];
+            var v = new VehicleProgress { id = id };
+            vehicleProgress.Add(v);
+            return v;
+        }
+
+        public int Counter(string id) { if (counters != null) for (int i = 0; i < counters.Count; i++) if (counters[i].id == id) return counters[i].count; return 0; }
+        public void AddCounter(string id, int n)
+        {
+            if (counters == null) counters = new System.Collections.Generic.List<CounterEntry>();
+            for (int i = 0; i < counters.Count; i++) if (counters[i].id == id) { counters[i].count += n; return; }
+            counters.Add(new CounterEntry { id = id, count = n });
+        }
+
         public int SurfaceSeen(string id)
         {
             if (surfaceSeenCount == null) return 0;
@@ -66,6 +108,35 @@ namespace RoadBuilderGame
         /// <summary>Clamp values to the ranges the game supports (same limits the old PlayerPrefs loader used).</summary>
         public void Sanitize()
         {
+            if (version < 2)
+            {
+                // Migration 1 -> 2: nothing owned may become locked. Lifetime distance starts at the best run, the three old worlds stay unlocked,
+                // upgrade levels move to per-vehicle entries lazily (UpgradesFor reads the old global levels).
+                version = 2;
+                lifetimeDistance = Mathf.Max(lifetimeDistance, bestDistance);
+                if (unlockedWorldIds == null) unlockedWorldIds = new System.Collections.Generic.List<string>();
+                foreach (var w in new[] { "world-rolling-hills", "world-desert", "world-night-city", selectedWorldId })
+                    if (!string.IsNullOrEmpty(w) && !unlockedWorldIds.Contains(w)) unlockedWorldIds.Add(w);
+            }
+            if (upgrades == null) upgrades = new System.Collections.Generic.List<UpgradeEntry>();
+            foreach (var u in upgrades)
+            {
+                if (u.levels == null || u.levels.Length != UpgradeTreeSO.Branches)
+                {
+                    var n = new int[UpgradeTreeSO.Branches];
+                    if (u.levels != null) System.Array.Copy(u.levels, n, Mathf.Min(u.levels.Length, n.Length));
+                    u.levels = n;
+                }
+                for (int i = 0; i < u.levels.Length; i++) u.levels[i] = Mathf.Clamp(u.levels[i], 0, UpgradeTreeSO.Levels);
+            }
+            if (vehicleProgress == null) vehicleProgress = new System.Collections.Generic.List<VehicleProgress>();
+            if (unlockedWorldIds == null) unlockedWorldIds = new System.Collections.Generic.List<string>();
+            if (counters == null) counters = new System.Collections.Generic.List<CounterEntry>();
+            if (firstHourClaimed == null) firstHourClaimed = new System.Collections.Generic.List<string>();
+            if (scrap < 0) scrap = 0;
+            if (lifetimeDistance < 0f) lifetimeDistance = 0f;
+            if (dailyDate == null) dailyDate = "";
+            if (adDate == null) adDate = "";
             engineLevel = Mathf.Clamp(engineLevel, 1, 5);
             suspensionLevel = Mathf.Clamp(suspensionLevel, 1, 5);
             inkTankLevel = Mathf.Clamp(inkTankLevel, 1, 5);
@@ -81,6 +152,9 @@ namespace RoadBuilderGame
 
     [Serializable] public class MissionState { public int kind; public int target; public int progress; public bool claimed; public int rewardCoins; public int rewardGems; }
     [Serializable] public struct SurfaceSeen { public string id; public int count; }
+    [Serializable] public class UpgradeEntry { public string id; public int[] levels; }
+    [Serializable] public class VehicleProgress { public string id; public float metres; public int masteryClaimedMask; }
+    [Serializable] public class CounterEntry { public string id; public int count; }
     [Serializable] public class VehicleXp { public string id; public int xp; }
 
     /// <summary>

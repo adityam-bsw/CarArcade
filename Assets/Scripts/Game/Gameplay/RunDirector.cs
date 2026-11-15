@@ -39,7 +39,7 @@ namespace RoadBuilderGame
 
         private float _comboLeft, _cooldown, _airFor, _flipAccum, _lastRot, _nextMilestone;
         private bool _wasGrounded = true, _recordPaid;
-        private int _boostLevel = 1;
+        private int _boostLevel;
 
         /// <summary>A reward or event worth telling the player: label and the coins it gave (0 = just a notice).</summary>
         public event Action<string, int> Bonus;
@@ -56,7 +56,7 @@ namespace RoadBuilderGame
         public void Begin(int boostLevel, float previousBest)
         {
             Stats.Reset();
-            _boostLevel = Mathf.Max(1, boostLevel);
+            _boostLevel = Mathf.Max(0, boostLevel);
             Boost01 = 0f; Combo = 0; Multiplier = 1; _comboLeft = 0f;
             MagnetLeft = DoubleLeft = SlowLeft = GhostLeft = BoostLeft = 0f; Shield = false; Frenzy01 = FrenzyLeft = 0f;
             _cooldown = 0f; _airFor = 0f; _flipAccum = 0f; _wasGrounded = true;
@@ -204,7 +204,7 @@ namespace RoadBuilderGame
             if (Boost01 >= 1f) { Boost01 = 0f; result = BoostResult.Free; }
             else if (coinsAvailable >= _t.boostCoinCost) { coinsPaid = _t.boostCoinCost; result = BoostResult.Paid; }
             else return BoostResult.Refused;
-            BoostLeft = _t.boostDuration + _t.boostDurationPerLevel * (_boostLevel - 1);
+            BoostLeft = _t.boostDuration + _t.boostDurationPerLevel * _boostLevel;
             _cooldown = BoostLeft + _t.boostCooldown;
             Stats.boosts++;
             Raise(Cue.Boost);

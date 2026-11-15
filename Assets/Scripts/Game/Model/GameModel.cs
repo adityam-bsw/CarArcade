@@ -46,7 +46,7 @@ namespace RoadBuilderGame
         // Progress (persistent)
         public int Coins;
         public float BestDistance;
-        public int EngineLevel = 1, SuspensionLevel = 1, InkTankLevel = 1;
+        public int EngineLevel, SuspensionLevel, InkTankLevel;   // upgrade levels owned 0..5 for the selected vehicle
         public VehicleType Vehicle;
         public EnvironmentTheme World;
         public RoadStyle RoadStyle;
@@ -100,7 +100,8 @@ namespace RoadBuilderGame
         public int BossPhase;
 
         // Rewards and progress
-        public int Gems, BoostLevel = 1;
+        public int Gems, BoostLevel;
+        public int Scrap;                     // earned from boss rewards and duplicates (model only for now)
         public bool RewardsAvailable;         // something to claim
         public bool DailyAvailable;
         public int DailyDay = 1, DailyCoins, DailyGems;

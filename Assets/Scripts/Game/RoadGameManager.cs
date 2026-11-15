@@ -272,10 +272,6 @@ namespace RoadBuilderGame
             _profile = SaveService.Load();
             totalCoins = _profile.coins;
             _bestScore = _profile.bestDistance;
-            engineLevel = _profile.engineLevel;
-            suspensionLevel = _profile.suspensionLevel;
-            inkTankLevel = _profile.inkTankLevel;
-            boostLevel = _profile.boostLevel;
             SelectedVehicle = (VehicleType)_profile.vehicle;
             SelectedTheme = (EnvironmentTheme)_profile.theme;
             SelectedRoadStyle = (RoadStyle)_profile.roadStyle;
@@ -301,15 +297,39 @@ namespace RoadBuilderGame
             AudioListener.volume = _soundEnabled ? 1f : 0f;
         }
 
+        // ---- Section D: upgrade levels (0..5) are stored per vehicle in the profile; these fields mirror the selected vehicle.
+        private UpgradeTreeSO _tree;
+        private ProgressionTuningSO _prog;
+        private string _upgradeKey = "";
+        private float _engineBonus;
+
+        private string VehicleKey() { return string.IsNullOrEmpty(_selVehicleId) ? "vehicle-enum-" + (int)SelectedVehicle : _selVehicleId; }
+
+        private void RefreshUpgradeLevels()
+        {
+            if (_tree == null) _tree = UpgradeTreeSO.Load();
+            if (_prog == null) _prog = ProgressionTuningSO.Load();
+            if (_profile == null) return;
+            string key = VehicleKey();
+            if (key == _upgradeKey) return;
+            _upgradeKey = key;
+            var e = _profile.UpgradesFor(key);
+            engineLevel = e.levels[0]; suspensionLevel = e.levels[1]; inkTankLevel = e.levels[2]; boostLevel = e.levels[3];
+        }
+
+        private void StoreUpgradeLevels()
+        {
+            if (string.IsNullOrEmpty(_upgradeKey) || _profile == null) return;
+            var e = _profile.UpgradesFor(_upgradeKey);
+            e.levels[0] = engineLevel; e.levels[1] = suspensionLevel; e.levels[2] = inkTankLevel; e.levels[3] = boostLevel;
+        }
+
         private void SavePlayerData()
         {
             if (_profile == null) _profile = new PlayerProfile();
             _profile.coins = totalCoins;
             _profile.bestDistance = _bestScore;
-            _profile.engineLevel = engineLevel;
-            _profile.suspensionLevel = suspensionLevel;
-            _profile.inkTankLevel = inkTankLevel;
-            _profile.boostLevel = boostLevel;
+            StoreUpgradeLevels();
             _profile.vehicle = (int)SelectedVehicle;
             _profile.theme = (int)SelectedTheme;
             _profile.roadStyle = (int)SelectedRoadStyle;
@@ -409,11 +429,12 @@ namespace RoadBuilderGame
             _car.MotorOn = true;
 
             // Apply Upgrades:
-            float engineBonus = (engineLevel - 1) * 0.8f;
+            RefreshUpgradeLevels();
+            float engineBonus = _engineBonus = _tree.Bonus(UpgradeBranch.Engine, _upgradeKey, engineLevel);
             _car.TargetSpeed = (baseStartSpeed + engineBonus) * _car.SpeedMultiplier * _trackSpeed;
-            _car.maxTorquePerWheel += (suspensionLevel - 1) * 3f;
+            _car.maxTorquePerWheel += _tree.Bonus(UpgradeBranch.Suspension, _upgradeKey, suspensionLevel);
 
-            maxInk = 100f + (inkTankLevel - 1) * 30f;
+            maxInk = _tree.Base(UpgradeBranch.InkTank, _upgradeKey) + _tree.Bonus(UpgradeBranch.InkTank, _upgradeKey, inkTankLevel);
             currentInk = maxInk;
 
             _startX = _car.Body.position.x;
@@ -454,8 +475,8 @@ namespace RoadBuilderGame
 
                 Vector2 carPos = _car.Body.position;
                 _distance = Mathf.Max(_distance, carPos.x - _startX);
-                float speedRatio = Mathf.InverseLerp(baseStartSpeed, baseMaxSpeed + (engineLevel * 0.8f), _car.TargetSpeed);
-                float baseTarget = Mathf.Min(baseMaxSpeed + (engineLevel * 0.8f), baseStartSpeed + (engineLevel * 0.8f) + _distance * speedGainPerMetre) * _trackSpeed;
+                float speedRatio = Mathf.InverseLerp(baseStartSpeed, baseMaxSpeed + _engineBonus, _car.TargetSpeed);
+                float baseTarget = Mathf.Min(baseMaxSpeed + _engineBonus, baseStartSpeed + _engineBonus + _distance * speedGainPerMetre) * _trackSpeed;
                 if (_stage.Active)
                 {
                     _stage.Tick(_distance, _car.Body.linearVelocity.x, Time.deltaTime);     // scaled time: slow-mo stretches a warning, never shortens it
@@ -566,6 +587,10 @@ namespace RoadBuilderGame
             if (newBest) _bestScore = _distance;
             totalCoins += sessionCoins;
             _meta.RecordRun(_run.Stats, _distance, _selVehicleId);
+            RefreshUpgradeLevels();
+            _profile.coins = totalCoins;   // mastery pays coins into the profile; keep the manager's balance authoritative
+            MasteryService.RecordDistance(_profile, _prog, VehicleKey(), _distance);
+            totalCoins = _profile.coins;
             SavePlayerData();
 
             Model.LastRun = new RunResult
@@ -682,6 +707,7 @@ namespace RoadBuilderGame
 
         private void SyncModel()
         {
+            RefreshUpgradeLevels();
             var m = Model;
             m.Coins = totalCoins;
             m.BestDistance = _bestScore;
@@ -699,6 +725,7 @@ namespace RoadBuilderGame
             m.SelectedWorldId = _selWorldId;
             m.Gems = _profile != null ? _profile.gems : 0;
             m.BoostLevel = boostLevel;
+            m.Scrap = _profile != null ? _profile.scrap : 0;
             if (_meta != null)
             {
                 _meta.EnsureMissions();
@@ -1185,6 +1212,7 @@ namespace RoadBuilderGame
         {
             var pay = HazardRewards.Boss(_bossData, _profile, timeout);
             HazardRewards.RecordBoss(_profile, timeout);
+            if (!timeout) { RefreshUpgradeLevels(); MasteryService.AddScrap(_profile, pay.First ? _prog.scrapPerBossFirst : _prog.scrapPerBossRepeat); }
             SavePlayerData();
             _run.AwardEvent(pay.Label, pay.Coins, pay.Gems, pay.Frenzy);
         }
