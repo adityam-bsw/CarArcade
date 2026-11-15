@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ff16c28166c4596b33cf80ffc81702, type: 3}
+  m_Name: MonsterDef-RoadEater
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.MonsterDefinitionSO
+  id: MON-EATER
+  triggerDistance: 1000
+  warnMetres: 60
+  warnSeconds: 6
+  startGap: 32
+  targetGap: 18
+  timeoutDistance: 1750
+  vFloor: 3
+  maxSpeedRatio: 1.25
+  minSpeedRatio: 0.85
+  catchUpEndGap: 36
+  lostTrackRatio: 0.9
+  accelMax: 4
+  decelMax: 5
+  snapGap: 6
+  snapCancelGap: 8
+  snapSeconds: 1
+  snapAirborneMaxS: 1.5
+  protectedZone: 6
+  trimTickSeconds: 0.1
+  trimQuantum: 1
+  wholeChunkMargin: 1.5
+  biteWidth: 3
+  pushbackGap: 32
+  pushbackFreeze: 1.5
+  pushbackGrace: 1.5
+  surgeIntervalMin: 12
+  surgeIntervalMax: 16
+  surgeTelegraph: 1.2
+  surgeDuration: 2.5
+  surgeMinGap: 21
+  surgeAbortGap: 12
+  jumpMinGapLength: 6
+  jumpMaxGapLength: 14
+  jumpDelaySeconds: 2
+  jumpSlowRatio: 0.4
+  jumpCooldown: 8
+  jumpMaxPerChase: 4
+  escapeGap: 45
+  escapeHoldSeconds: 8
+  escapeResetGap: 43
+  escapeResetSeconds: 0.5
+  exitSeconds: 3
+  escapeCoinsFirst: 150
+  escapeCoinsRepeat: 75
+  escapeFrenzy: 0.5
+  timeoutCoinsFirst: 75
+  timeoutCoinsRepeat: 38
+  timeoutFrenzy: 0.25
+  bandCalm: 24
+  bandEdge: 12
+  bandDanger: 6
+  nearMissLowGap: 4
+  nearMissRecoverGap: 12
+  nearMissWindowS: 4
+  nearMissCooldownS: 10
+  inkRescueThreshold: 0.15

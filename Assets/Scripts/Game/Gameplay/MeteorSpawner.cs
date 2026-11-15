@@ -44,6 +44,8 @@ namespace RoadBuilderGame
         public event Action<Vector2, bool> Impacted;
         /// <summary>Raised when a strike landed close to the car but missed it.</summary>
         public event Action NearMissed;
+        /// <summary>Raised with the centre distance of a near miss (stage mode uses it for the perfect test).</summary>
+        public event Action<float> NearMissedAt;
 
         public MeteorSpawner(RoadBuilder road, GameplayTuning tuning) { _road = road; _t = tuning; }
 
@@ -155,7 +157,7 @@ namespace RoadBuilderGame
             float d = Vector2.Distance(car.Body.position, s.target);
             bool hit = d <= _t.meteorBlastRadius;
             Impacted?.Invoke(s.target, hit);
-            if (!hit && d <= _t.nearMissRadius) NearMissed?.Invoke();
+            if (!hit && d <= _t.nearMissRadius) { NearMissedAt?.Invoke(d); NearMissed?.Invoke(); }
         }
     }
 }

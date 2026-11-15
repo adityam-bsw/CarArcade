@@ -32,6 +32,8 @@ namespace RoadBuilderGame
             public float maxX;
             public Vector2 liveTip;
             public bool hasLiveTip;
+            /// <summary>Never deleted by <see cref="RoadBuilder.EatBefore"/> (safety platforms).</summary>
+            public bool noEat;
         }
 
         private readonly List<Segment> _segments = new List<Segment>();
@@ -96,6 +98,7 @@ namespace RoadBuilderGame
                 if (s.chunk != null) Destroy(s.chunk.gameObject);
             }
             _segments.Clear();
+            _noEat.Clear();
             _activeSegment = null;
             FrontierMaxX = startX;
 
@@ -443,6 +446,7 @@ namespace RoadBuilderGame
                 AddPointToCurrent(new Vector2(runwayStart + 2f, anchor.y));
                 AddPointToCurrent(new Vector2(runwayStart + 4f, anchor.y));
                 AddPointToCurrent(new Vector2(runwayStart + 6f, anchor.y));
+                if (_activeSegment != null) _activeSegment.noEat = true;      // the respawn platform is never eaten (FR-10)
                 EndSegment();
                 return landingSpot;
             }
@@ -490,6 +494,78 @@ namespace RoadBuilderGame
             }
             return (min == float.MaxValue) ? -10f : min;
         }
+
+        // ------------------------------------------------------------------ Road-Eater trim API (hazards.md 2.5)
+        private struct NoEatRange { public float x0, x1; }
+        private readonly List<NoEatRange> _noEat = new List<NoEatRange>(4);
+
+        /// <summary>Road between <paramref name="x0"/> and <paramref name="x1"/> (world x) is never deleted, including road drawn there later (glass entry, finish gate).</summary>
+        public void AddNoEatRange(float x0, float x1) { _noEat.Add(new NoEatRange { x0 = x0, x1 = x1 }); }
+        public void ClearNoEatRanges() { _noEat.Clear(); }
+
+        private bool IsNoEat(Segment s)
+        {
+            if (s.noEat) return true;
+            for (int i = 0; i < _noEat.Count; i++) if (s.maxX >= _noEat[i].x0 && s.minX <= _noEat[i].x1) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Deletes road behind <paramref name="frontX"/>: whole chunks that end before frontX - margin go at once; the chunk that straddles the front is cut back to
+        /// the front (quantised) and its mesh and collider are rebuilt in this same call. At most <paramref name="maxTrims"/> straddling chunks are rebuilt per call.
+        /// The active (being drawn) chunk and noEat chunks are never touched. Returns how many chunks changed. No allocation.
+        /// </summary>
+        public int EatBefore(float frontX, float wholeChunkMargin, float quantum, int maxTrims = 1)
+        {
+            int changed = 0, trims = 0;
+            float q = quantum > 0f ? Mathf.Floor(frontX / quantum) * quantum : frontX;
+            for (int i = _segments.Count - 1; i >= 0; i--)
+            {
+                var seg = _segments[i];
+                if (seg == _activeSegment || seg.chunk == null || IsNoEat(seg)) continue;
+                if (seg.maxX <= frontX - wholeChunkMargin)
+                {
+                    Destroy(seg.chunk.gameObject); _segments.RemoveAt(i); changed++;
+                }
+                else if (seg.minX < q && seg.maxX > q && trims < maxTrims)
+                {
+                    var pts = seg.sampledPoints;
+                    int cut = 0;
+                    while (cut < pts.Count && pts[cut].x < q) cut++;
+                    if (cut <= 0) continue;
+                    if (pts.Count - cut < 2) { Destroy(seg.chunk.gameObject); _segments.RemoveAt(i); changed++; continue; }
+                    pts.RemoveRange(0, cut);
+                    seg.minX = pts[0].x;
+                    seg.chunk.Build(pts, 0, pts.Count - 1, roadThickness, supportDepth, CurrentSkin);     // collider and mesh in the same frame
+                    trims++; changed++;
+                }
+            }
+            if (changed > 0) RecalculateFrontierMaxX();
+            return changed;
+        }
+
+        /// <summary>Start x of the nearest road that begins after <paramref name="x"/>, or NaN when none exists.</summary>
+        public float NextRoadStartAfter(float x)
+        {
+            float best = float.NaN;
+            for (int i = 0; i < _segments.Count; i++)
+            {
+                float m = _segments[i].minX;
+                if (m > x && (float.IsNaN(best) || m < best)) best = m;
+            }
+            return best;
+        }
+
+        /// <summary>Smallest start x of any drawn road (the oldest road still alive), or NaN when none.</summary>
+        public float OldestRoadX()
+        {
+            float best = float.NaN;
+            for (int i = 0; i < _segments.Count; i++) { float m = _segments[i].minX; if (float.IsNaN(best) || m < best) best = m; }
+            return best;
+        }
+
+        /// <summary>True when drawn road covers world x (a cheap road lookup that allocates nothing).</summary>
+        public bool HasRoadAt(float x) { return TryGetRoadYAtX(x, out _); }
 
         public void CullBefore(float x)
         {

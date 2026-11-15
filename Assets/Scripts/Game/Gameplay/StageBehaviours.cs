@@ -45,3 +45,20 @@ namespace RoadBuilderGame
         public void OnRespawn(StageEventState s, float distanceM) { }
     }
 }
+
+namespace RoadBuilderGame
+{
+    /// <summary>
+    /// Event behaviour built from three delegates, registered by event id (MON-EATER, BOS-ROB0). The manager supplies the delegates that wire the Road-Eater and RO-B0
+    /// controllers; the director and the run controller never know them (no switch on ids anywhere).
+    /// </summary>
+    public sealed class DelegateBehaviour : IStageEventBehaviour
+    {
+        private readonly Action<StageEventState> _start, _end;
+        private readonly Action<StageEventState, float> _respawn;
+        public DelegateBehaviour(Action<StageEventState> start, Action<StageEventState> end, Action<StageEventState, float> respawn = null) { _start = start; _end = end; _respawn = respawn; }
+        public void OnStart(StageEventState s) { _start?.Invoke(s); }
+        public void OnEnd(StageEventState s) { _end?.Invoke(s); }
+        public void OnRespawn(StageEventState s, float distanceM) { _respawn?.Invoke(s, distanceM); }
+    }
+}

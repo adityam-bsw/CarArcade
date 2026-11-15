@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0a33762265804af6b9660d82d7018cc, type: 3}
+  m_Name: BossDef-RoB0
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.BossDefinitionSO
+  id: BOS-ROB0
+  introSeconds: 2
+  hoverAhead: 6.5
+  hoverAheadMin: 5.5
+  hoverAheadMax: 8
+  hoverHeight: 7.5
+  hoverHeightMin: 6
+  hoverHeightMax: 10
+  hoverAx: 1.2
+  hoverFx: 0.3
+  hoverAy: 0.8
+  hoverFy: 0.5
+  followSmoothTime: 0.6
+  minAboveRoof: 4.5
+  meterMax: 100
+  meterPassivePerSec: 0.2
+  meterDodge: 3
+  meterNear: 5
+  meterPerfect: 6
+  meterRing: 8
+  meterHitPenalty: -8
+  phaseThresholds:
+  - 33
+  - 66
+  phaseTelegraph: 2
+  phaseQuiet: 2.5
+  lullSeconds: 3
+  hitLullSeconds: 3
+  hitGraceSeconds: 0.5
+  maxAlive: 2
+  sameTypeMinSeparation: 1.5
+  contactMinSeparation: 0.8
+  timeoutSeconds: 105
+  defeatSeconds: 4
+  stationarySpeed: 1
+  counterInk01: 0.15
+  counterCoins: 5
+  defeatCoinsFirst: 200
+  defeatCoinsRepeat: 100
+  defeatGemFirst: 1
+  timeoutCoinsFirst: 100
+  timeoutCoinsRepeat: 50
+  ringsPerPattern: 1
+  catalogUnlockId: boss-robo-b0
+  bolt: {fileID: 11400000, guid: 36b46a3b85cf44b0b9a68dfc6cadee68, type: 2}
+  bomb: {fileID: 11400000, guid: 0a29dbf6bedc94f5b900f79bd20d408e, type: 2}
+  roller: {fileID: 11400000, guid: bed88d1eb636a4bc1a3b8940ad74087f, type: 2}
+  pool1:
+  - {fileID: 11400000, guid: a00f01bc3de784501b95ba12def9358f, type: 2}
+  - {fileID: 11400000, guid: 2055b7d6dec1345238ed3a5981781cac, type: 2}
+  - {fileID: 11400000, guid: 70db36fb0046a4b74b631b158953ad06, type: 2}
+  pool2:
+  - {fileID: 11400000, guid: 2055b7d6dec1345238ed3a5981781cac, type: 2}
+  - {fileID: 11400000, guid: 70db36fb0046a4b74b631b158953ad06, type: 2}
+  - {fileID: 11400000, guid: cda33e8fd5c3c4def9ad30a57a10db3d, type: 2}
+  pool3:
+  - {fileID: 11400000, guid: cda33e8fd5c3c4def9ad30a57a10db3d, type: 2}
+  - {fileID: 11400000, guid: e8c1b0ad9be8e498fb3a8da4082d5c42, type: 2}
+  - {fileID: 11400000, guid: 2055b7d6dec1345238ed3a5981781cac, type: 2}

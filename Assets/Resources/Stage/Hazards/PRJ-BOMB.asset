@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073c6270d302b4f0d9377d283630e7f3, type: 3}
+  m_Name: PRJ-BOMB
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.ProjectileDefinitionSO
+  id: PRJ-BOMB
+  kind: 1
+  tellSeconds: 1.5
+  lockLeadSeconds: 0
+  speed: 0
+  hitRadius: 2
+  carReach: 0.7
+  blastHeight: 2.2
+  activeSeconds: 0.25
+  flightSeconds: 1.1
+  launchDelay: 0.4
+  minMuzzleDistance: 0
+  spawnClearance: 4.5
+  nearMissRadius: 4.5
+  damage: 1
+  poolSize: 2
+  aimTurnRate:
+  - 15
+  - 20
+  - 25
+  tellCueId: vo.rob0.proj.bomb
+  fireSfxId: sfx.proj.fire.bomb
+  inkOnlyCounter: 0

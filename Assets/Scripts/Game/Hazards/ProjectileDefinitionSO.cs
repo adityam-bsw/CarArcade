@@ -1,0 +1,68 @@
+using UnityEngine;
+
+namespace RoadBuilderGame
+{
+    public enum ProjectileKind { Bolt, Bomb, Roller }
+    public enum BeatMode { Aimed, Lead, Direct }
+
+    /// <summary>One projectile archetype (hazards.md 4.5). Behaviour numbers never change per world; the skin only changes the look.</summary>
+    [CreateAssetMenu(menuName = "Road Builder/Hazards/Projectile Definition", fileName = "PRJ-NEW")]
+    public class ProjectileDefinitionSO : ScriptableObject
+    {
+        public string id = "PRJ-BOLT";
+        public ProjectileKind kind = ProjectileKind.Bolt;
+        [Range(0.8f, 2f)] public float tellSeconds = 1.2f;
+        public float lockLeadSeconds = 0.4f;
+        public float speed = 14f;
+        public float hitRadius = 0.4f;
+        [Tooltip("Extra reach of the car hurtbox added to the hit radius (centre-distance hit threshold = hitRadius + carReach).")] public float carReach = 0.45f;
+        public float blastHeight = 2.2f;
+        public float activeSeconds = 2.5f;
+        public float flightSeconds = 1.1f;
+        public float launchDelay = 0.4f;
+        public float minMuzzleDistance = 9f;
+        public float spawnClearance = 2.3f;
+        public float nearMissRadius = 1.6f;
+        public int damage = 1;
+        public int poolSize = 3;
+        public float[] aimTurnRate = { 15f, 20f, 25f };
+        [Tooltip("Cue id of the tell voice line (voice-lines.md 3.3).")] public string tellCueId = "vo.rob0.proj.bolt";
+        public string fireSfxId = "sfx.proj.fire.bolt";
+        [Tooltip("True when a drawn gap is the only counter (roller): the FR-4 gate needs ink then.")] public bool inkOnlyCounter;
+
+        public float HitCentre => hitRadius + carReach;
+        public float PerfectEdge => HitCentre + (nearMissRadius - HitCentre) * 0.5f;
+        public int NearMissSource => kind == ProjectileKind.Bolt ? 1 : kind == ProjectileKind.Bomb ? 2 : 3;
+
+        public static ProjectileDefinitionSO Make(ProjectileKind k)
+        {
+            var p = CreateInstance<ProjectileDefinitionSO>(); p.kind = k;
+            switch (k)
+            {
+                case ProjectileKind.Bolt: p.name = p.id = "PRJ-BOLT"; break;
+                case ProjectileKind.Bomb:
+                    p.name = p.id = "PRJ-BOMB"; p.tellSeconds = 1.5f; p.lockLeadSeconds = 0f; p.speed = 0f; p.hitRadius = 2f; p.carReach = 0.7f; p.activeSeconds = 0.25f; p.flightSeconds = 1.1f;
+                    p.minMuzzleDistance = 0f; p.spawnClearance = 4.5f; p.nearMissRadius = 4.5f; p.poolSize = 2; p.tellCueId = "vo.rob0.proj.bomb"; p.fireSfxId = "sfx.proj.fire.bomb"; break;
+                case ProjectileKind.Roller:
+                    p.name = p.id = "PRJ-SAW"; p.tellSeconds = 1.4f; p.lockLeadSeconds = 0f; p.speed = 8f; p.hitRadius = 0.6f; p.carReach = 0.45f; p.activeSeconds = 3.5f; p.minMuzzleDistance = 0f;
+                    p.spawnClearance = 2.3f; p.nearMissRadius = 1.6f; p.poolSize = 2; p.tellCueId = "vo.rob0.proj.saw"; p.fireSfxId = "sfx.proj.fire.saw"; p.inkOnlyCounter = true; break;
+            }
+            return p;
+        }
+    }
+
+    /// <summary>World skin of one archetype (hazards.md 4.5): look and sound only. Countryside ships first.</summary>
+    [CreateAssetMenu(menuName = "Road Builder/Hazards/Projectile Skin", fileName = "SKIN-NEW")]
+    public class ProjectileSkinSO : ScriptableObject
+    {
+        public string worldId = "country";
+        public string archetypeId = "PRJ-BOLT";
+        public string displayName = "Corn Shot";
+        [Tooltip("Optional art. Null means the shape of our own procedural sprites (smooth circles) is used.")] public Sprite sprite;
+        public Sprite tellSprite;
+        public Color tint = new Color(1f, 0.82f, 0.2f);
+        public Color tellTint = new Color(1f, 0.2f, 0.15f, 0.85f);
+        public float scale = 0.8f;
+        public string fireSfx;
+    }
+}

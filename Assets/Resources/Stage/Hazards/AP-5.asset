@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 135a6d28ccb584fe1bdeae0b93ffe045, type: 3}
+  m_Name: AP-5
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.AttackPatternSO
+  id: AP-5
+  beats:
+  - tOffset: 0
+    projectile: 1
+    mode: 2
+    phaseMin: 2
+    fallbackMode: 1
+  - tOffset: 1.4
+    projectile: 2
+    mode: 0
+    phaseMin: 1
+    fallbackMode: 0
+  - tOffset: 4.4
+    projectile: 0
+    mode: 0
+    phaseMin: 3
+    fallbackMode: 0
+  duration: 7.5
+  maxAlive: 2

@@ -91,6 +91,13 @@ namespace RoadBuilderGame
         public string StageSignTint = "";
         public int StageFlashId;              // S3 edge flash; changes for every flash
         public string StageFlashTint = "";
+        // Road-Eater and RO-B0 (written by the manager; a HUD can display them). Gap in metres, band 0 calm 1 edge 2 danger 3 snap, escape and Overload 0..1.
+        public bool EaterOn;
+        public float EaterGapM, EaterEscape01;
+        public int EaterBand;
+        public bool BossOn;
+        public float BossOverload01;
+        public int BossPhase;
 
         // Rewards and progress
         public int Gems, BoostLevel = 1;

@@ -84,6 +84,12 @@ namespace RoadBuilderGame
         public float meteorBlastRadius = 1.7f;
         [Tooltip("Surviving a strike within this distance of the car counts as a near miss.")] public float nearMissRadius = 4.5f;
         public int nearMissCoins = 8;
+        [Header("Near-miss economy (stage mode; brief F4, approved)")]
+        [Tooltip("Coins for chain step 1, 2, 3, 4 and later.")] public int[] nearMissCoinsStep = { 8, 10, 12, 15 };
+        public int nearMissPerfectMultiplier = 2;
+        public float nearMissChainWindow = 4f;
+        [Range(0f, 0.5f)] public float nearMissRunCapFraction = 0.12f;
+        public int nearMissEaterPay = 20;
 
         [Header("Stage events (vertical slice; Docs/design/stage-events.md)")]
         [Tooltip("The one switch for the stage director in a real run. Off: the old game, unchanged. CountrysideOnly: events run only in the Countryside world. Always: every world.")]

@@ -360,7 +360,9 @@ namespace RoadBuilderGame.Tests
                         var def = defs.Find(x => x.id == kv.Key);
                         for (int i = 0; i < 4; i++) Assert.GreaterOrEqual(t[i], 0f, kv.Key + " signal " + i);
                         Assert.Less(t[0], t[1]); Assert.Less(t[1], t[2]); Assert.Less(t[2], t[3]);
-                        Assert.GreaterOrEqual(t[3] - t[0], def.announcerLeadS - 0.03f, kv.Key + " S1 lead at " + speed);
+                        // The Eater warns at eaterWarnM (60 m before the chase, B2 timing fix): 5.2 s at the 11.5 m/s cap, shorter at boost speed; every other event keeps the 5 s lead.
+                        float s1Lead = def.role == StageEventRole.Monster ? Mathf.Min(def.announcerLeadS, l.eaterWarnLeadM / speed) : def.announcerLeadS;
+                        Assert.GreaterOrEqual(t[3] - t[0], s1Lead - 0.03f, kv.Key + " S1 lead at " + speed);
                         Assert.GreaterOrEqual(t[3] - t[1], def.signLeadS - 0.03f, kv.Key + " S2 lead at " + speed);
                         Assert.GreaterOrEqual(t[3] - t[2], def.cueLeadS - 0.03f, kv.Key + " S3 lead at " + speed);
                         Assert.GreaterOrEqual(t[3] - t[2], 1.0f - 0.03f, "effect never starts before S3 + 1.0 s");

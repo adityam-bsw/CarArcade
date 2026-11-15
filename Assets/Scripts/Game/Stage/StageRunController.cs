@@ -90,6 +90,9 @@ namespace RoadBuilderGame
             return _running && _resumeGraceLeftS <= 0f && _director.CanSpawnHazard(hazardId);
         }
 
+        /// <summary>The 0.5 s resume grace or the director's respawn grace is running: no hazard may deal damage.</summary>
+        public bool HazardGraceActive => _resumeGraceLeftS > 0f || _director.HazardGraceLeftS > 0f;
+
         public bool CanSpawnHazardAt(string hazardId, float hazardDistanceM)
         {
             return _running && _resumeGraceLeftS <= 0f && _director.CanSpawnHazardAt(hazardId, hazardDistanceM);

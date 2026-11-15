@@ -18,19 +18,31 @@ namespace RoadBuilderGame
             SignRings = "sfx.rings.sign", CueRings = "sfx.rings.cue", SignEater = "sfx.eater.sign", CueEater = "sfx.eater.cue",
             SignBoss = "sfx.boss.sign", CueBoss = "sfx.boss.cue";
         public const string EventClear = "vo.rob0.event.clear";
+        // hazards (B2): Road-Eater, projectiles, RO-B0, finish. Voice ids use the placeholder sounds below until the voice licence is decided.
+        public const string EaterSurge = "vo.rob0.eater.surge", EaterDanger = "vo.rob0.eater.danger", EaterSnap = "vo.rob0.eater.snap", EaterNear = "vo.rob0.eater.nearmiss",
+            EaterHit = "vo.rob0.eater.hit", EaterEscape = "vo.rob0.eater.escape", EaterRetreat = "vo.rob0.eater.retreat", EaterEaten = "vo.rob0.eater.eaten",
+            ProjBolt = "vo.rob0.proj.bolt", ProjBomb = "vo.rob0.proj.bomb", ProjSaw = "vo.rob0.proj.saw",
+            BossPhase = "vo.rob0.boss.phase", BossRing = "vo.rob0.boss.ring", BossDefeat = "vo.rob0.boss.defeat", BossRetreat = "vo.rob0.boss.retreat", BossDeath = "vo.rob0.boss.death",
+            Finish = "vo.rob0.finish";
+        public const string EaterChew = "sfx.eater.chew", EaterJumpChew = "sfx.eater.jumpChew", EaterEscapeTick = "sfx.eater.escapeTick", EaterPushback = "sfx.eater.pushback",
+            FireBolt = "sfx.proj.fire.bolt", FireBomb = "sfx.proj.fire.bomb", FireSaw = "sfx.proj.fire.saw", PhaseFlare = "sfx.boss.phaseFlare";
 
         /// <summary>Every id this phase may fire. A test checks each definition's cue ids are in this set (and so in the registry doc).</summary>
         public static readonly HashSet<string> Registry = new HashSet<string>
         {
             S1Ice, S1Mud, S1Meteor, S1Glass, S1Rings, S1Eater, S1Boss,
             SignIce, CueIce, SignMud, CueMud, SignMeteor, CueMeteor, SignGlass, CueGlass, SignRings, CueRings, SignEater, CueEater, SignBoss, CueBoss,
-            EventClear
+            EventClear,
+            EaterSurge, EaterDanger, EaterSnap, EaterNear, EaterHit, EaterEscape, EaterRetreat, EaterEaten, ProjBolt, ProjBomb, ProjSaw,
+            BossPhase, BossRing, BossDefeat, BossRetreat, BossDeath, Finish,
+            EaterChew, EaterJumpChew, EaterEscapeTick, EaterPushback, FireBolt, FireBomb, FireSaw, PhaseFlare
         };
 
         private static readonly Dictionary<string, string> Banner = new Dictionary<string, string>
         {
             { "banner.ice", "ICE AHEAD" }, { "banner.mud", "MUD AHEAD" }, { "banner.meteor", "METEORS!" }, { "banner.glass", "GLASS ROAD" },
             { "banner.rings", "RING RUN" }, { "banner.eater", "ROAD-EATER" }, { "banner.boss", "RO-B0" },
+            { "banner.eater.pushback", "PHEW!" }, { "banner.eater.escape", "ESCAPED" }, { "banner.eater.retreat", "IT WANDERED OFF" },
         };
 
         /// <summary>Short tag shown on the S2 sign (a word is the non-colour shape channel).</summary>
@@ -52,7 +64,15 @@ namespace RoadBuilderGame
             if (cueId.StartsWith("vo.rob0.s1.")) { sfxKey = cueId == S1Rings ? "ring" : "whoosh"; return; }
             if (cueId.EndsWith(".sign")) { sfxKey = "open"; return; }
             if (cueId.EndsWith(".cue")) { sfxKey = "nearmiss"; volume = 0.9f; return; }
-            if (cueId == EventClear) { sfxKey = "claim"; volume = 0.7f; }
+            if (cueId == EventClear) { sfxKey = "claim"; volume = 0.7f; return; }
+            // hazard cues (B2): tells use the alarm, results the claim or ring sound, fire cues a whoosh, eater loops the soft open sound
+            if (cueId == EaterSurge || cueId == EaterDanger || cueId == EaterSnap || cueId == ProjBolt || cueId == ProjBomb || cueId == ProjSaw || cueId == BossPhase) { sfxKey = "meteor_warn"; volume = 0.85f; }
+            else if (cueId == EaterEscape || cueId == EaterRetreat || cueId == BossDefeat || cueId == BossRetreat || cueId == Finish) { sfxKey = "claim"; volume = 0.8f; }
+            else if (cueId == BossRing) { sfxKey = "ring"; volume = 0.8f; }
+            else if (cueId == EaterNear) { sfxKey = "nearmiss"; volume = 0.8f; }
+            else if (cueId == EaterHit || cueId == EaterEaten || cueId == BossDeath) { sfxKey = "explosion"; volume = 0.8f; }
+            else if (cueId.StartsWith("sfx.proj.fire.") || cueId == PhaseFlare) { sfxKey = "whoosh"; volume = 0.7f; }
+            else if (cueId.StartsWith("sfx.eater.")) { sfxKey = "open"; volume = 0.6f; }
         }
     }
 }

@@ -60,6 +60,14 @@ namespace RoadBuilderGame
         private StageWarningPresenter _stagePresenter;
         private readonly SurfaceZoneModel _zone = new SurfaceZoneModel();
         private bool _stageOn;
+        // Road-Eater, RO-B0, near-miss economy (phase B2). Inert unless the stage director runs.
+        private RoadEaterController _eater;
+        private BossController _boss;
+        private MonsterDefinitionSO _eaterData;
+        private BossDefinitionSO _bossData;
+        private readonly NearMissLedger _nearLedger = new NearMissLedger();
+        private float _hitGraceLeft, _recentSpeed, _bossEndS = -1f, _meteorWarnDist;
+        private bool _finishing, _runEnding;
         private ScreenState _previousState = ScreenState.HomeDashboard;
         private float _frenzyTrailTimer;
         // Track traits of the current surface (CatalogEntry.speedFactor / inkFactor / coinFactor); 1 = plain asphalt.
@@ -203,7 +211,9 @@ namespace RoadBuilderGame
             _cameraRig = new GameCameraRig(_cam, _background);
             _meteors = new MeteorSpawner(_road, _tuning);
             _meteors.Warned += () => _audio.MeteorWarning();
-            _meteors.NearMissed += () => _run.NearMiss();
+            _meteors.NearMissed += () => { if (!_stageOn) _run.NearMiss(); };      // stage mode pays through the near-miss ledger instead
+            _meteors.NearMissedAt += OnMeteorNearMiss;
+            _meteors.Warned += () => _meteorWarnDist = _distance;
             _meteors.Impacted += OnMeteorImpact;
             _run.CueRaised += OnRunCue;
             SetupStageEvents();
@@ -450,6 +460,8 @@ namespace RoadBuilderGame
                 {
                     _stage.Tick(_distance, _car.Body.linearVelocity.x, Time.deltaTime);     // scaled time: slow-mo stretches a warning, never shortens it
                     _stagePresenter.Tick(_distance, Time.deltaTime);
+                    TickHazards(carPos, Time.deltaTime);
+                    if (_state != ScreenState.Playing) return;            // a bite or a hit ended the run this frame
                     if (_zone.Active)
                     {
                         SampleRoadShape(carPos.x, _zone.Rule.iceSlipSpanMetres, out float uphillDeg, out float turnDeg);
@@ -505,7 +517,7 @@ namespace RoadBuilderGame
             }
         }
 
-        private void HandleLifeLoss(string reason)
+        private bool HandleLifeLoss(string reason)
         {
             _brush.Cancel();
             bool shielded = _run.AbsorbHit();       // a shield soaks up one crash
@@ -535,13 +547,21 @@ namespace RoadBuilderGame
                 Vector2 safeSurfacePt = _road.CreateSafetyPlatformAndFindRespawn(_car.Body.position.x, 0f);
                 _car.RespawnSafely(safeSurfacePt);
                 _upsideDownTime = 0f;
-                if (_stage.Active) _stage.OnRespawn(_distance);
+                if (_stage.Active)
+                {
+                    _stage.OnRespawn(_distance);
+                    _hitGraceLeft = 1.5f;                       // FR-7 and FR-9: no further hazard damage for 1.5 s after any hit, shielded or not
+                    _nearLedger.NoteDamage(); _nearLedger.NoteRespawn();
+                    _eater.OnLifeLost(_car.Body.position.x);    // push-back (no-op unless the Eater is chasing)
+                    _boss.OnRespawn();                          // clear projectiles, 3 s lull (no-op unless RO-B0 is fighting)
+                }
             }
+            return shielded;
         }
 
-        private void TriggerGameOver(string reason)
+        private void TriggerGameOver(string reason, bool finished = false)
         {
-            EndStageRun(StageRunOutcome.Died);
+            EndStageRun(finished ? StageRunOutcome.Finished : StageRunOutcome.Died);
             bool newBest = _distance > _bestScore;
             if (newBest) _bestScore = _distance;
             totalCoins += sessionCoins;
@@ -1051,6 +1071,122 @@ namespace RoadBuilderGame
             _stage.Register("EVT-RINGS", new RingWindowBehaviour(PlaceRingGauntlet));
             _stagePresenter = new StageWarningPresenter(_stage, _audio, _tuning);
             _meteors.CanStrike = () => _stage.CanSpawnHazard("hz-meteor");
+            SetupHazards();
+        }
+
+        private void SetupHazards()
+        {
+            _eaterData = Resources.Load<MonsterDefinitionSO>("Stage/Hazards/MonsterDef-RoadEater");
+            if (_eaterData == null) _eaterData = ScriptableObject.CreateInstance<MonsterDefinitionSO>();
+            _bossData = Resources.Load<BossDefinitionSO>("Stage/Hazards/BossDef-RoB0");
+            if (_bossData == null || _bossData.bolt == null || _bossData.pool1 == null || _bossData.pool1.Length == 0) _bossData = BossDefinitionSO.CreateDefault();
+            _nearLedger.Steps = _tuning.nearMissCoinsStep != null && _tuning.nearMissCoinsStep.Length > 0 ? _tuning.nearMissCoinsStep : _nearLedger.Steps;
+            _nearLedger.PerfectMultiplier = _tuning.nearMissPerfectMultiplier; _nearLedger.ChainWindowS = _tuning.nearMissChainWindow;
+            _nearLedger.RunCapFraction = _tuning.nearMissRunCapFraction; _nearLedger.EaterPay = _tuning.nearMissEaterPay;
+
+            _eater = new RoadEaterController(_road, _eaterData, _cam)
+            {
+                Cue = id => _audio?.StageCue(id),
+                Banner = ShowStageBanner,
+                Shake = a => _cameraRig?.Shake(a, 0.4f),
+                Bite = () => HandleLifeLoss("EATEN BY THE ROAD-EATER!"),
+                Cleared = OnEaterCleared,
+                NearMissed = OnEaterNearMiss
+            };
+            _boss = new BossController(_road, _bossData)
+            {
+                Cue = id => _audio?.StageCue(id),
+                Banner = ShowStageBanner,
+                Shake = a => _cameraRig?.Shake(a, 0.4f),
+                CanDamage = () => _hitGraceLeft <= 0f && !_stage.HazardGraceActive,
+                Hit = r => HandleLifeLoss(r),
+                CounterAvailable = () => _run.Boost01 >= 1f || sessionCoins + totalCoins >= _bossData.counterCoins || (maxInk > 0f && currentInk / maxInk >= _bossData.counterInk01),
+                InkAvailable = () => maxInk > 0f && currentInk / maxInk >= _bossData.counterInk01,
+                NearMissed = (src, perfect, travel) => ResolveNearMiss(src, perfect, travel),
+                RingTaken = () => _run.CollectPower(Collectible.Type.Ring),
+                Decided = OnBossDecided
+            };
+            _boss.Model.Raised += e => { if (e == BossEvent.Gone) _bossEndS = _distance; };
+
+            // Behaviour modules registered by event id on the existing run controller (no switch): the director only knows ids and distances.
+            _stage.Register("MON-EATER", new DelegateBehaviour(
+                s => _eater.StartChase(_car.Body.position.x),
+                s => { if (!_runEnding && _eater.Model.Chasing) _eater.Model.Retreat(true); }));      // the window ended at 1750 m: timeout retreat
+            _stage.Register("BOS-ROB0", new DelegateBehaviour(
+                s => _boss.Start(_car.Body.position),
+                s => { },                                                                              // the fight outlives its planned window: it ends by Overload or the 105 s timeout
+                (s, d) => _boss.OnRespawn()));
+            _stage.Signal += (e, sig) => { if (sig == StageSignal.Announcer && e.Definition.role == StageEventRole.Monster) _eater.Warn(); };
+            _stage.EventStarted += e => { if (e.Definition.noEat) _road.AddNoEatRange(_startX + e.StartM, _startX + e.EndM); };
+        }
+
+        private void ShowStageBanner(string text)
+        {
+            var m = Model; m.StageBanner = text; m.StageBannerTint = ""; m.StageBannerId++;
+        }
+
+        // ------------------------------------------------------------------ hazards per frame (Road-Eater, RO-B0, near-miss economy, finish gate)
+        private void TickHazards(Vector2 carPos, float dt)
+        {
+            if (_hitGraceLeft > 0f) _hitGraceLeft -= dt;
+            _nearLedger.Tick(dt);
+            Vector2 vel = _car.Body.linearVelocity;
+            _recentSpeed += (vel.x - _recentSpeed) * Mathf.Min(1f, dt);                      // about a 1 s average
+            _eater.Tick(dt, carPos.x, carPos.y, vel.x, !_car.IsGrounded, _run.Boosting);
+            if (!_stage.Active) return;                                                       // the bite or a hit may have ended the run
+            _boss.Tick(dt, carPos, vel);
+            var m = Model; var em = _eater.Model; var bm = _boss.Model;
+            m.EaterOn = em.Chasing; m.EaterGapM = em.Gap; m.EaterBand = (int)em.Band; m.EaterEscape01 = em.EscapeProgress01;
+            m.BossOn = bm.Fighting; m.BossOverload01 = bm.Meter01; m.BossPhase = bm.Phase;
+            if (!_finishing && _distance >= FinishGateM() && !bm.Fighting && bm.State != BossState.Intro && bm.State != BossState.Defeat)
+            {
+                _finishing = true;
+                _audio?.StageCue(StageCues.Finish);
+                TriggerGameOver("COURSE COMPLETE!", true);
+            }
+        }
+
+        /// <summary>Finish gate: max(2750, boss end + 150) (brief X7); before the boss has ended it is the planned finish.</summary>
+        private float FinishGateM()
+        {
+            float planned = _stage.Director.FinishM;
+            return _bossEndS >= 0f ? Mathf.Max(planned, _bossEndS + _stage.Ladder.finishAfterBossM) : planned;
+        }
+
+        private void ResolveNearMiss(int source, bool perfect, float travelM)
+        {
+            int non = _run.Stats.coins + _run.Stats.bonusCoins - _nearLedger.Paid;
+            var r = _nearLedger.Resolve(source, perfect, travelM, _recentSpeed, non);
+            if (r.Valid) _run.NearMissPaid(r.Coins, (r.Perfect ? "PERFECT CLOSE!" : "CLOSE!") + (r.Chain > 1 ? " x" + r.Chain : ""));
+        }
+
+        private void OnMeteorNearMiss(float d)
+        {
+            if (_stageOn) ResolveNearMiss(0, d <= _tuning.meteorBlastRadius + 1.5f, _distance - _meteorWarnDist);
+        }
+
+        private void OnEaterNearMiss()
+        {
+            int non = _run.Stats.coins + _run.Stats.bonusCoins - _nearLedger.Paid;
+            var r = _nearLedger.ResolveEater(non);
+            if (r.Valid) _run.NearMissPaid(r.Coins, "CLOSE CALL!");
+        }
+
+        private void OnEaterCleared(bool timeout)
+        {
+            var pay = HazardRewards.Eater(_eaterData, _profile, timeout);
+            HazardRewards.RecordEater(_profile, timeout);
+            SavePlayerData();
+            ShowStageBanner(StageCues.BannerText(timeout ? "banner.eater.retreat" : "banner.eater.escape"));
+            _run.AwardEvent(pay.Label, pay.Coins, pay.Gems, pay.Frenzy);
+        }
+
+        private void OnBossDecided(bool timeout)
+        {
+            var pay = HazardRewards.Boss(_bossData, _profile, timeout);
+            HazardRewards.RecordBoss(_profile, timeout);
+            SavePlayerData();
+            _run.AwardEvent(pay.Label, pay.Coins, pay.Gems, pay.Frenzy);
         }
 
         /// <summary>Countryside means the Country theme, and not a custom layered world from the catalogue.</summary>
@@ -1067,6 +1203,10 @@ namespace RoadBuilderGame
             _stagePresenter.Reset();
             _stageOn = StageRunController.ShouldRun(_tuning.stageEvents, IsCountrysideWorld()) && _stage.HasData;
             _meteors.StageDriven = _stageOn;
+            _eater.Stop(); _boss.Stop();
+            _road.ClearNoEatRanges();
+            _nearLedger.Reset(); _hitGraceLeft = 0f; _recentSpeed = 0f; _bossEndS = -1f; _finishing = false; _runEnding = false;
+            Model.EaterOn = false; Model.BossOn = false;
             if (!_stageOn) return;
             // Retry reuses the saved seed (same ladder); a new run draws a new one. The record is saved through SaveService only.
             var saved = _profile.lastStageRun;
@@ -1079,12 +1219,18 @@ namespace RoadBuilderGame
                 SavePlayerData();
             }
             _stage.Begin(rec);
+            _eater.Begin(_startX, rec.runSeed ^ 0x00E47E8u);
+            _boss.Begin(rec.runSeed ^ 0x00B055u);
         }
 
         private void EndStageRun(StageRunOutcome outcome)
         {
             if (_stage == null || !_stage.Active) return;
+            _runEnding = true;
             _stage.End(outcome);                 // Ended is raised for the Active zone or window, which clears them
+            _runEnding = false;
+            _eater.Stop(); _boss.Stop();
+            Model.EaterOn = false; Model.BossOn = false;
             _stagePresenter.Reset();
             _zone.Exit();
         }
@@ -1143,6 +1289,7 @@ namespace RoadBuilderGame
             _zone.Exit();
             ApplySurface();
             _stagePresenter.Reset();
+            _eater.Stop(); _boss.Stop(); _finishing = false; _bossEndS = -1f;
             _road.ResetRoad(worldX - 14f, worldX + QaRunwayAheadM, 0f);
             _car.RespawnSafely(new Vector2(worldX, 0f));
             _distance = distanceM;

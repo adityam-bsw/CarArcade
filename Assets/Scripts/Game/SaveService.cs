@@ -32,6 +32,8 @@ namespace RoadBuilderGame
 
         /// <summary>The stage-event run record: seed, mode and layout of the last run, so a retry replays the same ladder. Written by the run start only.</summary>
         public StageRunRecord lastStageRun;
+        /// <summary>Times the Road-Eater was escaped or timed out, and RO-B0 defeated or timed out. Repeat clears pay half (brief section 14). Saved with the profile, no PlayerPrefs.</summary>
+        public int eaterEscapes, eaterTimeouts, bossDefeats, bossTimeouts;
 
         // Rewards and meta progress
         public int gems;

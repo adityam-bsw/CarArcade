@@ -69,7 +69,7 @@ namespace RoadBuilderGame
             float floor = ladder.signalSpeedFloorMps;
             st.LockM = st.StartM - d.lockDistanceM;
             float lead = d.announcerLeadS * floor;
-            if (d.role == StageEventRole.Monster) lead = Mathf.Max(lead, ladder.eaterWarnLeadM);
+            if (d.role == StageEventRole.Monster) lead = ladder.eaterWarnLeadM;      // the Eater warns at eaterWarnM (940 m): S1 is the start of the 6 s Warn state, not 5 s x speed floor
             st.WarnM = st.StartM - lead;
             st.SignM = st.StartM - d.signLeadS * floor;
             st.CueM = st.StartM - d.cueLeadS * floor;

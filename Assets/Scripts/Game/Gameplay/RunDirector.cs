@@ -232,6 +232,23 @@ namespace RoadBuilderGame
             Raise(Cue.NearMiss);
         }
 
+        /// <summary>A near miss paid by the stage-mode ledger (chain, perfect, run cap already applied; coins may be 0 when the cap blocked it: toast, sound and frenzy still fire).</summary>
+        public void NearMissPaid(int coins, string label)
+        {
+            Stats.nearMisses++;
+            AddFrenzy(_t.frenzyPerNearMiss);
+            Pay(label, Mathf.RoundToInt(coins * CoinFactor));
+            Raise(Cue.NearMiss);
+        }
+
+        /// <summary>Payout for clearing a monster or boss: coins, gems and frenzy, with a label.</summary>
+        public void AwardEvent(string label, int coins, int gems, float frenzy)
+        {
+            Stats.gems += gems;
+            AddFrenzy(frenzy);
+            Pay(label, coins);
+        }
+
         /// <summary>A crash happened: a shield soaks it up once. Returns true when the hit was absorbed.</summary>
         public bool AbsorbHit()
         {
