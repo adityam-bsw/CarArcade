@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8a5f8e4d19441fd9ef25e5cead25c8, type: 3}
+  m_Name: StageLadder
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.StageLadderDefinition
+  ladderMode: 0
+  layoutVersion: 1
+  matrix: {fileID: 11400000, guid: 9fdee572f15824419a66357b5060c50d, type: 2}
+  slots:
+  - eventDefinition: {fileID: 11400000, guid: 579a41379817b49408ab7c329290b1c1, type: 2}
+    nominalStartM: 205
+    startRangeMinM: 190
+    startRangeMaxM: 220
+    lengthM: 0
+  - eventDefinition: {fileID: 11400000, guid: 80f65c2bb100b491fa38207fbfc9bcba, type: 2}
+    nominalStartM: 505
+    startRangeMinM: 490
+    startRangeMaxM: 520
+    lengthM: 0
+  - eventDefinition: {fileID: 11400000, guid: 61c28f157c3924ce6bf23e4022dc8f99, type: 2}
+    nominalStartM: 735
+    startRangeMinM: 720
+    startRangeMaxM: 750
+    lengthM: 0
+  - eventDefinition: {fileID: 11400000, guid: 33d50d383f1b04c9b835fe8e7facf960, type: 2}
+    nominalStartM: 1000
+    startRangeMinM: 1000
+    startRangeMaxM: 1000
+    lengthM: 0
+  - eventDefinition: {fileID: 11400000, guid: 63baf25d621bd45068f79739f3e56ba5, type: 2}
+    nominalStartM: 1350
+    startRangeMinM: 1310
+    startRangeMaxM: 1390
+    lengthM: 0
+  - eventDefinition: {fileID: 11400000, guid: a03dcc4403f0a482b8a5d3f78eb695dd, type: 2}
+    nominalStartM: 1800
+    startRangeMinM: 1790
+    startRangeMaxM: 1810
+    lengthM: 0
+  - eventDefinition: {fileID: 11400000, guid: 2baeae25d45c04f4fa9b19d6387570bd, type: 2}
+    nominalStartM: 2000
+    startRangeMinM: 2000
+    startRangeMaxM: 2000
+    lengthM: 0
+  eventPool:
+  - {fileID: 11400000, guid: 579a41379817b49408ab7c329290b1c1, type: 2}
+  - {fileID: 11400000, guid: 80f65c2bb100b491fa38207fbfc9bcba, type: 2}
+  - {fileID: 11400000, guid: 61c28f157c3924ce6bf23e4022dc8f99, type: 2}
+  - {fileID: 11400000, guid: 33d50d383f1b04c9b835fe8e7facf960, type: 2}
+  - {fileID: 11400000, guid: 63baf25d621bd45068f79739f3e56ba5, type: 2}
+  - {fileID: 11400000, guid: a03dcc4403f0a482b8a5d3f78eb695dd, type: 2}
+  - {fileID: 11400000, guid: 2baeae25d45c04f4fa9b19d6387570bd, type: 2}
+  startPlatformM: 30
+  noHazardUntilM: 190
+  eaterWarnM: 940
+  eaterStartM: 1000
+  eaterTimeoutM: 1750
+  finishMinM: 2750
+  finishAfterBossM: 150
+  rewardMinGapM: 50
+  modifierEndMarginM: 200
+  finishSlowmoScale: 0.65
+  finishSlowmoS: 1.5
+  maxModifiers: 2
+  hardStagesBeforeBreather: 2
+  respawnGraceS: 1.5
+  respawnEffectHoldS: 3
+  signalSpeedFloorMps: 16
+  eaterWarnLeadM: 60
+  paceStartSpeedMps: 4.2
+  paceGainMpsPerM: 0.02
+  paceCapSpeedMps: 11.5
+  weightedLengthM: 6000
+  weightedMaxEvents: 64
+  weightedRecoveryMinM: 100
+  weightedRecoveryMaxM: 200
+  weightedBreatherM: 200
+  debugJumpPointsM:
+  - 0
+  - 220
+  - 480
+  - 640
+  - 710
+  - 1000
+  - 1350
+  - 1800
+  - 2000

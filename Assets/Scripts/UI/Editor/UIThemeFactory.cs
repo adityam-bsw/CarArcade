@@ -15,6 +15,27 @@ namespace RoadBuilderGame.UI.Editor
         private const string ThemePath = "Assets/Resources/UI/UITheme_Default.asset";
         private const string FallbackFont = "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset";
 
+        private static void SetZoneColors(UITheme theme)
+        {
+            theme.SetColor(ColorToken.ZoneIce, Hex("5BB8F0"));      // blue
+            theme.SetColor(ColorToken.ZoneMud, Hex("B07A4F"));      // brown
+            theme.SetColor(ColorToken.ZoneGlass, Hex("BFF3F5"));    // cyan-white
+            theme.SetColor(ColorToken.ZoneMeteor, Hex("E8553F"));   // red (damage)
+            theme.SetColor(ColorToken.ZoneRings, Hex("F6C445"));    // gold (reward)
+        }
+
+        /// <summary>Adds only the stage-zone colour tokens to the existing theme asset and leaves everything else untouched.</summary>
+        [MenuItem("Road Builder/UI/Add Zone Colour Tokens")]
+        public static void AddZoneColors()
+        {
+            var theme = AssetDatabase.LoadAssetAtPath<UITheme>(ThemePath);
+            if (theme == null) { Debug.LogError("[UIThemeFactory] No theme at " + ThemePath); return; }
+            SetZoneColors(theme);
+            EditorUtility.SetDirty(theme);
+            AssetDatabase.SaveAssets();
+            Debug.Log("[UIThemeFactory] Zone colour tokens set on " + ThemePath);
+        }
+
         [MenuItem("Road Builder/UI/Create Default Theme")]
         public static void CreateDefaultTheme()
         {
@@ -44,6 +65,7 @@ namespace RoadBuilderGame.UI.Editor
             theme.SetColor(ColorToken.Ink, Hex("6B9B87"));
             theme.SetColor(ColorToken.Outline, Hex("18202A"));
             theme.SetColor(ColorToken.Tint, Color.white);
+            SetZoneColors(theme);
 
             // Fonts: placeholder until the real font family is imported (rb-asset-pipeline).
             var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FallbackFont);

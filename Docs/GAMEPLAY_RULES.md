@@ -1,6 +1,6 @@
 # Gameplay rules: boost, ink, coins, power-ups, rewards
 
-Status: built and tested (12 EditMode tests in `GameplayLogicTests`, Play mode run of Home, Garage, Rewards, HUD, Result).
+Status: built and tested (EditMode tests in `GameplayLogicTests`, `StageDirectorTests`, `StageWiringTests`, Play mode run of Home, Garage, Rewards, HUD, Result).
 All numbers live in `Assets/Resources/Gameplay/GameplayTuning.asset` (class `GameplayTuning`); change them there, not in code.
 
 ## Where the code is
@@ -59,21 +59,37 @@ Each road surface (`CatalogEntry`, filled by `CatalogBuilder`, table `Surfaces`)
 | `coinFactor` | multiplies every coin (risky tracks pay more, up to x1.5) | `RunDirector.CoinFactor` |
 Asphalt is the baseline (all 1). The Roads tab shows a one-line summary (`CatalogEntry.TraitsLine`). Tune in `CatalogBuilder.Surfaces`, then run Road Builder > Catalog > Build Catalog.
 
-## Stage director (data layer, Phase A; not wired into the run)
-`Assets/Scripts/Game/Stage/` holds the stage ladder as data plus a pure C# core. Nothing in the scene or the existing run uses it yet.
-`StageEventDefinition`, `StageLadderDefinition` and `EventCompatibilityMatrix` are ScriptableObjects (units in field names, `Validate(errors)` plus an
-editor-only `OnValidate` warning). `StageDirector` (behind `IStageDirector`) builds the plan once in `Begin(StageRunRecord)` and `Tick(distanceM, speedMps, scaledDt)`
-only compares distance with precomputed thresholds (0 bytes allocated, tested). Plan = pure function of (ladder, `runSeed`, `modeId`): per slot a PCG32 seeded
-`unchecked(runSeed + stageIndex + modeId)` (`runSeed` generated as raw shifted left 7), draw order jitter, variant, replacement (only on rejection), terrain seed.
-Rules in code come from data: breather = stricter of `cooldownAfterM` and `minBreatherS` seconds (closed-form pace model, `StagePace`), start ranges shrink backwards
-from fixed anchors so the next event can always keep its breather, matrix default deny, Rewards (ring gauntlet) exempt from the warning-phase overlap term,
-modifiers must fit inside their parent. `FixedSpine` plays the slice slots; `Weighted` is the endless ladder (no repeat of the previous primary, difficulty ramp
-`cost <= 3 + slot`, breather after two hard slots, rejection fallback by descending weight). Signals S1 to S3 are distances computed with `signalSpeedFloorMps` (16).
-Not built: scene wiring, spawner enabling, UI banners, `SurfaceRuleSO`, prefab/audio refs on the definition, early chase end, ladder and event assets.
-Tests: `Assets/Tests/EditMode/StageDirectorTests.cs` (SD-01 to SD-22; SD-17 and SD-20 are not automatable and report Ignored).
+## Stage director (Phase A data layer, Phase B1 wired into the run)
+`Assets/Scripts/Game/Stage/` holds the stage ladder as data plus a pure C# core (details of the planner, determinism and pace model are unchanged from Phase A).
+`StageEventDefinition`, `StageLadderDefinition`, `EventCompatibilityMatrix` and the new `SurfaceRuleSO` are ScriptableObjects (units in field names, `Validate(errors)` plus an
+editor-only `OnValidate` warning). `StageDirector` builds the plan once in `Begin(StageRunRecord)`; `Tick(distanceM, speedMps, scaledDt)` allocates 0 bytes (tested over a whole simulated run with all five behaviours and the presenter attached).
+
+**The one switch:** `GameplayTuning.stageEvents` (`Off`, `CountrysideOnly` = default, `Always`). Off restores the old game exactly (the old meteor spawner, the old surface handling: nothing below runs).
+CountrysideOnly means the Country theme and not a custom layered catalogue world. Other defaults applied for B1 (brief section 14): haptics off (`stageHaptics`), boost price 5, retry from 0 m with the same seed.
+
+**Slice assets** (`Assets/Resources/Stage/`, built by menu `Road Builder > Stage > Build Slice Assets`, which runs every `Validate`; safe to re-run): `SRF-ICE`, `SRF-MUD`, `SRF-GLS` (`SurfaceRuleSO`),
+seven `StageEventDefinition` (EVT-ICE, EVT-METEOR, EVT-MUD, EVT-GLASS, EVT-RINGS and the two schedule anchors MON-EATER and BOS-ROB0, which have no behaviour until phase B2 and stay silent),
+`EventCompatibilityMatrix` (the 21 pairs of stage-events.md section 5) and `StageLadder` (7 slots, section 3.1). A test keeps the `SurfaceRuleSO` base numbers equal to the catalogue entries.
+
+**Wiring** (`RoadGameManager`, region "STAGE EVENTS"): `StageRunController` (Game/Stage, plain class) owns the director and routes `Started`/`Ended` to behaviour modules registered by event id
+(no switch over ids): `SurfaceZoneBehaviour` (ice, mud, glass), `MeteorWindowBehaviour`, `RingWindowBehaviour` (Game/Gameplay/StageBehaviours.cs). The manager ticks it every frame in the Playing state
+with the distance and **scaled** `Time.deltaTime` (slow-mo stretches a warning, never shortens it). Run start: new run draws a new seed, retry (previous screen was GameOver) reuses the saved one; the
+`StageRunRecord` (`runSeed`, `modeId` 1 = Countryside, `layoutVersion`, `debugJumped`) is saved in `PlayerProfile.lastStageRun` through `SaveService` (no PlayerPrefs). Run end (Died, or leaving the screen) ends the Active events, which clears zones and windows.
+Respawn: `OnRespawn(distance)` (hazards blocked 1.5 s, no effect starts for 3 s, live meteor markers cleared, next strike one full interval away; the surface zone stays). App pause: nothing ticks, resume gives 0.5 s without hazards.
+
+**Zones drive the existing surface hooks** while Active: friction (road PhysicsMaterial2D), `_trackSpeed`, `_trackInk` (brush cost and ink rescue), `RunDirector.CoinFactor`, and the road look (the catalogue strip of the zone surface; the player's own surface returns when the zone ends). Plus one ink canister 6 m into each zone.
+Formulas in `SurfaceZoneModel` (hazards.md section 3): **mud** target = max(3.0, base x 0.85 minus `mudDragMul` x min(2.0, 1.0 x seconds in zone)); cap per vehicle Red 2.0, Cyan 2.5, Monster 1.2 m/s (`GameplayTuning.mudDragMulByVehicle`); a road slope above 18 degrees ahead caps it at 3.0; boost ignores both.
+**Ice** slip: a bend over 25 degrees across 4 m of road switches the motor off for min(0.6, 0.6 x (bend - 25) / 20) s (the car coasts, no damage), re-armed after 0.6 s. Not mapped: ice downhill x1.3 / uphill x0.7 (the car is motor-driven, no along-slope term exists) and glass arming, cracking and dropping (the road has no break state): glass is an event zone with its base numbers only.
+**Meteor**: when stage-driven, the existing `MeteorSpawner` strikes only inside the EVT-METEOR window, every 3.5 to 5.5 s (seeded by the event's terrain seed, not `UnityEngine.Random`), at most 3 strikes, and only while `CanSpawnHazard("hz-meteor")`. **Rings**: the gauntlet (10 rings, 16 m apart, heights 1 to 6 m, seeded) is placed when EVT-RINGS starts.
+
+**Warnings** (`StageWarningPresenter` writes `GameModel.Stage*`; `HudScreen` shows them): S1 banner (event name, 1.5 s, tinted by the event's UITheme colour token `ZoneIce/ZoneMud/ZoneGlass/ZoneMeteor/ZoneRings`) with the announcer cue, S2 sign ("ICE IN 44 M", counts metres to the start, then metres left) with a sting, S3 a 1 s edge flash on both screen edges with a cue. The word on the sign and banner is the non-colour channel.
+Signals that arrive together after a respawn or jump are spaced 0.6 s apart (`signalMinGapS`). Cue ids come from voice-lines.md 3.3 (`StageCues.Registry`); sound is a placeholder map to existing SFX (`StageCues.Placeholder`), only meteor has a recorded voice line.
+**QA** (Editor and development builds only): `RoadGameManager.DebugJumpToStage(m)`, menu `Road Builder > Stage > Debug Jump`, and a small `DBG` panel (F9 or tap) listing 0, 220, 480, 640, 710, 1000, 1350, 1800, 2000 m. A jump rebuilds a flat runway, restores ink and hearts and sets `debugJumped` in the run record.
+Not built in B1: the Road-Eater, RO-B0, finish gate and result-screen event lines, per-event terrain shaping (slopes, gaps, the variant layouts; only the terrain seed is used, by the ring gauntlet), the world sign prop and road-strip tint of S2 (the HUD sign and tint replace them), glass break state, the effect-start slide of up to 2 s after a late signal.
+Tests: `StageDirectorTests` (SD-01 to SD-22) and `StageWiringTests` (W01 to W31: real assets, 2000-seed plans, formulas, simulated run order and lead times, zero allocation, respawn and pause rules, jump, presenter).
 
 ## Not built yet
-Gems have no shop to spend them in. Not built: hazards, fuel, weather, challenge modes, checkpoints (the safety-platform respawn stays).
+Gems have no shop to spend them in. Not built: the Road-Eater and RO-B0 (phase B2), fuel, weather, challenge modes, checkpoints (the safety-platform respawn stays).
 Near-miss and wheelie bonuses. Sounds for power-ups reuse existing clips. Slow-mo is a global time scale (reset on every screen change).
 
 ## Art

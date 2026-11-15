@@ -69,6 +69,15 @@ namespace RoadBuilderGame
         }
 
         public void MeteorWarning() { var s = S; if (s == null) return; s.PlaySfx("meteor_warn", 0.8f); s.Say("meteor", false, 20f); }
+        /// <summary>A stage-event cue by registry id (Docs/design/voice-lines.md 3.3). Placeholder sounds until real audio exists; unknown ids are silent.</summary>
+        public void StageCue(string cueId)
+        {
+            var s = S; if (s == null) return;
+            StageCues.Placeholder(cueId, out string sfx, out string voice, out float vol);
+            if (sfx != null) s.PlaySfx(sfx, vol);
+            if (voice != null) s.Say(voice, false, 20f);
+        }
+
         public void MeteorImpact() { var s = S; if (s != null) s.PlaySfx("explosion", 0.9f); }
 
         /// <summary>Call every frame while racing with the ink tank as a fraction (0 to 1).</summary>

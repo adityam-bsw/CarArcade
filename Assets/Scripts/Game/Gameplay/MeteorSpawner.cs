@@ -27,6 +27,17 @@ namespace RoadBuilderGame
         private readonly List<Strike> _live = new List<Strike>(4);
         private float _nextIn;
 
+        // Stage-driven mode (GameplayTuning.stageEvents): strikes happen only inside the EVT-METEOR window, at the event's interval and count, from a seeded generator.
+        // Off (default for the old game): the legacy distance start and UnityEngine.Random are used and nothing below runs.
+        private bool _windowOn;
+        private float _winMin, _winMax;
+        private int _winLeft;
+        private Pcg32 _rng;
+        /// <summary>True while the stage director owns the spawner.</summary>
+        public bool StageDriven;
+        /// <summary>Asked before every strike in stage mode (the director's CanSpawnHazard plus the respawn rules).</summary>
+        public Func<bool> CanStrike;
+
         /// <summary>Raised when a marker appears (play the warning).</summary>
         public event Action Warned;
         /// <summary>Raised on impact with the blast centre; <c>hit</c> is true when the car is inside the blast.</summary>
@@ -41,7 +52,31 @@ namespace RoadBuilderGame
             foreach (var s in _live) Destroy(s);
             _live.Clear();
             _nextIn = 3f;
+            _windowOn = false; _winLeft = 0;
         }
+
+        /// <summary>Stage mode: the meteor window opened. The first strike comes one interval after the effect starts (never before the warning signals finished).</summary>
+        public void BeginWindow(float intervalMin, float intervalMax, int maxStrikes, uint seed)
+        {
+            _windowOn = true; _winMin = intervalMin; _winMax = Mathf.Max(intervalMin, intervalMax); _winLeft = maxStrikes;
+            _rng = new Pcg32(seed);
+            _nextIn = NextInterval();
+        }
+
+        public void EndWindow() { _windowOn = false; }
+        public bool WindowOpen => _windowOn;
+        public int StrikesLeft => _winLeft;
+
+        /// <summary>The car respawned: markers in the air are cleared and the next strike waits one full interval.</summary>
+        public void OnRespawn()
+        {
+            _clearLive = true;      // applied at the start of the next Tick: a strike that hits the car raises this from inside Tick's own loop over the live list
+            if (_windowOn) _nextIn = _winMax;
+        }
+        private bool _clearLive;
+
+        private float NextInterval() { return _winMin + (_winMax - _winMin) * _rng.NextFloat01(); }
+        private float Jitter() { return StageDriven ? (_rng.NextFloat01() * 2f - 1f) * 2.5f : UnityEngine.Random.Range(-2.5f, 2.5f); }
 
         private static void Destroy(Strike s)
         {
@@ -52,7 +87,16 @@ namespace RoadBuilderGame
         public void Tick(float dt, RoadCar car, float distance)
         {
             if (car == null || car.Body == null) return;
-            if (distance >= _t.meteorStartDistance)
+            if (_clearLive) { foreach (var c in _live) Destroy(c); _live.Clear(); _clearLive = false; }
+            if (StageDriven)
+            {
+                if (_windowOn && _winLeft > 0 && (CanStrike == null || CanStrike()))
+                {
+                    _nextIn -= dt;
+                    if (_nextIn <= 0f) { _nextIn = NextInterval(); _winLeft--; Spawn(car); }
+                }
+            }
+            else if (distance >= _t.meteorStartDistance)
             {
                 _nextIn -= dt;
                 if (_nextIn <= 0f)
@@ -83,7 +127,7 @@ namespace RoadBuilderGame
         {
             float lead = _t.meteorWarnSeconds + FallSeconds;
             float vx = Mathf.Max(4f, car.Body.linearVelocity.x);
-            float x = car.Body.position.x + vx * lead + UnityEngine.Random.Range(-2.5f, 2.5f);
+            float x = car.Body.position.x + vx * lead + Jitter();
             float y = _road.TryGetRoadYAtX(x, out float roadY) ? roadY : car.Body.position.y - 0.5f;
 
             var marker = new GameObject("MeteorMarker").transform;

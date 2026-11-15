@@ -5,7 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "RB.Core",
-        "RB.Game"
+        "RB.Game",
+        "RB.UI"
     ],
     "includePlatforms": [
         "Editor"

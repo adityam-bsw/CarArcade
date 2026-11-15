@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b74e854bfbbf64c12a814de87b91aa1d, type: 3}
+  m_Name: EVT-GLASS
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.StageEventDefinition
+  id: EVT-GLASS
+  role: 1
+  displayNameKey: event.glass
+  difficultyCost: 6
+  minDistanceM: 1250
+  maxDistanceM: 1600
+  lengthM: 160
+  startJitterM: 40
+  lockDistanceM: 150
+  cooldownAfterM: 0
+  minBreatherS: 12
+  paceSpeedFactor: 1
+  weight: 1
+  announcerLeadS: 5
+  signLeadS: 3
+  cueLeadS: 1
+  signalMinGapS: 0.6
+  bannerKey: banner.glass
+  bannerSeconds: 1.5
+  announcerCueId: vo.rob0.s1.glass
+  tintColorToken: ZoneGlass
+  warnSfxId: sfx.glass.sign
+  cueSfxId: sfx.glass.cue
+  surfaceRule: {fileID: 11400000, guid: f73705717d51a49b08ba707a09ace5a4, type: 2}
+  forbiddenWith:
+  - EVT-ICE
+  - EVT-MUD
+  - EVT-METEOR
+  - EVT-RINGS
+  - BOS-ROB0
+  requires:
+  - MON-EATER
+  adjacentForbiddenWith:
+  - EVT-MUD
+  adjacentMinGapM: 300
+  modifierSlots: 1
+  spawnerId: hz-glass
+  terrainSlopeMinDeg: -12
+  terrainSlopeMaxDeg: 12
+  terrainLongestGapM: 0
+  terrainJumpHeightCapM: 8
+  coinShape: 3
+  ringCount: 1
+  ringSpacingM: 16
+  ringMaxHeightM: 5
+  inkPickupSpacingM: 90
+  variantCount: 1
+  strikeIntervalSecMin: 3.5
+  strikeIntervalSecMax: 5.5
+  strikeMaxCount: 3
+  clearOnRespawnM: 15
+  safePlatformM: 6
+  noEat: 1
+  telemetryId: EVT-GLASS

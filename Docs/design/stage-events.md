@@ -1,6 +1,6 @@
 # Stage Events and StageDirector spec (vertical slice)
 
-Owner: level-stage-director. Status: PROPOSED; the data layer (section 9 assets, `IStageDirector`, deterministic core) is built in Phase A under `Assets/Scripts/Game/Stage/` with EditMode tests SD-01 to SD-22 and no scene wiring; nothing is measured in play. Implementation notes: `Docs/GAMEPLAY_RULES.md` (Stage director). Date: 2026-11-15.
+Owner: level-stage-director. Status: PROPOSED; the data layer (section 9 assets, `IStageDirector`, deterministic core) is built under `Assets/Scripts/Game/Stage/` with EditMode tests SD-01 to SD-22, and phase B1 (2026-11-16) wires it into the real run behind `GameplayTuning.stageEvents` with the slice assets in `Assets/Resources/Stage/`, three-signal warnings on the HUD, ice, mud and glass as event zones on the existing surface hooks, the meteor window, the ring gauntlet and QA jump points; see `Docs/GAMEPLAY_RULES.md` (Stage director) for what is and is not built. Nothing is measured on a device. Date: 2026-11-15.
 Reconciled with `VERTICAL_SLICE_BRIEF.md` (source of truth) on 2026-11-15; see the brief's section 13. Where this file and the brief differ, the brief wins.
 Source: `Docs/design/VERTICAL_SLICE_BRIEF.md` sections 3, 5 (F1 to F6), 7, 10. Rules: `CLAUDE.md`, `Docs/GAMEPLAY_RULES.md`.
 Consumer: unity-implementer builds `StageEventDefinition` assets and the `StageDirector` from this file. Hazard behaviour

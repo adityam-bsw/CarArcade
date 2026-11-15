@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b74e854bfbbf64c12a814de87b91aa1d, type: 3}
+  m_Name: MON-EATER
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.StageEventDefinition
+  id: MON-EATER
+  role: 2
+  displayNameKey: event.eater
+  difficultyCost: 7
+  minDistanceM: 1000
+  maxDistanceM: 1750
+  lengthM: 750
+  startJitterM: 0
+  lockDistanceM: 150
+  cooldownAfterM: 100
+  minBreatherS: 12
+  paceSpeedFactor: 1
+  weight: 1
+  announcerLeadS: 5
+  signLeadS: 3
+  cueLeadS: 1
+  signalMinGapS: 0.6
+  bannerKey: banner.eater
+  bannerSeconds: 1.5
+  announcerCueId: vo.rob0.s1.eater
+  tintColorToken: ZoneMeteor
+  warnSfxId: sfx.eater.sign
+  cueSfxId: sfx.eater.cue
+  surfaceRule: {fileID: 0}
+  forbiddenWith:
+  - EVT-ICE
+  - EVT-MUD
+  - EVT-METEOR
+  - EVT-RINGS
+  - BOS-ROB0
+  requires: []
+  adjacentForbiddenWith: []
+  adjacentMinGapM: 0
+  modifierSlots: 0
+  spawnerId: hz-eater
+  terrainSlopeMinDeg: -12
+  terrainSlopeMaxDeg: 12
+  terrainLongestGapM: 6
+  terrainJumpHeightCapM: 8
+  coinShape: 0
+  ringCount: 0
+  ringSpacingM: 16
+  ringMaxHeightM: 6
+  inkPickupSpacingM: 110
+  variantCount: 1
+  strikeIntervalSecMin: 3.5
+  strikeIntervalSecMax: 5.5
+  strikeMaxCount: 3
+  clearOnRespawnM: 15
+  safePlatformM: 0
+  noEat: 0
+  telemetryId: MON-EATER

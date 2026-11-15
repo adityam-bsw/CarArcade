@@ -10,7 +10,9 @@ namespace RoadBuilderGame.UI
         Background, Surface, SurfaceAlt, Primary, Secondary, Accent, Success, Danger,
         TextPrimary, TextSecondary, TextOnAccent, Coin, Ink, Outline,
         /// <summary>White: for illustrated artwork that keeps its own colours.</summary>
-        Tint
+        Tint,
+        // Stage event zone colours (brief section 4: red damage, blue ice, brown mud, cyan-white glass, gold reward). Appended so saved theme indices stay valid.
+        ZoneIce, ZoneMud, ZoneGlass, ZoneMeteor, ZoneRings
     }
 
     public enum FontRole { Display, Body }

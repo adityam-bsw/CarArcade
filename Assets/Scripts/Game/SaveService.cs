@@ -30,6 +30,9 @@ namespace RoadBuilderGame
         public string selectedSurfaceId = "";
         public string selectedWorldId = "";
 
+        /// <summary>The stage-event run record: seed, mode and layout of the last run, so a retry replays the same ladder. Written by the run start only.</summary>
+        public StageRunRecord lastStageRun;
+
         // Rewards and meta progress
         public int gems;
         public int boostLevel = 1;

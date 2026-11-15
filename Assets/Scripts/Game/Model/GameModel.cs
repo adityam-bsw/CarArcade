@@ -80,6 +80,18 @@ namespace RoadBuilderGame
         public string Toast = "";             // short event text; ToastId changes for every new one
         public int ToastId;
 
+        // Stage events (written by StageWarningPresenter; the HUD only displays them). Tint fields hold a UITheme colour token name.
+        public string StageBanner = "";       // S1 banner text; StageBannerId changes for every new banner
+        public int StageBannerId;
+        public string StageBannerTint = "";
+        public bool StageSignOn;              // S2 sign visible (from S2 until the effect ends)
+        public bool StageSignActive;          // the effect is running (the sign counts metres left); false while it counts metres to the start
+        public string StageSignName = "";
+        public int StageSignMetres;
+        public string StageSignTint = "";
+        public int StageFlashId;              // S3 edge flash; changes for every flash
+        public string StageFlashTint = "";
+
         // Rewards and progress
         public int Gems, BoostLevel = 1;
         public bool RewardsAvailable;         // something to claim

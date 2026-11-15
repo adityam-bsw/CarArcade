@@ -55,6 +55,12 @@ namespace RoadBuilderGame
         private bool _soundEnabled = true;
         private AudioDirector _audio;
         private MeteorSpawner _meteors;
+        // Stage events (vertical slice). Everything below is inert unless GameplayTuning.stageEvents allows the world on screen.
+        private StageRunController _stage;
+        private StageWarningPresenter _stagePresenter;
+        private readonly SurfaceZoneModel _zone = new SurfaceZoneModel();
+        private bool _stageOn;
+        private ScreenState _previousState = ScreenState.HomeDashboard;
         private float _frenzyTrailTimer;
         // Track traits of the current surface (CatalogEntry.speedFactor / inkFactor / coinFactor); 1 = plain asphalt.
         private float _trackSpeed = 1f, _trackInk = 1f;
@@ -200,6 +206,10 @@ namespace RoadBuilderGame
             _meteors.NearMissed += () => _run.NearMiss();
             _meteors.Impacted += OnMeteorImpact;
             _run.CueRaised += OnRunCue;
+            SetupStageEvents();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            gameObject.AddComponent<QaJumpOverlay>().Init(this);
+#endif
 
             LoadPlayerData();
             _meta = new MetaProgress(_profile, _tuning);
@@ -305,9 +315,14 @@ namespace RoadBuilderGame
 
         public void SwitchScreen(ScreenState newState)
         {
+            _previousState = _state;
             _state = newState;
             _stateTime = 0f;
-            if (newState != ScreenState.Playing) { ApplyTimeScale(1f); Collectible.MagnetTarget = null; }
+            if (newState != ScreenState.Playing)
+            {
+                ApplyTimeScale(1f); Collectible.MagnetTarget = null;
+                EndStageRun(StageRunOutcome.Quit);       // no-op when the run already ended as Died
+            }
 
             switch (newState)
             {
@@ -402,6 +417,7 @@ namespace RoadBuilderGame
             _run.Begin(boostLevel, _bestScore);
             _meteors.Reset();
             _powerKey = -1;
+            BeginStageRun(_previousState == ScreenState.GameOver);
 
             UpdateHeartsUI();
             UpdateInkUI();
@@ -429,7 +445,19 @@ namespace RoadBuilderGame
                 Vector2 carPos = _car.Body.position;
                 _distance = Mathf.Max(_distance, carPos.x - _startX);
                 float speedRatio = Mathf.InverseLerp(baseStartSpeed, baseMaxSpeed + (engineLevel * 0.8f), _car.TargetSpeed);
-                _car.TargetSpeed = Mathf.Min(baseMaxSpeed + (engineLevel * 0.8f), baseStartSpeed + (engineLevel * 0.8f) + _distance * speedGainPerMetre) * _trackSpeed + _run.BoostSpeedBonus;
+                float baseTarget = Mathf.Min(baseMaxSpeed + (engineLevel * 0.8f), baseStartSpeed + (engineLevel * 0.8f) + _distance * speedGainPerMetre) * _trackSpeed;
+                if (_stage.Active)
+                {
+                    _stage.Tick(_distance, _car.Body.linearVelocity.x, Time.deltaTime);     // scaled time: slow-mo stretches a warning, never shortens it
+                    _stagePresenter.Tick(_distance, Time.deltaTime);
+                    if (_zone.Active)
+                    {
+                        SampleRoadShape(carPos.x, _zone.Rule.iceSlipSpanMetres, out float uphillDeg, out float turnDeg);
+                        baseTarget = _zone.Tick(Time.deltaTime, baseTarget, _tuning.MudDragMul(MudVehicleIndex()), uphillDeg, turnDeg, _run.Boosting);
+                        _car.MotorOn = !_zone.DriveCut;                                     // ice slip: the car coasts, no damage
+                    }
+                }
+                _car.TargetSpeed = baseTarget + _run.BoostSpeedBonus;
                 _run.Tick(Time.unscaledDeltaTime, _car, _distance);
                 Collectible.MagnetTarget = _run.MagnetOn ? _car.Body.transform : null;
                 Collectible.MagnetRadius = _tuning.magnetRadius;
@@ -507,11 +535,13 @@ namespace RoadBuilderGame
                 Vector2 safeSurfacePt = _road.CreateSafetyPlatformAndFindRespawn(_car.Body.position.x, 0f);
                 _car.RespawnSafely(safeSurfacePt);
                 _upsideDownTime = 0f;
+                if (_stage.Active) _stage.OnRespawn(_distance);
             }
         }
 
         private void TriggerGameOver(string reason)
         {
+            EndStageRun(StageRunOutcome.Died);
             bool newBest = _distance > _bestScore;
             if (newBest) _bestScore = _distance;
             totalCoins += sessionCoins;
@@ -954,21 +984,7 @@ namespace RoadBuilderGame
                 _roadMaterial.friction = e.friction;
                 _roadMaterial.bounciness = e.bounce;
                 SetSurfaceTuning(e);   // gameplay numbers always come from the selected surface, whatever strip is drawn
-                var smoothSkin = SmoothDisplaySkin(e.id);
-                if (smoothSkin != null) { _road.SetSkin(smoothSkin); return; }
-                if (e.strip != null)
-                {
-                    if (!_surfaceSkins.TryGetValue(e.id, out var skin) || skin == null)
-                    {
-                        skin = ScriptableObject.CreateInstance<RoadSkin>();
-                        skin.displayName = e.displayName;
-                        skin.atlas = e.strip;
-                        _surfaceSkins[e.id] = skin;
-                    }
-                    _road.SetSkin(skin);
-                    return;
-                }
-                if (e.roadStyle >= 0) { SelectedRoadStyle = (RoadStyle)e.roadStyle; _road.SetRoadStyle(SelectedRoadStyle); return; }
+                if (ApplyEntrySkin(e)) return;
             }
             _roadMaterial.friction = 1.25f;
             _roadMaterial.bounciness = 0f;
@@ -976,6 +992,27 @@ namespace RoadBuilderGame
             var legacySmooth = SmoothDisplaySkin(RoadSkins.SurfaceIdOf(SelectedRoadStyle));
             if (legacySmooth != null) { _road.SetSkin(legacySmooth); return; }
             _road.SetRoadStyle(SelectedRoadStyle);
+        }
+
+        /// <summary>Draws the road with the look of a catalogue surface. False when the entry has no look of its own (the caller falls back to the legacy style).</summary>
+        private bool ApplyEntrySkin(CatalogEntry e)
+        {
+            var smoothSkin = SmoothDisplaySkin(e.id);
+            if (smoothSkin != null) { _road.SetSkin(smoothSkin); return true; }
+            if (e.strip != null)
+            {
+                if (!_surfaceSkins.TryGetValue(e.id, out var skin) || skin == null)
+                {
+                    skin = ScriptableObject.CreateInstance<RoadSkin>();
+                    skin.displayName = e.displayName;
+                    skin.atlas = e.strip;
+                    _surfaceSkins[e.id] = skin;
+                }
+                _road.SetSkin(skin);
+                return true;
+            }
+            if (e.roadStyle >= 0) { SelectedRoadStyle = (RoadStyle)e.roadStyle; _road.SetRoadStyle(SelectedRoadStyle); return true; }
+            return false;
         }
 
         private readonly HashSet<string> _smoothFallbackLogged = new HashSet<string>();
@@ -1001,6 +1038,124 @@ namespace RoadBuilderGame
         {
             _trackSpeed = e.speedFactor; _trackInk = e.inkFactor; _run.CoinFactor = e.coinFactor;
         }
+
+        // ==================================================================== STAGE EVENTS (Docs/design/stage-events.md; behind GameplayTuning.stageEvents)
+        private void SetupStageEvents()
+        {
+            var ladder = Resources.Load<StageLadderDefinition>("Stage/StageLadder");
+            _stage = new StageRunController(ladder);
+            _stage.Register("EVT-ICE", new SurfaceZoneBehaviour(EnterZone, ExitZone));
+            _stage.Register("EVT-MUD", new SurfaceZoneBehaviour(EnterZone, ExitZone));
+            _stage.Register("EVT-GLASS", new SurfaceZoneBehaviour(EnterZone, ExitZone));
+            _stage.Register("EVT-METEOR", new MeteorWindowBehaviour(_meteors));
+            _stage.Register("EVT-RINGS", new RingWindowBehaviour(PlaceRingGauntlet));
+            _stagePresenter = new StageWarningPresenter(_stage, _audio, _tuning);
+            _meteors.CanStrike = () => _stage.CanSpawnHazard("hz-meteor");
+        }
+
+        /// <summary>Countryside means the Country theme, and not a custom layered world from the catalogue.</summary>
+        private bool IsCountrysideWorld()
+        {
+            var e = string.IsNullOrEmpty(_selWorldId) ? null : AssetCatalog.Load()?.Find(_selWorldId);
+            if (e != null && e.kind == CatalogKind.World && e.playable && e.themeIndex < 0) return false;
+            return SelectedTheme == EnvironmentTheme.Country;
+        }
+
+        private void BeginStageRun(bool retry)
+        {
+            _zone.Exit();
+            _stagePresenter.Reset();
+            _stageOn = StageRunController.ShouldRun(_tuning.stageEvents, IsCountrysideWorld()) && _stage.HasData;
+            _meteors.StageDriven = _stageOn;
+            if (!_stageOn) return;
+            // Retry reuses the saved seed (same ladder); a new run draws a new one. The record is saved through SaveService only.
+            var saved = _profile.lastStageRun;
+            StageRunRecord rec;
+            if (retry && saved.runSeed != 0u && saved.layoutVersion == _stage.Ladder.layoutVersion) { rec = saved; rec.debugJumped = false; }
+            else
+            {
+                rec = StageRunController.NewRecord((ulong)System.DateTime.UtcNow.Ticks, _stage.Ladder.layoutVersion);
+                _profile.lastStageRun = rec;
+                SavePlayerData();
+            }
+            _stage.Begin(rec);
+        }
+
+        private void EndStageRun(StageRunOutcome outcome)
+        {
+            if (_stage == null || !_stage.Active) return;
+            _stage.End(outcome);                 // Ended is raised for the Active zone or window, which clears them
+            _stagePresenter.Reset();
+            _zone.Exit();
+        }
+
+        private void EnterZone(SurfaceRuleSO rule, float startM)
+        {
+            _zone.Enter(rule);
+            _roadMaterial.friction = rule.friction;
+            _trackSpeed = rule.speedFactor; _trackInk = rule.inkFactor; _run.CoinFactor = rule.coinFactor;
+            var e = AssetCatalog.Load()?.Find(rule.surfaceId);
+            if (e != null && e.kind == CatalogKind.Surface) ApplyEntrySkin(e);       // the road drawn in the zone looks like the zone
+            if (_pickups != null) _pickups.PlaceInkAt(_startX + startM + 6f);         // ink at zone entry (stage-events.md section 6)
+        }
+
+        private void ExitZone()
+        {
+            _zone.Exit();
+            if (_car != null) _car.MotorOn = true;
+            ApplySurface();                                                            // the player's own surface returns
+        }
+
+        private void PlaceRingGauntlet(StageEventState s)
+        {
+            var d = s.Definition;
+            _pickups.PlaceGauntlet(_startX + s.StartM, d.ringCount, d.ringSpacingM, d.ringMaxHeightM, s.TerrainSeed);
+        }
+
+        private int MudVehicleIndex() { return _selVehicleId.Length > 0 && CatalogVehicle() != null ? -1 : (int)SelectedVehicle; }
+
+        /// <summary>Slope ahead of the car (uphill only) and the bend over <paramref name="spanM"/> metres of road. Reads the road lookup, allocates nothing.</summary>
+        private void SampleRoadShape(float x, float spanM, out float uphillDeg, out float turnDeg)
+        {
+            uphillDeg = 0f; turnDeg = 0f;
+            float h = Mathf.Max(0.5f, spanM * 0.5f);
+            if (!_road.TryGetRoadYAtX(x - h, out float y0) || !_road.TryGetRoadYAtX(x, out float y1) || !_road.TryGetRoadYAtX(x + h, out float y2)) return;
+            float a0 = Mathf.Atan2(y1 - y0, h) * Mathf.Rad2Deg, a1 = Mathf.Atan2(y2 - y1, h) * Mathf.Rad2Deg;
+            uphillDeg = Mathf.Max(0f, a1);
+            turnDeg = Mathf.Abs(a1 - a0);
+        }
+
+        private void OnApplicationPause(bool paused) { _stage?.OnPause(paused); }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public StageRunController DebugStage => _stage;
+        public bool DebugStageOn => _stageOn;
+        public float DebugDistance => _distance;
+        /// <summary>Flat runway laid ahead of a QA jump (metres): long enough to ride through a whole zone without drawing.</summary>
+        public const float QaRunwayAheadM = 170f;
+
+        /// <summary>QA jump (Editor and development builds only): moves the run to <paramref name="distanceM"/> on a fresh flat runway, full ink and hearts, and lets the director replay the warning state.</summary>
+        public void DebugJumpToStage(float distanceM)
+        {
+            if (_state != ScreenState.Playing || _car == null || !_stage.Active) return;
+            _brush.Cancel();
+            float worldX = _startX + distanceM;
+            _zone.Exit();
+            ApplySurface();
+            _stagePresenter.Reset();
+            _road.ResetRoad(worldX - 14f, worldX + QaRunwayAheadM, 0f);
+            _car.RespawnSafely(new Vector2(worldX, 0f));
+            _distance = distanceM;
+            _pickups.Reset(worldX + 16f);
+            _meteors.Reset();
+            currentInk = maxInk; currentLives = maxLives;
+            UpdateHeartsUI(); UpdateInkUI();
+            _stage.JumpTo(distanceM);
+            var rec = _profile.lastStageRun; rec.debugJumped = true; _profile.lastStageRun = rec;
+            _cameraRig.Snap(_car);
+            Debug.Log("[Stage] debug_jump " + distanceM + " m");
+        }
+#endif
 
         public void SetSoundEnabled(bool enabled)
         {

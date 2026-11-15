@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4fa055b0f8a4de899fe4c8f8ee5665, type: 3}
+  m_Name: SRF-GLS
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.SurfaceRuleSO
+  surfaceId: surface-glass
+  friction: 0.5
+  speedFactor: 1.12
+  inkFactor: 1.3
+  coinFactor: 1.4
+  tintColorToken: ZoneGlass
+  warnMetres: 40
+  downhillBoost: 1.3
+  uphillBrake: 0.7
+  slipAngleDeg: 25
+  iceSlipSpanMetres: 4
+  iceSlipMaxSeconds: 0.6
+  iceSlipRampDegrees: 20
+  iceSlipRearmSeconds: 0.6
+  dragPerSec: 1
+  mudDragCapMps: 2
+  dragFloorSpeed: 3
+  stallAngleDeg: 18
+  mudBoostIgnoresDrag: 1
+  glassDwellHairline: 0.8
+  glassDwellWeb: 1.6
+  glassDwellDrop: 2.6
+  glassDropAfterRearLeave: 0.6
+  pieceLength: 4
+  safeEntryPlatformMetres: 6

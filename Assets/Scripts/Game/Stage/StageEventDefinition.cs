@@ -39,7 +39,10 @@ namespace RoadBuilderGame
         public string bannerKey;
         [Range(1f, 2.5f)] public float bannerSeconds = 1.5f;
         public string announcerCueId;
-        [Tooltip("UITheme colour token name, not a hex.")] public string tintColorToken;
+        [Tooltip("UITheme colour token name (a ColorToken), not a hex.")] public string tintColorToken;
+        [Tooltip("Sound-only cue ids from voice-lines.md 3.3: S2 sign sting and S3 edge cue (sfx.<event>.sign, sfx.<event>.cue).")] public string warnSfxId;
+        public string cueSfxId;
+        [Tooltip("Surface numbers for a surface event (ice, mud, glass); null for the others.")] public SurfaceRuleSO surfaceRule;
 
         [Header("Stacking (mirrors the EventCompatibilityMatrix; validated against it)")]
         public string[] forbiddenWith = new string[0];

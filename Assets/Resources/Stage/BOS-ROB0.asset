@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b74e854bfbbf64c12a814de87b91aa1d, type: 3}
+  m_Name: BOS-ROB0
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.StageEventDefinition
+  id: BOS-ROB0
+  role: 3
+  displayNameKey: event.boss
+  difficultyCost: 8
+  minDistanceM: 2000
+  maxDistanceM: 0
+  lengthM: 600
+  startJitterM: 0
+  lockDistanceM: 150
+  cooldownAfterM: 150
+  minBreatherS: 12
+  paceSpeedFactor: 1
+  weight: 1
+  announcerLeadS: 5
+  signLeadS: 3
+  cueLeadS: 1
+  signalMinGapS: 0.6
+  bannerKey: banner.boss
+  bannerSeconds: 1.5
+  announcerCueId: vo.rob0.s1.boss
+  tintColorToken: ZoneMeteor
+  warnSfxId: sfx.boss.sign
+  cueSfxId: sfx.boss.cue
+  surfaceRule: {fileID: 0}
+  forbiddenWith:
+  - EVT-ICE
+  - EVT-MUD
+  - EVT-METEOR
+  - EVT-GLASS
+  - EVT-RINGS
+  - MON-EATER
+  requires: []
+  adjacentForbiddenWith: []
+  adjacentMinGapM: 0
+  modifierSlots: 0
+  spawnerId: hz-boss
+  terrainSlopeMinDeg: -8
+  terrainSlopeMaxDeg: 8
+  terrainLongestGapM: 6
+  terrainJumpHeightCapM: 8
+  coinShape: 0
+  ringCount: 0
+  ringSpacingM: 16
+  ringMaxHeightM: 6
+  inkPickupSpacingM: 110
+  variantCount: 1
+  strikeIntervalSecMin: 3.5
+  strikeIntervalSecMax: 5.5
+  strikeMaxCount: 3
+  clearOnRespawnM: 15
+  safePlatformM: 0
+  noEat: 0
+  telemetryId: BOS-ROB0

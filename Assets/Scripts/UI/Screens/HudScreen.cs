@@ -25,6 +25,13 @@ namespace RoadBuilderGame.UI
         [SerializeField] private TMP_Text toastText;
         [SerializeField] private TMP_Text gemsText;
         [SerializeField] private float gaugeMaxKmh = 80f;
+        [Header("Stage event warning (S1 banner, S2 sign, S3 edge flash)")]
+        [SerializeField] private TMP_Text stageBanner;
+        [SerializeField] private RectTransform stageSign;
+        [SerializeField] private TMP_Text stageSignName;
+        [SerializeField] private TMP_Text stageSignMetres;
+        [SerializeField] private Image edgeFlashLeft;
+        [SerializeField] private Image edgeFlashRight;
 
         private const float LowInk = 0.2f;
 
@@ -34,6 +41,10 @@ namespace RoadBuilderGame.UI
         private bool _boostReady, _boostReadyKnown;
         private string _power;
         private Tween _toastTween;
+        private int _bannerId, _flashId, _signMetres = -1;
+        private bool _signShown, _signActive;
+        private string _signName;
+        private Tween _bannerTween, _flashTween;
 
         public override bool BackCloses => false;
 
@@ -47,6 +58,11 @@ namespace RoadBuilderGame.UI
             _distance = _speed = _coins = _lives = _inkPercent = -1;
             _boostPercent = -1; _boostCost = -2; _multiplier = _combo = _gems = -1; _boostReadyKnown = false; _power = null;
             _toastId = GameServices.Model.ToastId;
+            _bannerId = GameServices.Model.StageBannerId; _flashId = GameServices.Model.StageFlashId;
+            _signShown = false; _signActive = false; _signMetres = -1; _signName = null;
+            if (stageBanner != null) stageBanner.alpha = 0f;
+            if (stageSign != null) stageSign.gameObject.SetActive(false);
+            SetFlashAlpha(0f);
             if (toastText != null) toastText.alpha = 0f;
             if (_lowPulse) { UIAnim.StopPulse(inkBar); _lowPulse = false; }
             GameServices.Model.HudChanged += Refresh;
@@ -55,7 +71,7 @@ namespace RoadBuilderGame.UI
 
         public override void OnHide()
         {
-            KillToast();
+            KillToast(); KillStageTweens();
             GameServices.Model.HudChanged -= Refresh;
             if (_lowPulse) { UIAnim.StopPulse(inkBar); _lowPulse = false; }
         }
@@ -63,7 +79,7 @@ namespace RoadBuilderGame.UI
         protected override void OnDisable()
         {
             base.OnDisable();
-            KillToast();
+            KillToast(); KillStageTweens();
             GameServices.Model.HudChanged -= Refresh;
         }
 
@@ -115,6 +131,80 @@ namespace RoadBuilderGame.UI
             }
 
             RefreshExtras(m, theme);
+            RefreshStage(m, theme);
+        }
+
+        private void KillStageTweens()
+        {
+            if (_bannerTween != null && _bannerTween.IsActive()) _bannerTween.Kill(); _bannerTween = null;
+            if (_flashTween != null && _flashTween.IsActive()) _flashTween.Kill(); _flashTween = null;
+        }
+
+        private static Color TokenColor(UITheme theme, string token, ColorToken fallback)
+        {
+            return theme.GetColor(System.Enum.TryParse(token, out ColorToken t) ? t : fallback);
+        }
+
+        private void SetFlashAlpha(float a)
+        {
+            if (edgeFlashLeft != null) { var c = edgeFlashLeft.color; c.a = a; edgeFlashLeft.color = c; }
+            if (edgeFlashRight != null) { var c = edgeFlashRight.color; c.a = a; edgeFlashRight.color = c; }
+        }
+
+        // The three warning signals. Each part reacts to a changed id or value only, so a quiet frame touches nothing.
+        private void RefreshStage(GameModel m, UITheme theme)
+        {
+            if (stageBanner != null && m.StageBannerId != _bannerId)
+            {
+                _bannerId = m.StageBannerId;
+                if (_bannerTween != null && _bannerTween.IsActive()) _bannerTween.Kill();
+                stageBanner.SetText(m.StageBanner);
+                stageBanner.color = TokenColor(theme, m.StageBannerTint, ColorToken.Accent);
+                stageBanner.alpha = 1f;
+                stageBanner.transform.localScale = Vector3.one * 0.7f;
+                var seq = DOTween.Sequence().SetUpdate(true);          // scaled-time independent: a warning never shortens under slow-mo
+                seq.Append(stageBanner.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack));
+                seq.AppendInterval(1.1f);
+                seq.Append(stageBanner.DOFade(0f, 0.3f));
+                _bannerTween = seq;
+            }
+
+            if (stageSign != null)
+            {
+                if (m.StageSignOn != _signShown)
+                {
+                    _signShown = m.StageSignOn;
+                    stageSign.gameObject.SetActive(_signShown);
+                    if (_signShown)
+                    {
+                        var img = stageSign.GetComponent<Image>();
+                        if (img != null) { var c = TokenColor(theme, m.StageSignTint, ColorToken.Accent); c.a = 0.92f; img.color = c; }
+                        UIAnim.Punch(stageSign, 0.2f);
+                        _signName = null; _signMetres = -1;
+                    }
+                }
+                if (_signShown)
+                {
+                    if (m.StageSignName != _signName || m.StageSignActive != _signActive)
+                    {
+                        _signName = m.StageSignName; _signActive = m.StageSignActive;
+                        stageSignName.SetText(_signName);
+                        _signMetres = -1;
+                    }
+                    if (m.StageSignMetres != _signMetres) { _signMetres = m.StageSignMetres; stageSignMetres.SetText(_signActive ? "{0} M LEFT" : "IN {0} M", _signMetres); }
+                }
+            }
+
+            if (m.StageFlashId != _flashId)
+            {
+                _flashId = m.StageFlashId;
+                if (_flashTween != null && _flashTween.IsActive()) _flashTween.Kill();
+                var col = TokenColor(theme, m.StageFlashTint, ColorToken.Danger);
+                if (edgeFlashLeft != null) edgeFlashLeft.color = col;
+                if (edgeFlashRight != null) edgeFlashRight.color = col;
+                SetFlashAlpha(0.55f);
+                _flashTween = DOVirtual.Float(0.55f, 0f, 1f, SetFlashAlpha).SetUpdate(true);       // S3: a 1 s edge flash, not a full-screen flash
+            }
         }
 
         private void KillToast() { if (_toastTween != null && _toastTween.IsActive()) _toastTween.Kill(); _toastTween = null; }

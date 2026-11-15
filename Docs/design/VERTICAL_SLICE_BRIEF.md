@@ -547,3 +547,12 @@ event warns now trigger at S1 (5.0 s), not "40 m ahead".
 ## 14. User decisions log
 - 2026-11-15 APPROVED by the user: the PROPOSED economy numbers (vehicle prices 600/2000, near-miss 8/10/12/15 with 12% run cap, half pay on repeat Eater/boss clears, timeout payouts 75/100, upgrade scaling +6%/level) and the slice vehicle trio (ClassicRed, SportCyan, MonsterTruck).
 - Still OPEN (not answered): retry-from-0 vs checkpoints, haptics default, voice licence source, boost price 5 vs 10, mud cap scaling per vehicle, adoption of Eater model (32/18/1.25x) and Overload boss meter.
+- 2026-11-16 **implementer defaults, user may override** (applied by the team lead's instruction for phase B1 so work is not blocked; none of these is an approval):
+  | Open question | Default applied | Where it lives (change it there) |
+  |---|---|---|
+  | Retry from 0 m or checkpoints | Retry from 0 m (current behaviour); the same run seed is reused so the ladder repeats | `RoadGameManager.BeginStageRun` (retry = previous screen was GameOver) |
+  | Haptics | Off. One `Handheld.Vibrate()` call on S3 only when the flag is on; nothing else is built on it | `GameplayTuning.stageHaptics` (false) |
+  | Boost price 5 or 10 | Unchanged at 5 | `GameplayTuning.boostCoinCost` |
+  | Mud drag cap per vehicle | Scales: Red 2.0, Cyan 2.5, Monster 1.2 m/s (`mudDragMul` 1 / 1.25 / 0.6 times the 2.0 cap) | `GameplayTuning.mudDragMulByVehicle`, `SurfaceRuleSO.mudDragCapMps` |
+  | Eater model and boss meter | As in `hazards.md` (32 m start gap, 18 m target, 1.25x cap; Overload meter). Not built in B1; only the two schedule anchors exist in the ladder | phase B2 |
+  | Stage events in a real run | `GameplayTuning.stageEvents` = CountrysideOnly (ON by default in the Countryside world, off elsewhere; Off restores the old game exactly) | `GameplayTuning.stageEvents` |

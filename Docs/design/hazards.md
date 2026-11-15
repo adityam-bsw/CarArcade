@@ -212,6 +212,7 @@ Escape or Retreat. **No surface zone (ice, mud, glass) and no meteor may be Acti
 ---
 
 ## 3. Surface interactions (formulas, units, fairness proof)
+Implementation status (phase B1, 2026-11-16): the mud formula (3.2), the ice slip (3.1) and the base numbers are built in `SurfaceZoneModel` and driven by `SurfaceRuleSO` assets. Not built: ice downhill x1.3 / uphill x0.7 (motor-driven car, no along-slope term), glass arming, cracking and dropping (3.3; the road has no break state, glass is a zone with base numbers only), the glass 6 m entry platform. Mud stall uses the slope ahead of the car, uphill only.
 Base numbers are the existing table (friction, speed x, ink x, coin x: ice 0.35/1.15/1.30/1.50, mud 1.60/0.85/0.75/1.30,
 glass 0.50/1.12/1.30/1.40). Surface events never overlap the Eater Warn, RO-B0 or meteors (brief). Zone length 120 to 180 m, S2 sign and tint at 40 m
 (about 3 s at the fastest cap; the S1 announcer is 5 s before the start, `stage-events.md` section 4). Entering a zone shows a tint strip + banner + sound at the 40 m mark.

@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9446adbc9cc254fdcbd6cda01d90f383, type: 3}
+  m_Name: EventCompatibilityMatrix
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.EventCompatibilityMatrix
+  pairs:
+  - idA: EVT-ICE
+    idB: EVT-MUD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X1
+  - idA: EVT-ICE
+    idB: EVT-METEOR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X2
+  - idA: EVT-ICE
+    idB: EVT-GLASS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X3
+  - idA: EVT-ICE
+    idB: EVT-RINGS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X7
+  - idA: EVT-ICE
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: phase:Warn
+    reasonKey: X4
+  - idA: EVT-ICE
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X6
+  - idA: EVT-MUD
+    idB: EVT-METEOR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X2
+  - idA: EVT-MUD
+    idB: EVT-GLASS
+    rule: 0
+    adjacentMinGapM: 300
+    conditionKey: 
+    reasonKey: X8
+  - idA: EVT-MUD
+    idB: EVT-RINGS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X7
+  - idA: EVT-MUD
+    idB: MON-EATER
+    rule: 2
+    adjacentMinGapM: 0
+    conditionKey: C1:disabled
+    reasonKey: C1
+  - idA: EVT-MUD
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X6
+  - idA: EVT-METEOR
+    idB: EVT-GLASS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X2
+  - idA: EVT-METEOR
+    idB: EVT-RINGS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X7
+  - idA: EVT-METEOR
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X5
+  - idA: EVT-METEOR
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X5
+  - idA: EVT-GLASS
+    idB: EVT-RINGS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X7
+  - idA: EVT-GLASS
+    idB: MON-EATER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: phase:Track
+    reasonKey: OK
+  - idA: EVT-GLASS
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X6
+  - idA: EVT-RINGS
+    idB: MON-EATER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X9
+  - idA: EVT-RINGS
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X9
+  - idA: MON-EATER
+    idB: BOS-ROB0
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: X10

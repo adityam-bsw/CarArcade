@@ -6,6 +6,9 @@ namespace RoadBuilderGame
     /// Every number that shapes how a run feels: boost, ink, coins, combo, power-ups, bonuses, daily rewards.
     /// Lives in Resources/Gameplay/GameplayTuning.asset so it can be tuned without code. Defaults here are the shipped values.
     /// </summary>
+    /// <summary>Where the stage director drives a run.</summary>
+    public enum StageEventsSwitch { Off, CountrysideOnly, Always }
+
     [CreateAssetMenu(menuName = "Road Builder/Gameplay Tuning", fileName = "GameplayTuning")]
     public class GameplayTuning : ScriptableObject
     {
@@ -82,10 +85,24 @@ namespace RoadBuilderGame
         [Tooltip("Surviving a strike within this distance of the car counts as a near miss.")] public float nearMissRadius = 4.5f;
         public int nearMissCoins = 8;
 
+        [Header("Stage events (vertical slice; Docs/design/stage-events.md)")]
+        [Tooltip("The one switch for the stage director in a real run. Off: the old game, unchanged. CountrysideOnly: events run only in the Countryside world. Always: every world.")]
+        public StageEventsSwitch stageEvents = StageEventsSwitch.CountrysideOnly;
+        [Tooltip("Mud drag multiplier per slice vehicle (ClassicRed, SportCyan, MonsterTruck). The mud drag cap is 2.0 x this: Red 2.0, Cyan 2.5, Monster 1.2 m/s. Catalogue vehicles use 1.")]
+        public float[] mudDragMulByVehicle = { 1f, 1.25f, 0.6f };
+        [Tooltip("Haptic cue on the S3 warning. Default OFF, nothing is built on it until the open question is answered.")]
+        public bool stageHaptics = false;
+
         [Header("Daily reward (7 day streak)")]
         public int[] dailyCoins = { 50, 75, 100, 125, 150, 200, 300 };
         public int dailyGemsOnLastDay = 3;
         public int missionsPerDay = 3;
+
+        /// <summary>Mud drag multiplier for a slice vehicle (index = VehicleType); 1 for anything else.</summary>
+        public float MudDragMul(int vehicleIndex)
+        {
+            return mudDragMulByVehicle != null && vehicleIndex >= 0 && vehicleIndex < mudDragMulByVehicle.Length ? mudDragMulByVehicle[vehicleIndex] : 1f;
+        }
 
         private static GameplayTuning _cached;
 

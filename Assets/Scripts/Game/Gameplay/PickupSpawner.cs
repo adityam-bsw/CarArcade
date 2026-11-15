@@ -122,6 +122,27 @@ namespace RoadBuilderGame
             }
         }
 
+        /// <summary>
+        /// The ring gauntlet (EVT-RINGS): <paramref name="count"/> boost rings from <paramref name="startX"/>, <paramref name="spacingM"/> apart, heights 1 to
+        /// <paramref name="maxHeightM"/> above the ground wave, chosen by a seeded generator so a retry gets the same run. Coins sit between the rings.
+        /// </summary>
+        public void PlaceGauntlet(float startX, int count, float spacingM, float maxHeightM, uint seed)
+        {
+            var rng = new Pcg32(seed);
+            for (int i = 0; i < count; i++)
+            {
+                float x = startX + (i + 1) * spacingM;
+                float h = 1f + (maxHeightM - 1f) * rng.NextFloat01();
+                Place(Collectible.Type.Ring, "Pickup_Ring", x, GroundY(x) + h);
+                float cx = x + spacingM * 0.5f;
+                Place(Collectible.Type.Coin, "Coin", cx, GroundY(cx) + 0.6f + h * 0.5f);
+            }
+            if (_nextSpawnX < startX + count * spacingM + 8f) _nextSpawnX = startX + count * spacingM + 8f;   // the random spawner stays out of the gauntlet
+        }
+
+        /// <summary>One ink canister at <paramref name="x"/> (zone entry: ice and mud are the ink-hungry stretches).</summary>
+        public void PlaceInkAt(float x) { Place(Collectible.Type.Ink, "InkCanister", x, GroundY(x) + 1.0f); _lastInkX = x; }
+
         public void Tick(float carX)
         {
             var t = Tuning;

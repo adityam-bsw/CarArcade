@@ -26,6 +26,21 @@ namespace RoadBuilderGame.UI.Editor
         private static readonly Vector2 TL = new Vector2(0, 1), TR = new Vector2(1, 1), TC = new Vector2(0.5f, 1);
         private static readonly Vector2 BC = new Vector2(0.5f, 0), BR = new Vector2(1, 0), C = new Vector2(0.5f, 0.5f);
 
+        /// <summary>Rebuilds only the HUD prefab (used when the HUD gains an element; the other screens are left byte for byte alone).</summary>
+        [MenuItem("Road Builder/UI/Build HUD Prefab Only")]
+        public static void BuildHudOnly()
+        {
+            Directory.CreateDirectory(ScreensDir);
+            _coin = Load("Assets/Resources/RoadBuilder/Coin.png");
+            _heart = Load("Assets/Resources/RoadBuilder/Heart.png");
+            _scene = EditorSceneManager.NewPreviewScene();
+            try { Save(BuildHud(), "HudScreen"); }
+            finally { EditorSceneManager.ClosePreviewScene(_scene); }
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[UIPrefabBuilder] HudScreen prefab rebuilt");
+        }
+
         [MenuItem("Road Builder/UI/Build Screen Prefabs")]
         public static void BuildAll()
         {
@@ -661,7 +676,27 @@ namespace RoadBuilderGame.UI.Editor
             var gemsHud = Label(topRight, "GemsText", "0", TextStyle.Number, ColorToken.Accent, 40, TextAlignmentOptions.MidlineRight);
             Place(gemsHud.rectTransform, TR, TR, new Vector2(-40, -146), new Vector2(80, 46));
 
+            // Stage event warning (S1 banner, S2 sign, S3 edge flash). Tints come from the zone colour tokens at run time; the words are the non-colour channel.
+            var stageBanner = Label(c, "StageBanner", "", TextStyle.Heading, ColorToken.Accent, 72);
+            Place(stageBanner.rectTransform, TC, TC, new Vector2(0, -250), new Vector2(1100, 100));
+            stageBanner.alpha = 0f;
+            var sign = Img(c, "StageSign", SpriteSlot.Pill, ColorToken.SurfaceAlt, 0.92f);
+            Place(sign.rectTransform, TC, TC, new Vector2(0, -352), new Vector2(420, 78));
+            var signName = Label(sign.transform, "SignName", "", TextStyle.Number, ColorToken.TextOnAccent, 40, TextAlignmentOptions.MidlineLeft);
+            Stretch(signName.rectTransform, 34, 0, 150, 0);
+            var signMetres = Label(sign.transform, "SignMetres", "", TextStyle.Number, ColorToken.TextOnAccent, 40, TextAlignmentOptions.MidlineRight);
+            Stretch(signMetres.rectTransform, 0, 0, 34, 0);
+            sign.gameObject.SetActive(false);
+            var flashL = Img(c, "EdgeFlashLeft", SpriteSlot.None, ColorToken.Danger, 0f);
+            Place(flashL.rectTransform, new Vector2(0, 0), new Vector2(0, 0), Vector2.zero, new Vector2(110, 0));
+            flashL.rectTransform.anchorMax = new Vector2(0, 1); flashL.rectTransform.sizeDelta = new Vector2(110, 0);
+            var flashR = Img(c, "EdgeFlashRight", SpriteSlot.None, ColorToken.Danger, 0f);
+            Place(flashR.rectTransform, new Vector2(1, 0), new Vector2(1, 0), Vector2.zero, new Vector2(110, 0));
+            flashR.rectTransform.anchorMax = new Vector2(1, 1); flashR.rectTransform.sizeDelta = new Vector2(110, 0);
+
             var s = root.GetComponent<HudScreen>();
+            Ref(s, "stageBanner", stageBanner); Ref(s, "stageSign", sign.rectTransform); Ref(s, "stageSignName", signName); Ref(s, "stageSignMetres", signMetres);
+            Ref(s, "edgeFlashLeft", flashL); Ref(s, "edgeFlashRight", flashR);
             Ref(s, "distanceText", distance); Ref(s, "speedText", speed); Ref(s, "coinsText", coinsText);
             Refs(s, "hearts", hearts); Ref(s, "inkBar", inkBar); Ref(s, "inkFill", fill.rectTransform);
             Ref(s, "inkLabel", inkLabel); Ref(s, "boostButton", boost.button); Ref(s, "needle", needle.rectTransform);
