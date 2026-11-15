@@ -20,12 +20,12 @@ Item ids with status `downloaded`, `forged` or `imported` (or "audit everything"
    .app .url .jar`; PSD and SVG sources are not imported either). Check SHA-256 against the manifest and against the
    project for duplicates.
 3. **Fit**: view the art (Read the PNGs; `python3 -I tools/assets/pixel.py <png>` for size, colours, tile seam).
-   Apply the quality bar (rules section 6): side view, facing right, scale, pixel style, separate wheels, tileable,
+   Apply the quality bar (rules section 6): side view, facing right, scale, art style per Docs/design/ART_BIBLE.md, separate wheels, tileable,
    layers. Style mismatches (vector or smooth art) are `rejected` or `needs_conversion` with the reason.
 4. **Import** (only if it passes): copy the art to `Assets/Art/<Group>/<Pack>/` (`Group` = Vehicles, Surfaces, Worlds),
    plus the licence file (or `LICENCE_EVIDENCE.txt`). Leave behind demos, previews, source files and non-art. Then set
    import settings through the open Editor with the Unity CLI (`unity command script eval ... --project-path <repo>
-   --caller plugin --skill unity-cli`; sprite, point filter, no mipmaps, uncompressed, 16 px per unit for pixel art;
+   --caller plugin --skill unity-cli`; sprite, no mipmaps; pixel art: point filter, uncompressed, 16 px per unit; smooth art under Assets/Art/Smooth/: bilinear, 128 PPU (UI 100), ASTC, 4 px colour bleed (see Docs/design/ART_BIBLE.md section 7);
    follow how earlier imports were configured). Check `unity command console status` for 0 errors.
 5. **Records**: add the `Docs/ASSET_LEDGER.md` row; fill `project_path` in every item that uses this pack.
 6. Set `imported` while checking, then `ready` (or `rejected` with the reason) via
