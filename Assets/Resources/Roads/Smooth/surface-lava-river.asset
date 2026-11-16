@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 11
   surfaceId: surface-lava-river
+  skirtColor: {r: 0.73779887, g: 0.29256397, b: 0.13403049, a: 1}
   frames: []

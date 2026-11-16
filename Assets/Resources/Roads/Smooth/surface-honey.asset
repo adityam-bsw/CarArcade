@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 6
   surfaceId: surface-honey
+  skirtColor: {r: 0.67115253, g: 0.4298779, b: 0.06820676, a: 1}
   frames: []

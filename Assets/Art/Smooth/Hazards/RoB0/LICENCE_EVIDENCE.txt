@@ -1,0 +1,9 @@
+RO-B0 traffic-inspector hovering robot: 7 poses (body idle, eye open, eye angry, eye hurt/dizzy, cannon firing, body damaged,
+shield bubble) and 3 projectiles (rock, bolt, bubble), cleaned for bilinear filtering.
+Source: supplied by the user (the project owner), who generated them. Originals: Docs/incoming-art/RO-B0/ with PROVENANCE.txt.
+Tool: GPT image generation (user-run). Date: 2026-11-16. Prompt summary: cartoon traffic-inspector hovering robot RO-B0
+(dome visor with one yellow eye, traffic-cone hat with badge, cannon arm, clipboard hand, twin thrusters) plus effects.
+Rights holder / operator: the user.
+AI-generated: user-approved exception to the earlier no-generative-AI rule, commercial terms must be checked by the user per Docs/design guidance.
+Cleaned by tools/art/clean_rob0.py (alpha haze removed, edge feather, colour bleed, shared crop; see CROP_OFFSETS.txt).
+Read by: asset-inspector, 2026-11-16.

@@ -43,10 +43,12 @@ MonoBehaviour:
       cx: 5.5
       cy: 10.5
       r: 3
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 22684c62f2cbc4454b2b7e1058e896ac, type: 3}
       cx: 19.5
       cy: 10.5
       r: 3
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 842af2e8a32d94b7fa7f5a0a33e78554, type: 3}
     smoothBody: {fileID: 21300000, guid: 7491cbd8aaee448fcb819fa3ed26ceb9, type: 3}
     smoothWheels:
@@ -54,11 +56,14 @@ MonoBehaviour:
       cx: 49.5
       cy: 94.5
       r: 27
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 0bc8feb1360f6480b9f07242843daf53, type: 3}
       cx: 175.5
       cy: 94.5
       r: 27
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-dune-buggy
     kind: 0
     displayName: Dune Buggy
@@ -89,10 +94,12 @@ MonoBehaviour:
       cx: 4.5
       cy: 11.5
       r: 3
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 07e44d43babc047be9beedd862e65a54, type: 3}
       cx: 14.5
       cy: 11.5
       r: 3
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: b6974965ac64a4600b971c491a422250, type: 3}
     smoothBody: {fileID: 21300000, guid: 8200d0086443b48b7b0521c0635d1e89, type: 3}
     smoothWheels:
@@ -100,11 +107,14 @@ MonoBehaviour:
       cx: 40.5
       cy: 103.5
       r: 27
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: ff75ad17869864d768252bc008b4b3de, type: 3}
       cx: 130.5
       cy: 103.5
       r: 27
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-golf-cart
     kind: 0
     displayName: Golf Cart
@@ -137,10 +147,12 @@ MonoBehaviour:
       cx: 7.5
       cy: 14.5
       r: 3.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 3e280b3e028704ab7817349a465cd65a, type: 3}
       cx: 25.5
       cy: 14.5
       r: 3.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 0471069ab3fd140fbb04edf27979bbe6, type: 3}
     smoothBody: {fileID: 21300000, guid: ca6d3c588d530408297e010df33eb256, type: 3}
     smoothWheels:
@@ -148,11 +160,14 @@ MonoBehaviour:
       cx: 67.5
       cy: 130.5
       r: 31.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 13d77ae1ee31a4c3589f2ed44f90914c, type: 3}
       cx: 229.5
       cy: 130.5
       r: 31.5
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-police-car
     kind: 0
     displayName: Police Car
@@ -183,10 +198,12 @@ MonoBehaviour:
       cx: 7.5
       cy: 11.5
       r: 3
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: bdbee111c9ebc43a4b7d593e94b561cc, type: 3}
       cx: 21.5
       cy: 11.5
       r: 3
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 467ff0e000eaa4c0e98bfc09182e5262, type: 3}
     smoothBody: {fileID: 21300000, guid: 7e4e50c1f9987494ab3b30b1c388c217, type: 3}
     smoothWheels:
@@ -194,11 +211,14 @@ MonoBehaviour:
       cx: 67.5
       cy: 103.5
       r: 27
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: cc745df972a5145efbb1660a300561f3, type: 3}
       cx: 193.5
       cy: 103.5
       r: 27
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-race-car
     kind: 0
     displayName: Race Car
@@ -229,10 +249,12 @@ MonoBehaviour:
       cx: 6
       cy: 7
       r: 3.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 10eeceab854a14f4d828fefff773c54f, type: 3}
       cx: 21.5
       cy: 6.5
       r: 3
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 773939132990b4c9d9c3375df64054e0, type: 3}
     smoothBody: {fileID: 21300000, guid: b5f9a01775f394fadbbd145e83b8eb5c, type: 3}
     smoothWheels:
@@ -240,11 +262,14 @@ MonoBehaviour:
       cx: 54
       cy: 63
       r: 31.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 747ff27e2506348c4891a0cf29a94972, type: 3}
       cx: 193.5
       cy: 58.5
       r: 27
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-sports-car
     kind: 0
     displayName: Sports Car
@@ -275,10 +300,12 @@ MonoBehaviour:
       cx: 7
       cy: 10
       r: 3.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: eaa640fbcce304c55ad1c34ee9a914b2, type: 3}
       cx: 23
       cy: 10
       r: 3.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: b67b2ced7ff814a46932b981ece8360e, type: 3}
     smoothBody: {fileID: 21300000, guid: 83888b9598ca1418d8c28578890bda39, type: 3}
     smoothWheels:
@@ -286,11 +313,14 @@ MonoBehaviour:
       cx: 63
       cy: 90
       r: 31.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 59d71d82fd13648b4aeecea4d9b807f2, type: 3}
       cx: 207
       cy: 90
       r: 31.5
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-taxi
     kind: 0
     displayName: Taxi
@@ -321,10 +351,12 @@ MonoBehaviour:
       cx: 6
       cy: 12
       r: 3.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: a940036be764c4ae9916db7d5b01109e, type: 3}
       cx: 23
       cy: 12
       r: 3.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: b5d657f32af094d43910ddb0aa1d3f00, type: 3}
     smoothBody: {fileID: 21300000, guid: 83dc8084d4fb044e4a03f18cf4b61128, type: 3}
     smoothWheels:
@@ -332,11 +364,14 @@ MonoBehaviour:
       cx: 54
       cy: 108
       r: 31.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: d3096293afbd441e7980dc1813e3e7f4, type: 3}
       cx: 207
       cy: 108
       r: 31.5
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-tuk-tuk
     kind: 0
     displayName: Tuk Tuk
@@ -369,10 +404,12 @@ MonoBehaviour:
       cx: 7.5
       cy: 14.5
       r: 3.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 5d5d8450d7fbf4d6fb7ebf437e5e5ff3, type: 3}
       cx: 25.5
       cy: 14.5
       r: 3.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 2bfe7c882aa1c476fb4b5ed48363783c, type: 3}
     smoothBody: {fileID: 21300000, guid: f4934b603c7b644549284ad59962252c, type: 3}
     smoothWheels:
@@ -380,11 +417,14 @@ MonoBehaviour:
       cx: 67.5
       cy: 130.5
       r: 31.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: dfbc10e713e624194bf25ac5b92eb95e, type: 3}
       cx: 229.5
       cy: 130.5
       r: 31.5
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-bus
     kind: 0
     displayName: Bus
@@ -415,10 +455,12 @@ MonoBehaviour:
       cx: 9
       cy: 18
       r: 3.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 6b7cca94707394782a8faa9b385b4ed8, type: 3}
       cx: 25
       cy: 18
       r: 3.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: f8da013040071411ebb6b8ec9816630a, type: 3}
     smoothBody: {fileID: 21300000, guid: 4988cc8f54da74ebea827656ca34d584, type: 3}
     smoothWheels:
@@ -426,11 +468,14 @@ MonoBehaviour:
       cx: 72
       cy: 144
       r: 28
+      visualScale: 1.25
     - sprite: {fileID: 21300000, guid: 8ea4fe1f6b9f64768832f576b2a16183, type: 3}
       cx: 200
       cy: 144
       r: 28
+      visualScale: 1.25
     smoothScale: 8
+    centerMassOnWheels: 1
   - id: vehicle-camper
     kind: 0
     displayName: Camper
@@ -461,10 +506,12 @@ MonoBehaviour:
       cx: 8.5
       cy: 16.5
       r: 3
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: c4ef3e7f2f3714ebd872c784099a7419, type: 3}
       cx: 24.5
       cy: 16.5
       r: 3
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 2b02cd4fde8474e63b85a7cf3a4ac7b4, type: 3}
     smoothBody: {fileID: 21300000, guid: 67f6467fd7f8d4ee798195a52f005fb5, type: 3}
     smoothWheels:
@@ -472,11 +519,14 @@ MonoBehaviour:
       cx: 76.5
       cy: 148.5
       r: 27
+      visualScale: 1.25
     - sprite: {fileID: 21300000, guid: 17f70fdb9e45e485b9b928b6e1074a50, type: 3}
       cx: 220.5
       cy: 148.5
       r: 27
+      visualScale: 1.25
     smoothScale: 9
+    centerMassOnWheels: 1
   - id: vehicle-fire-truck
     kind: 0
     displayName: Fire Truck
@@ -507,10 +557,12 @@ MonoBehaviour:
       cx: 9
       cy: 18
       r: 3.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 61966d7ef02534f9595e69170fb5d97d, type: 3}
       cx: 30
       cy: 18
       r: 3.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 89b30ded5f60c4b34aa0dd616e6f3cd3, type: 3}
     smoothBody: {fileID: 21300000, guid: d470559d923d24de283315d4d5c66915, type: 3}
     smoothWheels:
@@ -518,11 +570,14 @@ MonoBehaviour:
       cx: 72
       cy: 144
       r: 28
+      visualScale: 1.25
     - sprite: {fileID: 21300000, guid: 1b7ac1df10a634c0e9a9242ba01dc935, type: 3}
       cx: 240
       cy: 144
       r: 28
+      visualScale: 1.25
     smoothScale: 8
+    centerMassOnWheels: 1
   - id: vehicle-monster-truck
     kind: 0
     displayName: Monster Truck
@@ -555,10 +610,12 @@ MonoBehaviour:
       cx: 8.5
       cy: 21
       r: 7.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: a9450ec1e0bc64c68886a2d8cacfe6cf, type: 3}
       cx: 25.5
       cy: 21
       r: 7.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 43c24c5c1f21f42cbb587ca1e33a991e, type: 3}
     smoothBody: {fileID: 21300000, guid: 755ffe78950d54a96aae216ecdc48f7e, type: 3}
     smoothWheels:
@@ -566,11 +623,14 @@ MonoBehaviour:
       cx: 76.5
       cy: 189
       r: 67.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 949f30c69c9af49afb1a381092c733ad, type: 3}
       cx: 229.5
       cy: 189
       r: 67.5
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-pickup
     kind: 0
     displayName: Pickup
@@ -601,14 +661,17 @@ MonoBehaviour:
       cx: 5.5
       cy: 21.5
       r: 3
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 41e3f55052ffa4350b86c51a1c55070f, type: 3}
       cx: 12.5
       cy: 21.5
       r: 3
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 42ea0e2b0e13747279e2bab923d8c181, type: 3}
       cx: 29.5
       cy: 21.5
       r: 3
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: b1889d228215149d38ae02dd2a846647, type: 3}
     smoothBody: {fileID: 21300000, guid: 4dd6a261322d44cb9bbe626b7ed293a2, type: 3}
     smoothWheels:
@@ -616,15 +679,19 @@ MonoBehaviour:
       cx: 49.5
       cy: 193.5
       r: 27
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 33fbe5d1afb134911a200186379e13be, type: 3}
       cx: 112.5
       cy: 193.5
       r: 27
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 2340a4c3736a442f1ba37c7bbbb2f339, type: 3}
       cx: 265.5
       cy: 193.5
       r: 27
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-semi-truck
     kind: 0
     displayName: Semi Truck
@@ -655,10 +722,12 @@ MonoBehaviour:
       cx: 7.5
       cy: 21.5
       r: 3
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 6616ceb8c6ee64a6ea5aca2a00ad0d41, type: 3}
       cx: 13.5
       cy: 21.5
       r: 3
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: b8be83bc9913b4e82acecd45bdf2a6f7, type: 3}
     smoothBody: {fileID: 21300000, guid: 684153512f3a2465bb38a5276d9e689c, type: 3}
     smoothWheels:
@@ -666,11 +735,14 @@ MonoBehaviour:
       cx: 60
       cy: 172
       r: 24
+      visualScale: 1.25
     - sprite: {fileID: 21300000, guid: 73f0a7a6eedc247e8a67916a3c17cce0, type: 3}
       cx: 108
       cy: 172
       r: 24
+      visualScale: 1.25
     smoothScale: 8
+    centerMassOnWheels: 1
   - id: vehicle-tank
     kind: 0
     displayName: Tank
@@ -703,6 +775,7 @@ MonoBehaviour:
     smoothBody: {fileID: 21300000, guid: fd17dd7b0ca38456ca11ba1442639642, type: 3}
     smoothWheels: []
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-tractor
     kind: 0
     displayName: Tractor
@@ -733,10 +806,12 @@ MonoBehaviour:
       cx: 5
       cy: 13.5
       r: 4.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 003ca27b71d364419a37b47e7b0d74f2, type: 3}
       cx: 15.5
       cy: 15.5
       r: 3
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: afe06118f111e4d05bebb0979da68cae, type: 3}
     smoothBody: {fileID: 21300000, guid: 82fe3411d2f05453a8e545c252fb0455, type: 3}
     smoothWheels:
@@ -744,11 +819,14 @@ MonoBehaviour:
       cx: 45
       cy: 121.5
       r: 40.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 4faa5a9f942a043549cd8a8e378fca34, type: 3}
       cx: 139.5
       cy: 139.5
       r: 27
+      visualScale: 1.25
     smoothScale: 9
+    centerMassOnWheels: 1
   - id: vehicle-bicycle
     kind: 0
     displayName: Bicycle
@@ -780,10 +858,12 @@ MonoBehaviour:
       cx: 8.5
       cy: 11.5
       r: 7.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: d34645ad4d044407991ed04f0c2b2c20, type: 3}
       cx: 29.5
       cy: 11.5
       r: 7.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: a15b1f050f45d49638123d9109ab0554, type: 3}
     smoothBody: {fileID: 21300000, guid: 2e8189e6923974c4e89af45e0316f9e6, type: 3}
     smoothWheels:
@@ -791,11 +871,14 @@ MonoBehaviour:
       cx: 76.5
       cy: 103.5
       r: 67.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 9fafc2c1dbc4b45d0b645830c8d68141, type: 3}
       cx: 265.5
       cy: 103.5
       r: 67.5
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-motorcycle
     kind: 0
     displayName: Motorcycle
@@ -826,10 +909,12 @@ MonoBehaviour:
       cx: 12.5
       cy: 32.5
       r: 11
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: d805a85fc23be45f5a95e2e893bea429, type: 3}
       cx: 67.5
       cy: 31.5
       r: 12
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: d5d4922968c6f4563a37d4c99ae7d4d7, type: 3}
     smoothBody: {fileID: 21300000, guid: 9ca8282a601c14bb19704b6d43b0bfac, type: 3}
     smoothWheels:
@@ -837,11 +922,14 @@ MonoBehaviour:
       cx: 62.5
       cy: 162.5
       r: 55
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: f8f5686c31461437280812927da41e0c, type: 3}
       cx: 337.5
       cy: 157.5
       r: 60
+      visualScale: 0
     smoothScale: 5
+    centerMassOnWheels: 0
   - id: vehicle-quad-atv
     kind: 0
     displayName: Quad Atv
@@ -873,10 +961,12 @@ MonoBehaviour:
       cx: 11
       cy: 19
       r: 6.5
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: d5d4699ea8cb84cd880b6bcae8988698, type: 3}
       cx: 37
       cy: 19
       r: 6.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 96bde13217df3401a900db7d67840b72, type: 3}
     smoothBody: {fileID: 21300000, guid: 31feb9bb7f11e4d8c8112941f405f9ba, type: 3}
     smoothWheels:
@@ -884,11 +974,14 @@ MonoBehaviour:
       cx: 88
       cy: 152
       r: 52
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 263531ae5707646b3b7cddcff1aa8421, type: 3}
       cx: 296
       cy: 152
       r: 52
+      visualScale: 0
     smoothScale: 8
+    centerMassOnWheels: 0
   - id: vehicle-scooter
     kind: 0
     displayName: Scooter
@@ -919,10 +1012,12 @@ MonoBehaviour:
       cx: 4
       cy: 8.5
       r: 2
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: be6603d096b36428591fb9801844c876, type: 3}
       cx: 14
       cy: 8
       r: 2.5
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: fdc11ea6e7705446295692fbef05c54b, type: 3}
     smoothBody: {fileID: 21300000, guid: 14cfa967aae2142bc83d75f3e498a9a8, type: 3}
     smoothWheels:
@@ -930,11 +1025,14 @@ MonoBehaviour:
       cx: 44
       cy: 93.5
       r: 22
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 83e59a79cb70e4f74b33093567c20b08, type: 3}
       cx: 154
       cy: 88
       r: 27.5
+      visualScale: 0
     smoothScale: 11
+    centerMassOnWheels: 0
   - id: vehicle-skateboard
     kind: 0
     displayName: Skateboard
@@ -967,6 +1065,7 @@ MonoBehaviour:
     smoothBody: {fileID: 21300000, guid: 22e6bd06a536649d198b44c651f57b9d, type: 3}
     smoothWheels: []
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-hovercraft
     kind: 0
     displayName: Hovercraft
@@ -999,6 +1098,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: vehicle-jet-ski
     kind: 0
     displayName: Jet Ski
@@ -1031,6 +1131,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: vehicle-speedboat
     kind: 0
     displayName: Speedboat
@@ -1063,6 +1164,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: vehicle-sled
     kind: 0
     displayName: Sled
@@ -1093,6 +1195,7 @@ MonoBehaviour:
     smoothBody: {fileID: 21300000, guid: 5f926648128314d0592a7e992fe72e6d, type: 3}
     smoothWheels: []
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-snowboard
     kind: 0
     displayName: Snowboard
@@ -1120,10 +1223,11 @@ MonoBehaviour:
     inkFactor: 1
     coinFactor: 1
     wheels: []
-    smoothPreview: {fileID: 0}
-    smoothBody: {fileID: 0}
+    smoothPreview: {fileID: 21300000, guid: 6cc1b59b809964498b67d72b186aa3a1, type: 3}
+    smoothBody: {fileID: 21300000, guid: fb0b78007fa904b5a991011308a64610, type: 3}
     smoothWheels: []
-    smoothScale: 1
+    smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-snowmobile
     kind: 0
     displayName: Snowmobile
@@ -1151,10 +1255,11 @@ MonoBehaviour:
     inkFactor: 1
     coinFactor: 1
     wheels: []
-    smoothPreview: {fileID: 0}
-    smoothBody: {fileID: 0}
+    smoothPreview: {fileID: 21300000, guid: 1e003c7e6d3b7480f96ac228f30d8061, type: 3}
+    smoothBody: {fileID: 21300000, guid: c45b2a6929936461080981920d370c40, type: 3}
     smoothWheels: []
-    smoothScale: 1
+    smoothScale: 7
+    centerMassOnWheels: 0
   - id: vehicle-toboggan
     kind: 0
     displayName: Toboggan
@@ -1186,6 +1291,7 @@ MonoBehaviour:
     smoothBody: {fileID: 21300000, guid: ed03c118b9a2141f9a0a52ad7ff24880, type: 3}
     smoothWheels: []
     smoothScale: 8
+    centerMassOnWheels: 0
   - id: vehicle-handcar
     kind: 0
     displayName: Handcar
@@ -1218,6 +1324,7 @@ MonoBehaviour:
     smoothBody: {fileID: 21300000, guid: 226837573ba93453690fa20a487d779c, type: 3}
     smoothWheels: []
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: vehicle-moon-rover
     kind: 0
     displayName: Moon Rover
@@ -1249,6 +1356,7 @@ MonoBehaviour:
     smoothBody: {fileID: 21300000, guid: 2cf060547051f406fad5a5e7686426c9, type: 3}
     smoothWheels: []
     smoothScale: 8
+    centerMassOnWheels: 0
   - id: vehicle-rocket-sled
     kind: 0
     displayName: Rocket Sled
@@ -1280,6 +1388,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: vehicle-shopping-cart
     kind: 0
     displayName: Shopping Cart
@@ -1312,10 +1421,12 @@ MonoBehaviour:
       cx: 7.5
       cy: 13
       r: 3
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: 754e364e02e344e92bcf19ad9b3ee859, type: 3}
       cx: 21.5
       cy: 12
       r: 3
+      visualScale: 0
     smoothPreview: {fileID: 21300000, guid: 07d19e1c25e7243ec8af7cf11215e8a7, type: 3}
     smoothBody: {fileID: 21300000, guid: 47e2e46730dd84c899cb1950796462f7, type: 3}
     smoothWheels:
@@ -1323,11 +1434,14 @@ MonoBehaviour:
       cx: 67.5
       cy: 117
       r: 27
+      visualScale: 0
     - sprite: {fileID: 21300000, guid: aa12e77d45861426da4ee104def880da, type: 3}
       cx: 193.5
       cy: 108
       r: 27
+      visualScale: 0
     smoothScale: 9
+    centerMassOnWheels: 0
   - id: surface-asphalt
     kind: 1
     displayName: Asphalt
@@ -1358,6 +1472,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-cobblestone
     kind: 1
     displayName: Cobblestone
@@ -1389,6 +1504,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-dirt
     kind: 1
     displayName: Dirt
@@ -1419,6 +1535,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-glass
     kind: 1
     displayName: Glass
@@ -1450,6 +1567,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-gravel
     kind: 1
     displayName: Gravel
@@ -1481,6 +1599,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-mud
     kind: 1
     displayName: Mud
@@ -1512,6 +1631,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-neon-grid
     kind: 1
     displayName: Neon Grid
@@ -1542,6 +1662,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-rail-track
     kind: 1
     displayName: Rail Track
@@ -1573,6 +1694,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-beach
     kind: 1
     displayName: Beach
@@ -1606,6 +1728,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-grass-trail
     kind: 1
     displayName: Grass Trail
@@ -1639,6 +1762,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-moon-dust
     kind: 1
     displayName: Moon Dust
@@ -1670,6 +1794,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-salt-flat
     kind: 1
     displayName: Salt Flat
@@ -1701,6 +1826,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-sand
     kind: 1
     displayName: Sand
@@ -1734,6 +1860,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-ice
     kind: 1
     displayName: Ice
@@ -1767,6 +1894,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-ice-bridge
     kind: 1
     displayName: Ice Bridge
@@ -1798,6 +1926,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-snow
     kind: 1
     displayName: Snow
@@ -1831,6 +1960,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-cloud
     kind: 1
     displayName: Cloud
@@ -1863,6 +1993,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-coral
     kind: 1
     displayName: Coral
@@ -1896,6 +2027,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-floating-islands
     kind: 1
     displayName: Floating Islands
@@ -1929,6 +2061,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-river
     kind: 1
     displayName: River
@@ -1962,6 +2095,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-sea-water
     kind: 1
     displayName: Sea Water
@@ -1995,6 +2129,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-lava-crust
     kind: 1
     displayName: Lava Crust
@@ -2027,6 +2162,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-magma-bridge
     kind: 1
     displayName: Magma Bridge
@@ -2058,6 +2194,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-candy
     kind: 1
     displayName: Candy
@@ -2088,6 +2225,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-rope-bridge
     kind: 1
     displayName: Rope Bridge
@@ -2121,6 +2259,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-wooden-bridge
     kind: 1
     displayName: Wooden Bridge
@@ -2154,6 +2293,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-autumn-leaves
     kind: 2
     displayName: Autumn Leaves
@@ -2189,6 +2329,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-christmas
     kind: 2
     displayName: Christmas
@@ -2224,6 +2365,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-spring-blossom
     kind: 2
     displayName: Spring Blossom
@@ -2260,6 +2402,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-summer
     kind: 2
     displayName: Summer
@@ -2296,6 +2439,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-winter
     kind: 2
     displayName: Winter
@@ -2330,6 +2474,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-arctic
     kind: 2
     displayName: Arctic
@@ -2364,6 +2509,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-canyon
     kind: 2
     displayName: Canyon
@@ -2399,6 +2545,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-coast
     kind: 2
     displayName: Coast
@@ -2433,6 +2580,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-desert
     kind: 2
     displayName: Desert
@@ -2463,6 +2611,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-farm
     kind: 2
     displayName: Farm
@@ -2498,6 +2647,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-jungle
     kind: 2
     displayName: Jungle
@@ -2532,6 +2682,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-rolling-hills
     kind: 2
     displayName: Rolling Hills
@@ -2562,6 +2713,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-wild-west
     kind: 2
     displayName: Wild West
@@ -2597,6 +2749,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-mars
     kind: 2
     displayName: Mars
@@ -2632,6 +2785,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-moon
     kind: 2
     displayName: Moon
@@ -2667,6 +2821,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-industrial
     kind: 2
     displayName: Industrial
@@ -2701,6 +2856,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-night-city
     kind: 2
     displayName: Night City
@@ -2731,6 +2887,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-synthwave
     kind: 2
     displayName: Synthwave
@@ -2767,6 +2924,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-candy-land
     kind: 2
     displayName: Candy Land
@@ -2802,6 +2960,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-cave
     kind: 2
     displayName: Cave
@@ -2838,6 +2997,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-cloud-kingdom
     kind: 2
     displayName: Cloud Kingdom
@@ -2874,6 +3034,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-haunted-halloween
     kind: 2
     displayName: Haunted Halloween
@@ -2910,6 +3071,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-underwater
     kind: 2
     displayName: Underwater
@@ -2946,6 +3108,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: world-volcano
     kind: 2
     displayName: Volcano
@@ -2980,6 +3143,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-spring-road
     kind: 1
     displayName: Spring Road
@@ -3011,6 +3175,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-magnetic-rail
     kind: 1
     displayName: Magnetic Rail
@@ -3042,6 +3207,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-acid
     kind: 1
     displayName: Acid
@@ -3073,6 +3239,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-oil
     kind: 1
     displayName: Oil
@@ -3104,6 +3271,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-conveyor
     kind: 1
     displayName: Conveyor
@@ -3135,6 +3303,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-lava-river
     kind: 1
     displayName: Lava River
@@ -3166,6 +3335,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-sticky-candy
     kind: 1
     displayName: Sticky Candy
@@ -3197,6 +3367,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-honey
     kind: 1
     displayName: Honey
@@ -3228,6 +3399,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-metal-plates
     kind: 1
     displayName: Metal Plates
@@ -3259,6 +3431,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-ice-crystals
     kind: 1
     displayName: Ice Crystals
@@ -3290,6 +3463,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-haunted-shadow
     kind: 1
     displayName: Haunted Shadow
@@ -3321,6 +3495,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-electric-rail
     kind: 1
     displayName: Electric Rail
@@ -3352,6 +3527,7 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0
   - id: surface-fragile-paper
     kind: 1
     displayName: Fragile Paper
@@ -3383,3 +3559,4 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+    centerMassOnWheels: 0

@@ -31,6 +31,28 @@ namespace RoadBuilderGame.Tests
         }
     
         [Test]
+        public void ChunkJoin_GhostVertices_LinkNeighbours()
+        {
+            var a = new GameObject("a", typeof(EdgeCollider2D)).AddComponent<RoadChunk>();
+            var b = new GameObject("b", typeof(EdgeCollider2D)).AddComponent<RoadChunk>();
+            a.Init(null); b.Init(null);
+            var skin = RoadSkins.Fallback(RoadStyle.AsphaltHighway);
+            var pa = Pts(0f, 6.4f); var pb = Pts(6.4f, 12f); pb[0] = pa[pa.Count - 1];
+            a.Build(pa, 0, pa.Count - 1, 0.5f, 0.5f, skin);
+            b.Build(pb, 0, pb.Count - 1, 0.5f, 0.5f, skin, a.Geometry.Normals[a.Geometry.Count - 1]);
+            a.TryGetEnds(out _, out _, out Vector2 aBeforeLast, out _);
+            b.TryGetEnds(out _, out Vector2 bSecond, out _, out _);
+            a.SetGhosts(false, default, true, bSecond);
+            b.SetGhosts(true, aBeforeLast, false, default);
+            var ea = a.GetComponent<EdgeCollider2D>(); var eb = b.GetComponent<EdgeCollider2D>();
+            Assert.IsTrue(ea.useAdjacentEndPoint && !ea.useAdjacentStartPoint);
+            Assert.IsTrue(eb.useAdjacentStartPoint && !eb.useAdjacentEndPoint);
+            Assert.AreEqual(0f, Vector2.Distance(ea.adjacentEndPoint, bSecond), 1e-4f);
+            Assert.AreEqual(0f, Vector2.Distance(eb.adjacentStartPoint, aBeforeLast), 1e-4f);
+            Object.DestroyImmediate(a.gameObject); Object.DestroyImmediate(b.gameObject); Object.DestroyImmediate(skin);
+        }
+
+        [Test]
         public void RandomPolylines_2000_JoinsWatertight_NoSpikes_SkinIndependent()
         {
             var rng = new System.Random(1234);

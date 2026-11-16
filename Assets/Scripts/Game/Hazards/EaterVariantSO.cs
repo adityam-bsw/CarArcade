@@ -17,7 +17,6 @@ namespace RoadBuilderGame
         public EaterSignature signature = EaterSignature.BurrowEmerge;
         public EaterDefeatOption defeat = EaterDefeatOption.BoostRingLure;
         public Color tint = new Color(0.45f, 0.32f, 0.2f);
-        public Sprite body;
         [Header("Signature attack (telegraph is 1.2 s or more)")]
         public float firstAfterSeconds = 4f, everySeconds = 9f, tellSeconds = 1.2f, activeSeconds = 0.5f, radius = 1.9f, power = 14f, range = 28f;
         [Header("Counterplay")]

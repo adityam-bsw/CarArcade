@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 6
   surfaceId: surface-ice
+  skirtColor: {r: 0.5535663, g: 0.767492, b: 0.9241899, a: 1}
   frames: []

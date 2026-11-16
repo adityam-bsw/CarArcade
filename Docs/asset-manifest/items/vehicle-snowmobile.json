@@ -44,13 +44,19 @@
    "from": "ready",
    "to": "ready",
    "note": "inspector (smooth restyle, status unchanged, smooth_status=needs_work): smooth restyle imported but PLACEHOLDER grade (2/5, crude track pod / rider anatomy); do not use in game until redrawn"
+  },
+  {
+   "date": "2026-11-16",
+   "from": "ready",
+   "to": "ready",
+   "note": "inspector: smooth redo imported to Vehicles3 (smooth_status needs_work -> ready, q3.5), reproduces byte for byte, ppu 112 bilinear ASTC5x5: reads clearly: tracked pod, cowl, windshield, upright rider"
   }
  ],
- "smooth_status": "needs_work",
- "smooth_quality": 2,
+ "smooth_status": "ready",
+ "smooth_quality": 3.5,
  "smooth_scale": 7,
  "smooth_ppu": 112,
- "smooth_project_path": "Assets/Art/Smooth/Vehicles2/",
- "smooth_licence": "own work (procedural, tools/art/make_vehicles2.py)",
- "smooth_licence_evidence": "Assets/Art/Smooth/Vehicles2/LICENCE_EVIDENCE.txt"
+ "smooth_project_path": "Assets/Art/Smooth/Vehicles3/",
+ "smooth_licence": "own work (procedural, tools/art/make_vehicles3.py)",
+ "smooth_licence_evidence": "Assets/Art/Smooth/Vehicles3/LICENCE_EVIDENCE.txt"
 }

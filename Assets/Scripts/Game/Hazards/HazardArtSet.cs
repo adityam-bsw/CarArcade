@@ -9,12 +9,12 @@ namespace RoadBuilderGame
         public const string ResourcePath = "Stage/Hazards/HazardArt";
         [Header("RO-B0")] public Sprite robotBody, robotTrim, robotEye, robotAntenna, robotJet;
         [Header("Shared")] public Sprite tellRing, tellMarker, tellGlow, trapStrip, finishGate, vignette;
-        [Tooltip("Road-Eater body per variant id (aligned with EaterVariantSO.id).")] public EaterSprite[] eaters = new EaterSprite[0];
-
-        [System.Serializable] public struct EaterSprite { public string variantId; public Sprite body; }
+        [Header("Road-Eater (imported dragon, Assets/Art/Smooth/Hazards/RoadEater, 40 ppu, faces left)")]
+        [Tooltip("Five whole-head chomp frames.")] public Sprite[] eaterHeads = new Sprite[0];
+        [Tooltip("Trailing body segment.")] public Sprite eaterBodySegment;
+        [Tooltip("Four flame frames (white with yellow outline, tinted in code).")] public Sprite[] eaterFlames = new Sprite[0];
 
         private static HazardArtSet _cached; private static bool _tried;
         public static HazardArtSet Load() { if (!_tried) { _tried = true; _cached = Resources.Load<HazardArtSet>(ResourcePath); } return _cached; }
-        public Sprite Eater(string variantId) { for (int i = 0; i < eaters.Length; i++) if (eaters[i].variantId == variantId) return eaters[i].body; return null; }
     }
 }

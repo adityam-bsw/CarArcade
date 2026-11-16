@@ -61,8 +61,34 @@ def stones(img, rnd, n, ylo, yhi, rx, ry, shade_col, lit_ramp, skip=None, shade_
     img.paint(shade.cov(), shade_col, shade_a)
     img.paint(lit.cov(), vgrad(ylo, yhi + 10, lit_ramp), lit_a)
 
+OPAQUE_BODY = False   # QA rule (QA7-06): body below the lip is opaque to the bottom edge; make_roads_opaque.py sets this
+
 def skirt_fade(img, y0, y1):
+    if OPAQUE_BODY: return          # no semi-transparent skirt; solidify() fills any remaining holes below the lip
     img.multiply_alpha(lambda x, y: 1.0 - smoothstep(y0, y1, y))
+
+def solidify(img, skip=2):
+    """Make every pixel below each column's lip (first row alpha >= 0.5, plus `skip` rows so lip rows stay identical) fully opaque.
+    Holes/semi-transparent pixels take a darkened, horizontally smoothed copy of the column's body colour. Columns with no solid
+    pixel (deliberate gaps, e.g. glass panes) are left alone."""
+    w, h = img.w, img.h; lips = []; fill = []
+    for x in range(w):
+        t = next((y for y in range(h) if img.a[y * w + x] >= 0.5), None); lips.append(t)
+        if t is None: fill.append(None); continue
+        px = [(img.r[y * w + x], img.g[y * w + x], img.b[y * w + x]) for y in range(t + 4, min(h, t + 50)) if img.a[y * w + x] > 0.9] or [(60, 60, 60)]
+        n = len(px); fill.append((sum(p[0] for p in px) / n * .55, sum(p[1] for p in px) / n * .55, sum(p[2] for p in px) / n * .55))
+    sm = []
+    for x in range(w):
+        c = [fill[(x + d) % w] for d in range(-24, 25, 4) if fill[(x + d) % w] is not None]
+        sm.append((sum(p[0] for p in c) / len(c), sum(p[1] for p in c) / len(c), sum(p[2] for p in c) / len(c)) if c else None)
+    for x in range(w):
+        t = lips[x]
+        if t is None: continue
+        for y in range(t + skip, h):
+            i = y * w + x; a = img.a[i]
+            if a >= 1.0: continue
+            f = sm[x]; img.r[i] = img.r[i] * a + f[0] * (1 - a); img.g[i] = img.g[i] * a + f[1] * (1 - a); img.b[i] = img.b[i] * a + f[2] * (1 - a); img.a[i] = 1.0
+    return img
 
 # ---------------------------------------------------------------------------------------------------------------- asphalt
 def asphalt():

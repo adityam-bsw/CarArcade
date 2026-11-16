@@ -24,3 +24,10 @@ MonoBehaviour:
   ring: {fileID: 21300000, guid: d098bea6a5c1e4ceebb01a5463265390, type: 3}
   ringOverload: {fileID: 21300000, guid: 095f8a3a8ca5944fa9e4a13274dca597, type: 3}
   star: {fileID: 21300000, guid: 9b617557b43a94792bcb30c15b264293, type: 3}
+  starWhite: {fileID: 21300000, guid: ab62d5f815e4f400b94f3542e649a154, type: 3}
+  gem: {fileID: 21300000, guid: 0dde8d85ad9c34296bf5df3ce65fcc1f, type: 3}
+  magnet: {fileID: 21300000, guid: e3f0676d70fa4487bbf6ce5ca569cfda, type: 3}
+  shield: {fileID: 21300000, guid: 34c27629a76f04e2a80040adac171797, type: 3}
+  doublePoints: {fileID: 21300000, guid: 88a6c6f2f8e6a4528a6501035506b730, type: 3}
+  slowMo: {fileID: 21300000, guid: 750a92aae6a324691b42a8bd79623ea7, type: 3}
+  ghost: {fileID: 21300000, guid: 5ec8048e3b9624e8182dd2f48446212a, type: 3}

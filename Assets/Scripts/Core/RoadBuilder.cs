@@ -94,6 +94,7 @@ namespace RoadBuilderGame
                     seg.chunk.Build(seg.sampledPoints, 0, seg.sampledPoints.Count - 1, roadThickness, supportDepth, _skin);
                 }
             }
+            RelinkGhosts();
         }
 
         public void ResetRoad(float startX, float endX, float y)
@@ -427,6 +428,7 @@ namespace RoadBuilderGame
                     );
                     _activeSegment.maxX = Mathf.Max(_activeSegment.maxX, _activeSegment.chunk.MaxX);
                     FrontierMaxX = Mathf.Max(FrontierMaxX, _activeSegment.maxX);
+                    RelinkGhosts();
                 }
             }
         }
@@ -539,6 +541,27 @@ namespace RoadBuilderGame
         /// the right part becomes a new chunk, and both mesh and collider are rebuilt in this same call. The active (being drawn) chunk is never cut.
         /// Returns true when road was removed. Allocates only when it actually cuts (a one-off event, never per frame).
         /// </summary>
+        /// <summary>
+        /// Links neighbouring chunks whose collider ends meet (within 6 cm) with ghost vertices, so wheels roll over a join as over one continuous chain.
+        /// Chunks that do not meet (a cut, a gap) get no ghost. Cheap: no allocation, and a collider is only touched when a ghost really changed.
+        /// </summary>
+        private void RelinkGhosts()
+        {
+            int n = _segments.Count;
+            for (int i = 0; i < n; i++)
+            {
+                var c = _segments[i].chunk;
+                if (c == null || !c.TryGetEnds(out _, out _, out Vector2 bl, out Vector2 last)) continue;
+                bool hasStart = false; Vector2 sg = default;
+                if (i > 0 && _segments[i - 1].chunk != null && _segments[i - 1].chunk.TryGetEnds(out _, out _, out Vector2 pbl, out Vector2 plast)
+                    && c.TryGetEnds(out Vector2 first, out _, out _, out _) && (plast - first).sqrMagnitude < 0.0036f) { hasStart = true; sg = pbl; }
+                bool hasEnd = false; Vector2 eg = default;
+                if (i + 1 < n && _segments[i + 1].chunk != null && _segments[i + 1].chunk.TryGetEnds(out Vector2 nfirst, out Vector2 nsecond, out _, out _)
+                    && (last - nfirst).sqrMagnitude < 0.0036f) { hasEnd = true; eg = nsecond; }
+                c.SetGhosts(hasStart, sg, hasEnd, eg);
+            }
+        }
+
         public bool CutRange(float x0, float x1)
         {
             if (x1 <= x0) return false;
@@ -577,6 +600,7 @@ namespace RoadBuilderGame
                 if (right != null) _segments.Insert(insertAt, right);
                 any = true;
             }
+            if (any) RelinkGhosts();
             return any;           // FrontierMaxX is left alone: nothing may be drawn behind the old frontier
         }
 
@@ -640,7 +664,7 @@ namespace RoadBuilderGame
                     trims++; changed++;
                 }
             }
-            if (changed > 0) RecalculateFrontierMaxX();
+            if (changed > 0) { RecalculateFrontierMaxX(); RelinkGhosts(); }
             return changed;
         }
 
@@ -679,6 +703,7 @@ namespace RoadBuilderGame
                     _segments.RemoveAt(i);
                 }
             }
+            RelinkGhosts();
         }
     }
 }

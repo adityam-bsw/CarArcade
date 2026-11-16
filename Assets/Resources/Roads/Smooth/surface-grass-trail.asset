@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 14
   surfaceId: surface-grass-trail
+  skirtColor: {r: 0.41814643, g: 0.29187107, b: 0.19298336, a: 1}
   frames: []

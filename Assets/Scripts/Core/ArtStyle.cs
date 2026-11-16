@@ -36,11 +36,12 @@ namespace RoadBuilderGame
         /// <summary>Sprite atlas padding to author and set on SpriteAtlas assets (they are not changed by the importer rule).</summary>
         public const int AtlasPaddingPx = 4;
 
-        /// <summary>Vehicle art folders (Vehicles, and the catalogue restyle Vehicles2): ASTC 5x5; Vehicles2 files keep a per-file ppu of 16 x S.</summary>
+        /// <summary>Vehicle art folders (Vehicles, and the catalogue restyle Vehicles2): ASTC 5x5; Vehicles2 and Vehicles3 files keep a per-file ppu of 16 x S.</summary>
         public static bool IsVehicleFolder(string assetPath)
         {
             string p = assetPath.Replace('\\', '/');
-            return p.StartsWith(Root + "Vehicles/", System.StringComparison.Ordinal) || p.StartsWith(Root + "Vehicles2/", System.StringComparison.Ordinal);
+            return p.StartsWith(Root + "Vehicles/", System.StringComparison.Ordinal) || p.StartsWith(Root + "Vehicles2/", System.StringComparison.Ordinal)
+                   || p.StartsWith(Root + "Vehicles3/", System.StringComparison.Ordinal);
         }
 
         public static bool IsSmoothPath(string assetPath)

@@ -15,7 +15,7 @@ namespace RoadBuilderGame.Tests
         private const string Folder = "Assets/Art/Smooth/Vehicles2/";
         private const float Tol = 1e-3f;
 
-        [System.Serializable] private class Manifest { public string smooth_status; public int smooth_scale; }
+        [System.Serializable] private class Manifest { public string smooth_status; public int smooth_scale; public string smooth_project_path; }
 
         private static AssetCatalog Catalog() => AssetDatabase.LoadAssetAtPath<AssetCatalog>("Assets/Resources/Catalog/AssetCatalog.asset");
 
@@ -23,6 +23,13 @@ namespace RoadBuilderGame.Tests
         {
             string p = "Docs/asset-manifest/items/" + id + ".json";
             return File.Exists(p) ? JsonUtility.FromJson<Manifest>(File.ReadAllText(p)) : null;
+        }
+
+        /// <summary>Folder of a vehicle's smooth art: its manifest smooth_project_path (Vehicles3 for the snow vehicles), else Vehicles2.</summary>
+        private static string DirOf(string id)
+        {
+            var m = ManifestOf(id);
+            return m == null || string.IsNullOrEmpty(m.smooth_project_path) ? Folder : m.smooth_project_path;
         }
 
         /// <summary>Vehicles whose manifest says smooth_status ready and whose smooth body exists: the set that must be linked.</summary>
@@ -33,7 +40,7 @@ namespace RoadBuilderGame.Tests
             {
                 if (e.kind != CatalogKind.Vehicle) continue;
                 var m = ManifestOf(e.id);
-                if (m != null && m.smooth_status == "ready" && File.Exists(Folder + "bodies/" + e.id + ".png")) n++;
+                if (m != null && m.smooth_status == "ready" && File.Exists(DirOf(e.id) + "bodies/" + e.id + ".png")) n++;
             }
             return n;
         }
@@ -43,6 +50,7 @@ namespace RoadBuilderGame.Tests
         {
             Assert.IsTrue(SmoothArt.IsVehicleFolder(Folder + "bodies/vehicle-car.png"));
             Assert.IsTrue(SmoothArt.IsVehicleFolder("Assets/Art/Smooth/Vehicles/x.png"));
+            Assert.IsTrue(SmoothArt.IsVehicleFolder("Assets/Art/Smooth/Vehicles3/bodies/vehicle-snowmobile.png"));
             Assert.IsFalse(SmoothArt.IsVehicleFolder("Assets/Art/Smooth/Backgrounds/x.png"));
         }
 
@@ -50,7 +58,7 @@ namespace RoadBuilderGame.Tests
         public void EveryVehicles2Texture_Ppu16xS_Bilinear_Astc5x5()
         {
             int n = 0;
-            foreach (var guid in AssetDatabase.FindAssets("t:Texture2D", new[] { Folder.TrimEnd('/') }))
+            foreach (var guid in AssetDatabase.FindAssets("t:Texture2D", new[] { Folder.TrimEnd('/'), "Assets/Art/Smooth/Vehicles3" }))
             {
                 string path = AssetDatabase.GUIDToAssetPath(guid);
                 string id = Path.GetFileNameWithoutExtension(path);
@@ -80,7 +88,7 @@ namespace RoadBuilderGame.Tests
                 if (e.kind != CatalogKind.Vehicle) continue;
                 var m = ManifestOf(e.id);
                 bool ready = m != null && m.smooth_status == "ready";
-                if (ready && File.Exists(Folder + "bodies/" + e.id + ".png")) { Assert.IsTrue(e.HasSmooth, e.id + " is ready but not linked (run Road Builder > Catalog > Link Smooth Vehicles)"); linked++; }
+                if (ready && File.Exists(DirOf(e.id) + "bodies/" + e.id + ".png")) { Assert.IsTrue(e.HasSmooth, e.id + " is ready but not linked (run Road Builder > Catalog > Link Smooth Vehicles)"); linked++; }
                 else
                 {
                     Assert.IsFalse(e.HasSmooth, e.id + " is not smooth-ready and must keep its old art");
@@ -93,7 +101,7 @@ namespace RoadBuilderGame.Tests
             Assert.AreEqual(ExpectedReadyCount(), linked);
             Assert.GreaterOrEqual(linked, 25);
             foreach (var id in new[] { "vehicle-snowmobile", "vehicle-snowboard" })
-                Assert.IsFalse(cat.Find(id).HasSmooth, id + " is needs_work");
+                Assert.IsTrue(cat.Find(id).HasSmooth, id + " is smooth_status ready (Vehicles3)");
         }
 
         [Test]
@@ -123,7 +131,9 @@ namespace RoadBuilderGame.Tests
         {
             // MAPPING.md lists, per vehicle, new wheel cx, cy, r, size in new pixels.
             var map = new Dictionary<string, List<float[]>>();
-            foreach (var line in File.ReadAllLines(Folder + "MAPPING.md"))
+            var lines = new List<string>(File.ReadAllLines(Folder + "MAPPING.md"));
+            lines.AddRange(File.ReadAllLines("Assets/Art/Smooth/Vehicles3/MAPPING.md"));
+            foreach (var line in lines)
             {
                 if (!line.StartsWith("| vehicle-")) continue;
                 var cols = line.Split('|');
@@ -214,7 +224,11 @@ namespace RoadBuilderGame.Tests
                     Assert.AreEqual(0f, (p.wheelPos[i] - s.wheelPos[i]).magnitude, Tol, id + " wheel pos " + i);
                     Assert.AreEqual(p.wheelRadius[i], s.wheelRadius[i], Tol, id + " wheel radius " + i);
                     Assert.AreEqual(0f, (p.wheelAnchor[i] - s.wheelAnchor[i]).magnitude, Tol, id + " joint anchor " + i);
-                    Assert.AreEqual(p.wheelSpriteSize[i].x, s.wheelSpriteSize[i].x, Tol, id + " wheel sprite w " + i);
+                    // the drawn wheel may be enlarged (WheelArt.visualScale, <= 1.25) about its centre; the physics radius above is unchanged
+                    float vs = 1f;
+                    foreach (var wa in e.smoothWheels) if (wa.visualScale > 0f) vs = Mathf.Max(vs, wa.visualScale);
+                    Assert.LessOrEqual(vs, 1.25f + 1e-4f, id + " visual wheel scale");
+                    Assert.That(s.wheelSpriteSize[i].x, Is.EqualTo(p.wheelSpriteSize[i].x).Within(Tol).Or.EqualTo(p.wheelSpriteSize[i].x * vs).Within(Tol), id + " wheel sprite w " + i);
                     Assert.AreEqual(0f, (p.wheelSpriteCenter[i] - s.wheelSpriteCenter[i]).magnitude, Tol, id + " wheel sprite centre " + i);
                 }
                 n++;

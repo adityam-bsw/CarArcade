@@ -27,5 +27,6 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 9
   surfaceId: surface-electric-rail
+  skirtColor: {r: 0.34245938, g: 0.37167192, b: 0.426381, a: 1}
   frames:
   - {fileID: 2800000, guid: f7c4b5aef0c5545ab9d620ca7ab8895f, type: 3}

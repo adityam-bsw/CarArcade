@@ -270,3 +270,6 @@ Select `Road` in the Hierarchy and adjust [`RoadBuilder.cs`](file:///Users/bsw-m
 - **Orientation:** Best configured in **Landscape Left** / **Landscape Right** (or Auto Rotation). The UI dynamically adjusts if portrait is selected.
 - **Graphics API:** URP 2D is configured using Metal on iOS and Vulkan/GLES3 on Android. All road shaders compile via [`VertexColorUnlit.shader`](file:///Users/bsw-mm-036/Unity%20projects/New%20Game/Assets/Shaders/VertexColorUnlit.shader).
 
+
+## Road collider continuity (current)
+Each RoadChunk has its own EdgeCollider2D (radius 0.04). `RoadBuilder.RelinkGhosts()` links neighbouring chunks whose ends meet (within 6 cm) with Box2D ghost vertices (`useAdjacentStart/EndPoint` = the neighbour's next point), so wheels roll over joins as over one chain. It runs after RebuildActive, CutRange, EatBefore, CullBefore and SetSkin and touches a collider only when a ghost moved more than 2 cm. `RoadCar.RespawnSafely` raycasts under both wheels and places the car with the lowest wheel 1 cm above the road (no drop spike). Test: `RoadChunkContinuityTests.ChunkJoin_GhostVertices_LinkNeighbours`.

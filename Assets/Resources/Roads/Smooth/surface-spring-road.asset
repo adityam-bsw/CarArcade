@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 2
   surfaceId: surface-spring-road
+  skirtColor: {r: 0.81220216, g: 0.3409702, b: 0.30316472, a: 1}
   frames: []

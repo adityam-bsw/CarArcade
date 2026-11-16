@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 8
   surfaceId: surface-glass
+  skirtColor: {r: 0.75241303, g: 0.9462379, b: 0.9639697, a: 1}
   frames: []

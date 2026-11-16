@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 4
   surfaceId: surface-neon-grid
+  skirtColor: {r: 0.1251371, g: 0.109788164, b: 0.32935655, a: 1}
   frames: []

@@ -743,11 +743,13 @@ namespace RoadBuilderGame.UI.Editor
 
             // Combo under the odometer, power-up timers above the ink bar, a toast for events, gems under the coin counter.
             var combo = Label(topCenter, "Combo", "", TextStyle.Heading, ColorToken.Accent, 54);
-            Place(combo.rectTransform, TC, TC, new Vector2(0, -158), new Vector2(700, 70));
+            StackSlot(combo.rectTransform, -158f, 66f); AutoFit(combo, 28f, 54f);
             var power = Label(bottomCenter, "PowerUps", "", TextStyle.Button, ColorToken.TextPrimary, 28);
             Place(power.rectTransform, BC, BC, new Vector2(0, 112), new Vector2(900, 40));
-            var toast = Label(c, "Toast", "", TextStyle.Title, ColorToken.Accent, 64);
-            Place(toast.rectTransform, C, C, new Vector2(0, 200), new Vector2(1100, 100));
+            // One top-centre message stack under the odometer (combo, toast, stage banner, zone sign), each in its own fixed slot so
+            // no two ever overlap, side margins keep clear of the corner clusters and the boss meter, and every line auto-sizes to fit.
+            var toast = Label(c, "Toast", "", TextStyle.Title, ColorToken.Accent, 48);
+            StackSlot(toast.rectTransform, -230f, 60f); AutoFit(toast, 26f, 48f);
             // Gems: a dark pill with the gem icon, so the count keeps its contrast against any sky.
             var gemPill = Img(topRight, "GemsPill", SpriteSlot.Pill, ColorToken.Background, 0.85f);
             Place(gemPill.rectTransform, TR, TR, new Vector2(-36, -148), new Vector2(200, 62));
@@ -762,8 +764,8 @@ namespace RoadBuilderGame.UI.Editor
                 32, ColorToken.TextPrimary, TL, TL, new Vector2(40, -128), new Vector2(214, 80), 0f, new Vector4(24, 18, 24, 14));
 
             // Stage event warning (S1 banner, S2 sign, S3 edge flash). Tints come from the zone colour tokens at run time; the words are the non-colour channel.
-            var stageBanner = Label(c, "StageBanner", "", TextStyle.Heading, ColorToken.Accent, 72);
-            Place(stageBanner.rectTransform, TC, TC, new Vector2(0, -250), new Vector2(1100, 100));
+            var stageBanner = Label(c, "StageBanner", "", TextStyle.Heading, ColorToken.Accent, 64);
+            StackSlot(stageBanner.rectTransform, -296f, 90f); AutoFit(stageBanner, 30f, 64f);
             stageBanner.alpha = 0f;
             // The surface tutorial icon hangs under the banner text (a child, so it scales with it); the HUD sets sprite and visibility.
             var bannerIconGo = new GameObject("StageBannerIcon", typeof(RectTransform), typeof(Image));
@@ -772,7 +774,7 @@ namespace RoadBuilderGame.UI.Editor
             Place((RectTransform)bannerIconGo.transform, BC, new Vector2(0.5f, 1f), new Vector2(0, -8), new Vector2(96, 96));
             bannerIconGo.SetActive(false);
             var sign = Img(c, "StageSign", SpriteSlot.Pill, ColorToken.SurfaceAlt, 0.92f);
-            Place(sign.rectTransform, TC, TC, new Vector2(0, -352), new Vector2(420, 78));
+            Place(sign.rectTransform, TC, TC, new Vector2(0, -392), new Vector2(420, 78));
             var signName = Label(sign.transform, "SignName", "", TextStyle.Number, ColorToken.TextOnAccent, 40, TextAlignmentOptions.MidlineLeft);
             Stretch(signName.rectTransform, 34, 0, 150, 0);
             var signMetres = Label(sign.transform, "SignMetres", "", TextStyle.Number, ColorToken.TextOnAccent, 40, TextAlignmentOptions.MidlineRight);
@@ -797,6 +799,18 @@ namespace RoadBuilderGame.UI.Editor
         }
 
         private static Vector2 BL() => Vector2.zero;
+
+        /// <summary>Full-width top slot inside the safe-area frame: <paramref name="top"/> below the top edge, side margins so text never reaches a screen edge or the boss meter.</summary>
+        private static void StackSlot(RectTransform r, float top, float height)
+        {
+            r.anchorMin = new Vector2(0f, 1f); r.anchorMax = new Vector2(1f, 1f); r.pivot = new Vector2(0.5f, 1f);
+            r.offsetMin = new Vector2(300f, top - height); r.offsetMax = new Vector2(-300f, top);
+        }
+
+        private static void AutoFit(TMP_Text t, float min, float max)
+        {
+            t.enableAutoSizing = true; t.fontSizeMin = min; t.fontSizeMax = max; t.textWrappingMode = TextWrappingModes.NoWrap; t.overflowMode = TextOverflowModes.Ellipsis;
+        }
 
         private static GameObject BuildResult()
         {

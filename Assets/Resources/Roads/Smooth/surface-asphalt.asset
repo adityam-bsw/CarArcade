@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 4
   surfaceId: surface-asphalt
+  skirtColor: {r: 0.29084933, g: 0.3293749, b: 0.37564307, a: 1}
   frames: []

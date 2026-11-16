@@ -1,0 +1,13 @@
+Shared crop box on the registered 1024x1024 canvas (x0,y0,x1,y1) = (0, 31, 955, 988), size 956x958
+Registration reference = cream shell centroid of pose 01 at canvas (587.7, 464.9); poses shifted by the offsets below before cropping
+Pivot (body anchor) inside the crop: (587.7, 433.9) px from top-left = (0.6148, 0.5471) normalised, y up
+01_body_idle anchor (587.7, 464.9) shift (+0, +0)
+02_eye_open anchor (539.6, 484.7) shift (+48, -20)
+03_eye_angry anchor (539.6, 487.4) shift (+48, -22)
+04_eye_hurt_dizzy anchor (568.7, 465.4) shift (+19, +0)
+05_cannon_firing anchor (622.7, 467.5) shift (-35, -3)
+06_body_damaged anchor (561.2, 502.3) shift (+27, -37)
+07_shield_bubble crop box (145, 97, 915, 875) size 771x779
+08_projectile_rock crop box (69, 68, 192, 190) size 124x123
+09_projectile_bolt crop box (69, 72, 174, 193) size 106x122
+10_projectile_bubble crop box (66, 72, 179, 190) size 114x119

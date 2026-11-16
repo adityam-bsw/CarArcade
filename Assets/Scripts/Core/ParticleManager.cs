@@ -20,7 +20,17 @@ namespace RoadBuilderGame
         public void Init()
         {
             Instance = this;
-            _starSprite = Resources.Load<Sprite>("RoadBuilder/Star");
+            _pixelStar = Resources.Load<Sprite>("RoadBuilder/Star");
+            SetArt(ArtStyle.Pixel);
+        }
+
+        private Sprite _pixelStar;
+
+        /// <summary>Smooth worlds burst with the neutral white smooth star (tinted per burst); pixel worlds keep the pixel star.</summary>
+        public void SetArt(ArtStyle art)
+        {
+            var smooth = art == ArtStyle.Smooth ? SmoothSliceArt.Load() : null;
+            _starSprite = smooth != null && smooth.starWhite != null ? smooth.starWhite : _pixelStar;
         }
 
         public void SpawnBurst(Vector2 position, Color color, int count = 10)
@@ -28,7 +38,7 @@ namespace RoadBuilderGame
             for (int i = 0; i < count && _alive < MaxAlive; i++)
             {
                 var p = _free.Count > 0 ? _free.Pop() : CreateParticle();
-                p.Launch(position, color, Random.Range(0.2f, 0.45f));
+                p.Launch(position, color, Random.Range(0.2f, 0.45f), _starSprite != null ? _starSprite : SpriteFactory.Circle);
                 float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
                 float speed = Random.Range(2.5f, 7f);
                 p.velocity = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * speed;
@@ -73,8 +83,9 @@ namespace RoadBuilderGame
 
         internal void Bind(ParticleManager owner, SpriteRenderer sr) { _owner = owner; _sr = sr; gameObject.SetActive(false); }
 
-        internal void Launch(Vector2 position, Color color, float size)
+        internal void Launch(Vector2 position, Color color, float size, Sprite sprite)
         {
+            _sr.sprite = sprite;
             transform.position = position;
             transform.rotation = Quaternion.identity;
             _size = size; _color = color; _age = 0f;

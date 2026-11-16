@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 4
   surfaceId: surface-gravel
+  skirtColor: {r: 0.5121202, g: 0.48598987, b: 0.4436209, a: 1}
   frames: []

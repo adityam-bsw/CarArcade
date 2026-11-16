@@ -16,8 +16,11 @@ namespace RoadBuilderGame
         public Sprite coin, heart, ink, ring;
         [Tooltip("Not used by any pickup yet (no Overload state in code); kept so it is ready when one exists.")]
         public Sprite ringOverload;
-        [Tooltip("Smooth star. NOT wired: ParticleManager tints its star per burst, which would muddy a coloured sprite.")]
+        [Tooltip("Gold smooth star. Not used for particles (ParticleManager tints, so it uses starWhite).")]
         public Sprite star;
+        [Tooltip("Neutral white star: tint-ready, used by ParticleManager for every burst colour in a Smooth world.")]
+        public Sprite starWhite;
+        public Sprite gem, magnet, shield, doublePoints, slowMo, ghost;
 
         private static SmoothSliceArt _loaded;
         private static bool _tried;
@@ -41,10 +44,13 @@ namespace RoadBuilderGame
             switch (t) { case VehicleType.SportCyan: return wheelSport; case VehicleType.MonsterTruck: return wheelMonster; default: return wheelClassic; }
         }
 
-        /// <summary>Smooth pickup by its Resources/RoadBuilder file name (Coin, Heart, InkCanister, Pickup_Ring); null if it has none.</summary>
+        /// <summary>Smooth pickup by its Resources/RoadBuilder file name (Coin, Heart, InkCanister, Pickup_Ring, Pickup_Gem/Magnet/Shield/Double/SlowMo/Ghost); null if it has none.</summary>
         public Sprite Pickup(string name)
         {
-            switch (name) { case "Coin": return coin; case "Heart": return heart; case "InkCanister": return ink; case "Pickup_Ring": return ring; default: return null; }
+            switch (name) { case "Coin": return coin; case "Heart": return heart; case "InkCanister": return ink; case "Pickup_Ring": return ring;
+                case "Pickup_Gem": return gem; case "Pickup_Magnet": return magnet; case "Pickup_Shield": return shield;
+                case "Pickup_Double": return doublePoints; case "Pickup_SlowMo": return slowMo; case "Pickup_Ghost": return ghost;
+                default: return null; }
         }
     }
 }

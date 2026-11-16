@@ -35,6 +35,8 @@ namespace RoadBuilderGame
     {
         public Sprite sprite;
         public float cx, cy, r;
+        [Tooltip("Visual only: scales the drawn wheel about its own centre (the joint anchor). Physics radius and colliders never change. 0 counts as 1.")]
+        public float visualScale;
     }
 
     [System.Serializable]
@@ -48,6 +50,8 @@ namespace RoadBuilderGame
         public float speedMultiplier = 1f;
         [Tooltip("Optional: wheels cut out of the picture. With two or more, the outer two become the physics wheels and spin.")]
         public WheelArt[] wheels;
+        [Tooltip("Opt-in for long-wheelbase vehicles whose wheels sit off the body centre: puts the centre of mass (x) midway between the two wheel anchors so the body does not pitch on slopes.")]
+        public bool centerMassOnWheels;
     }
 
     public class RoadCar : MonoBehaviour
@@ -192,6 +196,7 @@ namespace RoadBuilderGame
                 Vector2 Anchor(WheelArt wa) => new Vector2((wa.cx - rig.body.rect.width * 0.5f) * k, (rig.body.rect.height * 0.5f - wa.cy) * k);
                 _artBack = back; _artFront = front; _artScale = k;
                 BuildCore(position, rig.body, null, w, h, Mathf.Clamp(back.r * k, 0.18f, 1f), rig.mass, Anchor(back), Anchor(front));
+                if (rig.centerMassOnWheels) Body.centerOfMass = new Vector2((Anchor(back).x + Anchor(front).x) * 0.5f, Body.centerOfMass.y);
                 return;
             }
             // No cut-outs: wheel centres sit a little inside the ends, bottoms level with the bottom of the picture.
@@ -338,7 +343,7 @@ namespace RoadBuilderGame
             var art = name == "BackWheel" ? _artBack : (name == "FrontWheel" ? _artFront : null);
             if (art != null && art.sprite != null)
             {
-                float d = art.sprite.rect.width * _artScale;      // the cut-out is a square of whole pixels
+                float d = art.sprite.rect.width * _artScale * (art.visualScale > 0f ? art.visualScale : 1f);      // the cut-out is a square of whole pixels; visualScale only enlarges the drawing about the anchor
                 var sr = SpriteFactory.CreateSprite("WheelSprite", go.transform, art.sprite, Color.white, 6);
                 Vector2 b = art.sprite.bounds.size;
                 sr.transform.localScale = new Vector3(d / b.x, d / b.y, 1f);
@@ -526,6 +531,7 @@ namespace RoadBuilderGame
             HeadHit = false;
             _lowSpeedTimer = 0f;
             Vector2 targetBodyPos = safeRoadSurfacePos + new Vector2(0f, 1.15f);
+            targetBodyPos.y += RespawnDropAdjust(targetBodyPos);
 
             if (Body != null)
             {
@@ -558,6 +564,29 @@ namespace RoadBuilderGame
             }
 
             TriggerInvincibility(2.5f);
+        }
+
+        /// <summary>
+        /// One-off: how far to move the respawn pose vertically so the lowest wheel hangs ~1 cm above the real road collider
+        /// (no wheel inside the road, no long drop: both made a landing spike). Zero when no road is found below.
+        /// </summary>
+        private float RespawnDropAdjust(Vector2 bodyPos)
+        {
+            const float gap = 0.01f;
+            float best = float.MaxValue; bool found = false;
+            for (int i = 0; i < 2; i++)
+            {
+                Vector2 c = bodyPos + (i == 0 ? _backAnchor : _frontAnchor);
+                var hits = Physics2D.RaycastAll(new Vector2(c.x, c.y + 4f), Vector2.down, 10f);
+                for (int h = 0; h < hits.Length; h++)
+                {
+                    if (hits[h].collider == null || hits[h].collider.isTrigger || hits[h].collider.GetComponentInParent<RoadChunk>() == null) continue;
+                    float clearance = (c.y - _wheelRadius) - hits[h].point.y;
+                    if (clearance < best) best = clearance;
+                    found = true; break;
+                }
+            }
+            return found ? Mathf.Clamp(gap - best, -3f, 3f) : 0f;
         }
 
         public bool IsUpsideDown => Body.transform.up.y < -0.2f;

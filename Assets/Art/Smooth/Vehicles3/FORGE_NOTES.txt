@@ -1,0 +1,9 @@
+vehicle-snowmobile, vehicle-snowboard: smooth redo (QA7-03). Own procedural code, no generative AI, no downloads.
+Method: /private/.../scratchpad/make_vehicles3.py (imports tools/art make_vehicles2 + veh2lib; same Ctx, cel3 shading, DeepInk outline).
+Source to copy to tools/art/make_vehicles3.py when merging. Canvas, S, pivots, no wheels: unchanged from Vehicles2 (inventory json).
+Snowmobile: tracked pod with belt, bogie wheels and tread lugs; red cowl with stripe, vents, headlamp; windshield; steel struts and
+upturned ski; upright driver (helmet, goggles, jacket, thigh and boot, arm to handlebar).
+Snowboard: teal board with raised tips and bindings; rider in crouch (boots, bent legs, red jacket, arms out with gloves, beanie, goggles).
+Limits: helmet top pokes 0.6 old px above the 1 px margin; no wheels, bodies and previews identical; rider limbs are simple tubes;
+snowboard crouch is somewhat stiff. Quality: snowmobile 3.5, snowboard 3 (reads clearly, below the 4-rated cars in finish).
+Licence: own work.

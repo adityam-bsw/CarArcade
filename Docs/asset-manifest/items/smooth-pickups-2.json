@@ -2,7 +2,7 @@
   "id": "smooth-pickups-2",
   "category": "pickup",
   "name": "Smooth pickups batch 2 (gem, magnet, shield, double, slowmo, ghost, white star)",
-  "status": "imported",
+  "status": "ready",
   "requirements": "Smooth sprites per Docs/design/ART_BIBLE.md, bilinear, 128 ppu (Star_White 200 ppu), same names as Resources/RoadBuilder except Star_White.",
   "have": [],
   "notes": "Star_White is neutral tint-ready; gold Star.png (batch 1) untouched. Ratings: forge 4 (Double 3.5); inspector 4 except Double 3.5. Magnet blue by design (red = warning). Gem and SlowMo both cyan, shapes differ. Not wired.",
@@ -20,6 +20,12 @@
       "from": "forged",
       "to": "imported",
       "note": "inspector: generator copied to tools/art, 7 files byte-identical on re-run, imported"
+    },
+    {
+      "date": "2026-11-16",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: 7 PNG byte-identical regen, SmoothArtImporter, Star_White 200ppu, q3.8"
     }
   ]
 }

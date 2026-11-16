@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 10
   surfaceId: surface-moon-dust
+  skirtColor: {r: 0.47639635, g: 0.48414537, b: 0.55445004, a: 1}
   frames: []

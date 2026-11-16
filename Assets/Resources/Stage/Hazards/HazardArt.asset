@@ -23,24 +23,15 @@ MonoBehaviour:
   trapStrip: {fileID: 21300000, guid: f1965f6387a1f4d97885cebca754cf9b, type: 3}
   finishGate: {fileID: 21300000, guid: d60d3769f12564c1b897ae51470313c2, type: 3}
   vignette: {fileID: 21300000, guid: 7c440c7a98c774282a42265ee6acf04d, type: 3}
-  eaters:
-  - variantId: EATER-HILLS
-    body: {fileID: 21300000, guid: ea83767714e2e4d4a84b5ccb7bc1a3ee, type: 3}
-  - variantId: EATER-DESERT
-    body: {fileID: 21300000, guid: 46595d6a3a30a4b6d8c9a94f2cec7762, type: 3}
-  - variantId: EATER-MOON
-    body: {fileID: 21300000, guid: 9f604e44c2a3a4dfba707d9b0417be5b, type: 3}
-  - variantId: EATER-MARS
-    body: {fileID: 21300000, guid: b6bbea8884b514de687f5ed6cfbe3c48, type: 3}
-  - variantId: EATER-VOLCANO
-    body: {fileID: 21300000, guid: 14af213fcbe3e45e083afb3f68eab561, type: 3}
-  - variantId: EATER-UNDERWATER
-    body: {fileID: 21300000, guid: 4c1877c13c12241499426ce3f7055a31, type: 3}
-  - variantId: EATER-CANDY
-    body: {fileID: 21300000, guid: 0452c069dfc4846eabb4f4d22f981b86, type: 3}
-  - variantId: EATER-CAVE
-    body: {fileID: 21300000, guid: 8da9952e47d50429b8f6ed916fb333ff, type: 3}
-  - variantId: EATER-SYNTHWAVE
-    body: {fileID: 21300000, guid: f2d1fdcee47544e1e9be971a9daf14d8, type: 3}
-  - variantId: EATER-HAUNTED
-    body: {fileID: 21300000, guid: 95c81a1f1d5f54e2abcc928743530ed2, type: 3}
+  eaterHeads:
+  - {fileID: 21300000, guid: e5b91b0b81df740ddbaf08713f529ef7, type: 3}
+  - {fileID: 21300000, guid: a19ad60a8a8c9403ab388f3da652914d, type: 3}
+  - {fileID: 21300000, guid: 57db782381de64310b5fb10e365ec3a0, type: 3}
+  - {fileID: 21300000, guid: 05f788f09d06240db88685223857c582, type: 3}
+  - {fileID: 21300000, guid: c840d729bc911464e818b342e25304d1, type: 3}
+  eaterBodySegment: {fileID: 21300000, guid: aef94954858bb43df9c29415cd1b56be, type: 3}
+  eaterFlames:
+  - {fileID: 21300000, guid: c5fd60b36a2124972b3263eeff67ddd9, type: 3}
+  - {fileID: 21300000, guid: 7543606dad58f4bfe83fe763129d0d3c, type: 3}
+  - {fileID: 21300000, guid: 1207d717b2edb4f06a1087911815265d, type: 3}
+  - {fileID: 21300000, guid: c1b1b5c32dfc547b89aa5515d6023429, type: 3}

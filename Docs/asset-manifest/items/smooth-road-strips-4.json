@@ -1,0 +1,35 @@
+{
+  "id": "smooth-road-strips-4",
+  "category": "surface",
+  "name": "Smooth road strips batch 4 (lava_crust, magma_bridge, sea_water, river, candy, cloud, coral, beach, floating_islands, ice_bridge, rope_bridge, salt_flat)",
+  "status": "ready",
+  "requirements": "Smooth art per Docs/design/ART_BIBLE.md 5 and 7.1; opaque body from the lip to the bottom row (QA7-06).",
+  "notes": "Ratings: lava_crust 4, magma_bridge 4, sea_water 4, river 3.5, candy 3.5, cloud 3.5, floating_islands 3.5, ice_bridge 3.5, salt_flat 3.5, coral 3, beach 3, rope_bridge 3 (coral/beach/rope_bridge are weaker: tiny crest bumps, faint shells, plain dark body). Lip rows for RoadSkin.lipPx (mean): lava_crust 4.5, magma_bridge 4, sea_water 7, river 6, candy 5, cloud 7, coral 18 (spiky crest, max step 13), beach 6.5, floating_islands 3.5, ice_bridge 2, rope_bridge 4.5, salt_flat 6. Weak greyscale pairs exist across worlds; same-world risk ice_bridge vs snow. Not wired in code.",
+  "source": "tools/art/make_road4.py (own code, tools/art/smoothart)",
+  "licence": "own work (procedural, no generative AI, no third-party pixels)",
+  "licence_evidence": "Assets/Art/Smooth/Roads/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "project_path": "Assets/Art/Smooth/Roads",
+  "quality": 3.5,
+  "have": [],
+  "history": [
+    {
+      "date": "2026-11-16",
+      "from": "forged",
+      "to": "imported",
+      "note": "inspector: make_road4.py re-run byte-identical for all 12; make_road.py default output unchanged (asphalt, acid, honey byte-identical to shipped)"
+    },
+    {
+      "date": "2026-11-16",
+      "from": "imported",
+      "to": "ready",
+      "note": "inspector: opaque to bottom row, wrap and 3x seam checked, import Repeat/FullRect/bilinear/128/ASTC6x6, ledger+licence ok"
+    },
+    {
+      "date": "2026-11-16",
+      "from": "ready",
+      "to": "ready",
+      "note": "inspector: checks passed, see review"
+    }
+  ]
+}

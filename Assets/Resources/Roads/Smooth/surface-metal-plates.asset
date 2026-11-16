@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 2
   surfaceId: surface-metal-plates
+  skirtColor: {r: 0.6342823, g: 0.4387237, b: 0.3581143, a: 1}
   frames: []

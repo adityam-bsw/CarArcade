@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 7
   surfaceId: surface-sticky-candy
+  skirtColor: {r: 0.9559501, g: 0.55056596, b: 0.73560333, a: 1}
   frames: []

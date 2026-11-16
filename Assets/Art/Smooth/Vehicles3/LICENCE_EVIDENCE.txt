@@ -1,0 +1,4 @@
+Source: own work. Generated in-house by tools/art/make_vehicles3.py (+ make_vehicles2.py, veh2lib.py, tools/art/smoothart/),
+procedural pure-Python vector rasteriser. No third-party pixels, no downloads, no generative AI.
+Licence: own work (CC0-compatible, no obligations). Credit not required.
+Verified by the asset-inspector 2026-11-16: running tools/art/make_vehicles3.py reproduces all 4 PNGs byte for byte (cmp).

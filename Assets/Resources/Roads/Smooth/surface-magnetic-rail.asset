@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 1
   surfaceId: surface-magnetic-rail
+  skirtColor: {r: 0.52725375, g: 0.4150615, b: 0.3314857, a: 1}
   frames: []

@@ -4,7 +4,7 @@ Generated 2026-11-16 from `Docs/asset-manifest/items/*.json` by `tools/assets/re
 
 | Category | have | todo | scouting | found | downloaded | imported | not_found | forging | forged | ready | rejected | total |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| surface | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 39 | 1 | 43 |
+| surface | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 40 | 1 | 44 |
 | world | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 19 | 1 | 29 |
 | vehicle | 14 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 5 | 14 | 1 | 34 |
 
@@ -14,6 +14,7 @@ Generated 2026-11-16 from `Docs/asset-manifest/items/*.json` by `tools/assets/re
 |---|---|---|---|---|---|
 | Smooth road strips batch 2 (sand, snow, gravel, cobblestone, moon dust, neon grid, wooden bridge, rail track) | ready | tools/art/make_road2.py (own code, tools/art/smoothart) | own work (procedural, no generative AI, no third-party pixels) | Assets/Art/Smooth/Roads | Ratings: cobblestone 4, snow 4, wooden_bridge 4, neon_grid 4, sand 3.5, gravel 3 |
 | Smooth road strips batch 3 (spring_road, magnetic_rail, acid, oil, conveyor, conveyor_b, lava_river, sticky_candy, honey, metal_plates, ice_crystals, haunted_shadow, electric_rail, electric_rail_off, fragile_paper, fragile_paper_torn) | ready | tools/art/make_road3.py (own code, tools/art/smoothart) | own work (procedural, no generative AI, no third-party pixels) | Assets/Art/Smooth/Roads | Ratings: honey 4, electric_rail 4, spring_road 3.5, magnetic_rail 3.5, acid 3.5, |
+| Smooth road strips batch 4 (lava_crust, magma_bridge, sea_water, river, candy, cloud, coral, beach, floating_islands, ice_bridge, rope_bridge, salt_flat) | ready | tools/art/make_road4.py (own code, tools/art/smoothart) | own work (procedural, no generative AI, no third-party pixels) | Assets/Art/Smooth/Roads | Ratings: lava_crust 4, magma_bridge 4, sea_water 4, river 3.5, candy 3.5, cloud  |
 | Smooth road strips (asphalt, dirt, grass, ice, mud, glass + 3 crack stages) | ready | tools/art/make_road.py (own code, tools/art/smoothart) | own work (procedural, no generative AI, no third-party pixels) | Assets/Art/Smooth/Roads | Does not replace the pixel surface-* items (still used by the game until the imp |
 | Acid | ready | tools/art/make_road3.py (own code) | own work (procedural; no generative AI) | Assets/Art/Smooth/Roads/road_acid_1024x192.png | Catalogue item for the smooth strip Assets/Art/Smooth/Roads/road_acid_1024x192.p |
 | Asphalt | have |  |  |  | flat colours today; ambientCG textures planned |

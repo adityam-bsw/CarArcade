@@ -35,6 +35,25 @@ namespace RoadBuilderGame.Editor
 
         public const string ArtDir = "Assets/Art/Smooth/Hazards";
 
+        private const string EaterArtDir = "Assets/Art/Smooth/Hazards/RoadEater/";
+        private static Sprite EaterSpr(string n) { return AssetDatabase.LoadAssetAtPath<Sprite>(EaterArtDir + n + ".png"); }
+        private static void FillEaterArt(HazardArtSet art)
+        {
+            art.eaterHeads = new Sprite[5]; for (int i = 0; i < 5; i++) art.eaterHeads[i] = EaterSpr("eater_head_" + (i + 1));
+            art.eaterFlames = new Sprite[4]; for (int i = 0; i < 4; i++) art.eaterFlames[i] = EaterSpr("eater_flame_" + (i + 1));
+            art.eaterBodySegment = EaterSpr("eater_body_segment");
+        }
+
+        /// <summary>Points the existing HazardArt asset at the imported Road-Eater dragon sprites (no other asset is rewritten).</summary>
+        [MenuItem("Road Builder/Stage/Assign Road-Eater Art")]
+        public static void AssignEaterArt()
+        {
+            var art = AssetDatabase.LoadAssetAtPath<HazardArtSet>(Dir + "/HazardArt.asset");
+            if (art == null) { Debug.LogError("[Hazards] HazardArt.asset missing"); return; }
+            FillEaterArt(art); EditorUtility.SetDirty(art); AssetDatabase.SaveAssets();
+            Debug.Log("[Hazards] Road-Eater art assigned: heads " + art.eaterHeads.Length + ", flames " + art.eaterFlames.Length);
+        }
+
         private static Sprite Spr(string name, float ppu)
         {
             string path = ArtDir + "/" + name + ".png";
@@ -55,13 +74,8 @@ namespace RoadBuilderGame.Editor
             var art = ScriptableObject.CreateInstance<HazardArtSet>();
             art.robotBody = Spr("robo_body", 85f); art.robotTrim = Spr("robo_trim", 85f); art.robotEye = Spr("robo_eye", 100f); art.robotAntenna = Spr("robo_antenna", 130f); art.robotJet = Spr("robo_jet", 80f);
             art.tellRing = Spr("tell_ring", 96f); art.tellMarker = Spr("tell_marker", 96f); art.tellGlow = Spr("tell_glow", 96f); art.trapStrip = Spr("trap_strip", 96f); art.finishGate = Spr("finish_gate", 32f); art.vignette = Spr("vignette", 128f);
-            var eaters = new System.Collections.Generic.List<HazardArtSet.EaterSprite>();
-            foreach (var v in EaterVariantSO.Defaults())
-            {
-                var body = Spr("eater_" + v.worldId, 53f); eaters.Add(new HazardArtSet.EaterSprite { variantId = v.id, body = body });
-                var row = Object.Instantiate(v); row.name = v.id; row.body = body; Save(row, Dir + "/Eaters/" + v.id + ".asset");
-            }
-            art.eaters = eaters.ToArray(); Save(art, Dir + "/HazardArt.asset");
+            foreach (var v in EaterVariantSO.Defaults()) { var row = Object.Instantiate(v); row.name = v.id; Save(row, Dir + "/Eaters/" + v.id + ".asset"); }
+            FillEaterArt(art); Save(art, Dir + "/HazardArt.asset");
             var sprites = new System.Collections.Generic.Dictionary<string, string> {
                 { "hills", "prj_boulder" }, { "desert", "prj_sandspike" }, { "snow", "prj_iceshard" }, { "moon", "prj_gravityorb" }, { "mars", "prj_meteorcore" }, { "volcano", "prj_lavabomb" }, { "underwater", "prj_bubble" }, { "candy", "prj_gumdrop" },
                 { "cave", "prj_crystal" }, { "synthwave", "prj_neonbolt" }, { "haunted", "prj_shadoworb" }, { "forest", "prj_thornball" }, { "city", "prj_drone" }, { "cloud", "prj_stormpearl" }, { "toxic", "prj_acidglob" } };

@@ -14,6 +14,7 @@ namespace RoadBuilderGame
         public float lookAhead = 11f;
         public float step = 1.0f;
         public float maxSlope = 0.55f;
+        public float hillScale = 1f;                      // 0 = dead flat road (continuity measurements)
         public bool chaseInk = true;
         public bool drawing;
         public float inkSpent, metresDrawn;
@@ -65,7 +66,7 @@ namespace RoadBuilderGame
 
             // next point: a step forward, y follows gentle hills, or climbs/dips towards the nearest ink pickup
             float x = _tip.x + step;
-            float y = 0.8f * Mathf.Sin(x * 0.18f) + 0.4f * Mathf.Sin(x * 0.07f);
+            float y = hillScale * (0.8f * Mathf.Sin(x * 0.18f) + 0.4f * Mathf.Sin(x * 0.07f));
             if (chaseInk)
             {
                 Collectible best = null;

@@ -14,8 +14,9 @@ namespace RoadBuilderGame.Tests
             var a = SmoothSliceArt.Load();
             Assert.IsNotNull(a, "Resources/Smooth/SmoothSliceArt missing (menu Road Builder > Smooth > Build Countryside Skins)");
             foreach (var t in Types) { Assert.IsNotNull(a.Body(t), "body " + t); Assert.IsNotNull(a.Wheel(t), "wheel " + t); }
-            foreach (var n in new[] { "Coin", "Heart", "InkCanister", "Pickup_Ring" }) Assert.IsNotNull(a.Pickup(n), n);
-            Assert.IsNull(a.Pickup("Pickup_Gem"), "pickups without smooth art keep the original");
+            foreach (var n in new[] { "Coin", "Heart", "InkCanister", "Pickup_Ring", "Pickup_Gem", "Pickup_Magnet", "Pickup_Shield", "Pickup_Double", "Pickup_SlowMo", "Pickup_Ghost" }) Assert.IsNotNull(a.Pickup(n), n);
+            Assert.IsNotNull(a.starWhite, "neutral white star for ParticleManager tinting");
+            Assert.IsNull(a.Pickup("Pickup_Unknown"), "a name without smooth art keeps the original");
             Assert.AreNotEqual(a.Wheel(VehicleType.ClassicRed), a.Wheel(VehicleType.MonsterTruck), "each vehicle has its own wheel");
         }
 

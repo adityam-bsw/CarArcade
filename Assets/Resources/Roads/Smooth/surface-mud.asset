@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 8
   surfaceId: surface-mud
+  skirtColor: {r: 0.3519986, g: 0.22526136, b: 0.13672279, a: 1}
   frames: []

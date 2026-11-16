@@ -1,0 +1,11 @@
+RO-B0 sprite pack (originals, untouched)
+Files: 01_body_idle, 02_eye_open, 03_eye_angry, 04_eye_hurt_dizzy, 05_cannon_firing, 06_body_damaged, 07_shield_bubble
+       (1024x1024 RGBA, robot faces LEFT) and 08_projectile_rock, 09_projectile_bolt, 10_projectile_bubble (256x256 RGBA).
+Tool: GPT image generation, run by the user (not by the project agents).
+Date: 2026-11-16
+Prompt summary: cartoon traffic-inspector hovering robot RO-B0: dome visor with one yellow eye, traffic-cone hat with badge,
+  cannon arm, clipboard hand, twin thrusters; poses for idle, eye states, firing, damaged; shield bubble; three projectiles.
+Rights holder / operator: the user, who generated and supplied the files.
+AI-generated: user-approved exception to the earlier no-generative-AI rule, commercial terms must be checked by the user per Docs/design guidance.
+Zip checked before extraction: 10 PNG files only, no scripts, no unsafe paths.
+Cleaned derivatives: Assets/Art/Smooth/Hazards/RoB0/ made by tools/art/clean_rob0.py (originals here stay unchanged).

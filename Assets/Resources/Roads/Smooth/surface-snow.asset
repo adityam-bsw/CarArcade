@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 8
   surfaceId: surface-snow
+  skirtColor: {r: 0.6272592, g: 0.6881367, b: 0.7691332, a: 1}
   frames: []

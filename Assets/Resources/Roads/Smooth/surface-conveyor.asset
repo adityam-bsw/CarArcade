@@ -27,5 +27,6 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 2
   surfaceId: surface-conveyor
+  skirtColor: {r: 0.37575138, g: 0.4136545, b: 0.45575905, a: 1}
   frames:
   - {fileID: 2800000, guid: 7733d4331dec84f6aba2408b43774f55, type: 3}

@@ -57,6 +57,7 @@ namespace RoadBuilderGame
         public int smoothScale = 1;
 
         /// <summary>True when smooth art may be used for this vehicle (ready in the manifest and fully linked).</summary>
+        [Tooltip("Vehicle: centre of mass x midway between the wheels (long wheelbase offset: bus, semi, camper, fire truck, tractor). Set by SmoothVehicleLinker.")] public bool centerMassOnWheels;
         public bool HasSmooth => smoothBody != null && smoothPreview != null;
         /// <summary>The card picture for an art style. Pixel, or a vehicle without ready smooth art, keeps the old preview.</summary>
         public Sprite PreviewFor(ArtStyle style) => style == ArtStyle.Smooth && HasSmooth ? smoothPreview : preview;
@@ -71,7 +72,7 @@ namespace RoadBuilderGame
             return new VehicleRig
             {
                 id = id, body = smooth ? smoothBody : preview, width = widthUnits, mass = mass, torque = torque, speedMultiplier = speed,
-                wheels = smooth ? smoothWheels : wheels
+                wheels = smooth ? smoothWheels : wheels, centerMassOnWheels = centerMassOnWheels
             };
         }
 

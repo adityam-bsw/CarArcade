@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 26
   surfaceId: surface-ice-crystals
+  skirtColor: {r: 0.47844145, g: 0.6328276, b: 0.90386856, a: 1}
   frames: []

@@ -484,6 +484,7 @@ namespace RoadBuilderGame
             _startX = _car.Body.position.x;
             _distance = 0f;
             _upsideDownTime = 0f;
+            if (ParticleManager.Instance != null) ParticleManager.Instance.SetArt(VehicleArt);   // bursts use the neutral white smooth star, tinted per burst
             _pickups.Art = VehicleArt;   // gameplay sprites are smooth in every world (each piece falls back to its original when no smooth version exists)
             _pickups.Reset(16f);
             _brush.Cancel();

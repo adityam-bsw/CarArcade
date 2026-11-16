@@ -27,4 +27,5 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 5
   surfaceId: surface-wooden-bridge
+  skirtColor: {r: 0.4068611, g: 0.287451, b: 0.18215655, a: 1}
   frames: []

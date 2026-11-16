@@ -34,6 +34,44 @@ namespace RoadBuilderGame
         /// <summary>Lifts or sinks the whole chunk (rope sway, floating rocks). Collider and mesh move together as they share the transform.</summary>
         public void SetOffsetY(float dy) { var t = transform.localPosition; if (Mathf.Abs(t.y - dy) > 0.0005f) { t.y = dy; transform.localPosition = t; } }
 
+        private bool _hasStartGhost, _hasEndGhost;
+        private Vector2 _startGhost, _endGhost;     // local space
+
+        /// <summary>World-space collider ends: first, second, second-to-last and last point. False when the chunk has fewer than 2 points.</summary>
+        public bool TryGetEnds(out Vector2 first, out Vector2 second, out Vector2 beforeLast, out Vector2 last)
+        {
+            int n = _edgePoints.Count;
+            first = second = beforeLast = last = default;
+            if (n < 2) return false;
+            var t = transform;
+            first = t.TransformPoint(_edgePoints[0]); second = t.TransformPoint(_edgePoints[1]);
+            beforeLast = t.TransformPoint(_edgePoints[n - 2]); last = t.TransformPoint(_edgePoints[n - 1]);
+            return true;
+        }
+
+        /// <summary>
+        /// Ghost vertices (the neighbouring chunks' next points, world space) make the chunks behave as one continuous chain for the wheels:
+        /// a circle rolling over a join no longer snags on the end cap of the edge it just left. Only touches the collider when a value changed.
+        /// </summary>
+        public void SetGhosts(bool hasStart, Vector2 startWorld, bool hasEnd, Vector2 endWorld)
+        {
+            if (_edge == null) return;
+            var t = transform;
+            Vector2 ls = hasStart ? (Vector2)t.InverseTransformPoint(startWorld) : default;
+            Vector2 le = hasEnd ? (Vector2)t.InverseTransformPoint(endWorld) : default;
+            bool changed = hasStart != _hasStartGhost || hasEnd != _hasEndGhost
+                || (hasStart && (ls - _startGhost).sqrMagnitude > 0.0004f) || (hasEnd && (le - _endGhost).sqrMagnitude > 0.0004f);
+            if (!changed) return;
+            _hasStartGhost = hasStart; _hasEndGhost = hasEnd; _startGhost = ls; _endGhost = le;
+            ApplyGhosts();
+        }
+
+        private void ApplyGhosts()
+        {
+            _edge.useAdjacentStartPoint = _hasStartGhost; if (_hasStartGhost) _edge.adjacentStartPoint = _startGhost;
+            _edge.useAdjacentEndPoint = _hasEndGhost; if (_hasEndGhost) _edge.adjacentEndPoint = _endGhost;
+        }
+
         public void Init(PhysicsMaterial2D physicsMaterial)
         {
             _renderer = GetComponent<RoadRenderer>();
@@ -62,6 +100,7 @@ namespace RoadBuilderGame
                 _edgePoints.Add(p + Geometry.Normals[i] * (Geometry.HalfThick - 0.03f));
             }
             _edge.SetPoints(_edgePoints);
+            ApplyGhosts();
             MaxX = maxX;
 
             // Then the look, from the same geometry.

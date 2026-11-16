@@ -53,6 +53,19 @@ namespace RoadBuilderGame.Editor
             ("surface-haunted-shadow", "road_haunted_shadow_1024x192.png", 8f,  RoadStyle.AsphaltHighway, "Haunted shadow (smooth)"),
             ("surface-electric-rail",  "road_electric_rail_1024x192.png",  9f,  RoadStyle.AsphaltHighway, "Electric rail (smooth)"),
             ("surface-fragile-paper",  "road_fragile_paper_1024x192.png",  5f,  RoadStyle.AsphaltHighway, "Fragile paper (smooth)"),
+            // Batch 4: the 12 catalogue surfaces that had no smooth strip (lip rows from FORGE_NOTES_batch4.txt). Coral is spiky: its collider lip is ~13 px, the spikes rise over it as art.
+            ("surface-lava-crust",       "road_lava_crust_1024x192.png",       4.5f, RoadStyle.AsphaltHighway, "Lava crust (smooth)"),
+            ("surface-magma-bridge",     "road_magma_bridge_1024x192.png",     4f,   RoadStyle.AsphaltHighway, "Magma bridge (smooth)"),
+            ("surface-sea-water",        "road_sea_water_1024x192.png",        7f,   RoadStyle.AsphaltHighway, "Sea water (smooth)"),
+            ("surface-river",            "road_river_1024x192.png",            6f,   RoadStyle.AsphaltHighway, "River (smooth)"),
+            ("surface-candy",            "road_candy_1024x192.png",            5f,   RoadStyle.AsphaltHighway, "Candy (smooth)"),
+            ("surface-cloud",            "road_cloud_1024x192.png",            7f,   RoadStyle.AsphaltHighway, "Cloud (smooth)"),
+            ("surface-coral",            "road_coral_1024x192.png",            13f,  RoadStyle.AsphaltHighway, "Coral (smooth)"),
+            ("surface-beach",            "road_beach_1024x192.png",            6.5f, RoadStyle.DirtTrack,      "Beach (smooth)"),
+            ("surface-floating-islands", "road_floating_islands_1024x192.png", 3.5f, RoadStyle.AsphaltHighway, "Floating islands (smooth)"),
+            ("surface-ice-bridge",       "road_ice_bridge_1024x192.png",       2f,   RoadStyle.AsphaltHighway, "Ice bridge (smooth)"),
+            ("surface-rope-bridge",      "road_rope_bridge_1024x192.png",      4.5f, RoadStyle.AsphaltHighway, "Rope bridge (smooth)"),
+            ("surface-salt-flat",        "road_salt_flat_1024x192.png",        6f,   RoadStyle.AsphaltHighway, "Salt flat (smooth)"),
         };
 
         // Animation frames swapped on the skin's material at run time (RoadSkin.frames; frame 1 onward).
@@ -225,7 +238,9 @@ namespace RoadBuilderGame.Editor
             a.bodyClassic = V("body_classic.png"); a.bodySport = V("body_sport.png"); a.bodyMonster = V("body_monster.png");
             a.wheelClassic = V("wheel_classic.png"); a.wheelSport = V("wheel_sport.png"); a.wheelMonster = V("wheel_monster.png");
             a.coin = P("Coin.png"); a.heart = P("Heart.png"); a.ink = P("InkCanister.png");
-            a.ring = P("Pickup_Ring.png"); a.ringOverload = P("Pickup_Ring_Overload.png"); a.star = P("Star.png");
+            a.ring = P("Pickup_Ring.png"); a.ringOverload = P("Pickup_Ring_Overload.png"); a.star = P("Star.png"); a.starWhite = P("Star_White.png");
+            a.gem = P("Pickup_Gem.png"); a.magnet = P("Pickup_Magnet.png"); a.shield = P("Pickup_Shield.png");
+            a.doublePoints = P("Pickup_Double.png"); a.slowMo = P("Pickup_SlowMo.png"); a.ghost = P("Pickup_Ghost.png");
             EditorUtility.SetDirty(a);
         }
 

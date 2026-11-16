@@ -1,0 +1,17 @@
+FORGE_NOTES roads4 (QA7-06). Own work, no generative AI, no downloads, standard library only.
+Generators: tools/art/make_road4.py (12 new strips), tools/art/make_roads_opaque.py (regenerates existing strips opaque), flag make_road.OPAQUE_BODY + make_road.solidify().
+Checks: tools/art/check_roads_opaque.py (new), check_roads2.py.
+
+OPAQUE RULE: skirt_fade() is a no-op when OPAQUE_BODY; solidify() then makes every pixel below (lip row + 2) alpha 255 (holes take a darkened, smoothed column colour). Lip rows stay identical (verified 0 differing columns vs shipped). Cost: drips/dissolving skirts of mud, acid, honey, ice icicles, haunted_shadow, bridge post gaps are now inside a solid body (less silhouette character below the lip, which is what QA asked for).
+Wrap: all masks are wrap_x and tops are periodic; 3x tiling test: lip step at the seam <= interior max step on all 12 new strips (max seam step 2 px for coral), RGB seam ratio <= 1.58.
+
+NEW STRIPS (1024x192, 4 px bleed from write_png). quality = honest 1..5:
+ lava_crust 4 basalt, polygon plates, zigzag glowing cracks with halo, embers         magma_bridge 4 obsidian blocks with glowing seams over a full magma body
+ sea_water 4 sine waves, crest lines, foam caps                                        river 3.5 teal streaks, pebble bed (reads close to sea in greyscale pairs)
+ candy 3.5 pink frosting scallops + drips + sprinkles over cake                        cloud 3.5 puffy bumps lip, soft puffs in body (blobby, low detail)
+ coral 3 spiky crest, polyps, holes (crest bumps small)                                beach 3 pale sand, ripples, small shells/starfish (shells tiny, faint)
+ floating_islands 3.5 grass cap with tufts on layered rock (cap only ~13 px)           ice_bridge 3.5 staggered glossy ice bricks, thin snow cap (lip is only ~2 px)
+ rope_bridge 3 planks with 5 px gaps, twisted rope, hangers (dark plain body)          salt_flat 3.5 hex crust, pink tint (low contrast, close to snow in luma)
+Weaknesses: no in-game test yet (colours judged against a blue sky only); body textures are procedural and repetitive at 1024 px; no per-world palette tuning; greyscale metric flags several cross-world pairs (see CHECK_RESULTS.txt). All "forged", none "ready".
+Do NOT copy opaque glass_crack*.png over the shipped crack overlays (overlays must keep transparency); glass opaque strip keeps its pane gap by design.
+Staging only: nothing under Assets/ was touched. Existing regenerated strips: staging/roads4/existing_opaque/ (same names).
