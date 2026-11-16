@@ -1819,9 +1819,6 @@ namespace RoadBuilderGame
         public bool DebugStageOn => _stageOn;
         public int DebugExtraCounter(ExtraGate g) { return _profile.Counter(GateService.ExtraCounterId(g)); }
         public float DebugDistance => _distance;
-        /// <summary>Flat runway laid ahead of a QA jump (metres): long enough to ride through a whole zone without drawing.</summary>
-        public const float QaRunwayAheadM = 170f;
-
         /// <summary>QA jump (Editor and development builds only): moves the run to <paramref name="distanceM"/> on a fresh flat runway, full ink and hearts, and lets the director replay the warning state.</summary>
         public void DebugJumpToStage(float distanceM)
         {
@@ -1831,6 +1828,9 @@ namespace RoadBuilderGame
             Debug.Log("[Stage] debug_jump " + distanceM + " m");
         }
 #endif
+
+        /// <summary>Flat runway laid ahead of a QA jump (metres): long enough to ride through a whole zone without drawing.</summary>
+        public const float QaRunwayAheadM = 170f;
 
         /// <summary>Moves the run to <paramref name="distanceM"/> on a fresh flat runway with full ink and hearts and replays the director state. Used by the post-run revive and the QA jump.</summary>
         private void JumpRun(float distanceM)
