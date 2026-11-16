@@ -108,10 +108,14 @@ namespace RoadBuilderGame.UI
             }
         }
 
+        public enum DailyAction { Start, Claim }
+
+        /// <summary>The Home Daily Challenge button starts today's daily directly; only a finished, unclaimed daily claims its reward first.</summary>
+        public static DailyAction DailyActionFor(bool claimable) { return claimable ? DailyAction.Claim : DailyAction.Start; }
+
         private void OnDailyPressed()
         {
-            var m = GameServices.Model;
-            if (m.DailyChallengeClaimable) GameServices.Actions?.ClaimDailyChallenge();
+            if (DailyActionFor(GameServices.Model.DailyChallengeClaimable) == DailyAction.Claim) GameServices.Actions?.ClaimDailyChallenge();
             else GameServices.Actions?.StartDaily();
         }
 

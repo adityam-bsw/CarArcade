@@ -1,0 +1,22 @@
+{
+  "id": "surface-metal-plates",
+  "category": "surface",
+  "name": "Metal Plates",
+  "status": "ready",
+  "requirements": "Behaviour surface of section C2: smooth road strip, own surface item for the catalogue and the road picker.",
+  "have": [],
+  "notes": "Catalogue item for the smooth strip Assets/Art/Smooth/Roads/road_metal_plates_1024x192.png (batch smooth-road-strips-3, inspector-reviewed ready 2026-11-16). Preview 128x64 is a crop of the strip. Behaviour from the surface module set.",
+  "source": "tools/art/make_road3.py (own code)",
+  "licence": "own work (procedural; no generative AI)",
+  "licence_evidence": "Assets/Art/Smooth/Roads/LICENCE_EVIDENCE.txt",
+  "project_path": "Assets/Art/Smooth/Roads/road_metal_plates_1024x192.png",
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-16",
+      "from": "ready",
+      "to": "ready",
+      "note": "catalogue item added by the integration pass (strip already inspector-approved in smooth-road-strips-3)"
+    }
+  ]
+}

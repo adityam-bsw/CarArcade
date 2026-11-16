@@ -36,6 +36,14 @@ namespace RoadBuilderGame
         public bool Chasing => Eating || State == EaterState.Pushback;
         /// <summary>Highest distance road may be deleted up to: the front, never closer than protectedZone to the car.</summary>
         public float EatFront { get; private set; }
+        /// <summary>Surface numbers under the Eater (section C): speed multiplier, a stun in seconds (0 = none) and eat-speed multiplier. Set by the controller before each tick.</summary>
+        public float SurfaceSlowMul = 1f, SurfaceEatMul = 1f, StunLeft, StunCooldown;
+        /// <summary>The Eater touches a stunning spot: it stops for <paramref name="seconds"/>, then cannot be stunned again for 4 s (no stun-lock).</summary>
+        public void ApplySurface(float slowMul, float eatMul, float stunSeconds)
+        {
+            SurfaceSlowMul = slowMul <= 0f ? 1f : slowMul; SurfaceEatMul = eatMul <= 0f ? 1f : eatMul;
+            if (stunSeconds > 0f && StunLeft <= 0f && StunCooldown <= 0f) { StunLeft = stunSeconds; StunCooldown = stunSeconds + 4f; }
+        }
         public MonsterDefinitionSO Data => _d;
 
         public event Action<EaterEvent> Raised;
@@ -44,6 +52,7 @@ namespace RoadBuilderGame
 
         public void Reset(uint seed)
         {
+            SurfaceSlowMul = SurfaceEatMul = 1f; StunLeft = StunCooldown = 0f;
             State = EaterState.Dormant; Band = EaterBand.Calm; S = Gap = Speed = EatFront = 0f;
             _chewLeft = _chewCooldown = _surgeTelegraphLeft = _surgeLeft = _snapLeft = _snapAirborne = _freezeLeft = _exitLeft = 0f;
             _escapeHold = _belowResetFor = _warnClock = _nearCooldown = _graceLeft = 0f; _lowGapAgo = -1f; _jumps = 0;
@@ -178,6 +187,9 @@ namespace RoadBuilderGame
             float r = State == EaterState.Surge ? _d.maxSpeedRatio : _d.Ratio(Gap);
             float vt = Mathf.Min(r * vRef, _d.maxSpeedRatio * vRef);
             if (_chewLeft > 0f) { vt *= _d.jumpSlowRatio; _chewLeft -= dt; }
+            vt *= SurfaceSlowMul * SurfaceEatMul;
+            if (StunCooldown > 0f) StunCooldown -= dt;
+            if (StunLeft > 0f) { StunLeft -= dt; vt = 0f; }
             Speed = Speed < vt ? Mathf.Min(vt, Speed + _d.accelMax * dt) : Mathf.Max(vt, Speed - _d.decelMax * dt);
             S += Speed * dt;
             Gap = carS - S;

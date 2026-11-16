@@ -34,6 +34,32 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 80f65c2bb100b491fa38207fbfc9bcba, type: 2}
   - {fileID: 11400000, guid: 33d50d383f1b04c9b835fe8e7facf960, type: 2}
   - {fileID: 11400000, guid: 2baeae25d45c04f4fa9b19d6387570bd, type: 2}
+  - {fileID: 11400000, guid: 5cc24581f93c445639370178d005ad40, type: 2}
+  - {fileID: 11400000, guid: 4c428ba3ba2e94bf9b47de37c323625e, type: 2}
+  - {fileID: 11400000, guid: f30d42a16624d45a7b31dfdc4fe2dc96, type: 2}
+  - {fileID: 11400000, guid: e8fe2912f75cc42a59dc3eb1396871ee, type: 2}
+  - {fileID: 11400000, guid: f098802f7479a43598d9304b51103fd6, type: 2}
+  - {fileID: 11400000, guid: 437af386348dc41379bcf9d1937882da, type: 2}
+  - {fileID: 11400000, guid: 42f6ef425a82c4f44818c02e993ba6ec, type: 2}
+  - {fileID: 11400000, guid: a47b9697cb5cc4ea98032c6de5ca222d, type: 2}
+  - {fileID: 11400000, guid: 39dfd03d2b7454bf98bb2683e5f3ca3c, type: 2}
+  - {fileID: 11400000, guid: 0317be70176764bbf94d0f440db1cacd, type: 2}
+  - {fileID: 11400000, guid: ee2722c29dad04ee0b355272a7c2847f, type: 2}
+  - {fileID: 11400000, guid: d608845dfbf8a42e0ba3f0ad59aa44df, type: 2}
+  - {fileID: 11400000, guid: 49886b7a36144456baa12ff1e7b38892, type: 2}
+  - {fileID: 11400000, guid: 0bd634027652e47f2ab49d0e457a0787, type: 2}
+  - {fileID: 11400000, guid: b51713ecd2d484c7ba1fdfda5c6b41a2, type: 2}
+  - {fileID: 11400000, guid: b209e7cf212ba4e108fd53072fcf582e, type: 2}
+  - {fileID: 11400000, guid: 274a8588a5bf849c5ac19940020f03d3, type: 2}
+  - {fileID: 11400000, guid: bff0e1efa273a448b8a236830c33fdd0, type: 2}
+  - {fileID: 11400000, guid: 7322553e4bc254ee08b65399e8de004e, type: 2}
+  - {fileID: 11400000, guid: 83616784270ec4ef294380676d454e13, type: 2}
+  - {fileID: 11400000, guid: 92d2ce683bbec4df3a93b5fe09ba17d2, type: 2}
+  - {fileID: 11400000, guid: fc690945e890a4198ae55a02486e21c6, type: 2}
+  - {fileID: 11400000, guid: 4d08e76fe40f4414eb844161d2aed69f, type: 2}
+  - {fileID: 11400000, guid: 0ea6274a43d194fa888a74bf2f432f02, type: 2}
+  - {fileID: 11400000, guid: c0facba8dafd84a60a3ac651dc0da64c, type: 2}
+  - {fileID: 11400000, guid: 9bd426b31c58a4e448f6089b81a319ac, type: 2}
   startPlatformM: 30
   noHazardUntilM: 190
   eaterWarnM: 940
@@ -60,6 +86,8 @@ MonoBehaviour:
   weightedRecoveryMaxM: 200
   weightedBreatherM: 200
   stageLengthM: 1000
+  bossEveryM: 5000
+  bossFirstStage: 3
   endlessStageCount: 40
   endlessStages:
   - stage: 1

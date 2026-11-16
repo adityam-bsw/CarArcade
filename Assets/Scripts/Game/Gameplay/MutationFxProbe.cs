@@ -53,7 +53,7 @@ namespace RoadBuilderGame
             sb.Append(" | inkMax=").Append(_m.DebugMaxInk.ToString("0.0")).Append("/").Append(_m.DebugBaseMaxInk.ToString("0.0"))
               .Append(" inkRegen/s=").Append(_m.DebugInkRegenPerSec.ToString("0.00")).Append(" boostDrain=").Append(_m.DebugBoostDrainMul.ToString("0.00"))
               .Append(" repel=").Append(Collectible.RepelTarget != null).Append(" lives=").Append(_m.DebugLives).Append(" coins=").Append(_m.DebugSessionCoins);
-            sb.Append(" | fx{").Append(_m.DebugFx.Snapshot()).Append("}");
+            sb.Append(" | fx{").Append(_m.DebugFx.Snapshot()).Append("} ").Append(_m.DebugWorld2 != null ? _m.DebugWorld2.Snapshot() : "");
             return sb.ToString();
         }
 
@@ -87,15 +87,26 @@ namespace RoadBuilderGame
             yield return Seconds(0.5f);
         }
 
-        private IEnumerator Routine(string only)
+        /// <summary>Batch A2 probe: the same real-run before/during/after/death/quit sequence for the 26 new events, with timed samples while active.</summary>
+        public static MutationFxProbe RunA2(string only = null)
+        {
+            Lines.Clear(); Done = false;
+            var go = new GameObject("MutationFxProbe");
+            var p = go.AddComponent<MutationFxProbe>();
+            p.StartCoroutine(p.Routine(only, new[] { "EVT-GRAVINV", "EVT-WHITEOUT", "EVT-REVERSE", "EVT-MIRROR", "EVT-FLAPPY", "EVT-COLLAPSE", "EVT-ICEAGE", "EVT-MAGNET", "EVT-ELASTIC", "EVT-SHADOW", "EVT-DOUBLE", "EVT-PLATFORMS",
+                "EVT-GRAVZONES", "EVT-TRAFFIC", "EVT-BOULDER", "EVT-FENCES", "EVT-FLOOD", "EVT-LAVA", "EVT-WINDTUNNEL", "EVT-STICKY", "EVT-INVINK", "EVT-LASER", "EVT-STARS", "EVT-SWAP", "EVT-RHYTHM", "EVT-CHAOS" }));
+            return p;
+        }
+
+        private IEnumerator Routine(string only, string[] idsOverride = null)
         {
             _m = RoadGameManager.Instance;
             _ladder = _m.DebugEndlessLadder;
             if (_m == null || _ladder == null) { Log("no manager or endless ladder"); Done = true; yield break; }
-            string[] ids = { "EVT-GRAVSHIFT", "EVT-HEAVYG", "EVT-TUNNEL", "EVT-INKSTORM", "EVT-BOOSTDRAIN", "EVT-VACUUM", "EVT-CANYON", "EVT-LOWINK", "EVT-TAX", "EVT-FRAGILE", "EVT-TINY", "EVT-GIANT" };
+            string[] ids = idsOverride ?? new[] { "EVT-GRAVSHIFT", "EVT-HEAVYG", "EVT-TUNNEL", "EVT-INKSTORM", "EVT-BOOSTDRAIN", "EVT-VACUUM", "EVT-CANYON", "EVT-LOWINK", "EVT-TAX", "EVT-FRAGILE", "EVT-TINY", "EVT-GIANT" };
             foreach (var id in ids)
             {
-                if (only != null && only != id) continue;
+                if (only != null && only.IndexOf(id, System.StringComparison.Ordinal) < 0) continue;     // 'only' may list several ids
                 Log("==== " + id);
                 yield return NewRun();
                 var d = Def(id);
@@ -218,9 +229,18 @@ namespace RoadBuilderGame
             Done = true; Log("LADDER PROBE DONE");
         }
 
+        private static bool idsA2Contains(string id) { return System.Array.IndexOf(new[] { "EVT-GRAVINV", "EVT-WHITEOUT", "EVT-REVERSE", "EVT-MIRROR", "EVT-FLAPPY", "EVT-COLLAPSE", "EVT-ICEAGE", "EVT-MAGNET", "EVT-ELASTIC", "EVT-SHADOW", "EVT-DOUBLE", "EVT-PLATFORMS", "EVT-GRAVZONES", "EVT-TRAFFIC", "EVT-BOULDER", "EVT-FENCES", "EVT-FLOOD", "EVT-LAVA", "EVT-WINDTUNNEL", "EVT-STICKY", "EVT-INVINK", "EVT-LASER", "EVT-STARS", "EVT-SWAP", "EVT-RHYTHM", "EVT-CHAOS" }, id) >= 0; }
+
         private IEnumerator Specific(string id, StageEventDefinition d, float start)
         {
             var car = _m.DebugCar;
+            if (idsA2Contains(id))
+            {
+                // timed samples (every 1 s for 12 s): the phases of the windowed events (gravity flips, reverse bursts, gates, fences) show up as changes
+                var sb2 = new StringBuilder("samples: ");
+                for (int i = 0; i < 12; i++) { sb2.Append("[").Append(_m.DebugFx.Snapshot()).Append(" ").Append(_m.DebugWorld2 != null ? _m.DebugWorld2.Snapshot() : "").Append(" lives=").Append(_m.DebugLives).Append("] "); yield return Seconds(1f); }
+                Log("DURING  " + sb2);
+            }
             if (id == "EVT-INKSTORM" || id == "EVT-CANYON")
             {
                 var sb = new StringBuilder("wind samples (m/s^2): ");

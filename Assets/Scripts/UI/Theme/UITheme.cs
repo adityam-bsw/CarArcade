@@ -14,7 +14,9 @@ namespace RoadBuilderGame.UI
         // Stage event zone colours (brief section 4: red damage, blue ice, brown mud, cyan-white glass, gold reward). Appended so saved theme indices stay valid.
         ZoneIce, ZoneMud, ZoneGlass, ZoneMeteor, ZoneRings,
         // Mutation event zone colours (gap list A1): gravity violet, speed orange, ink indigo, wind teal, economy green, fragile pink, scale lime.
-        ZoneGravity, ZoneSpeed, ZoneInk, ZoneWind, ZoneEconomy, ZoneBody, ZoneScale
+        ZoneGravity, ZoneSpeed, ZoneInk, ZoneWind, ZoneEconomy, ZoneBody, ZoneScale,
+        // Batch A2 zone colours (appended): vision loss pale, control swap amber, obstacle hazard crimson, liquid deep orange, terrain tan, rhythm magenta.
+        ZoneVision, ZoneControl, ZoneHazard, ZoneLiquid, ZoneTerrain, ZoneRhythm
     }
 
     public enum FontRole { Display, Body }

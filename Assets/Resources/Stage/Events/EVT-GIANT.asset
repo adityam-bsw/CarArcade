@@ -43,6 +43,10 @@ MonoBehaviour:
   - EVT-ICE
   - MON-EATER
   - BOS-ROB0
+  - EVT-FLAPPY
+  - EVT-MAGNET
+  - EVT-SWAP
+  - EVT-CHAOS
   requires: []
   adjacentForbiddenWith: []
   adjacentMinGapM: 0

@@ -125,6 +125,20 @@ namespace RoadBuilderGame.Editor
             { "surface-lava-crust",    new[] { 1.20f, 0f,    -1f, 1.05f, 1.30f, 1.50f } },
             { "surface-sea-water",     new[] { 0.70f, 0f,    -1f, 0.85f, 1.00f, 1.20f } },
             { "surface-floating-islands", new[] { 1.10f, 0f, -1f, 1.00f, 1.10f, 1.20f } },
+            // the 13 behaviour surfaces: smooth strip only (SmoothOnlySurfaces); roadStyle 0 marks them playable, the strip comes from Resources/Roads/Smooth
+            { "surface-spring-road",    new[] { 1.10f, 0f, 0f, 1.00f, 1.10f, 1.15f } },
+            { "surface-magnetic-rail",  new[] { 1.20f, 0f, 0f, 1.05f, 1.15f, 1.25f } },
+            { "surface-acid",           new[] { 0.90f, 0f, 0f, 0.95f, 1.20f, 1.40f } },
+            { "surface-oil",            new[] { 0.35f, 0f, 0f, 1.05f, 1.20f, 1.40f } },
+            { "surface-conveyor",       new[] { 1.20f, 0f, 0f, 1.00f, 1.00f, 1.10f } },
+            { "surface-lava-river",     new[] { 1.10f, 0f, 0f, 0.95f, 1.30f, 1.50f } },
+            { "surface-sticky-candy",   new[] { 1.60f, 0f, 0f, 0.85f, 0.90f, 1.30f } },
+            { "surface-honey",          new[] { 1.70f, 0f, 0f, 0.80f, 0.90f, 1.30f } },
+            { "surface-metal-plates",   new[] { 1.20f, 0f, 0f, 1.00f, 1.10f, 1.10f } },
+            { "surface-ice-crystals",   new[] { 0.40f, 0f, 0f, 1.10f, 1.30f, 1.40f } },
+            { "surface-haunted-shadow", new[] { 0.90f, 0f, 0f, 1.00f, 1.30f, 1.50f } },
+            { "surface-electric-rail",  new[] { 1.20f, 0f, 0f, 1.05f, 1.30f, 1.50f } },
+            { "surface-fragile-paper",  new[] { 1.00f, 0f, 0f, 1.00f, 1.30f, 1.50f } },
         };
         private static KeyValuePair<string, int> P(string cls, int cost) { return new KeyValuePair<string, int>(cls, cost); }
 

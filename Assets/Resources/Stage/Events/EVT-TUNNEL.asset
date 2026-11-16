@@ -44,6 +44,15 @@ MonoBehaviour:
   - EVT-METEOR
   - MON-EATER
   - BOS-ROB0
+  - EVT-REVERSE
+  - EVT-FLAPPY
+  - EVT-BOULDER
+  - EVT-FENCES
+  - EVT-WINDTUNNEL
+  - EVT-LASER
+  - EVT-SWAP
+  - EVT-RHYTHM
+  - EVT-CHAOS
   requires: []
   adjacentForbiddenWith: []
   adjacentMinGapM: 0

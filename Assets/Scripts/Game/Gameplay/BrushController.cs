@@ -29,6 +29,8 @@ namespace RoadBuilderGame
         public float SmoothingSpeed = 22f;
         public float DragSpacing = 0.28f;
         public float InkCostPerMeter = 1.2f;
+        /// <summary>Optional pointer remap (Mirror Road). Null = identity.</summary>
+        public Func<Vector2, Vector2> PointerMap;
 
         public BrushController(Camera cam, RoadBuilder road)
         {
@@ -85,6 +87,7 @@ namespace RoadBuilderGame
             if (!down && !held && !up) return;
 
             Vector2 world = _cam.ScreenToWorldPoint(new Vector3(screenPos.x, screenPos.y, -_cam.transform.position.z));
+            if (PointerMap != null) world = PointerMap(world);
             Process(world, down, held, up);
         }
 

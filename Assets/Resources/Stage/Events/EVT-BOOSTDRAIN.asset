@@ -39,6 +39,7 @@ MonoBehaviour:
   forbiddenWith:
   - MON-EATER
   - BOS-ROB0
+  - EVT-CHAOS
   requires: []
   adjacentForbiddenWith: []
   adjacentMinGapM: 0

@@ -9,7 +9,23 @@ namespace RoadBuilderGame
     {
         public SurfaceGate[] gates = Defaults();
         private static SurfaceGateSO _cached;
-        public static SurfaceGateSO Load() { if (_cached == null) { _cached = Resources.Load<SurfaceGateSO>("Progression/SurfaceGates"); if (_cached == null) _cached = CreateInstance<SurfaceGateSO>(); } return _cached; }
+        public static SurfaceGateSO Load()
+        {
+            if (_cached == null)
+            {
+                _cached = Resources.Load<SurfaceGateSO>("Progression/SurfaceGates"); if (_cached == null) _cached = CreateInstance<SurfaceGateSO>();
+                _cached.MergeMissingDefaults();
+            }
+            return _cached;
+        }
+
+        /// <summary>Adds the default row of every surface the saved asset does not list yet (the 13 behaviour surfaces), in memory only.</summary>
+        public void MergeMissingDefaults()
+        {
+            var def = Defaults(); var list = new System.Collections.Generic.List<SurfaceGate>(gates ?? new SurfaceGate[0]);
+            foreach (var d in def) { bool have = false; for (int i = 0; i < list.Count; i++) if (list[i].surfaceId == d.surfaceId) { have = true; break; } if (!have) list.Add(d); }
+            gates = list.ToArray();
+        }
         public bool TryGet(string id, out SurfaceGate g) { if (gates != null) for (int i = 0; i < gates.Length; i++) if (gates[i].surfaceId == id) { g = gates[i]; return true; } g = default; return false; }
 
         public static SurfaceGate[] Defaults()
@@ -26,6 +42,13 @@ namespace RoadBuilderGame
                 G("surface-ice", A, 6000, 2200, ExtraGate.Missions, 5), G("surface-glass", A, 7000, 2800, ExtraGate.Missions, 5), G("surface-coral", A, 8000, 3200, ExtraGate.Missions, 5),
                 G("surface-magma-bridge", A, 10000, 3800, ExtraGate.Missions, 5),
                 G("surface-ice-bridge", S, 12000, 5500, ExtraGate.BossDefeated, 1), G("surface-sea-water", S, 15000, 7000, ExtraGate.BossDefeated, 1), G("surface-lava-crust", S, 18000, 8500, ExtraGate.BossDefeated, 1),
+                // the 13 behaviour surfaces (category = SurfaceUnlockCategories)
+                G("surface-conveyor", B, 2400, 600, ExtraGate.None, 0),
+                G("surface-spring-road", A, 6500, 2400, ExtraGate.Missions, 5), G("surface-honey", A, 7500, 3000, ExtraGate.Missions, 5), G("surface-sticky-candy", A, 8500, 3300, ExtraGate.Missions, 5),
+                G("surface-metal-plates", A, 9000, 3500, ExtraGate.Missions, 5), G("surface-ice-crystals", A, 9500, 3700, ExtraGate.Missions, 5),
+                G("surface-lava-river", S, 13000, 6000, ExtraGate.BossDefeated, 1), G("surface-oil", S, 14000, 6200, ExtraGate.BossDefeated, 1), G("surface-acid", S, 16000, 7500, ExtraGate.BossDefeated, 1),
+                G("surface-magnetic-rail", S, 17000, 8000, ExtraGate.BossDefeated, 1), G("surface-electric-rail", S, 18000, 8500, ExtraGate.BossDefeated, 1),
+                G("surface-haunted-shadow", X, 22000, 11000, ExtraGate.WorldMastery, 3), G("surface-fragile-paper", X, 26000, 13000, ExtraGate.WorldMastery, 3),
                 G("surface-cloud", X, 20000, 10000, ExtraGate.WorldMastery, 2), G("surface-candy", X, 25000, 12500, ExtraGate.WorldMastery, 3), G("surface-floating-islands", X, 30000, 15000, ExtraGate.WorldMastery, 4),
             };
         }

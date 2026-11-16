@@ -38,6 +38,29 @@ namespace RoadBuilderGame.Editor
             ("surface-neon-grid",   "road_neon_grid_1024x192.png",    4f,  RoadStyle.NeonGrid,       "Neon grid (smooth)"),
             ("surface-wooden-bridge","road_wooden_bridge_1024x192.png",5f, RoadStyle.AsphaltHighway, "Wooden bridge (smooth)"),
             ("surface-rail-track",  "road_rail_track_1024x192.png",   2f,  RoadStyle.AsphaltHighway, "Rail track (smooth)"),
+            // Batch 3: the 13 behaviour surfaces (lip rows from Assets/Art/Smooth/Roads/FORGE_NOTES_batch3.txt). Ice crystals use the base slab row 26 as the collider
+            // line (tips at row 3 rise over it as art); fragile paper uses its intact lip 5 (the torn strip has ragged gaps, shown only while a piece tears).
+            ("surface-spring-road",    "road_spring_road_1024x192.png",    2f,  RoadStyle.AsphaltHighway, "Spring road (smooth)"),
+            ("surface-magnetic-rail",  "road_magnetic_rail_1024x192.png",  1f,  RoadStyle.AsphaltHighway, "Magnetic rail (smooth)"),
+            ("surface-acid",           "road_acid_1024x192.png",           7f,  RoadStyle.AsphaltHighway, "Acid (smooth)"),
+            ("surface-oil",            "road_oil_1024x192.png",            5f,  RoadStyle.AsphaltHighway, "Oil (smooth)"),
+            ("surface-conveyor",       "road_conveyor_1024x192.png",       2f,  RoadStyle.AsphaltHighway, "Conveyor (smooth)"),
+            ("surface-lava-river",     "road_lava_river_1024x192.png",     11f, RoadStyle.AsphaltHighway, "Lava river (smooth)"),
+            ("surface-sticky-candy",   "road_sticky_candy_1024x192.png",   7f,  RoadStyle.AsphaltHighway, "Sticky candy (smooth)"),
+            ("surface-honey",          "road_honey_1024x192.png",          6f,  RoadStyle.AsphaltHighway, "Honey (smooth)"),
+            ("surface-metal-plates",   "road_metal_plates_1024x192.png",   2f,  RoadStyle.AsphaltHighway, "Metal plates (smooth)"),
+            ("surface-ice-crystals",   "road_ice_crystals_1024x192.png",   26f, RoadStyle.AsphaltHighway, "Ice crystals (smooth)"),
+            ("surface-haunted-shadow", "road_haunted_shadow_1024x192.png", 8f,  RoadStyle.AsphaltHighway, "Haunted shadow (smooth)"),
+            ("surface-electric-rail",  "road_electric_rail_1024x192.png",  9f,  RoadStyle.AsphaltHighway, "Electric rail (smooth)"),
+            ("surface-fragile-paper",  "road_fragile_paper_1024x192.png",  5f,  RoadStyle.AsphaltHighway, "Fragile paper (smooth)"),
+        };
+
+        // Animation frames swapped on the skin's material at run time (RoadSkin.frames; frame 1 onward).
+        private static readonly (string id, string file)[] Frames =
+        {
+            ("surface-conveyor",     "road_conveyor_b_1024x192.png"),
+            ("surface-electric-rail","road_electric_rail_off_1024x192.png"),
+            ("surface-fragile-paper","road_fragile_paper_torn_1024x192.png"),
         };
 
         /// <summary>Builds every smooth skin: Countryside, Desert, Night City backgrounds, all 14 road strips, the theme switch.</summary>
@@ -65,6 +88,10 @@ namespace RoadBuilderGame.Editor
             return a;
         }
 
+        /// <summary>Only the road skins (all strips, with animation frames).</summary>
+        [MenuItem("Road Builder/Smooth/Build Road Skins Only")]
+        public static void BuildRoadSkinsOnly() { BuildRoads(); AssetDatabase.SaveAssets(); AssetDatabase.Refresh(); }
+
         private static void BuildRoads()
         {
             Directory.CreateDirectory(RoadDir);
@@ -81,6 +108,9 @@ namespace RoadBuilderGame.Editor
                 skin.texelWorld = 1f / SmoothArt.GameplayPpu;
                 skin.lipPx = r.lip;
                 skin.tint = Color.white;
+                var fr = new System.Collections.Generic.List<Texture2D>();
+                foreach (var f in Frames) if (f.id == r.id) { var ft = AssetDatabase.LoadAssetAtPath<Texture2D>(RoadArt + f.file); if (ft != null) fr.Add(ft); else Debug.LogError("[SmoothSkinFactory] missing frame " + f.file); }
+                skin.frames = fr.ToArray();
                 EditorUtility.SetDirty(skin);
             }
         }

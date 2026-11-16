@@ -42,6 +42,11 @@ MonoBehaviour:
   - EVT-CANYON
   - MON-EATER
   - BOS-ROB0
+  - EVT-GRAVINV
+  - EVT-GRAVZONES
+  - EVT-WINDTUNNEL
+  - EVT-SWAP
+  - EVT-CHAOS
   requires: []
   adjacentForbiddenWith: []
   adjacentMinGapM: 0

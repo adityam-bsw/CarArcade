@@ -26,7 +26,33 @@ namespace RoadBuilderGame
         WindGust,         // a: peak acceleration m/s^2, b: mean seconds between gusts (each gust lasts 1.2 s)
         RoadTax,          // a: coins per checkpoint, b: checkpoint spacing m
         Fragile,          // a: fraction of the reference impact that already cracks the car, b: reference impact m/s
-        VehicleScale      // a: uniform scale
+        VehicleScale,     // a: uniform scale
+        // ---- batch A2 (appended: serialized ints of the kinds above never change)
+        GravityPulse,     // a: gravity multiplier during a window, b: window seconds (calm gap is 2x the window)
+        Whiteout,         // a: visibility m, b: peak fog alpha
+        MotorReverse,     // a: reverse motor factor (negative), b: burst seconds (gap 1.8x)
+        MirrorInput,      // drawing input mirrors horizontally about the screen centre
+        FlappyTunnel,     // a: gate spacing m, b: gap height m (short hop tap)
+        RoadCollapse,     // a: seconds until the road behind the car disappears
+        IceAge,           // a: friction multiplier on every road
+        MagneticPylons,   // a: peak pull m/s^2, b: pull radius m
+        ElasticRoad,      // a: bounciness added to the road material
+        RoadFade,         // a: seconds a drawn road stays visible, b: ghost marker spacing m (0 = none)
+        GhostDouble,      // a: seconds the ghost lags behind
+        FallingPlatforms, // a: seconds until a touched platform drops
+        GravityGates,     // a: gravity multiplier in the reversed zone, b: gate spacing m
+        TrafficConvoy,    // a: traffic speed m/s, b: seconds between vehicles
+        RollingBoulder,   // a: roll speed m/s, b: seconds between boulders
+        ElectricFences,   // a: pulse cycle s, b: safe window s
+        FloodSurge,       // a: metres per step, b: seconds per step
+        LavaChase,        // a: rise m/s, b: start depth below the car m
+        WindTunnels,      // a: wind m/s^2, b: gate spacing m
+        StickyRoad,       // a: friction multiplier, b: speed multiplier
+        RoadLaser,        // a: strip width m, b: seconds between scans
+        FallingStars,     // a: platform life s, b: seconds between stars
+        VehicleSwap,      // a: metres between swaps
+        RhythmGates,      // a: beats per minute, b: gate spacing m
+        ChaosFinale       // a: seconds between elite strike fans; the other effects of the event are the modifier pool (two chosen by variant)
     }
 
     [Serializable]

@@ -181,7 +181,7 @@ namespace RoadBuilderGame
                 else
                 {
                     var shape = (Shape)Random.Range(0, 5);
-                    CoinShape(shape, x);
+                    if (Random.value < t.coinShapeKeepChance) CoinShape(shape, x);          // value 10 per coin, so fewer shapes (D5 earnings band)
                     advance = Random.Range(12f, 17f);
                 }
                 _nextSpawnX += advance;

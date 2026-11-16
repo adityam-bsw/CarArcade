@@ -17,7 +17,7 @@ namespace RoadBuilderGame
         private Transform _maw;
         private SpriteRenderer _body;
         private readonly SpriteRenderer[] _teeth = new SpriteRenderer[5];
-        private float _trimClock, _startX, _carX, _carY, _rescueCd, _lastEatX = float.NegativeInfinity;
+        private float _trimClock, _startX, _carX, _carY, _rescueCd;
         private EaterVariantSO _variant; private EaterSignatureModule _sig; private EaterCounterplay _counter; private readonly EaterHost _host = new EaterHost();
         private Sprite _bodySprite;
         private bool _inGap;
@@ -35,6 +35,8 @@ namespace RoadBuilderGame
         public Func<float> Ink01 = () => 1f;
         public Action RescueInk;
         public EaterHost Host => _host;
+        /// <summary>The surface under the Eater (set by the manager to <c>RoadGameManager.MonsterSurfaces</c>); null = no surface effects.</summary>
+        public IMonsterSurfaceQuery Surfaces;
         public EaterVariantSO Variant => _variant;
         /// <summary>Set when the chase ended by a counterplay option (not a plain escape): the manager pays the variant reward.</summary>
         public EaterVariantSO DefeatedVariant { get; private set; }
@@ -59,7 +61,7 @@ namespace RoadBuilderGame
 
         public void Begin(float startX, uint seed)
         {
-            _startX = startX; _model.Reset(seed); _trimClock = 0f; _inGap = false; DefeatedVariant = null; _rescueCd = 0f; _lastEatX = float.NegativeInfinity;
+            _startX = startX; _model.Reset(seed); _trimClock = 0f; _inGap = false; DefeatedVariant = null; _rescueCd = 0f;
             Collectible.EatenBeforeX = float.NegativeInfinity;
             _host.ChaseStartX = startX; _host.HideMaw = false; _host.UseMawOverride = false; _host.ForceEatX = float.NegativeInfinity;
             if (_sig != null) _sig.Begin(_variant, _host, seed);
@@ -88,6 +90,8 @@ namespace RoadBuilderGame
         {
             if (!_model.Alive) return;
             float carS = carWorldX - _startX; _carX = carWorldX; _carY = carY;
+            if (Surfaces != null && _model.Chasing) { var fx = Surfaces.MonsterAt(_startX + _model.S); _model.ApplySurface(fx.SlowMul, fx.EatMul, fx.StunS); }
+            else if (_model.SurfaceSlowMul != 1f || _model.SurfaceEatMul != 1f) _model.ApplySurface(1f, 1f, 0f);
             _model.Tick(dt, carS, carSpeed, airborne, boosting);
             TickVariant(dt, carWorldX, carY, airborne, boosting);
             if (_model.Eating)

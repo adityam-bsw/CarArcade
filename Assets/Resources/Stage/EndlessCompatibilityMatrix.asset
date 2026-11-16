@@ -109,6 +109,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-GRAVINV
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: same gravity channel
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-GRAVZONES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: same gravity channel
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: wind + low gravity
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: vehicle swap changes gravity
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVSHIFT
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-HEAVYG
     idB: EVT-TUNNEL
     rule: 1
@@ -199,6 +355,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-HEAVYG
+    idB: EVT-GRAVINV
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: same gravity channel
+  - idA: EVT-HEAVYG
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-ELASTIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: bounce + heavy gravity
+  - idA: EVT-HEAVYG
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-GRAVZONES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: same gravity channel
+  - idA: EVT-HEAVYG
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: vehicle swap changes gravity
+  - idA: EVT-HEAVYG
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-HEAVYG
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-TUNNEL
     idB: EVT-INKSTORM
     rule: 0
@@ -283,6 +595,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-TUNNEL
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-REVERSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + reverse bursts
+  - idA: EVT-TUNNEL
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + gates
+  - idA: EVT-TUNNEL
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + rolling boulder
+  - idA: EVT-TUNNEL
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + fences
+  - idA: EVT-TUNNEL
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + wind
+  - idA: EVT-TUNNEL
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + laser
+  - idA: EVT-TUNNEL
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TUNNEL
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: vehicle swap changes speed
+  - idA: EVT-TUNNEL
+    idB: EVT-RHYTHM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: speed + beat gates
+  - idA: EVT-TUNNEL
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-INKSTORM
     idB: EVT-BOOSTDRAIN
     rule: 1
@@ -361,6 +829,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-INKSTORM
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-MIRROR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: mirror + ink starvation
+  - idA: EVT-INKSTORM
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: wind + wind gusts
+  - idA: EVT-INKSTORM
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INKSTORM
+    idB: EVT-RHYTHM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'mistimed gates drain ink: ink starvation'
+  - idA: EVT-INKSTORM
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-BOOSTDRAIN
     idB: EVT-VACUUM
     rule: 1
@@ -433,6 +1057,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOOSTDRAIN
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-VACUUM
     idB: EVT-CANYON
     rule: 1
@@ -499,6 +1279,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-VACUUM
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-MIRROR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: drifting coins + mirrored drawing
+  - idA: EVT-VACUUM
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-VACUUM
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-CANYON
     idB: EVT-LOWINK
     rule: 1
@@ -559,6 +1495,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-CANYON
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: two winds
+  - idA: EVT-CANYON
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-CANYON
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-LOWINK
     idB: EVT-TAX
     rule: 1
@@ -613,6 +1705,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-LOWINK
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-MIRROR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: mirror + ink starvation
+  - idA: EVT-LOWINK
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-COLLAPSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'blueprint: low ink + invisible ink + road collapse'
+  - idA: EVT-LOWINK
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'blueprint: low ink + invisible ink + road collapse'
+  - idA: EVT-LOWINK
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LOWINK
+    idB: EVT-RHYTHM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'mistimed gates drain ink: low ink is unfair'
+  - idA: EVT-LOWINK
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-TAX
     idB: EVT-FRAGILE
     rule: 1
@@ -661,6 +1909,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-TAX
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TAX
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-FRAGILE
     idB: EVT-TINY
     rule: 1
@@ -703,6 +2107,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-FRAGILE
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: gates + fragile
+  - idA: EVT-FRAGILE
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-MAGNET
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: pull + fragile
+  - idA: EVT-FRAGILE
+    idB: EVT-ELASTIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: bouncing cracks a fragile car
+  - idA: EVT-FRAGILE
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-TRAFFIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: traffic + fragile
+  - idA: EVT-FRAGILE
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: unavoidable boulder + fragile
+  - idA: EVT-FRAGILE
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: fences + fragile
+  - idA: EVT-FRAGILE
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: wind + fragile
+  - idA: EVT-FRAGILE
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FRAGILE
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-TINY
     idB: EVT-GIANT
     rule: 0
@@ -739,6 +2299,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-TINY
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: tiny car in a tight tunnel is trivial and unreadable
+  - idA: EVT-TINY
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-DOUBLE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: ghost copy and tiny scale
+  - idA: EVT-TINY
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: vehicle swap changes the scale channel
+  - idA: EVT-TINY
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TINY
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-GIANT
     idB: EVT-ICE
     rule: 0
@@ -769,6 +2485,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: EVT-GIANT
+    idB: EVT-GRAVINV
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: giant car cannot fit the gaps
+  - idA: EVT-GIANT
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-MAGNET
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: giant car and pylons
+  - idA: EVT-GIANT
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: vehicle swap changes the scale channel
+  - idA: EVT-GIANT
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GIANT
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-ICE
     idB: EVT-MUD
     rule: 0
@@ -793,6 +2665,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-GRAVINV
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-WHITEOUT
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-REVERSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-MIRROR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-COLLAPSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-ICEAGE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-MAGNET
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-ELASTIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-SHADOW
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-DOUBLE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-PLATFORMS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-GRAVZONES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-TRAFFIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-FLOOD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-LAVA
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-STICKY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-RHYTHM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-ICE
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-MUD
     idB: EVT-METEOR
     rule: 0
@@ -811,6 +2839,162 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-GRAVINV
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-WHITEOUT
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-REVERSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-MIRROR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-COLLAPSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-ICEAGE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-MAGNET
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-ELASTIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-SHADOW
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-DOUBLE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-PLATFORMS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-GRAVZONES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-TRAFFIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-FLOOD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-LAVA
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-STICKY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-RHYTHM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-MUD
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: EVT-METEOR
     idB: MON-EATER
     rule: 0
@@ -823,9 +3007,2427 @@ MonoBehaviour:
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-GRAVINV
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-WHITEOUT
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-REVERSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-MIRROR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-COLLAPSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-ICEAGE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-MAGNET
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-ELASTIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-SHADOW
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-DOUBLE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-PLATFORMS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-GRAVZONES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-TRAFFIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-FLOOD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-LAVA
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-STICKY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-RHYTHM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:slice event stacks only with the listed mutations
+  - idA: EVT-METEOR
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
   - idA: MON-EATER
     idB: BOS-ROB0
     rule: 0
     adjacentMinGapM: 0
     conditionKey: 
     reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-GRAVINV
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-WHITEOUT
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-REVERSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-MIRROR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-COLLAPSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-ICEAGE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-MAGNET
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-ELASTIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-SHADOW
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-DOUBLE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-PLATFORMS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-GRAVZONES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-TRAFFIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-FLOOD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-LAVA
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-STICKY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-RHYTHM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: MON-EATER
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: BOS-ROB0
+    idB: EVT-GRAVINV
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-WHITEOUT
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-REVERSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-MIRROR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-COLLAPSE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-ICEAGE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-MAGNET
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-ELASTIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-SHADOW
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-DOUBLE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-PLATFORMS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-GRAVZONES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-TRAFFIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-FLOOD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-LAVA
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-WINDTUNNEL
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-STICKY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-RHYTHM
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:monster and boss never stack
+  - idA: BOS-ROB0
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-GRAVINV
+    idB: EVT-WHITEOUT
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-SHADOW
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'blueprint: gravity inversion + invisible road'
+  - idA: EVT-GRAVINV
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-GRAVZONES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: same gravity channel
+  - idA: EVT-GRAVINV
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'blueprint: gravity inversion + invisible road'
+  - idA: EVT-GRAVINV
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: vehicle swap changes gravity
+  - idA: EVT-GRAVINV
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVINV
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-WHITEOUT
+    idB: EVT-REVERSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-MIRROR
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-SHADOW
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: two vision losses
+  - idA: EVT-WHITEOUT
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: two vision losses
+  - idA: EVT-WHITEOUT
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WHITEOUT
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-REVERSE
+    idB: EVT-MIRROR
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'blueprint: reverse driving + mirror controls'
+  - idA: EVT-REVERSE
+    idB: EVT-FLAPPY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'blueprint: flappy tunnel + reverse driving'
+  - idA: EVT-REVERSE
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-DOUBLE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-REVERSE
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: reverse into a boulder
+  - idA: EVT-REVERSE
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: reverse into charged fences
+  - idA: EVT-REVERSE
+    idB: EVT-FLOOD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: reverse into rising water
+  - idA: EVT-REVERSE
+    idB: EVT-LAVA
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: reverse into rising lava
+  - idA: EVT-REVERSE
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-REVERSE
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-REVERSE
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-MIRROR
+    idB: EVT-FLAPPY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-DOUBLE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-MIRROR
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-MIRROR
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MIRROR
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-FLAPPY
+    idB: EVT-COLLAPSE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-ICEAGE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-MAGNET
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-FLAPPY
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-TRAFFIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-FLAPPY
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-FLAPPY
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-FLAPPY
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-FLAPPY
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLAPPY
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-COLLAPSE
+    idB: EVT-ICEAGE
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-COLLAPSE
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-ELASTIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-COLLAPSE
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-PLATFORMS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-COLLAPSE
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-FLOOD
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: rising water + vanishing road
+  - idA: EVT-COLLAPSE
+    idB: EVT-LAVA
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: rising lava + vanishing road
+  - idA: EVT-COLLAPSE
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-STICKY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-COLLAPSE
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'blueprint: low ink + invisible ink + road collapse'
+  - idA: EVT-COLLAPSE
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-COLLAPSE
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-COLLAPSE
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-ICEAGE
+    idB: EVT-MAGNET
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-ELASTIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: two road-material events
+  - idA: EVT-ICEAGE
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-PLATFORMS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-ICEAGE
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-STICKY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: two friction events
+  - idA: EVT-ICEAGE
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-ICEAGE
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ICEAGE
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-MAGNET
+    idB: EVT-ELASTIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-TRAFFIC
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-MAGNET
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-MAGNET
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-MAGNET
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-MAGNET
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-MAGNET
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-ELASTIC
+    idB: EVT-SHADOW
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-PLATFORMS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-ELASTIC
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-STICKY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: two road-material events
+  - idA: EVT-ELASTIC
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-ELASTIC
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-ELASTIC
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-SHADOW
+    idB: EVT-DOUBLE
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-LAVA
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: lava + invisible road
+  - idA: EVT-SHADOW
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: two vision losses
+  - idA: EVT-SHADOW
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SHADOW
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-DOUBLE
+    idB: EVT-PLATFORMS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-DOUBLE
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-DOUBLE
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-PLATFORMS
+    idB: EVT-GRAVZONES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-STICKY
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-PLATFORMS
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-PLATFORMS
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-PLATFORMS
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-GRAVZONES
+    idB: EVT-TRAFFIC
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-BOULDER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-FENCES
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-SWAP
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: vehicle swap changes gravity
+  - idA: EVT-GRAVZONES
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-GRAVZONES
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-TRAFFIC
+    idB: EVT-BOULDER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-TRAFFIC
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-TRAFFIC
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TRAFFIC
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TRAFFIC
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TRAFFIC
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TRAFFIC
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TRAFFIC
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-TRAFFIC
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TRAFFIC
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TRAFFIC
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-TRAFFIC
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-BOULDER
+    idB: EVT-FENCES
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-BOULDER
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOULDER
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOULDER
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOULDER
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOULDER
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOULDER
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-BOULDER
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOULDER
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOULDER
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-BOULDER
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-FENCES
+    idB: EVT-FLOOD
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FENCES
+    idB: EVT-LAVA
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FENCES
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FENCES
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FENCES
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FENCES
+    idB: EVT-LASER
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-FENCES
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FENCES
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FENCES
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FENCES
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-FLOOD
+    idB: EVT-LAVA
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: 'blueprint: lava chase + flood surge'
+  - idA: EVT-FLOOD
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLOOD
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLOOD
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLOOD
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLOOD
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLOOD
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLOOD
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-FLOOD
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-LAVA
+    idB: EVT-WINDTUNNEL
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LAVA
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LAVA
+    idB: EVT-INVINK
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: lava + invisible road
+  - idA: EVT-LAVA
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LAVA
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LAVA
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LAVA
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LAVA
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-WINDTUNNEL
+    idB: EVT-STICKY
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WINDTUNNEL
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WINDTUNNEL
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WINDTUNNEL
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WINDTUNNEL
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WINDTUNNEL
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-WINDTUNNEL
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-STICKY
+    idB: EVT-INVINK
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-STICKY
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-STICKY
+    idB: EVT-STARS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:same hazard family never stacks
+  - idA: EVT-STICKY
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-STICKY
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-STICKY
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-INVINK
+    idB: EVT-LASER
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INVINK
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INVINK
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INVINK
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-INVINK
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-LASER
+    idB: EVT-STARS
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LASER
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LASER
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-LASER
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-STARS
+    idB: EVT-SWAP
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-STARS
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-STARS
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-SWAP
+    idB: EVT-RHYTHM
+    rule: 1
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A1:compatible
+  - idA: EVT-SWAP
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers
+  - idA: EVT-RHYTHM
+    idB: EVT-CHAOS
+    rule: 0
+    adjacentMinGapM: 0
+    conditionKey: 
+    reasonKey: A2:chaos finale already stacks two modifiers

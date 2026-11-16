@@ -40,6 +40,8 @@ MonoBehaviour:
   - EVT-TAX
   - MON-EATER
   - BOS-ROB0
+  - EVT-MIRROR
+  - EVT-CHAOS
   requires: []
   adjacentForbiddenWith: []
   adjacentMinGapM: 0

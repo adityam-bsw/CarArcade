@@ -765,6 +765,12 @@ namespace RoadBuilderGame.UI.Editor
             var stageBanner = Label(c, "StageBanner", "", TextStyle.Heading, ColorToken.Accent, 72);
             Place(stageBanner.rectTransform, TC, TC, new Vector2(0, -250), new Vector2(1100, 100));
             stageBanner.alpha = 0f;
+            // The surface tutorial icon hangs under the banner text (a child, so it scales with it); the HUD sets sprite and visibility.
+            var bannerIconGo = new GameObject("StageBannerIcon", typeof(RectTransform), typeof(Image));
+            bannerIconGo.transform.SetParent(stageBanner.transform, false);
+            var bannerIcon = bannerIconGo.GetComponent<Image>(); bannerIcon.raycastTarget = false; bannerIcon.preserveAspect = true;
+            Place((RectTransform)bannerIconGo.transform, BC, new Vector2(0.5f, 1f), new Vector2(0, -8), new Vector2(96, 96));
+            bannerIconGo.SetActive(false);
             var sign = Img(c, "StageSign", SpriteSlot.Pill, ColorToken.SurfaceAlt, 0.92f);
             Place(sign.rectTransform, TC, TC, new Vector2(0, -352), new Vector2(420, 78));
             var signName = Label(sign.transform, "SignName", "", TextStyle.Number, ColorToken.TextOnAccent, 40, TextAlignmentOptions.MidlineLeft);
@@ -780,7 +786,7 @@ namespace RoadBuilderGame.UI.Editor
             flashR.rectTransform.anchorMax = new Vector2(1, 1); flashR.rectTransform.sizeDelta = new Vector2(110, 0);
 
             var s = root.GetComponent<HudScreen>();
-            Ref(s, "stageBanner", stageBanner); Ref(s, "stageSign", sign.rectTransform); Ref(s, "stageSignName", signName); Ref(s, "stageSignMetres", signMetres);
+            Ref(s, "stageBanner", stageBanner); Ref(s, "stageBannerIcon", bannerIcon); Ref(s, "stageSign", sign.rectTransform); Ref(s, "stageSignName", signName); Ref(s, "stageSignMetres", signMetres);
             Ref(s, "edgeFlashLeft", flashL); Ref(s, "edgeFlashRight", flashR);
             Ref(s, "distanceText", distance); Ref(s, "speedText", speed); Ref(s, "coinsText", coinsText);
             Refs(s, "hearts", hearts); Ref(s, "inkBar", inkBar); Ref(s, "inkFill", fill.rectTransform);

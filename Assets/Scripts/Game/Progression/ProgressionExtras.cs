@@ -14,8 +14,10 @@ namespace RoadBuilderGame
             switch (g)
             {
                 case ExtraGate.WaterMastery: return raw + p.Counter("surf-metres:water") / Mathf.Max(1, t.waterMasteryMetres);
-                case ExtraGate.SurviveLava:
-                case ExtraGate.RhythmChallenge: return raw + (t.fallbackForMissingEvents ? p.Counter("gate:LongRuns") : 0);
+                // Lava has real raisers (a lava surface driven lavaSurviveMetres, or the EVT-LAVACHASE event ending) so it never needs the fallback.
+                case ExtraGate.SurviveLava: return raw;
+                // Rhythm is raised by the EVT-RHYTHM event ending; the long-run fallback only applies while that event asset does not exist.
+                case ExtraGate.RhythmChallenge: return raw + (t.fallbackForMissingEvents && !RhythmEventExists() ? p.Counter("gate:LongRuns") : 0);
                 case ExtraGate.SurfaceTutorial:
                     int learned = 0;
                     if (p.surfaceSeenCount != null) for (int i = 0; i < p.surfaceSeenCount.Count; i++) if (p.surfaceSeenCount[i].count >= 3) learned++;
@@ -23,6 +25,14 @@ namespace RoadBuilderGame
                 case ExtraGate.WorldMastery: return raw + MasteredWorlds(p, t);
                 default: return raw;
             }
+        }
+
+        private static int _rhythmEvent = -1;
+        /// <summary>True once the Rhythm Gates stage event (EVT-RHYTHM) ships; cached, editor reload clears it.</summary>
+        public static bool RhythmEventExists()
+        {
+            if (_rhythmEvent < 0) _rhythmEvent = Resources.Load<StageEventDefinition>("Stage/Events/EVT-RHYTHM") != null ? 1 : 0;
+            return _rhythmEvent == 1;
         }
 
         public static int MasteredWorlds(PlayerProfile p, ProgressionTuningSO t)
@@ -435,7 +445,7 @@ namespace RoadBuilderGame
         public struct Profile
         {
             public float coinsPickedPer100m, avgMultiplier, jumpsPer100m, avgAirSeconds, flipsPer100m, nearMissesPer100m;
-            /// <summary>A median player: invented, not measured (see Docs/PROGRESSION.md).</summary>
+            /// <summary>A median player: invented, not measured (see Docs/PROGRESSION.md). Coins picked is per 100 m at full coin density; the model scales it by coinShapeKeepChance.</summary>
             public static Profile Median => new Profile { coinsPickedPer100m = 4f, avgMultiplier = 1.5f, jumpsPer100m = 0.6f, avgAirSeconds = 1.2f, flipsPer100m = 0.1f, nearMissesPer100m = 0f };
         }
 
@@ -449,7 +459,7 @@ namespace RoadBuilderGame
                 for (int k = 1; k <= chests; k++) total += g.milestoneCoins * (g.milestoneIndexCap > 0 ? Mathf.Min(k, g.milestoneIndexCap) : k);
             }
             float per100 = metres / 100f;
-            total += per100 * p.coinsPickedPer100m * g.coinValue * p.avgMultiplier;
+            total += per100 * p.coinsPickedPer100m * g.coinShapeKeepChance * g.coinValue * p.avgMultiplier;
             float airPay = Mathf.Max(0f, Mathf.RoundToInt((Mathf.Min(p.avgAirSeconds, g.airMaxPaidSeconds) - g.airMinSeconds + 0.5f) * g.airCoinsPerSecond));
             total += per100 * p.jumpsPer100m * airPay;
             total += per100 * p.flipsPer100m * g.flipCoins;

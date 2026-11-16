@@ -11,7 +11,7 @@ namespace RoadBuilderGame
     /// </summary>
     public sealed class StageEffectState
     {
-        private struct Entry { public object Owner; public StageEffectKind Kind; public float A, B, Cur; }
+        private struct Entry { public object Owner; public StageEffectKind Kind; public float A, B, Cur, Cur2; }
         private readonly Entry[] _e = new Entry[16];
         private int _n;
 
@@ -21,6 +21,9 @@ namespace RoadBuilderGame
         /// <summary>0 = off. Fraction of <see cref="FragileRefMps"/> that already cracks the car.</summary>
         public float FragileThreshold01, FragileRefMps = 12f;
         public float DistanceM;
+        // ---- batch A2 channels (neutral values: 1 / 0 / false)
+        public float MotorDir = 1f, FrictionMul = 1f, BounceAdd, AccelY;
+        public bool Mirror;
         /// <summary>Coin gates crossed since the last Road Tax checkpoint (the manager adds, the tax behaviour spends).</summary>
         public int TaxGatesCrossed;
 
@@ -30,7 +33,7 @@ namespace RoadBuilderGame
         public void Add(object owner, StageEffectKind kind, float a, float b)
         {
             if (kind == StageEffectKind.None || _n >= _e.Length) return;
-            _e[_n++] = new Entry { Owner = owner, Kind = kind, A = a, B = b };
+            _e[_n++] = new Entry { Owner = owner, Kind = kind, A = a, B = b, Cur = (kind == StageEffectKind.GravityPulse || kind == StageEffectKind.GravityGates || kind == StageEffectKind.MotorReverse) ? 1f : (kind == StageEffectKind.VehicleSwap ? 0f : 0f) };
             Recompute();
         }
 
@@ -54,15 +57,27 @@ namespace RoadBuilderGame
         /// <summary>Sets the current wind acceleration of one owner's wind entry (m/s^2, signed).</summary>
         public void SetWind(object owner, float accel)
         {
-            for (int i = 0; i < _n; i++) if (ReferenceEquals(_e[i].Owner, owner) && (_e[i].Kind == StageEffectKind.WindSteady || _e[i].Kind == StageEffectKind.WindGust)) _e[i].Cur = accel;
-            float sum = 0f;
-            for (int i = 0; i < _n; i++) if (_e[i].Kind == StageEffectKind.WindSteady || _e[i].Kind == StageEffectKind.WindGust) sum += _e[i].Cur;
-            WindAccelX = sum;
+            for (int i = 0; i < _n; i++) if (ReferenceEquals(_e[i].Owner, owner) && (_e[i].Kind == StageEffectKind.WindSteady || _e[i].Kind == StageEffectKind.WindGust || _e[i].Kind == StageEffectKind.WindTunnels)) _e[i].Cur = accel;
+            Recompute();
         }
+
+        /// <summary>Sets the live value of one owner's dynamic entry (gravity window multiplier, motor factor, swap profile index, pull x/y) and refolds. Zero allocation.</summary>
+        public void SetCur(object owner, StageEffectKind kind, float cur, float cur2 = 0f)
+        {
+            for (int i = 0; i < _n; i++) if (ReferenceEquals(_e[i].Owner, owner) && _e[i].Kind == kind) { _e[i].Cur = cur; _e[i].Cur2 = cur2; }
+            Recompute();
+        }
+
+        // Vehicle swap classes: speed, gravity, scale (index 0 = the player's own vehicle)
+        public static readonly string[] SwapNames = { "OWN", "LIGHT", "HEAVY", "FLOATY", "ROCKET" };
+        private static readonly float[] SwapSpeed = { 1f, 1.12f, 0.9f, 1f, 1.22f };
+        private static readonly float[] SwapGrav = { 1f, 0.92f, 1.2f, 0.7f, 1.05f };
+        private static readonly float[] SwapScale = { 1f, 0.85f, 1.2f, 1f, 0.9f };
 
         private void Recompute()
         {
             GravityMul = SpeedMul = InkRegenMul = InkCapMul = BoostDrainMul = CarScale = 1f;
+            MotorDir = FrictionMul = 1f; BounceAdd = AccelY = 0f; Mirror = false;
             CoinVacuum = false; VacuumRadius = VacuumSpeed = 0f; FragileThreshold01 = 0f; FragileRefMps = 12f;
             float wind = 0f;
             for (int i = 0; i < _n; i++)
@@ -80,6 +95,18 @@ namespace RoadBuilderGame
                     case StageEffectKind.Fragile: FragileThreshold01 = FragileThreshold01 <= 0f ? x.A : Mathf.Min(FragileThreshold01, x.A); FragileRefMps = x.B > 0f ? x.B : FragileRefMps; break;
                     case StageEffectKind.WindSteady:
                     case StageEffectKind.WindGust: wind += x.Cur; break;
+                    case StageEffectKind.WindTunnels: wind += x.Cur; AccelY += x.Cur2; break;
+                    case StageEffectKind.MagneticPylons: wind += x.Cur; AccelY += x.Cur2; break;
+                    case StageEffectKind.GravityPulse:
+                    case StageEffectKind.GravityGates: GravityMul *= x.Cur; break;
+                    case StageEffectKind.MotorReverse: MotorDir *= x.Cur; break;
+                    case StageEffectKind.MirrorInput: Mirror = true; break;
+                    case StageEffectKind.IceAge: FrictionMul *= x.A; break;
+                    case StageEffectKind.StickyRoad: FrictionMul *= x.A; SpeedMul *= x.B; break;
+                    case StageEffectKind.ElasticRoad: BounceAdd += x.A; break;
+                    case StageEffectKind.FloodSurge: SpeedMul *= x.Cur > 0f ? x.Cur : 1f; break;
+                    case StageEffectKind.VehicleSwap:
+                        { int k = Mathf.Clamp((int)x.Cur, 0, SwapSpeed.Length - 1); SpeedMul *= SwapSpeed[k]; GravityMul *= SwapGrav[k]; CarScale *= SwapScale[k]; break; }
                 }
             }
             WindAccelX = wind;
@@ -89,7 +116,7 @@ namespace RoadBuilderGame
         {
             return "grav=" + GravityMul.ToString("0.00") + " speed=" + SpeedMul.ToString("0.00") + " inkRegen=" + InkRegenMul.ToString("0.00") + " inkCap=" + InkCapMul.ToString("0.00")
                 + " boostDrain=" + BoostDrainMul.ToString("0.00") + " scale=" + CarScale.ToString("0.00") + " vacuum=" + CoinVacuum + " wind=" + WindAccelX.ToString("0.00")
-                + " fragile=" + FragileThreshold01.ToString("0.00") + " entries=" + _n;
+                + " fragile=" + FragileThreshold01.ToString("0.00") + " motorDir=" + MotorDir.ToString("0.00") + " friction=" + FrictionMul.ToString("0.00") + " bounce=" + BounceAdd.ToString("0.00") + " accY=" + AccelY.ToString("0.00") + " mirror=" + Mirror + " entries=" + _n;
         }
     }
 
@@ -102,6 +129,8 @@ namespace RoadBuilderGame
         public Action<float, float> PlaceCoinGate;      // run distance m, seeded height 0..1
         public Func<int, int> ChargeCoins;              // wants N coins, returns what was really taken (session coins only, never below 0)
         public Action<string> Banner;
+        /// <summary>World objects and engine hooks of the batch A2 events (null in tests that only need the data channels).</summary>
+        public StageWorld2 World;
     }
 
     /// <summary>
@@ -247,6 +276,8 @@ namespace RoadBuilderGame
 
         public static IStageEventBehaviour Create(StageEventDefinition def, StageEffectState fx, StageEffectHooks hooks)
         {
+            var b2 = StageEffects2.TryCreate(def, fx, hooks);
+            if (b2 != null) return b2;
             foreach (var e in def.effects) if (Special.TryGetValue(e.kind, out var make)) return make(def, fx, hooks);
             return new StageEffectBehaviour(def, fx);
         }

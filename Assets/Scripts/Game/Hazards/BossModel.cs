@@ -43,7 +43,7 @@ namespace RoadBuilderGame
 
         // effective numbers: the boss definition, overridden by the tier (counter points, timeout, hit cap)
         private float _max, _gDodge, _gNear, _gPerfect, _gRing, _gHit, _gPassive, _timeout; private float[] _thresholds;
-        private int _maxHits = 99, _windowsPerPhase, _windowsDone, _maxPhase = 3; private bool _alternate; private int _altIndex; private BossTierSO _tier; private string[] _ids;
+        private int _maxHits = 99, _windowsPerPhase, _windowsDone, _maxPhase = 3; private bool _alternate; private int _altIndex; private BossTierSO _tier;
         public BossTierSO Tier => _tier;
         public int Hits { get; private set; }
         public int WindowsInPhase => _windowsDone;
@@ -69,7 +69,7 @@ namespace RoadBuilderGame
         private void Defaults()
         {
             _max = _d.meterMax; _gDodge = _d.meterDodge; _gNear = _d.meterNear; _gPerfect = _d.meterPerfect; _gRing = _d.meterRing; _gHit = _d.meterHitPenalty; _gPassive = _d.meterPassivePerSec;
-            _timeout = _d.timeoutSeconds; _thresholds = _d.phaseThresholds; _maxHits = 99; _windowsPerPhase = 0; _alternate = false; _tier = null; _maxPhase = 3; _ids = null;
+            _timeout = _d.timeoutSeconds; _thresholds = _d.phaseThresholds; _maxHits = 99; _windowsPerPhase = 0; _alternate = false; _tier = null; _maxPhase = 3;
         }
 
         /// <summary>Use a tier's counter points, thresholds (a third and two thirds of the points), timeout, hit cap and pattern selection. Call after <see cref="Reset"/>.</summary>

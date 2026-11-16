@@ -84,6 +84,9 @@ namespace RoadBuilderGame
         public Action<Vector2, Color, int> Debris;
         /// <summary>Raised once per piece that was cut out of the road: x0, x1.</summary>
         public Action<float, float> PieceRemoved;
+        /// <summary>A piece of a fragile surface (a set with a Breakable or Tear module: glass, fragile paper, lava crust) was cut away. Raised once per piece; the manager credits <c>ProgressionEvent.FragileBroken</c>.</summary>
+        public Action FragileBroken;
+        private bool _fragileSet;
 
         public SurfaceOutputs Out { get { return _out; } }
         public bool Active { get { return _set != null && !Paused && (_pieceSpecs.Length + _contSpecs.Length) > 0; } }
@@ -106,6 +109,7 @@ namespace RoadBuilderGame
         {
             Clear();
             _surfaceId = surfaceId ?? ""; _set = set; _rule = rule; _zoneStartX = startX;
+            _fragileSet = HasFragileModule(set); _frameKind = FrameKindOf(set);
             if (set == null || set.modules == null || set.modules.Length == 0) { _pieceSpecs = Array.Empty<SurfaceModuleSpec>(); _contSpecs = Array.Empty<SurfaceModuleSpec>(); _set = null; return; }
             _pieceLen = Mathf.Max(2f, set.pieceLengthM);
             _protectUntilX = startX + (rule != null ? rule.safeEntryPlatformMetres : set.safeEntryM);
@@ -130,6 +134,45 @@ namespace RoadBuilderGame
         }
 
         /// <summary>The car respawned: states restart, nothing may break under it for a moment (the safety runway is never cut either).</summary>
+        /// <summary>True when the set holds a Breakable or Tear module (the surfaces whose broken pieces count as fragile breaks).</summary>
+        public static bool HasFragileModule(SurfaceBehaviourSetSO set)
+        {
+            if (set == null || set.modules == null) return false;
+            for (int i = 0; i < set.modules.Length; i++) { var k = set.modules[i].kind; if (k == SurfaceModuleKind.Breakable || k == SurfaceModuleKind.Tear) return true; }
+            return false;
+        }
+
+        // ------------------------------------------------------------------ road art frame (conveyor belt, electric rail, fragile paper)
+        /// <summary>Seconds per conveyor belt frame.</summary>
+        public const float ConveyorFrameS = 0.15f;
+        private int _frameKind;      // 0 none, 1 conveyor, 2 charge, 3 tear
+
+        /// <summary>
+        /// The animation frame of the road strip (RoadSkin.frames): conveyor alternates belt frames; the electric rail shows its lit strip while the piece under the car is warning or charged
+        /// and the dormant strip in its safe window; fragile paper shows the torn strip while the piece under the car is tearing (stage 1, at most a moment before it is cut).
+        /// </summary>
+        public int FrameAt(float carX)
+        {
+            if (_frameKind == 0 || _set == null) return 0;
+            if (_frameKind == 1) return ((int)(_time / ConveyorFrameS)) & 1;
+            var h = PieceHostAt(carX); if (h == null) return _frameKind == 2 ? 1 : 0;
+            int st = h.MaxStage;
+            return _frameKind == 2 ? (st >= 1 ? 0 : 1) : (st >= 1 ? 1 : 0);
+        }
+
+        private static int FrameKindOf(SurfaceBehaviourSetSO set)
+        {
+            if (set == null || set.modules == null) return 0;
+            for (int i = 0; i < set.modules.Length; i++)
+            {
+                var k = set.modules[i].kind;
+                if (k == SurfaceModuleKind.Conveyor) return 1;
+                if (k == SurfaceModuleKind.Charge) return 2;
+                if (k == SurfaceModuleKind.Tear) return 3;
+            }
+            return 0;
+        }
+
         public void OnRespawn()
         {
             for (int i = 0; i < MaxCells; i++) FreeCell(_cells[i]);
@@ -256,6 +299,7 @@ namespace RoadBuilderGame
                 {
                     if (Debris != null && _set != null) Debris(new Vector2((x0 + x1) * 0.5f, 0f), _set.dangerTint, 10);
                     if (PieceRemoved != null) PieceRemoved(x0, x1);
+                    if (_fragileSet && FragileBroken != null) FragileBroken();
                     for (int i = 0; i < MaxCells; i++) _cells[i].tintKey = -1;                                // a cut rebuilds the neighbours' meshes: tint again
                 }
                 else { h.ResetState(); cell.cut = false; cell.tintKey = -1; }

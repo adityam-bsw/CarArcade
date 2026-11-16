@@ -66,6 +66,8 @@ namespace RoadBuilderGame
 
         [Header("Endless ladder (StageLadderMode.Endless; blueprint A2 distance table)")]
         public float stageLengthM = 1000f;
+        [Tooltip("A boss stage every this many metres (5000: stages 5, 10, 15 ...); 0 = only the row table. The boss tier is picked by distance (Hunter 3000+, Interceptor 5000+, Commander 8000+, Overlord 10000+).")] public float bossEveryM = 5000f;
+        [Tooltip("One extra early boss stage (3 = the Hunter at 3000 m); 0 = none.")] public int bossFirstStage = 3;
         [Tooltip("Stages planned ahead (stage 0 is the training stage, no events).")] public int endlessStageCount = 40;
         [Tooltip("Rows for stages 1..10; any stage above uses the random row.")] public EndlessStageRow[] endlessStages = new EndlessStageRow[0];
         public EndlessStageRow endlessRandomRow;

@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b74e854bfbbf64c12a814de87b91aa1d, type: 3}
+  m_Name: EVT-MIRROR
+  m_EditorClassIdentifier: RB.Game::RoadBuilderGame.StageEventDefinition
+  id: EVT-MIRROR
+  role: 0
+  displayNameKey: event.mirror
+  difficultyCost: 8
+  minDistanceM: 0
+  maxDistanceM: 0
+  lengthM: 400
+  startJitterM: 40
+  lockDistanceM: 150
+  cooldownAfterM: 130
+  minBreatherS: 12
+  paceSpeedFactor: 1
+  weight: 1
+  announcerLeadS: 5
+  signLeadS: 3
+  cueLeadS: 1
+  signalMinGapS: 0.6
+  bannerKey: banner.mirror
+  bannerSeconds: 1.5
+  announcerCueId: vo.rob0.s1.mirror
+  tintColorToken: ZoneControl
+  warnSfxId: sfx.mirror.sign
+  cueSfxId: sfx.mirror.cue
+  surfaceRule: {fileID: 0}
+  forbiddenWith:
+  - EVT-INKSTORM
+  - EVT-VACUUM
+  - EVT-LOWINK
+  - EVT-ICE
+  - EVT-MUD
+  - EVT-METEOR
+  - MON-EATER
+  - BOS-ROB0
+  - EVT-REVERSE
+  - EVT-DOUBLE
+  - EVT-SWAP
+  - EVT-CHAOS
+  requires: []
+  adjacentForbiddenWith: []
+  adjacentMinGapM: 0
+  modifierSlots: 0
+  effects:
+  - kind: 15
+    a: 1
+    b: 0
+  ruleText: Drawing input mirrors
+  counterplayText: Draw using the ring preview
+  signText: MIRROR
+  iconKey: icon.mirror
+  suitableWorlds:
+  - synthwave
+  - moon
+  hazardFamily: control
+  ladderTags:
+  - movement
+  spawnerId: 
+  terrainSlopeMinDeg: -10
+  terrainSlopeMaxDeg: 10
+  terrainLongestGapM: 6
+  terrainJumpHeightCapM: 8
+  coinShape: 0
+  ringCount: 0
+  ringSpacingM: 16
+  ringMaxHeightM: 6
+  inkPickupSpacingM: 110
+  variantCount: 2
+  strikeIntervalSecMin: 3.5
+  strikeIntervalSecMax: 5.5
+  strikeMaxCount: 3
+  clearOnRespawnM: 15
+  safePlatformM: 0
+  noEat: 0
+  telemetryId: EVT-MIRROR

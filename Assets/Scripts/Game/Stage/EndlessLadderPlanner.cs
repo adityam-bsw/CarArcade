@@ -8,6 +8,8 @@ namespace RoadBuilderGame
     {
         public string[] Tags;
         public int[] EasedStages;
+        /// <summary>Event ids a daily challenge forces into the first free stages (read from <see cref="ForcedEvents.Current"/> when null).</summary>
+        public IReadOnlyList<string> ForcedIds;
         public bool IsEased(int stage) { if (EasedStages != null) for (int i = 0; i < EasedStages.Length; i++) if (EasedStages[i] == stage) return true; return false; }
         public bool Suits(StageEventDefinition d)
         {
@@ -40,6 +42,7 @@ namespace RoadBuilderGame
             if (record.runSeed == 0u) { record.runSeed = StageSeed.FallbackRunSeed; plan.Log.Add(new StageLogEntry("run_seed_fallback", -1, string.Empty, "runSeed was 0")); }
             plan.Record = record;
             if (L == null) return plan;
+            if (ctx.ForcedIds == null && ForcedEvents.Active) ctx.ForcedIds = ForcedEvents.Current.EventIds;      // the daily's three events
             Fill(L, plan, fromM, ctx);
             plan.Events.Sort((a, b) => { int c = a.StartM.CompareTo(b.StartM); return c != 0 ? c : a.SlotIndex.CompareTo(b.SlotIndex); });
             plan.FinishM = 0f;
@@ -56,6 +59,10 @@ namespace RoadBuilderGame
             float len = L.stageLengthM;
             int firstStage = Mathf.Max(1, Mathf.CeilToInt((fromM + (fromM > 0f ? 100f : 0f)) / len));
             string lastPrimary = null;
+            StageEventDefinition bossDef = null;
+            foreach (var d in pool) if (d.role == StageEventRole.Boss) { bossDef = d; break; }
+            int forcedNext = 0;
+            var forced = ctx.ForcedIds;
             int hardRun = 0;
             float prevEnd = fromM; StageEventDefinition prevDef = null;
             var famHistory = new List<string[]>();                 // families of the last stages, index by planned order
@@ -77,11 +84,22 @@ namespace RoadBuilderGame
                 uint stackTerrain = rng.NextUInt();                  // draw 10
 
                 var row = L.RowFor(k);
+                bool bossStage = bossDef != null && L.bossEveryM > 0f && (L.bossFirstStage == k || (k >= 1 && Mathf.Abs(k * len - Mathf.Round(k * len / L.bossEveryM) * L.bossEveryM) < 0.5f));
+                if (bossStage) row.fixedEvent = bossDef;
+                StageEventDefinition forcedEv = null;
+                if (!bossStage && row.fixedEvent == null && forced != null && forcedNext < forced.Count && k >= 2)
+                {
+                    string fid = forced[forcedNext++];
+                    foreach (var d in L.eventPool) if (d != null && d.id == fid) { forcedEv = d; break; }
+                    if (forcedEv == null) plan.Log.Add(new StageLogEntry("forced_event_unknown", k, fid, "not in the event pool"));
+                    else row.concurrent = 1;
+                }
                 float stageStart = k * len;
                 bool eased = ctx.IsEased(k);
                 StageEventDefinition primary = null;
 
                 if (row.fixedEvent != null) primary = row.fixedEvent;
+                else if (forcedEv != null) primary = forcedEv;
                 else
                 {
                     if (hardRun >= L.hardStagesBeforeBreather)

@@ -39,10 +39,19 @@ namespace RoadBuilderGame
         };
 
         /// <summary>Event keys of the mutation pack (gap list A, batch A1). Each gets vo.rob0.s1.KEY, sfx.KEY.sign, sfx.KEY.cue, banner.KEY and a sign word.</summary>
-        public static readonly string[] MutationKeys = { "gravshift", "heavyg", "tunnel", "inkstorm", "boostdrain", "vacuum", "canyon", "lowink", "tax", "fragile", "tiny", "giant" };
+        public static readonly string[] MutationKeys = { "gravshift", "heavyg", "tunnel", "inkstorm", "boostdrain", "vacuum", "canyon", "lowink", "tax", "fragile", "tiny", "giant",
+            // batch A2
+            "gravinv", "whiteout", "reverse", "mirror", "flappy", "collapse", "iceage", "magnet", "elastic", "shadow", "double", "platforms", "gravzones", "traffic", "boulder", "fences", "flood", "lava", "windtunnel", "sticky", "invink", "laser", "stars", "swap", "rhythm", "chaos" };
 
         static StageCues()
         {
+            string[] a2 = { "gravinv", "GRAVITY FLIP", "FLIP", "whiteout", "WHITEOUT", "WHITE", "reverse", "REVERSE DRIVE", "REVERSE", "mirror", "MIRROR ROAD", "MIRROR", "flappy", "FLAPPY TUNNEL", "GAPS",
+                "collapse", "ROAD COLLAPSE", "CRUMBLE", "iceage", "ICE AGE", "FREEZE", "magnet", "MAGNETIC CHAOS", "MAGNET", "elastic", "ELASTIC ROAD", "BOUNCY", "shadow", "SHADOW ROAD", "SHADOW",
+                "double", "DOUBLE VEHICLE", "DOUBLE", "platforms", "FALLING PLATFORMS", "DROP", "gravzones", "GRAVITY ZONES", "ZONES", "traffic", "TRAFFIC CONVOY", "TRAFFIC",
+                "boulder", "ROLLING BOULDER", "BOULDER", "fences", "ELECTRIC FENCES", "SHOCK", "flood", "FLOOD SURGE", "FLOOD", "lava", "LAVA CHASE", "LAVA", "windtunnel", "WIND TUNNELS", "TUNNEL",
+                "sticky", "STICKY ROAD", "STICKY", "invink", "INVISIBLE INK", "VANISH", "laser", "ROAD LASER", "LASER", "stars", "FALLING STARS", "STARS", "swap", "VEHICLE SWAP", "SWAP",
+                "rhythm", "RHYTHM GATES", "BEAT", "chaos", "CHAOS FINALE", "CHAOS" };
+            for (int i = 0; i < a2.Length; i += 3) { Banner["banner." + a2[i]] = a2[i + 1]; Sign["banner." + a2[i]] = a2[i + 2]; }
             foreach (var k in MutationKeys) { Registry.Add("vo.rob0.s1." + k); Registry.Add("sfx." + k + ".sign"); Registry.Add("sfx." + k + ".cue"); }
         }
 

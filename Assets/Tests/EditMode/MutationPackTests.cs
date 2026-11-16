@@ -93,7 +93,7 @@ namespace RoadBuilderGame.Tests
                 new[] { "EVT-FRAGILE", "EVT-METEOR" }, new[] { "EVT-FRAGILE", "EVT-CANYON" }, new[] { "MON-EATER", "BOS-ROB0" }, new[] { "MON-EATER", "EVT-TAX" },
             };
             foreach (var n in never) { Assert.IsTrue(m.TryGetPair(n[0], n[1], out var p), n[0] + "/" + n[1] + " has an entry"); Assert.AreEqual(StageCompatRule.Forbid, p.rule, n[0] + "/" + n[1]); }
-            Assert.AreEqual(17 * 16 / 2, m.pairs.Length, "every pair of the 17 pool events is explicit");
+            int pool = l.eventPool.Length; Assert.AreEqual(pool * (pool - 1) / 2, m.pairs.Length, "every pair of the pool events is explicit (A1 + A2)");
             int allow = 0; foreach (var p in m.pairs) if (p.rule == StageCompatRule.Allow) allow++;
             Assert.Greater(allow, 20, "there are compatible stacks");
         }
@@ -106,7 +106,7 @@ namespace RoadBuilderGame.Tests
             var fx = new StageEffectState();
             var run = new StageRunController(Endless());
             var hooks = new StageEffectHooks();
-            Assert.AreEqual(12, StageEffectRegistry.RegisterAll(run, fx, Endless().eventPool, hooks));
+            Assert.GreaterOrEqual(StageEffectRegistry.RegisterAll(run, fx, Endless().eventPool, hooks), 12);
             string neutral = fx.Snapshot();
             foreach (var id in MutationIds)
             {
@@ -235,7 +235,7 @@ namespace RoadBuilderGame.Tests
                 Assert.Greater(ev.Count, 20, "seed " + s + " plans a long ladder");
                 // fixed rows
                 Assert.AreEqual("MON-EATER", ev[0].Id); Assert.AreEqual(1000f, ev[0].StartM);
-                var boss = ev.Find(e => e.Id == "BOS-ROB0"); Assert.IsNotNull(boss, "boss at stage 8, seed " + s); Assert.AreEqual(8000f, boss.StartM);
+                var boss = ev.Find(e => e.Id == "BOS-ROB0" && e.SlotIndex / 10 == 8); Assert.IsNotNull(boss, "boss at stage 8, seed " + s); Assert.AreEqual(8000f, boss.StartM);
                 // no event in training stage 0
                 foreach (var e in ev) Assert.GreaterOrEqual(e.StartM, 1000f);
                 // overlaps need an explicit Allow; never more than 2 active at once
@@ -268,9 +268,9 @@ namespace RoadBuilderGame.Tests
                     var primary = evs.Find(e => e.SlotIndex % 10 == 0);
                     Assert.IsNotNull(primary, "seed " + s + " stage " + k);
                     Assert.GreaterOrEqual(primary.StartM, k * 1000f, "stage window");
-                    Assert.AreNotEqual(lastPrimary, primary.Id, "seed " + s + ": same primary twice in a row at stage " + k);
+                    if (primary.Definition.role != StageEventRole.Boss) Assert.AreNotEqual(lastPrimary, primary.Id, "seed " + s + ": same primary twice in a row at stage " + k);       // the fixed boss stages (3, 5, 8, 10, 15 ...) are scheduled, not drawn
                     lastPrimary = primary.Id;
-                    if (row.fixedEvent == null)
+                    if (row.fixedEvent == null && primary.Definition.role != StageEventRole.Boss)
                     {
                         Assert.IsTrue(ctx.Suits(primary.Definition), "seed " + s + ": " + primary.Id + " is not suitable for the world");
                         Assert.Less(hardRun, l.hardStagesBeforeBreather, "seed " + s + ": no breather after two hard stages (stage " + k + ")");

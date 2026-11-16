@@ -39,7 +39,32 @@ namespace RoadBuilderGame
         [Tooltip("Surface id (surface-asphalt, surface-grass-trail ...) this smooth skin replaces when the world is Smooth. Empty on pixel skins.")]
         public string surfaceId;
 
+        [Header("Animation frames (smooth strips): the strip repeated in another state, swapped on the shared material (no rebuild)")]
+        [Tooltip("Frame 0 is the atlas; frame i is frames[i-1]. Conveyor belt B, electric rail off, fragile paper torn.")]
+        public Texture2D[] frames = new Texture2D[0];
+
         [System.NonSerialized] private Material _material;
+        [System.NonSerialized] private Texture2D _materialAtlas;
+        [System.NonSerialized] private int _frame;
+
+        public int FrameCount => 1 + (frames != null ? frames.Length : 0);
+        public int Frame => _frame;
+        /// <summary>Shows animation frame <paramref name="i"/> (0 = the main atlas). One texture assignment on the shared material; a missing frame falls back to 0.</summary>
+        public void SetFrame(int i)
+        {
+            if (frames == null || i < 0 || i > frames.Length) i = 0;
+            if (i == _frame) return;
+            _frame = i;
+            if (_material == null) return;
+            var t = i == 0 ? atlas : frames[i - 1];
+            if (t != null) { ApplySmoothSampling(t); _material.mainTexture = t; }
+        }
+
+        private void ApplySmoothSampling(Texture2D t)
+        {
+            if (artStyle != ArtStyle.Smooth || t == null) return;
+            t.filterMode = FilterMode.Bilinear; t.wrapModeU = TextureWrapMode.Repeat; t.wrapModeV = TextureWrapMode.Clamp;
+        }
 
         public bool Textured => atlas != null;
         public int AtlasRows => curbRows + bodyRows + skirtRows;
@@ -50,7 +75,7 @@ namespace RoadBuilderGame
         public Material GetMaterial()
         {
             if (!Textured) return SpriteFactory.MeshMaterial;
-            if (_material == null || _material.mainTexture != atlas)
+            if (_material == null || _materialAtlas != atlas)
             {
                 var baseMaterial = Resources.Load<Material>("RoadBuilder/RoadTextured");
                 if (baseMaterial != null) _material = new Material(baseMaterial);
@@ -59,7 +84,7 @@ namespace RoadBuilderGame
                     var shader = Shader.Find("RoadBuilder/RoadTextured");
                     _material = shader != null ? new Material(shader) : SpriteFactory.MeshMaterial;
                 }
-                _material.mainTexture = atlas;
+                _material.mainTexture = atlas; _materialAtlas = atlas; _frame = 0;
                 // Smooth skins sample bilinear and repeat along the road (U) / clamp across it (V). Pixel skins are left as imported.
                 if (artStyle == ArtStyle.Smooth)
                 {

@@ -85,6 +85,8 @@ MonoBehaviour:
   weightedRecoveryMaxM: 200
   weightedBreatherM: 200
   stageLengthM: 1000
+  bossEveryM: 5000
+  bossFirstStage: 3
   endlessStageCount: 40
   endlessStages: []
   endlessRandomRow:

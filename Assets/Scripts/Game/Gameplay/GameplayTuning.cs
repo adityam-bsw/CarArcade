@@ -37,7 +37,9 @@ namespace RoadBuilderGame
         public int inkChance = 14;
 
         [Header("Coins and combo")]
-        public int coinValue = 1;
+        public int coinValue = 10;
+        [Range(0f, 1f), Tooltip("Chance that a coin slot spawns its coin shape (the rest stay empty). With coinValue 10 this is 0.1 so run earnings keep the D5 bands (EarningsModel); raise it only together with a lower coinValue.")]
+        public float coinShapeKeepChance = 0.1f;
         public float comboWindow = 2.2f;
         public int comboPerStep = 5;
         public int maxMultiplier = 5;

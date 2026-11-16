@@ -29,6 +29,12 @@ namespace RoadBuilderGame.UI.Editor
             theme.SetColor(ColorToken.ZoneEconomy, Hex("57C26B"));  // green
             theme.SetColor(ColorToken.ZoneBody, Hex("EE7FB0"));     // pink
             theme.SetColor(ColorToken.ZoneScale, Hex("A8D63F"));    // lime
+            theme.SetColor(ColorToken.ZoneVision, Hex("D9E2EC"));   // pale
+            theme.SetColor(ColorToken.ZoneControl, Hex("F2B134"));  // amber
+            theme.SetColor(ColorToken.ZoneHazard, Hex("D6384F"));   // crimson
+            theme.SetColor(ColorToken.ZoneLiquid, Hex("E8651F"));   // deep orange
+            theme.SetColor(ColorToken.ZoneTerrain, Hex("C9A66B"));  // tan
+            theme.SetColor(ColorToken.ZoneRhythm, Hex("D45BD0"));   // magenta
         }
 
         /// <summary>Adds only the stage-zone colour tokens to the existing theme asset and leaves everything else untouched.</summary>

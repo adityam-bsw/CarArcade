@@ -2980,3 +2980,406 @@ MonoBehaviour:
     smoothBody: {fileID: 0}
     smoothWheels: []
     smoothScale: 1
+  - id: surface-spring-road
+    kind: 1
+    displayName: Spring Road
+    group: Road
+    status: 1
+    quality: 3
+    note: Smooth road strip road_spring_road_1024x192.png (procedural, own code,
+      FORGE_NOTES_batch3). Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 0737db25f3c1640f1b639b0048dd5fc2, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 1.1
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1.1
+    coinFactor: 1.15
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-magnetic-rail
+    kind: 1
+    displayName: Magnetic Rail
+    group: Road
+    status: 1
+    quality: 3
+    note: Smooth road strip road_magnetic_rail_1024x192.png (procedural, own code,
+      FORGE_NOTES_batch3). Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: d638d611fdbc940c19180f8a9183b066, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 1.2
+    bounce: 0
+    speedFactor: 1.05
+    inkFactor: 1.15
+    coinFactor: 1.25
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-acid
+    kind: 1
+    displayName: Acid
+    group: Fire
+    status: 1
+    quality: 3
+    note: Smooth road strip road_acid_1024x192.png (procedural, own code, FORGE_NOTES_batch3).
+      Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 37bc1478528f141459604f1a94e88ed5, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 0.9
+    bounce: 0
+    speedFactor: 0.95
+    inkFactor: 1.2
+    coinFactor: 1.4
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-oil
+    kind: 1
+    displayName: Oil
+    group: Road
+    status: 1
+    quality: 3
+    note: Smooth road strip road_oil_1024x192.png (procedural, own code, FORGE_NOTES_batch3).
+      Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 79bd3d31626254834b068f465a9e5826, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 0.35
+    bounce: 0
+    speedFactor: 1.05
+    inkFactor: 1.2
+    coinFactor: 1.4
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-conveyor
+    kind: 1
+    displayName: Conveyor
+    group: Road
+    status: 1
+    quality: 3
+    note: Smooth road strip road_conveyor_1024x192.png (procedural, own code, FORGE_NOTES_batch3).
+      Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 825eb673bb26645099c039aa71aa4571, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 1.2
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1
+    coinFactor: 1.1
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-lava-river
+    kind: 1
+    displayName: Lava River
+    group: Fire
+    status: 1
+    quality: 3
+    note: Smooth road strip road_lava_river_1024x192.png (procedural, own code, FORGE_NOTES_batch3).
+      Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 8039e5ba22ed343beab0413394b3ac35, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 1.1
+    bounce: 0
+    speedFactor: 0.95
+    inkFactor: 1.3
+    coinFactor: 1.5
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-sticky-candy
+    kind: 1
+    displayName: Sticky Candy
+    group: Other
+    status: 1
+    quality: 3
+    note: Smooth road strip road_sticky_candy_1024x192.png (procedural, own code,
+      FORGE_NOTES_batch3). Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 0d7d6801d261e4f92804651d5c64983a, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 1.6
+    bounce: 0
+    speedFactor: 0.85
+    inkFactor: 0.9
+    coinFactor: 1.3
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-honey
+    kind: 1
+    displayName: Honey
+    group: Other
+    status: 1
+    quality: 3
+    note: Smooth road strip road_honey_1024x192.png (procedural, own code, FORGE_NOTES_batch3).
+      Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 8c139b3c4fc984461b21d2edb9abc4c9, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 1.7
+    bounce: 0
+    speedFactor: 0.8
+    inkFactor: 0.9
+    coinFactor: 1.3
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-metal-plates
+    kind: 1
+    displayName: Metal Plates
+    group: Road
+    status: 1
+    quality: 3
+    note: Smooth road strip road_metal_plates_1024x192.png (procedural, own code,
+      FORGE_NOTES_batch3). Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: e2310381127ca409ba735c05831226b6, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 1.2
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1.1
+    coinFactor: 1.1
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-ice-crystals
+    kind: 1
+    displayName: Ice Crystals
+    group: Snow and ice
+    status: 1
+    quality: 3
+    note: Smooth road strip road_ice_crystals_1024x192.png (procedural, own code,
+      FORGE_NOTES_batch3). Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 6221502e0c07647869ec439cb2e310f7, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 0.4
+    bounce: 0
+    speedFactor: 1.1
+    inkFactor: 1.3
+    coinFactor: 1.4
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-haunted-shadow
+    kind: 1
+    displayName: Haunted Shadow
+    group: Other
+    status: 1
+    quality: 3
+    note: Smooth road strip road_haunted_shadow_1024x192.png (procedural, own code,
+      FORGE_NOTES_batch3). Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 2c89e878f4d6a439eba073b3a65827a4, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 0.9
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1.3
+    coinFactor: 1.5
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-electric-rail
+    kind: 1
+    displayName: Electric Rail
+    group: Road
+    status: 1
+    quality: 3
+    note: Smooth road strip road_electric_rail_1024x192.png (procedural, own code,
+      FORGE_NOTES_batch3). Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 7fc12237e809c47fe8d0b317647cab58, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 1.2
+    bounce: 0
+    speedFactor: 1.05
+    inkFactor: 1.3
+    coinFactor: 1.5
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1
+  - id: surface-fragile-paper
+    kind: 1
+    displayName: Fragile Paper
+    group: Road
+    status: 1
+    quality: 3
+    note: Smooth road strip road_fragile_paper_1024x192.png (procedural, own code,
+      FORGE_NOTES_batch3). Behaviour from the surface module set.
+    licence: own work (procedural; tools/art/make_road3.py, no generative AI)
+    preview: {fileID: 21300000, guid: 677e1609d9ca243aea0d6aab689e11e9, type: 3}
+    playable: 1
+    playNote: 
+    cost: 0
+    widthUnits: 2.4
+    mass: 1.45
+    torque: 34
+    speed: 1
+    strip: {fileID: 0}
+    roadStyle: 0
+    layers: []
+    themeIndex: -1
+    friction: 1
+    bounce: 0
+    speedFactor: 1
+    inkFactor: 1.3
+    coinFactor: 1.5
+    wheels: []
+    smoothPreview: {fileID: 0}
+    smoothBody: {fileID: 0}
+    smoothWheels: []
+    smoothScale: 1

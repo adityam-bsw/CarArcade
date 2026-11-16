@@ -17,6 +17,13 @@ namespace RoadBuilderGame
         public const string Root = "Assets/Art/Smooth/";
         public const string UiFolder = "Assets/Art/Smooth/UI/";
         public const string BackgroundFolder = "Assets/Art/Smooth/Backgrounds/";
+        public const string RoadFolder = "Assets/Art/Smooth/Roads/";
+
+        /// <summary>Road strips tile in X: they import with Repeat wrap and a Full Rect sprite mesh.</summary>
+        public static bool IsRoadFolder(string assetPath)
+        {
+            return assetPath != null && assetPath.Replace('\\', '/').StartsWith(RoadFolder, System.StringComparison.Ordinal);
+        }
 
         public const float GameplayPpu = 128f;
         public const float UiPpu = 100f;

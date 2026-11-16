@@ -38,6 +38,7 @@ namespace RoadBuilderGame.UI
 
         private void Update()
         {
+            if (Time.timeScale <= 0f) return;                     // paused: the subtitle clock stands still with the run
             if (_subLeft > 0f) { _subLeft -= Time.unscaledDeltaTime; if (_subLeft <= 0f && subtitleGroup != null) subtitleGroup.alpha = 0f; }
         }
 
@@ -55,7 +56,7 @@ namespace RoadBuilderGame.UI
             }
             // vignette: boss phase 3 or a close Road-Eater (danger or snap band) warms the screen edge; calm is clear
             float target = m.EaterOn ? (m.EaterBand >= 3 ? 0.5f : m.EaterBand == 2 ? 0.3f : 0f) : boss ? (m.BossPhase >= 3 ? 0.22f : 0f) : 0f;
-            _vig = Mathf.MoveTowards(_vig, target, 2f * Time.unscaledDeltaTime);
+            _vig = Mathf.MoveTowards(_vig, target, 2f * (Time.timeScale <= 0f ? 0f : Time.unscaledDeltaTime));
             SetVig(_vig, theme.GetColor(ColorToken.Danger));
             if (subtitleText != null && m.SubtitleId != _subId)
             {

@@ -27,3 +27,4 @@ MonoBehaviour:
   tint: {r: 1, g: 1, b: 1, a: 1}
   lipPx: 2
   surfaceId: surface-rail-track
+  frames: []

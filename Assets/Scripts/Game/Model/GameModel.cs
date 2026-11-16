@@ -86,6 +86,8 @@ namespace RoadBuilderGame
         public string StageBanner = "";       // S1 banner text; StageBannerId changes for every new banner
         public int StageBannerId;
         public string StageBannerTint = "";
+        /// <summary>Surface tutorial icon id (a sprite name under Resources/Stage/SurfaceIcons) shown with the banner; empty for none.</summary>
+        public string StageBannerIcon = "";
         public bool StageSignOn;              // S2 sign visible (from S2 until the effect ends)
         public bool StageSignActive;          // the effect is running (the sign counts metres left); false while it counts metres to the start
         public string StageSignName = "";

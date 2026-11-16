@@ -29,7 +29,8 @@ MonoBehaviour:
   powerUpChance: 10
   gemChance: 3
   inkChance: 14
-  coinValue: 1
+  coinValue: 10
+  coinShapeKeepChance: 0.1
   comboWindow: 2.2
   comboPerStep: 5
   maxMultiplier: 5
@@ -46,6 +47,7 @@ MonoBehaviour:
   flipDegrees: 300
   milestoneEvery: 250
   milestoneCoins: 12
+  milestoneIndexCap: 1
   milestoneGemChance: 0.25
   recordBonus: 100
   frenzyDuration: 7
@@ -66,6 +68,17 @@ MonoBehaviour:
   meteorBlastRadius: 1.7
   nearMissRadius: 4.5
   nearMissCoins: 8
+  nearMissCoinsStep: 080000000a0000000c0000000f000000
+  nearMissPerfectMultiplier: 2
+  nearMissChainWindow: 4
+  nearMissRunCapFraction: 0.12
+  nearMissEaterPay: 20
+  stageEvents: 2
+  mudDragMulByVehicle:
+  - 1
+  - 1.25
+  - 0.6
+  stageHaptics: 0
   dailyCoins: 320000004b000000640000007d00000096000000c80000002c010000
   dailyGemsOnLastDay: 3
   missionsPerDay: 3

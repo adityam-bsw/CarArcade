@@ -17,7 +17,7 @@ namespace RoadBuilderGame.Editor
         public const string EndlessMatrixPath = StageSliceBuilder.Dir + "/EndlessCompatibilityMatrix.asset";
 
         // Event keys: gs hg tu is bd cv wc li tx fr tn gn
-        private static readonly string[][] NeverStack =
+        internal static readonly string[][] NeverStack =
         {
             new[] { "EVT-GRAVSHIFT", "EVT-HEAVYG", "same gravity channel" },
             new[] { "EVT-TINY", "EVT-GIANT", "never stack: tiny + giant" },
@@ -37,7 +37,7 @@ namespace RoadBuilderGame.Editor
         };
 
         // Allowed with the three surface and sky events of the slice (everything else with them is Forbid).
-        private static readonly Dictionary<string, string[]> SliceAllow = new Dictionary<string, string[]>
+        internal static readonly Dictionary<string, string[]> SliceAllow = new Dictionary<string, string[]>
         {
             { "EVT-ICE", new[] { "EVT-GRAVSHIFT", "EVT-BOOSTDRAIN", "EVT-VACUUM", "EVT-TAX", "EVT-TINY" } },
             { "EVT-MUD", new[] { "EVT-GRAVSHIFT", "EVT-TUNNEL", "EVT-VACUUM", "EVT-TAX", "EVT-GIANT", "EVT-BOOSTDRAIN" } },
@@ -47,7 +47,7 @@ namespace RoadBuilderGame.Editor
         [MenuItem("Road Builder/Stage/Build Mutation Pack")]
         public static void BuildMenu()
         {
-            var errors = Build();
+            var errors = MutationPack2Builder.Build();     // A1 pack first, then the A2 events extend pool and matrix
             AssetDatabase.SaveAssets();
             if (errors.Count == 0) Debug.Log("[MutationPackBuilder] Mutation pack built and valid in " + Dir);
             else foreach (var e in errors) Debug.LogError("[MutationPackBuilder] " + e);
@@ -133,7 +133,7 @@ namespace RoadBuilderGame.Editor
             return StageSliceBuilder.ValidateAll();
         }
 
-        private static StageCompatRule Rule(string a, string b, out string reason)
+        internal static StageCompatRule Rule(string a, string b, out string reason)
         {
             foreach (var n in NeverStack) if ((n[0] == a && n[1] == b) || (n[0] == b && n[1] == a)) { reason = n[2]; return StageCompatRule.Forbid; }
             foreach (var kv in SliceAllow)
@@ -151,14 +151,14 @@ namespace RoadBuilderGame.Editor
             reason = "A1:compatible"; return StageCompatRule.Allow;
         }
 
-        private static EndlessStageRow Row(int stage, string label, string tag, StageEventDefinition fixedEvent, StageTier min, StageTier max, int concurrent)
+        internal static EndlessStageRow Row(int stage, string label, string tag, StageEventDefinition fixedEvent, StageTier min, StageTier max, int concurrent)
         {
             return new EndlessStageRow { stage = stage, label = label, tag = tag, fixedEvent = fixedEvent, minTier = min, maxTier = max, concurrent = concurrent };
         }
 
         private static StageWorldTagEntry W(string id, params string[] tags) { return new StageWorldTagEntry { worldId = id, tags = tags }; }
 
-        private static StageWorldTagEntry[] WorldTags()
+        internal static StageWorldTagEntry[] WorldTags()
         {
             return new[]
             {
@@ -174,14 +174,14 @@ namespace RoadBuilderGame.Editor
 
         // ------------------------------------------------------------------ helpers
 
-        private static StageEventDefinition Load(string id)
+        internal static StageEventDefinition Load(string id)
         {
             var e = AssetDatabase.LoadAssetAtPath<StageEventDefinition>(StageSliceBuilder.Dir + "/" + id + ".asset");
             if (e == null) throw new System.Exception("Slice event " + id + " missing; run Build Slice Assets first");
             return e;
         }
 
-        private static T LoadOrCreate<T>(string path) where T : ScriptableObject
+        internal static T LoadOrCreate<T>(string path) where T : ScriptableObject
         {
             var a = AssetDatabase.LoadAssetAtPath<T>(path);
             if (a != null) return a;
@@ -190,7 +190,7 @@ namespace RoadBuilderGame.Editor
             return a;
         }
 
-        private static StageEventDefinition Ev(string id, string key, string tint, int cost, float len, string family, string tag, string[] worlds, string rule, string counter, float pace, params StageEffectSpec[] effects)
+        internal static StageEventDefinition Ev(string id, string key, string tint, int cost, float len, string family, string tag, string[] worlds, string rule, string counter, float pace, params StageEffectSpec[] effects)
         {
             var e = LoadOrCreate<StageEventDefinition>(Dir + "/" + id + ".asset");
             var fresh = ScriptableObject.CreateInstance<StageEventDefinition>();

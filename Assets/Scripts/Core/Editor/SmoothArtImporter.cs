@@ -26,6 +26,14 @@ namespace RoadBuilderGame.Editor
             imp.spritePixelsPerUnit = SmoothArt.DefaultPpu(path);
             imp.filterMode = FilterMode.Bilinear;
             imp.mipmapEnabled = false;
+            if (SmoothArt.IsRoadFolder(path))
+            {
+                // Road strips tile along the road: Repeat wrap, Full Rect mesh (no tight-mesh trimming of the transparent gaps and drips).
+                imp.wrapMode = TextureWrapMode.Repeat;
+                var ts = new TextureImporterSettings(); imp.ReadTextureSettings(ts);
+                ts.spriteMeshType = SpriteMeshType.FullRect;
+                imp.SetTextureSettings(ts);
+            }
             imp.alphaIsTransparency = true;
             imp.maxTextureSize = SmoothArt.MaxTextureSize;
             imp.textureCompression = TextureImporterCompression.Compressed;

@@ -27,6 +27,7 @@ namespace RoadBuilderGame.UI
         [SerializeField] private float gaugeMaxKmh = 80f;
         [Header("Stage event warning (S1 banner, S2 sign, S3 edge flash)")]
         [SerializeField] private TMP_Text stageBanner;
+        [SerializeField] private Image stageBannerIcon;      // surface tutorial icon under the banner text (SurfaceBehaviourLibrary.Icon)
         [SerializeField] private RectTransform stageSign;
         [SerializeField] private TMP_Text stageSignName;
         [SerializeField] private TMP_Text stageSignMetres;
@@ -67,6 +68,7 @@ namespace RoadBuilderGame.UI
             _bannerId = GameServices.Model.StageBannerId; _flashId = GameServices.Model.StageFlashId;
             _signShown = false; _signActive = false; _signMetres = -1; _signName = null;
             if (stageBanner != null) stageBanner.alpha = 0f;
+            if (stageBannerIcon != null) stageBannerIcon.gameObject.SetActive(false);
             if (stageSign != null) stageSign.gameObject.SetActive(false);
             SetFlashAlpha(0f);
             if (toastText != null) toastText.alpha = 0f;
@@ -189,6 +191,12 @@ namespace RoadBuilderGame.UI
                 seq.Append(stageBanner.transform.DOScale(1f, 0.22f).SetEase(Ease.OutBack));
                 seq.AppendInterval(1.1f);
                 seq.Append(stageBanner.DOFade(0f, 0.3f));
+                if (stageBannerIcon != null)
+                {
+                    var icon = SurfaceBehaviourLibrary.Icon(m.StageBannerIcon);
+                    stageBannerIcon.sprite = icon; stageBannerIcon.gameObject.SetActive(icon != null);
+                    if (icon != null) { stageBannerIcon.color = Color.white; seq.Join(stageBannerIcon.DOFade(0f, 0.3f).SetDelay(0f)); }
+                }
                 _bannerTween = seq;
             }
 

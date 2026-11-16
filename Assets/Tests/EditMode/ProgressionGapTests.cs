@@ -100,7 +100,10 @@ namespace RoadBuilderGame.Tests
             var p = Fresh(); var t = ProgressionTuningSO.Load();
             Assert.AreEqual(0, GateCounters.Value(p, ExtraGate.SurviveLava));
             RunProgress.Record(p, t, null, new RunSummary { vehicleKey = "vehicle-car", worldId = "world-rolling-hills", surfaceId = "surface-river", distance = 3200f, utc = Day });
-            Assert.GreaterOrEqual(GateCounters.Value(p, ExtraGate.SurviveLava), t.fallbackForMissingEvents ? 1 : 0);
+            Assert.AreEqual(0, GateCounters.Value(p, ExtraGate.SurviveLava), "lava has real raisers: a long run on river does not count");
+            Assert.GreaterOrEqual(GateCounters.Value(p, ExtraGate.RhythmChallenge), t.fallbackForMissingEvents && !GateCounters.RhythmEventExists() ? 1 : 0);
+            RunProgress.Record(p, t, null, new RunSummary { vehicleKey = "vehicle-car", worldId = "world-volcano", surfaceId = "surface-lava-crust", distance = 600f, utc = Day });
+            Assert.AreEqual(1, GateCounters.Value(p, ExtraGate.SurviveLava), "driving a lava surface 500 m counts");
             Assert.GreaterOrEqual(GateCounters.Value(p, ExtraGate.WaterMastery), 1);
             Assert.AreEqual(1, GateCounters.MasteredWorlds(p, t));
         }
