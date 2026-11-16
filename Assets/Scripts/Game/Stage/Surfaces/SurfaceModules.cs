@@ -138,7 +138,7 @@ namespace RoadBuilderGame
         public override void Configure(in SurfaceModuleSpec s, SurfaceRuleSO r)
         {
             if (r != null) { _dragPerSec = r.dragPerSec; _cap = r.mudDragCapMps; _floor = r.dragFloorSpeed; _stallDeg = r.stallAngleDeg; _boostIgnores = r.mudBoostIgnoresDrag; }
-            else { _dragPerSec = s.a; _cap = Mathf.Min(2f, s.b); _floor = s.c; _stallDeg = s.d; _boostIgnores = true; }
+            else { _dragPerSec = s.a > 0f ? s.a : 1f; _cap = s.b > 0f ? Mathf.Min(2f, s.b) : 2f; _floor = s.c > 0f ? s.c : 3f; _stallDeg = s.d > 0f ? s.d : 18f; _boostIgnores = true; }   // unset numbers fall back to hazards.md 3.2 (floor 3.0, cap 2.0, stall 18 deg): a spec of zeros once stalled the car at 0 m/s
             Reset();
         }
         public static float Drag(float dragPerSec, float cap, float dwellS, float mudDragMul) { return mudDragMul * Mathf.Min(cap, dragPerSec * Mathf.Max(0f, dwellS)); }

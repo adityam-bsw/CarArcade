@@ -9,8 +9,8 @@ namespace RoadBuilderGame
     /// <summary>What the batch A2 world objects need from the game. The manager supplies them; this file holds no scene reference of its own.</summary>
     public sealed class StageWorld2Host
     {
-        public Func<RoadCar> Car;
-        public Func<RoadBuilder> Road;
+        public Func<IStageCarView> Car;
+        public Func<IStageRoadView> Road;
         public Func<Camera> Cam;
         public Action<string> Damage;          // lose a heart (shield and grace are the manager's business)
         public Func<bool> CanDamage;           // false during hit grace, respawn grace, resume grace
@@ -23,7 +23,7 @@ namespace RoadBuilderGame
     /// <summary>One pooled world object: a coloured rectangle or circle with an optional solid collider (platforms, traffic). Fields are set by the owning behaviour.</summary>
     public sealed class FxProp
     {
-        public GameObject Go; public Transform T; public SpriteRenderer Sr; public Rigidbody2D Rb; public BoxCollider2D Col;
+        public GameObject Go; public Transform T; public SpriteRenderer Sr; public GameObject[] Kids; public Rigidbody2D Rb; public BoxCollider2D Col;
         public bool Live, Solid, Circle;
         public object Owner;
         public float X, Y, W = 1f, H = 1f, Rot, A, Life; public int State; public Color Color = Color.white;
@@ -59,8 +59,8 @@ namespace RoadBuilderGame
 
         public StageWorld2(StageEffectState fx, StageWorld2Host host) { _fx = fx; Host = host; }
 
-        public RoadCar Car { get { return Host.Car != null ? Host.Car() : null; } }
-        public RoadBuilder Road { get { return Host.Road != null ? Host.Road() : null; } }
+        public IStageCarView Car { get { return Host.Car != null ? Host.Car() : null; } }
+        public IStageRoadView Road { get { return Host.Road != null ? Host.Road() : null; } }
         public StageEffectState Fx { get { return _fx; } }
 
         // ------------------------------------------------------------------ sprites
@@ -138,7 +138,36 @@ namespace RoadBuilderGame
         {
             if (p == null || !p.Live) return;
             p.Live = false; p.Owner = null; p.Solid = false;
+            ClearKids(p); p.Sr.enabled = true;
             p.Col.enabled = false; p.Rb.simulated = false; p.Go.SetActive(false);
+        }
+
+        private static void ClearKids(FxProp p)
+        {
+            if (p.Kids == null) return;
+            for (int i = 0; i < p.Kids.Length; i++) if (p.Kids[i] != null) { if (Application.isPlaying) UnityEngine.Object.Destroy(p.Kids[i]); else UnityEngine.Object.DestroyImmediate(p.Kids[i]); }
+            p.Kids = null;
+        }
+
+        /// <summary>Turns a prop into a translucent copy of the car: one child per car sprite (body, wheels, overlays) at its offset from the body, tinted and drawn under the real car.
+        /// The prop's own rectangle is hidden. Built once at event start (allocates then, never per frame).</summary>
+        public void AttachCarCopy(FxProp p, IStageCarView car, Color tint, int order)
+        {
+            if (p == null || car == null || car.Body == null) return;
+            ClearKids(p);
+            var src = car.Renderers; if (src == null) return;
+            var body = car.Body.transform; var list = new List<GameObject>(src.Length);
+            for (int i = 0; i < src.Length; i++)
+            {
+                var r = src[i]; if (r == null || r.sprite == null || !r.enabled || r.transform == p.T) continue;
+                var go = new GameObject("copy"); go.transform.SetParent(p.T, false);
+                go.transform.localPosition = (Vector3)(Vector2)body.InverseTransformPoint(r.transform.position);
+                go.transform.localRotation = Quaternion.Inverse(body.rotation) * r.transform.rotation;
+                go.transform.localScale = r.transform.lossyScale;
+                var sr = go.AddComponent<SpriteRenderer>(); sr.sprite = r.sprite; sr.color = tint; sr.flipX = r.flipX; sr.flipY = r.flipY; sr.sortingLayerID = r.sortingLayerID; sr.sortingOrder = r.sortingOrder + order;
+                list.Add(go);
+            }
+            p.Kids = list.ToArray(); p.Sr.enabled = false;
         }
 
         public void SetShape(FxProp p, bool circle) { p.Circle = circle; p.Sr.sprite = circle ? Circle() : Square(); }
@@ -155,6 +184,69 @@ namespace RoadBuilderGame
             p.Sr.color = p.Color;
             if (p.Solid) p.Rb.position = new Vector2(p.X, p.Y);
         }
+
+        // ------------------------------------------------------------------ view helpers and procedural prop art
+        /// <summary>How far ahead of the car a prop should appear so it is on screen at once: the camera's right edge plus a small margin, clamped to 12..22 m. Events used to spawn 22..34 m out, beyond both the screen and the road the player had drawn.</summary>
+        public float AheadM
+        {
+            get
+            {
+                var cam = Host.Cam != null ? Host.Cam() : null; var car = Car;
+                if (cam == null || !cam.orthographic || car == null || car.Body == null) return 16f;
+                float right = cam.transform.position.x + cam.orthographicSize * cam.aspect;
+                return Mathf.Clamp(right - car.Body.position.x + 2f, 12f, 22f);
+            }
+        }
+
+        /// <summary>The furthest x a ground prop may take: the visible spawn distance, but never past the end of the drawn road (minus a margin).</summary>
+        public float GroundSpawnX(float carX, float margin)
+        {
+            float x = carX + AheadM; var r = Road;
+            if (r != null) x = Mathf.Min(x, r.FrontierMaxX - margin);
+            return x;
+        }
+
+        public void SetSprite(FxProp p, Sprite s) { if (p != null && s != null) p.Sr.sprite = s; }
+
+        private static Sprite MakeSprite(Func<int, int, Color32> px)
+        {
+            const int n = 32;
+            var t = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
+            var a = new Color32[n * n];
+            for (int y = 0; y < n; y++) for (int x = 0; x < n; x++) a[y * n + x] = px(x, y);
+            t.SetPixels32(a); t.Apply(false, true);
+            return Sprite.Create(t, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), n);
+        }
+
+        private static Sprite _pillar, _carArt, _lavaArt, _beamArt, _glowArt;
+        /// <summary>Rounded column with a lit left edge and a darker rim (flappy gates). White: the prop colour tints it.</summary>
+        public static Sprite Pillar() { return _pillar != null ? _pillar : _pillar = MakeSprite((x, y) => { float e = Mathf.Min(Mathf.Min(x, 31 - x), 3f) / 3f; byte v = (byte)(150 + 105 * (1f - Mathf.Abs(x - 10f) / 22f) * e); byte al = (byte)(255 * Mathf.Clamp01(Mathf.Min(x, 31 - x) + 0.5f)); return new Color32(v, v, v, al); }); }
+        /// <summary>Side view of a small car: body, cabin with window, two dark wheels. Drawn into a square and stretched by the prop's scale.</summary>
+        public static Sprite CarArt()
+        {
+            if (_carArt != null) return _carArt;
+            return _carArt = MakeSprite((x, y) =>
+            {
+                Color32 clear = new Color32(255, 255, 255, 0);
+                float wl = Mathf.Sqrt((x - 7.5f) * (x - 7.5f) + (y - 6.5f) * (y - 6.5f)), wr = Mathf.Sqrt((x - 24.5f) * (x - 24.5f) + (y - 6.5f) * (y - 6.5f));
+                if (wl < 5.5f || wr < 5.5f) return (wl < 2.2f || wr < 2.2f) ? new Color32(150, 150, 150, 255) : new Color32(40, 40, 46, 255);
+                bool body = y >= 8 && y <= 19 && x >= 1 && x <= 30;
+                bool cabin = y > 19 && y <= 27 && x >= 8 && x <= 24 && (y - 19) < (x - 6) * 1.2f && (y - 19) < (26 - x) * 1.2f;
+                if (cabin) return (x >= 11 && x <= 21 && y >= 21 && y <= 25) ? new Color32(150, 200, 230, 255) : new Color32(235, 235, 235, 255);
+                if (body) return y < 11 ? new Color32(200, 200, 200, 255) : new Color32(255, 255, 255, 255);
+                return clear;
+            });
+        }
+        /// <summary>Lava or water body: bright wavy top edge fading to a deep tone. Colour comes from the prop.</summary>
+        public static Sprite LavaArt() { return _lavaArt != null ? _lavaArt : _lavaArt = MakeSprite((x, y) => { float top = 28f + 2f * Mathf.Sin(x * 0.6f); if (y > top) return new Color32(255, 255, 255, 0); float k = Mathf.Clamp01((top - y) / 28f); byte v = (byte)(255 - 120 * k); return new Color32(v, v, v, (byte)(255 * Mathf.Clamp01(top - y + 1f))); }); }
+        /// <summary>Bottom-edge glow: opaque at the bottom, fading upward. The rising-liquid events draw it along the screen edge so the threat is visible before the surface itself is.</summary>
+        public static Sprite GlowArt() { return _glowArt != null ? _glowArt : _glowArt = MakeSprite((x, y) => { float k = 1f - y / 31f; return new Color32(255, 255, 255, (byte)(255 * k * k)); }); }
+        /// <summary>Camera bottom edge in world y (0 when no orthographic camera).</summary>
+        public float ViewBottomY { get { var cam = Host.Cam != null ? Host.Cam() : null; return cam != null && cam.orthographic ? cam.transform.position.y - cam.orthographicSize : 0f; } }
+        public float ViewCenterX { get { var cam = Host.Cam != null ? Host.Cam() : null; return cam != null ? cam.transform.position.x : 0f; } }
+
+        /// <summary>Soft vertical beam: bright core, feathered sides.</summary>
+        public static Sprite BeamArt() { return _beamArt != null ? _beamArt : _beamArt = MakeSprite((x, y) => { float d = Mathf.Abs(x - 15.5f) / 15.5f; byte a = (byte)(255 * Mathf.Clamp01(1.2f - d * 1.2f)); byte v = (byte)(255 - 60 * d); return new Color32(v, v, v, a); }); }
 
         // ------------------------------------------------------------------ queries
         public float GroundY(float x)
@@ -276,7 +368,7 @@ namespace RoadBuilderGame
             if (up && _tapOn) { if (_tapT < 0.2f && (pos - _tapPos).sqrMagnitude < 1600f) Hop(); _tapOn = false; }
         }
 
-        private void UpdateOverlay(Camera cam, RoadCar car, float dt)
+        private void UpdateOverlay(Camera cam, IStageCarView car, float dt)
         {
             float best = 0f; Color bc = Color.white; bool any = false;
             float k = Mathf.Min(1f, dt * 4f);
@@ -326,6 +418,21 @@ namespace RoadBuilderGame
             if (_root != null) _root.gameObject.SetActive(true);
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary>QA: one line per live prop: position relative to the camera view (viewport 0..1), size and sprite.</summary>
+        public string PropReport(Camera cam)
+        {
+            var sb = new System.Text.StringBuilder(); if (_pool == null) return "(no pool)";
+            for (int i = 0; i < PoolSize; i++)
+            {
+                var p = _pool[i]; if (!p.Live) continue;
+                var vp = cam != null ? cam.WorldToViewportPoint(new Vector3(p.X, p.Y, 0f)) : Vector3.zero;
+                sb.Append("[").Append(p.Sr.sprite != null ? p.Sr.sprite.name : "-").Append(" x=").Append(p.X.ToString("0.0")).Append(" y=").Append(p.Y.ToString("0.0")).Append(" w=").Append(p.W.ToString("0.0")).Append(" h=").Append(p.H.ToString("0.0")).Append(" vp=(").Append(vp.x.ToString("0.00")).Append(",").Append(vp.y.ToString("0.00")).Append(") kids=").Append(p.Kids != null ? p.Kids.Length : 0).Append(" on=").Append(p.Go.activeInHierarchy && (p.Sr.enabled || p.Kids != null)).Append("] ");
+            }
+            return sb.ToString();
+        }
+#endif
+
         public string Snapshot() { return "w2{props=" + LiveCount(null) + " hop=" + HopEnabled + " fog=" + _fogCur.ToString("0.00") + " t=" + Time.ToString("0.0") + "}"; }
     }
 
@@ -351,7 +458,7 @@ namespace RoadBuilderGame
         }
 
         protected void Banner(string s) { Hooks?.Banner?.Invoke(s); }
-        protected RoadCar Car { get { return W != null ? W.Car : null; } }
+        protected IStageCarView Car { get { return W != null ? W.Car : null; } }
 
         public override void OnStart(StageEventState s)
         {
@@ -440,21 +547,22 @@ namespace RoadBuilderGame
         private readonly FxProp[] _top = new FxProp[3], _bot = new FxProp[3];
         private float _nextX; private int _n;
         public FlappyTunnelBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h) : base(d, fx, h, StageEffectKind.FlappyTunnel, new Color(1f, 0.6f, 0.8f), 0.04f) { }
-        protected override void Begin() { W.HopEnabled = true; _nextX = Car != null && Car.Body != null ? Car.Body.position.x + 30f : 0f; _n = 0; for (int i = 0; i < 3; i++) { _top[i] = null; _bot[i] = null; } }
+        protected override void Begin() { W.HopEnabled = true; _nextX = Car != null && Car.Body != null ? Car.Body.position.x + W.AheadM : 0f; _n = 0; for (int i = 0; i < 3; i++) { _top[i] = null; _bot[i] = null; } }
         protected override void End() { W.HopEnabled = false; }
-        protected override void Respawned() { for (int i = 0; i < 3; i++) { W.Free(_top[i]); W.Free(_bot[i]); _top[i] = _bot[i] = null; } _nextX = Car.Body.position.x + 30f; }
+        protected override void Respawned() { for (int i = 0; i < 3; i++) { W.Free(_top[i]); W.Free(_bot[i]); _top[i] = _bot[i] = null; } _nextX = Car.Body.position.x + W.AheadM; }
         protected override void Step(float dt, float distanceM)
         {
             float cx = Car.Body.position.x, gap = Mathf.Max(2.2f, SB), spacing = Mathf.Max(18f, SA);
-            if (Hold <= 0f && _nextX < cx + 26f && (W.HasRoad(Mathf.Max(_nextX, cx + 22f)) || _n % 2 == 1))
+            if (Hold <= 0f && _nextX < cx + W.AheadM + 4f)
             {
                 int slot = -1; for (int i = 0; i < 3; i++) if (_top[i] == null || !_top[i].Live) { slot = i; break; }
                 if (slot >= 0)
                 {
-                    float x = Mathf.Max(_nextX, cx + 22f), g = W.GroundY(x); bool low = R.NextFloat01() < 0.5f;
+                    float x = Mathf.Max(_nextX, cx + W.AheadM), g = W.GroundY(x); bool low = R.NextFloat01() < 0.5f;
                     float lowOff = low ? 0.95f : 0f, gapBottom = g + lowOff, gapTop = gapBottom + gap + (low ? 0f : 0.4f);
                     _top[slot] = W.Spawn(this, x, gapTop + 4f, 1.3f, 8f, new Color(0.85f, 0.35f, 0.55f));
                     _bot[slot] = low ? W.Spawn(this, x, g + lowOff * 0.5f - 0.05f, 1.3f, lowOff, new Color(0.95f, 0.55f, 0.7f)) : null;
+                    W.SetSprite(_top[slot], StageWorld2.Pillar()); W.SetSprite(_bot[slot], StageWorld2.Pillar());
                     _nextX = x + spacing; _n++;
                 }
             }
@@ -568,7 +676,7 @@ namespace RoadBuilderGame
         private readonly float[] _t = new float[N], _x = new float[N], _y = new float[N], _r = new float[N];
         private int _head, _count; private float _lastRec, _crashCd; private FxProp _ghost;
         public DoubleVehicleBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h) : base(d, fx, h, StageEffectKind.GhostDouble, new Color(0.4f, 0.9f, 1f), 0.03f) { }
-        protected override void Begin() { _head = 0; _count = 0; _lastRec = -1f; _crashCd = 0f; _ghost = W.Spawn(this, 0f, -99f, 2.2f, 0.9f, new Color(0.45f, 0.95f, 1f, 0.5f)); if (_ghost != null) _ghost.Sr.sortingOrder = 29; }
+        protected override void Begin() { _head = 0; _count = 0; _lastRec = -1f; _crashCd = 0f; _ghost = W.Spawn(this, 0f, -99f, 1f, 1f, new Color(0.45f, 0.95f, 1f, 0.5f)); if (_ghost != null) { _ghost.Sr.sortingOrder = 29; W.AttachCarCopy(_ghost, Car, new Color(0.55f, 0.95f, 1f, 0.45f), -1); } }
         protected override void Respawned() { _count = 0; _head = 0; }
         protected override void Step(float dt, float distanceM)
         {
@@ -753,14 +861,15 @@ namespace RoadBuilderGame
     /// <summary>Flood Surge (water, steps up) and Lava Chase (lava, rises steadily): a liquid plane below the car rises; Flood slows and finally drowns, Lava burns on contact.</summary>
     public sealed class RisingLiquidBehaviour : Fx2Behaviour
     {
-        private readonly bool _lava; private FxProp _liq; private float _level, _remain, _stepT, _sub; private bool _needReset;
+        private readonly bool _lava; private FxProp _liq, _glow; private float _level, _remain, _stepT, _sub; private bool _needReset;
         public RisingLiquidBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h, bool lava) : base(d, fx, h, lava ? StageEffectKind.LavaChase : StageEffectKind.FloodSurge, lava ? new Color(1f, 0.4f, 0.1f) : new Color(0.2f, 0.5f, 0.9f), 0.04f) { _lava = lava; }
         private float Depth { get { return _lava ? Mathf.Max(3f, SB) : 5f; } }
         protected override void Begin()
         {
             _level = Car.Body.position.y - Depth; _remain = 0f; _stepT = _lava ? 0f : Mathf.Max(1f, SB); _sub = 0f; _needReset = false;
             _liq = W.Spawn(this, Car.Body.position.x, _level - 20f, 60f, 40f, _lava ? new Color(1f, 0.35f, 0.05f, 0.85f) : new Color(0.15f, 0.45f, 0.95f, 0.5f));
-            if (_liq != null) _liq.Sr.sortingOrder = 31;
+            if (_liq != null) { _liq.Sr.sortingOrder = 31; W.SetSprite(_liq, StageWorld2.LavaArt()); }
+            _glow = W.Spawn(this, Car.Body.position.x, -99f, 60f, 4f, Color.clear); if (_glow != null) { _glow.Sr.sortingOrder = 32; W.SetSprite(_glow, StageWorld2.GlowArt()); }
         }
         protected override void End() { Fx.SetCur(this, StageEffectKind.FloodSurge, 0f); }
         protected override void Respawned() { _needReset = true; _sub = 0f; Fx.SetCur(this, StageEffectKind.FloodSurge, 0f); }
@@ -778,6 +887,12 @@ namespace RoadBuilderGame
                 }
             }
             if (_liq != null && _liq.Live) { _liq.X = b.position.x; _liq.Y = _level - 20f; if (_lava) _liq.Color = new Color(1f, 0.3f + 0.1f * Mathf.Sin(T * 4f), 0.05f, 0.85f); }
+            if (_glow != null && _glow.Live)
+            {
+                float close = Mathf.Clamp01(1f - (b.position.y - 0.2f - _level) / (Depth + 1f));      // 0 far below, 1 at the car
+                _glow.X = W.ViewCenterX; _glow.Y = W.ViewBottomY + _glow.H * 0.5f;
+                var gc = _lava ? new Color(1f, 0.38f, 0.05f, 0f) : new Color(0.2f, 0.5f, 0.95f, 0f); gc.a = 0.25f + 0.55f * close; _glow.Color = gc;
+            }
             bool under = b.position.y - 0.2f < _level;
             if (Hold > 0f) return;
             if (_lava) { if (under) W.Hit("LAVA!"); }
@@ -794,7 +909,7 @@ namespace RoadBuilderGame
     {
         private readonly FxProp[] _v = new FxProp[3]; private float _spawnT;
         public TrafficConvoyBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h) : base(d, fx, h, StageEffectKind.TrafficConvoy, new Color(0.9f, 0.7f, 0.3f), 0.03f) { }
-        protected override void Begin() { _spawnT = 3f; }
+        protected override void Begin() { _spawnT = 1.5f; }
         protected override void Respawned() { for (int i = 0; i < 3; i++) { W.Free(_v[i]); _v[i] = null; } _spawnT = 3f; }
         protected override void Step(float dt, float distanceM)
         {
@@ -802,11 +917,11 @@ namespace RoadBuilderGame
             _spawnT -= dt;
             if (_spawnT <= 0f && Hold <= 0f)
             {
-                float x = cx + 34f;
-                if (W.HasRoad(x) && W.HasRoad(x + 3f))
+                float x = W.GroundSpawnX(cx, 2f);       // on screen and on the road that exists (the old fixed 34 m was past both)
+                if (x - cx >= 8f && W.HasRoad(x))
                     for (int i = 0; i < 3; i++) if (_v[i] == null || !_v[i].Live)
                     {
-                        _v[i] = W.Spawn(this, x, W.GroundY(x) + 0.75f, 3.2f, 1.2f, i == 1 ? new Color(0.35f, 0.6f, 0.9f) : new Color(0.95f, 0.6f, 0.2f), false, true); _spawnT = Mathf.Max(2f, SB); break;
+                        _v[i] = W.Spawn(this, x, W.GroundY(x) + 0.75f, 3.2f, 1.2f, i == 1 ? new Color(0.35f, 0.6f, 0.9f) : new Color(0.95f, 0.6f, 0.2f), false, true); W.SetSprite(_v[i], StageWorld2.CarArt()); _spawnT = Mathf.Max(2f, SB); break;
                     }
                 else _spawnT = 0.5f;
             }
@@ -888,14 +1003,14 @@ namespace RoadBuilderGame
                 _tm -= dt;
                 if (_tm <= 0f && Hold <= 0f)
                 {
-                    _x = b.position.x + Mathf.Max(14f, b.linearVelocity.x * 2.4f + 4f);
-                    if (!W.HasRoad(_x) || Car.Body == null) { _tm = 0.4f; return; }
-                    _beam = W.Spawn(this, _x, W.GroundY(_x) + 3f, 0.25f, 14f, new Color(1f, 0.25f, 0.3f, 0.7f)); _st = 1; _tm = 1.1f; Banner("LASER!"); W.Host.Cue?.Invoke(Def.cueSfxId);
+                    _x = Mathf.Min(b.position.x + Mathf.Clamp(b.linearVelocity.x * 1.6f + 4f, 10f, W.AheadM), W.GroundSpawnX(b.position.x, 1f));
+                    if (_x - b.position.x < 7f || !W.HasRoad(_x)) { _tm = 0.4f; return; }
+                    _beam = W.Spawn(this, _x, W.GroundY(_x) + 3f, 0.6f, 14f, new Color(1f, 0.25f, 0.3f, 0.7f)); W.SetSprite(_beam, StageWorld2.BeamArt()); _st = 1; _tm = 1.1f; Banner("LASER!"); W.Host.Cue?.Invoke(Def.cueSfxId);
                 }
             }
             else if (_st == 1)
             {
-                _tm -= dt; if (_beam != null) { _beam.Color = new Color(1f, 0.25f, 0.3f, 0.35f + 0.5f * Mathf.Abs(Mathf.Sin(T * 14f))); _beam.W = 0.25f + 0.2f * (1f - _tm); }
+                _tm -= dt; if (_beam != null) { _beam.Color = new Color(1f, 0.25f, 0.3f, 0.35f + 0.5f * Mathf.Abs(Mathf.Sin(T * 14f))); _beam.W = 0.6f + 0.5f * (1f - _tm); }
                 if (_tm <= 0f)
                 {
                     var road = W.Road;

@@ -41,15 +41,23 @@ namespace RoadBuilderGame.UI
             GameServices.Model.Changed -= Refresh;
         }
 
+        // The knob sits left when OFF and right when ON, so the word goes to the opposite side (it used to sit under the knob when OFF).
+        private static void PlaceLabel(TMP_Text label, bool on)
+        {
+            if (label == null) return;
+            var rt = label.rectTransform; var p = rt.anchoredPosition; float ax = Mathf.Abs(p.x);
+            p.x = on ? -ax : ax; rt.anchoredPosition = p;
+        }
+
         private void Refresh()
         {
             bool on = GameServices.Model.SoundEnabled;
-            soundLabel.SetText(on ? "ON" : "OFF");
+            soundLabel.SetText(on ? "ON" : "OFF"); PlaceLabel(soundLabel, on);
             soundButtonImage.sprite = UIThemeManager.Current.GetSprite(on ? SpriteSlot.ToggleOn : SpriteSlot.ToggleOff);
             if (adaptiveButton != null)
             {
                 bool ad = GameServices.Model.AdaptiveChallenge;
-                if (adaptiveLabel != null) adaptiveLabel.SetText(ad ? "ON" : "OFF");       // the visible opt-in indicator
+                if (adaptiveLabel != null) { adaptiveLabel.SetText(ad ? "ON" : "OFF"); PlaceLabel(adaptiveLabel, ad); }       // the visible opt-in indicator
                 if (adaptiveButtonImage != null) adaptiveButtonImage.sprite = UIThemeManager.Current.GetSprite(ad ? SpriteSlot.ToggleOn : SpriteSlot.ToggleOff);
             }
         }

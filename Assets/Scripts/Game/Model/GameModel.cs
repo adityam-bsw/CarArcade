@@ -81,6 +81,9 @@ namespace RoadBuilderGame
         public string PowerText = "";         // active power-ups, e.g. "SHIELD  MAGNET 8"
         public string Toast = "";             // short event text; ToastId changes for every new one
         public int ToastId;
+        /// <summary>Why the last catalogue pick was refused (requirement text); NoticeId changes for every refusal so screens can show it once.</summary>
+        public string Notice = "";
+        public int NoticeId;
 
         // Stage events (written by StageWarningPresenter; the HUD only displays them). Tint fields hold a UITheme colour token name.
         public string StageBanner = "";       // S1 banner text; StageBannerId changes for every new banner

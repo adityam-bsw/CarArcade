@@ -25,12 +25,12 @@ namespace RoadBuilderGame
         private void OnGUI()
         {
             if (_game == null || !_game.DebugStageOn || _game.DebugState != ScreenState.Playing) return;
-            if (GUI.Button(new Rect(Screen.width - 70, Screen.height * 0.45f, 64, 40), "DBG")) _open = !_open;
+            if (GUI.Button(new Rect(Screen.safeArea.xMin + 6f, Screen.height * 0.45f, 64, 40), "DBG")) _open = !_open;
             if (!_open) return;
             float y = Screen.height * 0.45f + 46f;
-            GUI.Label(new Rect(Screen.width - 200, y - 22, 190, 22), "Stage jump (" + Mathf.RoundToInt(_game.DebugDistance) + " m)");
+            GUI.Label(new Rect(Screen.safeArea.xMin + 6f, y - 22, 190, 22), "Stage jump (" + Mathf.RoundToInt(_game.DebugDistance) + " m)");
             for (int i = 0; i < Points.Length; i++)
-                if (GUI.Button(new Rect(Screen.width - 130, y + i * 38f, 124, 34), Points[i] + " m")) _game.DebugJumpToStage(Points[i]);
+                if (GUI.Button(new Rect(Screen.safeArea.xMin + 6f, y + i * 38f, 124, 34), Points[i] + " m")) _game.DebugJumpToStage(Points[i]);
         }
     }
 }

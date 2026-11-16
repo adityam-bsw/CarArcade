@@ -227,7 +227,9 @@ namespace RoadBuilderGame.UI
         private void OnSelectPressed()
         {
             if (_current == null || !_selectEnabled) return;
+            int noticeBefore = GameServices.Model.NoticeId;
             GameServices.Actions?.SelectCatalogItem(_kind, _current.id);
+            if (GameServices.Model.NoticeId != noticeBefore) { footnote.SetText(GameServices.Model.Notice); footnote.color = UIThemeManager.Current.GetColor(ColorToken.Danger); }
         }
 
         private void RefreshSelectionState()

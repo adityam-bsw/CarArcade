@@ -70,7 +70,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: b070667f80bf4424594d3afe46ad4331, type: 3}
     playable: 1
     playNote: 
-    cost: 120
+    cost: 4000
     widthUnits: 1.7857143
     mass: 1.7
     torque: 46
@@ -118,7 +118,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: ec38dab00bd1a4b35b7f224b20158df5, type: 3}
     playable: 1
     playNote: 
-    cost: 0
+    cost: 1000
     widthUnits: 2.2857144
     mass: 1.3
     torque: 36
@@ -164,7 +164,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 634417c3afe5e444ca60634bf4374f1a, type: 3}
     playable: 1
     playNote: 
-    cost: 220
+    cost: 5000
     widthUnits: 2.5
     mass: 1.3
     torque: 38
@@ -210,7 +210,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: cb997ded905074a25b0eed4cb78335cb, type: 3}
     playable: 1
     playNote: 
-    cost: 400
+    cost: 8000
     widthUnits: 2.5
     mass: 1.3
     torque: 38
@@ -256,7 +256,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 70dbee66e2c1a4de995eead977b02343, type: 3}
     playable: 1
     playNote: 
-    cost: 250
+    cost: 600
     widthUnits: 2.5
     mass: 1.3
     torque: 38
@@ -302,7 +302,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 672fba77e662247539af727fd4da420b, type: 3}
     playable: 1
     playNote: 
-    cost: 150
+    cost: 2800
     widthUnits: 2.5
     mass: 1.45
     torque: 34
@@ -350,7 +350,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 6f588e7d54c5a4e018a0ef10b22555f9, type: 3}
     playable: 1
     playNote: 
-    cost: 150
+    cost: 3000
     widthUnits: 2.357143
     mass: 1.3
     torque: 36
@@ -396,7 +396,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: a6c438b2e99c34684bdcc09441dc7931, type: 3}
     playable: 1
     playNote: 
-    cost: 400
+    cost: 10000
     widthUnits: 3
     mass: 2.6
     torque: 62
@@ -442,7 +442,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: d4a9c98fdae1242979e1c204f61e0ce4, type: 3}
     playable: 1
     playNote: 
-    cost: 320
+    cost: 7000
     widthUnits: 2.642857
     mass: 2
     torque: 52
@@ -488,7 +488,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: dcba7a8df194f439c82e56c6208c43c7, type: 3}
     playable: 1
     playNote: 
-    cost: 450
+    cost: 11000
     widthUnits: 3
     mass: 2.6
     torque: 62
@@ -536,7 +536,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: a95f938d2e86d4a90b2f1e31494b3c05, type: 3}
     playable: 1
     playNote: 
-    cost: 450
+    cost: 2000
     widthUnits: 2.857143
     mass: 2
     torque: 52
@@ -582,7 +582,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: f556fe75b1957443ea55629a180abecf, type: 3}
     playable: 1
     playNote: 
-    cost: 300
+    cost: 6500
     widthUnits: 2.9285715
     mass: 2
     torque: 52
@@ -636,7 +636,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 3538ff36d37084040b1a262707ec8934, type: 3}
     playable: 1
     playNote: 
-    cost: 500
+    cost: 14000
     widthUnits: 3
     mass: 2.6
     torque: 62
@@ -684,7 +684,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: a471816c28d394290a89b9b683bb08a7, type: 3}
     playable: 1
     playNote: 
-    cost: 700
+    cost: 28000
     widthUnits: 2.2857144
     mass: 2.6
     torque: 62
@@ -714,7 +714,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 2049e2499bb214892aee322c7caa658c, type: 3}
     playable: 1
     playNote: 
-    cost: 280
+    cost: 6000
     widthUnits: 1.8571428
     mass: 2
     torque: 52
@@ -761,8 +761,8 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: a3d8ca513ac9a452097b1fa531aa3821, type: 3}
     playable: 1
     playNote: 
-    cost: 0
-    widthUnits: 2.7142856
+    cost: 1500
+    widthUnits: 1.85
     mass: 0.9
     torque: 26
     speed: 1
@@ -807,7 +807,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 1ad21839ddd314f09a4ae9791bd16d90, type: 3}
     playable: 1
     playNote: 
-    cost: 200
+    cost: 3400
     widthUnits: 3
     mass: 0.9
     torque: 26
@@ -854,7 +854,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: ffbbb3fe99b064612a9644f762f6bc7f, type: 3}
     playable: 1
     playNote: 
-    cost: 260
+    cost: 5500
     widthUnits: 3
     mass: 1.7
     torque: 46
@@ -900,7 +900,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 5083cdbbf1a294f75ae5e46256b93d49, type: 3}
     playable: 1
     playNote: 
-    cost: 0
+    cost: 800
     widthUnits: 1.5
     mass: 0.9
     torque: 26
@@ -948,7 +948,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 61e19bffcb250425a950b2fced356ad8, type: 3}
     playable: 1
     playNote: 
-    cost: 80
+    cost: 900
     widthUnits: 2.2142856
     mass: 0.9
     torque: 26
@@ -980,7 +980,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 93a5bc433aa3442f9a379d235f9a1afb, type: 3}
     playable: 0
     playNote: Needs water physics, which the game does not have yet.
-    cost: 0
+    cost: 16000
     widthUnits: 2.4
     mass: 1.45
     torque: 34
@@ -1012,7 +1012,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 3166f0d682c444be086f263db7d74178, type: 3}
     playable: 0
     playNote: Needs water physics, which the game does not have yet.
-    cost: 0
+    cost: 18000
     widthUnits: 2.4
     mass: 1.45
     torque: 34
@@ -1044,7 +1044,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 0e7b042b9fd2d41e79cd77926f2d5c54, type: 3}
     playable: 0
     playNote: Needs water physics, which the game does not have yet.
-    cost: 0
+    cost: 20000
     widthUnits: 2.4
     mass: 1.45
     torque: 34
@@ -1074,7 +1074,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: aacbbab4acbf649c6a7df60e371b2106, type: 3}
     playable: 1
     playNote: 
-    cost: 90
+    cost: 1100
     widthUnits: 2.9285715
     mass: 1.3
     torque: 36
@@ -1105,7 +1105,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: e3bc0776c16c54cbfa762d3d76faa48f, type: 3}
     playable: 1
     playNote: 
-    cost: 130
+    cost: 1800
     widthUnits: 2.7142856
     mass: 0.9
     torque: 26
@@ -1136,7 +1136,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: c4552954dbe3c4cd4a18db24e7b3fdb5, type: 3}
     playable: 1
     playNote: 
-    cost: 350
+    cost: 7500
     widthUnits: 3
     mass: 1.7
     torque: 46
@@ -1167,7 +1167,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: c1f0cdb13bf5c40c6b5cc5d7b9c80883, type: 3}
     playable: 1
     playNote: 
-    cost: 110
+    cost: 1300
     widthUnits: 3
     mass: 1.3
     torque: 36
@@ -1199,7 +1199,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 09ffcee76175d4ea6a13d3f4c4431a48, type: 3}
     playable: 1
     playNote: 
-    cost: 180
+    cost: 2200
     widthUnits: 2.7142856
     mass: 1.3
     torque: 36
@@ -1230,7 +1230,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 339f30f640eb14e6a9fc6b31f3c99be2, type: 3}
     playable: 1
     playNote: 
-    cost: 500
+    cost: 50000
     widthUnits: 3
     mass: 1.7
     torque: 46
@@ -1261,7 +1261,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: 883f609502aec42c9a7bf61bb8b28a91, type: 3}
     playable: 0
     playNote: Needs snow-runner physics, which the game does not have yet.
-    cost: 0
+    cost: 40000
     widthUnits: 2.4
     mass: 1.45
     torque: 34
@@ -1293,7 +1293,7 @@ MonoBehaviour:
     preview: {fileID: 21300000, guid: f897f8a20941840c595e958c2620689e, type: 3}
     playable: 1
     playNote: 
-    cost: 100
+    cost: 1200
     widthUnits: 2
     mass: 0.9
     torque: 26

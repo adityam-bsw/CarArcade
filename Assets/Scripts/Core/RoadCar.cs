@@ -498,6 +498,15 @@ namespace RoadBuilderGame
             Body.rotation = Mathf.LerpAngle(zAngle, 0f, 0.55f);
         }
 
+        /// <summary>Game over: motor off and the whole rig stops simulating, so nothing keeps rolling under the result screen. A fresh car is built for revive or retry.</summary>
+        public void Freeze()
+        {
+            MotorOn = false;
+            if (_joints != null) for (int i = 0; i < _joints.Length; i++) if (_joints[i] != null) _joints[i].useMotor = false;
+            if (_wheels != null) for (int i = 0; i < _wheels.Length; i++) if (_wheels[i] != null) { _wheels[i].linearVelocity = Vector2.zero; _wheels[i].angularVelocity = 0f; _wheels[i].simulated = false; }
+            if (Body != null) { Body.linearVelocity = Vector2.zero; Body.angularVelocity = 0f; Body.simulated = false; }
+        }
+
         public void RespawnSafely(Vector2 safeRoadSurfacePos)
         {
             HeadHit = false;

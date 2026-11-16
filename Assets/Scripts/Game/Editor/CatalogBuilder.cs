@@ -153,6 +153,7 @@ namespace RoadBuilderGame.Editor
                     e.playable = true; e.cost = v.Value;
                     e.mass = c[0]; e.torque = c[1]; e.speed = c[2];
                     e.widthUnits = Mathf.Clamp(e.preview.rect.width / 14f, 1.5f, 3.0f);
+                    if (e.id == "vehicle-bicycle") e.widthUnits = 1.85f;   // QA4 B10: its 38 px picture has big wheels (7.5 px), so at 2.7 m wide the wheel radius was 0.54 (same as the Monster Truck); 1.85 m gives 0.37, below the motorcycle's 0.40
                 }
                 else e.playNote = "Needs " + NeedFor(e.id) + " physics, which the game does not have yet.";
             }

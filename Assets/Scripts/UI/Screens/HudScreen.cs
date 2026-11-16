@@ -212,6 +212,7 @@ namespace RoadBuilderGame.UI
                         if (img != null) { var c = TokenColor(theme, m.StageSignTint, ColorToken.Accent); c.a = 0.92f; img.color = c; }
                         UIAnim.Punch(stageSign, 0.2f);
                         _signName = null; _signMetres = -1;
+                        FitSign();
                     }
                 }
                 if (_signShown)
@@ -238,6 +239,24 @@ namespace RoadBuilderGame.UI
             }
         }
 
+        /// <summary>Name on the left 60 percent, metres on the right 40 percent of a wider pill; both shrink to fit so "RO-B0" and "325 M LEFT" never overprint.</summary>
+        private void FitSign()
+        {
+            if (_signFitted || stageSignName == null || stageSignMetres == null) return;
+            _signFitted = true;
+            var sd = stageSign.sizeDelta; sd.x = Mathf.Max(sd.x, 560f); stageSign.sizeDelta = sd;
+            Place(stageSignName.rectTransform, 0f, 0.58f, 22f, 4f, TextAlignmentOptions.MidlineLeft);
+            Place(stageSignMetres.rectTransform, 0.58f, 1f, 4f, 22f, TextAlignmentOptions.MidlineRight);
+            foreach (var t in new[] { stageSignName, stageSignMetres }) { t.enableAutoSizing = true; t.fontSizeMax = 40f; t.fontSizeMin = 16f; t.overflowMode = TextOverflowModes.Ellipsis; t.textWrappingMode = TextWrappingModes.NoWrap; }
+        }
+
+        private static void Place(RectTransform r, float x0, float x1, float padL, float padR, TextAlignmentOptions a)
+        {
+            r.anchorMin = new Vector2(x0, 0f); r.anchorMax = new Vector2(x1, 1f); r.offsetMin = new Vector2(padL, 0f); r.offsetMax = new Vector2(-padR, 0f);
+            r.GetComponent<TMP_Text>().alignment = a;
+        }
+
+        private bool _signFitted;
         private void KillToast() { if (_toastTween != null && _toastTween.IsActive()) _toastTween.Kill(); _toastTween = null; }
 
         // Boost meter and price, combo, power-up timers, gems and the event toast. Each part only touches the UI when its value changed.

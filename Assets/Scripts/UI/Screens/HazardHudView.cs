@@ -17,12 +17,34 @@ namespace RoadBuilderGame.UI
         [SerializeField] private CanvasGroup subtitleGroup;
 
         private int _subId = -1; private float _subLeft;
-        private float _vig;
+        private float _vig; private int _fitKey = -1;
 
         private void OnEnable()
         {
             GameServices.Model.HudChanged += Refresh;
             _subId = GameServices.Model.SubtitleId; _subLeft = 0f; Hide();
+        }
+
+        /// <summary>Right-aligns the tier/phase/hits labels to the meter's right edge (they used to centre on a 28 px bar and spill off screen) and keeps the meter inside the safe area.</summary>
+        private void FitMeter()
+        {
+            if (meterRoot == null || _fitKey == Screen.width * 31 + (int)Screen.safeArea.xMax) return;
+            _fitKey = Screen.width * 31 + (int)Screen.safeArea.xMax;
+            var canvas = meterRoot.GetComponentInParent<Canvas>();
+            float scale = canvas != null && canvas.scaleFactor > 0f ? canvas.scaleFactor : 1f;
+            float inset = Mathf.Max(0f, Screen.width - Screen.safeArea.xMax) / scale;
+            var ap = meterRoot.anchoredPosition; ap.x = -(24f + inset); meterRoot.anchoredPosition = ap;
+            FitLabel(tierText, 250f); FitLabel(phaseText, -250f); FitLabel(hitsText, -290f);
+        }
+
+        private static void FitLabel(TMP_Text t, float y)
+        {
+            if (t == null) return;
+            var rt = t.rectTransform;
+            rt.anchorMin = rt.anchorMax = new Vector2(1f, 0.5f); rt.pivot = new Vector2(1f, 0.5f);
+            rt.anchoredPosition = new Vector2(0f, y); rt.sizeDelta = new Vector2(220f, 44f);
+            t.alignment = TextAlignmentOptions.MidlineRight; t.overflowMode = TextOverflowModes.Ellipsis;
+            t.enableAutoSizing = true; t.fontSizeMax = 30f; t.fontSizeMin = 14f;
         }
 
         private void OnDisable() { if (GameServices.Model != null) GameServices.Model.HudChanged -= Refresh; }
@@ -49,6 +71,7 @@ namespace RoadBuilderGame.UI
             if (meterRoot != null && meterRoot.gameObject.activeSelf != boss) meterRoot.gameObject.SetActive(boss);
             if (boss)
             {
+                FitMeter();
                 if (meterFill != null) { meterFill.fillAmount = m.BossOverload01; meterFill.color = theme.GetColor(m.BossPhase >= 3 ? ColorToken.Danger : m.BossPhase == 2 ? ColorToken.Coin : ColorToken.Ink); }
                 if (tierText != null) tierText.SetText(m.BossTier);
                 if (phaseText != null) phaseText.SetText("PHASE {0}", m.BossPhase);

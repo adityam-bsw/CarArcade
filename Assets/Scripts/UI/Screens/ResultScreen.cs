@@ -27,11 +27,48 @@ namespace RoadBuilderGame.UI
 
         private void Awake()
         {
+            if (bonusText != null) { bonusText.overflowMode = TextOverflowModes.Ellipsis; bonusText.enableAutoSizing = true; bonusText.fontSizeMax = bonusText.fontSize; bonusText.fontSizeMin = 14f; }
             retryButton.onClick.AddListener(() => GameServices.Actions?.StartRace());
             menuButton.onClick.AddListener(() => GameServices.Actions?.GoHome());
             if (doubleButton != null) doubleButton.onClick.AddListener(() => GameServices.Actions?.WatchOffer(AdPlacement.DoubleCoins));
             if (reviveButton != null) reviveButton.onClick.AddListener(() => GameServices.Actions?.WatchOffer(AdPlacement.Revive));
             if (extraDailyButton != null) extraDailyButton.onClick.AddListener(() => GameServices.Actions?.WatchOffer(AdPlacement.ExtraDailyReward));
+        }
+
+        private const int MaxBonusLines = 6;
+        private static readonly System.Text.StringBuilder _sb = new System.Text.StringBuilder(256);
+        private static readonly System.Collections.Generic.List<string> _keys = new System.Collections.Generic.List<string>(16);
+        private static readonly System.Collections.Generic.List<int> _counts = new System.Collections.Generic.List<int>(16);
+        private static readonly System.Collections.Generic.List<int> _sums = new System.Collections.Generic.List<int>(16);
+
+        /// <summary>Groups "CHEST 250 m  +12" style lines by their label so a long run reads as a handful of rows ("CHEST x9  +108") that fit the panel.</summary>
+        internal static string CondenseBonuses(string raw)
+        {
+            _keys.Clear(); _counts.Clear(); _sums.Clear(); _sb.Length = 0;
+            foreach (var line in raw.Split('\n'))
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                int coins = 0; string head = line;
+                int plus = line.LastIndexOf('+');
+                if (plus >= 0) { int.TryParse(line.Substring(plus + 1).Trim(), out coins); head = line.Substring(0, plus); }
+                int cut = head.Length;
+                for (int i = 0; i < head.Length; i++) if (char.IsDigit(head[i])) { cut = i; break; }
+                string key = head.Substring(0, cut).Trim();
+                if (key.Length == 0) key = head.Trim();
+                int idx = _keys.IndexOf(key);
+                if (idx < 0) { _keys.Add(key); _counts.Add(0); _sums.Add(0); idx = _keys.Count - 1; }
+                _counts[idx]++; _sums[idx] += coins;
+            }
+            int shown = Mathf.Min(_keys.Count, MaxBonusLines);
+            for (int i = 0; i < shown; i++)
+            {
+                if (i > 0) _sb.Append('\n');
+                _sb.Append(_keys[i]);
+                if (_counts[i] > 1) _sb.Append(" x").Append(_counts[i]);
+                if (_sums[i] > 0) _sb.Append("  +").Append(_sums[i]);
+            }
+            if (_keys.Count > shown) _sb.Append("\n+").Append(_keys.Count - shown).Append(" MORE");
+            return _sb.ToString();
         }
 
         public override void OnBackPressed() { GameServices.Actions?.GoHome(); }
@@ -66,7 +103,7 @@ namespace RoadBuilderGame.UI
             reasonText.SetText(r.reason ?? string.Empty);
             totalText.SetText("TOTAL {0}", r.totalCoins);
             coinsWonText.SetText("+{0}", r.coinsWon);
-            if (bonusText != null) bonusText.SetText(string.IsNullOrEmpty(r.bonusLines) ? "NO BONUSES THIS RUN" : r.bonusLines);
+            if (bonusText != null) bonusText.SetText(string.IsNullOrEmpty(r.bonusLines) ? "NO BONUSES THIS RUN" : CondenseBonuses(r.bonusLines));
             if (gemsText != null) gemsText.SetText(r.gems > 0 ? "+{0} GEM" + (r.gems > 1 ? "S" : "") : string.Empty, r.gems);
 
             int metres = Mathf.FloorToInt(r.distance);

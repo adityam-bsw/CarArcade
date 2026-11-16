@@ -80,8 +80,8 @@ namespace RoadBuilderGame.Tests
 
         private static StageWorld2 World(StageEffectState fx, RoadCar car, out int[] damage)
         {
-            var dmg = new int[1]; damage = dmg;
-            return new StageWorld2(fx, new StageWorld2Host { Car = () => car, Road = () => null, Cam = () => null, Damage = r => dmg[0]++, CanDamage = () => true, DrainInk01 = f => { }, AddCoins = n => { }, ComboPenalty = n => { }, Cue = id => { } });
+            var dmg = new int[1]; damage = dmg; var view = new CarStageAdapter { Target = car };
+            return new StageWorld2(fx, new StageWorld2Host { Car = () => car != null ? view : null, Road = () => null, Cam = () => null, Damage = r => dmg[0]++, CanDamage = () => true, DrainInk01 = f => { }, AddCoins = n => { }, ComboPenalty = n => { }, Cue = id => { } });
         }
 
         [Test]

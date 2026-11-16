@@ -66,6 +66,8 @@ namespace RoadBuilderGame
         // Mutation events (gap list A1): folded effect values, the two ladders, the keep-going switch and the adaptive eased stages of this run.
         private readonly StageEffectState _fx = new StageEffectState();
         private StageWorld2 _w2;                                   // batch A2 world objects (props, overlay, mirrored cursor, hop tap, beat clock)
+        private readonly CarStageAdapter _carView = new CarStageAdapter();
+        private readonly RoadStageAdapter _roadView = new RoadStageAdapter();
         private float _bounceAdd;                                  // bounce this file added to the road material for Elastic Road (removed again when the event ends)
         private StageLadderDefinition _sliceLadder, _endlessLadder;
         private bool _sliceCleared;
@@ -419,6 +421,8 @@ namespace RoadBuilderGame
                     break;
 
                 case ScreenState.GameOver:
+                    if (_car != null) _car.Freeze();
+                    if (SoundManager.Instance) SoundManager.Instance.SetEngineRunning(false, 0f);
                     _audio?.GameOver(Model.LastRun.newBest);
                     SyncModel();
                     break;
@@ -1151,40 +1155,51 @@ namespace RoadBuilderGame
         /// A catalogue pick. Vehicles: buy when locked (coins), then drive it. Surfaces: the next road is drawn with it and
         /// uses its grip. Worlds: remembered only (the background remixer does not read it yet). Unplayable items are refused.
         /// </summary>
+        private string Req(CatalogEntry e, string need) { return e.displayName + " is locked" + (string.IsNullOrEmpty(need) ? "." : ": " + need); }
+
+        /// <summary>A refused pick: crash sound, a themed requirement line in the model (screens show it) and a HUD-style toast. The previous selection is untouched and stays valid.</summary>
+        private void DenySelect(string text)
+        {
+            if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
+            var m = Model; m.Notice = text ?? ""; m.NoticeId++; m.Toast = m.Notice; m.ToastId++;
+            SyncModel();
+        }
+
         public void SelectCatalogItem(CatalogKind kind, string id)
         {
             id = id ?? "";
             var entry = AssetCatalog.Load()?.Find(id);
+            if (entry == null && kind != CatalogKind.Vehicle) { DenySelect("Not available yet."); return; }   // never select an id the catalogue cannot draw (the road would fall back to another art)
             if (entry != null && !entry.playable)
             {
-                if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
+                DenySelect(string.IsNullOrEmpty(entry.playNote) ? entry.displayName + " is not playable yet." : entry.displayName + ": " + entry.playNote);
                 return;
             }
 
             if (kind == CatalogKind.World && entry != null && GateText.WorldLocked(_profile, _worldGates, id))
             {
                 _profile.coins = totalCoins;
-                if (!GateService.TryUnlockWorld(_profile, _worldGates, id)) { if (SoundManager.Instance) SoundManager.Instance.PlayCrash(); return; }
+                if (!GateService.TryUnlockWorld(_profile, _worldGates, id)) { DenySelect(Req(entry, GateText.World(_profile, _worldGates, id))); return; }
                 totalCoins = _profile.coins;
             }
             if (kind == CatalogKind.Surface && entry != null && GateText.SurfaceLocked(_profile, _surfaceGates, id))
             {
                 _profile.coins = totalCoins;
-                if (!GateService.TryUnlockSurface(_profile, _surfaceGates, id)) { if (SoundManager.Instance) SoundManager.Instance.PlayCrash(); return; }
+                if (!GateService.TryUnlockSurface(_profile, _surfaceGates, id)) { DenySelect(Req(entry, GateText.Surface(_profile, _surfaceGates, id))); return; }
                 totalCoins = _profile.coins;
             }
             if (kind == CatalogKind.Vehicle)
             {
                 if (entry != null && !_unlockedVehicleIds.Contains(id) && GateText.Vehicle(_profile, _vehicleGates, id).Length > 0)
                 {
-                    if (SoundManager.Instance) SoundManager.Instance.PlayCrash();      // distance gate not reached yet (the card says how far)
+                    DenySelect(Req(entry, GateText.Vehicle(_profile, _vehicleGates, id)));      // distance gate not reached yet
                     return;
                 }
                 if (entry != null && entry.cost > 0 && !_unlockedVehicleIds.Contains(id))
                 {
                     if (totalCoins < entry.cost)
                     {
-                        if (SoundManager.Instance) SoundManager.Instance.PlayCrash();
+                        DenySelect(entry.displayName + " costs " + entry.cost + " coins.");
                         return;
                     }
                     totalCoins -= entry.cost;
@@ -1353,7 +1368,7 @@ namespace RoadBuilderGame
             };
             _w2 = new StageWorld2(_fx, new StageWorld2Host
             {
-                Car = () => _car, Road = () => _road, Cam = () => _cam,
+                Car = () => { _carView.Target = _car; return _car != null ? _carView : null; }, Road = () => { _roadView.Target = _road; return _road != null ? _roadView : null; }, Cam = () => _cam,
                 Damage = r => HandleLifeLoss(r),
                 CanDamage = () => _state == ScreenState.Playing && _hitGraceLeft <= 0f && (_stage == null || !_stage.HazardGraceActive) && (_car == null || !_car.IsInvincible),
                 DrainInk01 = f => { currentInk = Mathf.Max(0f, currentInk - maxInk * f); UpdateInkUI(); },
@@ -1802,6 +1817,7 @@ namespace RoadBuilderGame
         /// <summary>Teleports the car to the end of the slice (QA) so the finish gate logic runs in the real tick.</summary>
         public void DebugJumpToGate() { DebugJumpToStage(FinishGateM() - 12f); }
         public bool DebugStageOn => _stageOn;
+        public int DebugExtraCounter(ExtraGate g) { return _profile.Counter(GateService.ExtraCounterId(g)); }
         public float DebugDistance => _distance;
         /// <summary>Flat runway laid ahead of a QA jump (metres): long enough to ride through a whole zone without drawing.</summary>
         public const float QaRunwayAheadM = 170f;

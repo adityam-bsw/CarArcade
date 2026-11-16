@@ -30,6 +30,12 @@ namespace RoadBuilderGame.UI
 
         private void Awake()
         {
+            // The scrap counter used to sit under the last tab (SCRAP) at the right edge: move it beside the gem pill, in the free space left of it.
+            if (scrapText != null)
+            {
+                var rt = scrapText.rectTransform; rt.anchoredPosition = new Vector2(-(36f + 220f + 16f), -168f);
+                scrapText.alignment = TextAlignmentOptions.MidlineRight; scrapText.textWrappingMode = TextWrappingModes.NoWrap;
+            }
             backButton.onClick.AddListener(() => Stack?.Pop());
             prevButton.onClick.AddListener(() => Turn(-1));
             nextButton.onClick.AddListener(() => Turn(1));

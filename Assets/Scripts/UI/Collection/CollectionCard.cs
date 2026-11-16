@@ -21,6 +21,8 @@ namespace RoadBuilderGame.UI
         [Tooltip("World postcards: the corner stamp is drawn again over the picture, clipped to the stamp, so the stamp sits on the photo.")]
         [SerializeField] private RectTransform stampClip;
         [SerializeField] private Image stampImage;
+        [Tooltip("Sits on the blank postage stamp: a green tick for an unlocked world, so the corner never reads as an empty badge.")]
+        [SerializeField] private Image stampIcon;
         [SerializeField] private TMP_Text nameText;
         [SerializeField] private TMP_Text badgeText;
         [SerializeField] private Image frame;
@@ -151,6 +153,29 @@ namespace RoadBuilderGame.UI
                 .OnKill(() => { if (visual != null) visual.anchoredPosition = new Vector2(0f, _selected ? Lift : 0f); });
         }
 
+        private static Sprite _tick;
+        /// <summary>A white check mark drawn once in code (no asset); the card tints it with a theme token.</summary>
+        private static Sprite TickSprite()
+        {
+            if (_tick != null) return _tick;
+            const int n = 32; var t = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[n * n];
+            for (int y = 0; y < n; y++) for (int x = 0; x < n; x++)
+            {
+                float d1 = SegDist(x, y, 6f, 16f, 13f, 9f), d2 = SegDist(x, y, 13f, 9f, 26f, 24f);
+                float a = Mathf.Clamp01(3.2f - Mathf.Min(d1, d2));
+                px[y * n + x] = new Color32(255, 255, 255, (byte)(255 * a));
+            }
+            t.SetPixels32(px); t.Apply(false, true);
+            return _tick = Sprite.Create(t, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), n);
+        }
+
+        private static float SegDist(float px, float py, float ax, float ay, float bx, float by)
+        {
+            float dx = bx - ax, dy = by - ay, t = Mathf.Clamp01(((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy));
+            float cx = ax + t * dx - px, cy = ay + t * dy - py; return Mathf.Sqrt(cx * cx + cy * cy);
+        }
+
         /// <summary>Badge, padlock tag and dimming from the entry's state.</summary>
         public void Refresh()
         {
@@ -163,6 +188,12 @@ namespace RoadBuilderGame.UI
             string gate = GameServices.Model.LockLine(entry.id);
             bool locked = (entry.kind == CatalogKind.Vehicle && usable && !GameServices.Model.IsVehicleUnlocked(entry)) || ((entry.kind == CatalogKind.World || entry.kind == CatalogKind.Surface) && gate.Length > 0);
             lockTag.gameObject.SetActive(locked);
+            if (stampIcon != null)
+            {
+                bool tick = entry.kind == CatalogKind.World && usable && !locked;
+                stampIcon.enabled = tick;
+                if (tick) { stampIcon.sprite = TickSprite(); stampIcon.color = theme.GetColor(ColorToken.Success); }
+            }
             if (locked)
             {
                 var sp = theme.GetSprite(SpriteSlot.LockTag);

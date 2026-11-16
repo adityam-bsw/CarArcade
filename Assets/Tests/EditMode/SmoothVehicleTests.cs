@@ -102,12 +102,20 @@ namespace RoadBuilderGame.Tests
             foreach (var e in Catalog().entries)
             {
                 if (e.kind != CatalogKind.Vehicle || !e.HasSmooth) continue;
-                float expect = Mathf.Clamp(e.preview.rect.width / 14f, 1.5f, 3f);
+                float expect = e.id == "vehicle-bicycle" ? 1.85f : Mathf.Clamp(e.preview.rect.width / 14f, 1.5f, 3f);   // QA4 B10: the bicycle is a deliberate override
                 Assert.AreEqual(expect, e.widthUnits, 1e-4f, e.id);
                 Assert.AreEqual(e.widthUnits, e.MakeRig(ArtStyle.Smooth).width, 0f, e.id);
                 Assert.AreEqual(e.smoothBody.rect.width, e.preview.rect.width * e.smoothScale, 1e-3f, e.id + " canvas = old x S");
                 Assert.AreEqual(e.smoothBody.rect.height, e.preview.rect.height * e.smoothScale, 1e-3f, e.id);
             }
+        }
+
+        [Test]
+        public void Bicycle_WheelRadius_IsSmallerThanMotorcycle_AndMonsterTruck()
+        {
+            float R(string id) { var e = Catalog().Find(id); var rig = e.MakeRig(ArtStyle.Smooth); float maxR = 0f; foreach (var w in rig.wheels) maxR = Mathf.Max(maxR, w.r / rig.body.rect.width * rig.width); return maxR; }
+            Assert.Less(R("vehicle-bicycle"), R("vehicle-motorcycle"));
+            Assert.Less(R("vehicle-bicycle"), R("vehicle-monster-truck"));
         }
 
         [Test]

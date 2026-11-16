@@ -71,9 +71,15 @@ namespace RoadBuilderGame.UI
             if (e.playable)
             {
                 ShowTraits(e);
+                int noticeBefore = GameServices.Model.NoticeId;
                 GameServices.Actions?.SelectCatalogItem(_tab, e.id);
                 string gate = GameServices.Model.LockLine(e.id);
-                if (gate.Length > 0)
+                if (GameServices.Model.NoticeId != noticeBefore)
+                {
+                    SetHint(GameServices.Model.Notice, ColorToken.Danger);      // the manager refused the pick and says what is needed
+                    rail.ShakeLocked(e.id);
+                }
+                else if (gate.Length > 0)
                 {
                     SetHint(e.displayName + " is locked: " + gate, ColorToken.Danger);
                     rail.ShakeLocked(e.id);
