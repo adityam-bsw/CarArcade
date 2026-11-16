@@ -59,6 +59,26 @@ namespace RoadBuilderGame
             if (_built) Skin();
         }
 
+        private static Sprite _orb;
+        /// <summary>Glossy orb (shaded rim, soft highlight, antialiased edge) for world projectiles with no own art; the projectile tint multiplies it. Built once.</summary>
+        private static Sprite Orb()
+        {
+            if (_orb != null) return _orb;
+            const int n = 96; var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp, name = "OrbSoft" };
+            var px = new Color32[n * n]; float r = n * 0.5f - 1.5f;
+            for (int y = 0; y < n; y++) for (int x = 0; x < n; x++)
+            {
+                float dx = (x - (n - 1) * 0.5f) / r, dy = (y - (n - 1) * 0.5f) / r, d = Mathf.Sqrt(dx * dx + dy * dy);
+                float a = Mathf.Clamp01((1f - d) * r * 0.5f + 0.5f);
+                float shade = Mathf.Lerp(1f, 0.62f, Mathf.Pow(Mathf.Clamp01(d), 2.2f));                       // darker toward the rim
+                float hx = dx + 0.35f, hy = dy - 0.38f; float hi = Mathf.Clamp01(1f - Mathf.Sqrt(hx * hx + hy * hy) * 2.6f);   // soft highlight, upper left
+                float c = Mathf.Clamp01(shade + hi * 0.45f);
+                px[y * n + x] = new Color32((byte)(c * 255f), (byte)(c * 255f), (byte)(c * 255f), (byte)(a * 255f));
+            }
+            tex.SetPixels32(px); tex.Apply(false, true);
+            return _orb = Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), n);                 // 1 unit across, like SpriteFactory.Circle
+        }
+
         private void Skin()
         {
             var art = HazardArtSet.Load(); _family = _d != null ? RoB0Data.FamilyForWorldProjectile(_d.id) : 0;
@@ -67,7 +87,7 @@ namespace RoadBuilderGame
             for (int i = 0; i < PoolSize; i++)
             {
                 var p = _pool[i];
-                p.BodySr.sprite = rob != null ? rob : _d != null && _d.sprite != null ? _d.sprite : SpriteFactory.Circle; p.BodySr.color = rob != null || (_d != null && _d.sprite != null) ? Color.white : (_d != null ? _d.tint : Color.white);
+                p.BodySr.sprite = rob != null ? rob : _d != null && _d.sprite != null ? _d.sprite : Orb(); p.BodySr.color = rob != null || (_d != null && _d.sprite != null) ? Color.white : (_d != null ? _d.tint : Color.white);
                 p.TellSr.sprite = _d != null && _d.tellSprite != null ? _d.tellSprite : (_d != null && _d.telegraph == TelegraphShape.Line ? SpriteFactory.Box(Color.white) : SpriteFactory.Circle);
             }
         }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace RoadBuilderGame.UI.Editor
 {
-    /// <summary>Writes the Resources/UI/HazardHud prefab (boss counter meter on the right edge, vignette, announcer subtitle). Colours here are placeholders; HazardHudView sets every colour from UITheme tokens at runtime.</summary>
+    /// <summary>Writes the Resources/UI/HazardHud prefab (compact boss counter plate top-right, vignette, announcer subtitle). Colours here are placeholders; HazardHudView sets every colour from UITheme tokens at runtime.</summary>
     public static class HazardHudBuilder
     {
         [MenuItem("Road Builder/UI/Build Hazard HUD Prefab")]
@@ -16,23 +16,21 @@ namespace RoadBuilderGame.UI.Editor
             var vig = Child(root, "Vignette", typeof(Image)); Stretch(vig.GetComponent<RectTransform>());
             var vi = vig.GetComponent<Image>(); vi.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Smooth/Hazards/vignette.png"); vi.raycastTarget = false; vi.color = Color.clear;
 
-            // Themed panel on the right edge: plate, tier name, framed vertical meter, phase and hits. Everything is a UITheme slot or token; the view only sets the fill colour and the safe-area inset.
+            // Compact themed plate in the top-right below the gems pill (about 12 percent of the screen height, never over the road band): tier name, a short horizontal meter, phase and hits on one line.
             var meter = Child(root, "BossMeter", typeof(Image), typeof(ThemedImage)); var mr = meter.GetComponent<RectTransform>();
-            mr.anchorMin = new Vector2(1f, 0.5f); mr.anchorMax = new Vector2(1f, 0.5f); mr.pivot = new Vector2(1f, 0.5f); mr.anchoredPosition = new Vector2(-32f, 0f); mr.sizeDelta = new Vector2(232f, 560f);
+            mr.anchorMin = new Vector2(1f, 1f); mr.anchorMax = new Vector2(1f, 1f); mr.pivot = new Vector2(1f, 1f); mr.anchoredPosition = new Vector2(-32f, -250f); mr.sizeDelta = new Vector2(440f, 150f);
             ThemeImg(meter, SpriteSlot.PanelBoard, ColorToken.Tint, false, 1f); meter.GetComponent<Image>().raycastTarget = false;
-            var tier = Label(meter, "Tier", 30, ColorToken.Accent, 18f, 36f, 164f, 44f);   // narrower than the plate's inner width so a long tier name auto-sizes down instead of crossing the rim
-            var icon = Child(meter, "RoboIcon", typeof(Image)); var ir = icon.GetComponent<RectTransform>();
-            ir.anchorMin = ir.anchorMax = new Vector2(0.5f, 1f); ir.pivot = new Vector2(0.5f, 0.5f); ir.anchoredPosition = new Vector2(0f, 24f); ir.sizeDelta = new Vector2(150f, 150f);
-            var ii = icon.GetComponent<Image>(); ii.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Smooth/Hazards/RoB0/rob0_body_idle.png"); ii.preserveAspect = true; ii.raycastTarget = false;
+            var tier = Label(meter, "Tier", 30, ColorToken.Accent, 0f, 0f, 340f, 38f); TopAnchor(tier, 18f);
             var frame = Child(meter, "BarFrame", typeof(Image), typeof(ThemedImage)); var fr = frame.GetComponent<RectTransform>();
-            fr.anchorMin = fr.anchorMax = new Vector2(0.5f, 0.5f); fr.pivot = new Vector2(0.5f, 0.5f); fr.anchoredPosition = new Vector2(0f, 10f); fr.sizeDelta = new Vector2(52f, 280f);
+            fr.anchorMin = fr.anchorMax = new Vector2(0.5f, 1f); fr.pivot = new Vector2(0.5f, 1f); fr.anchoredPosition = new Vector2(0f, -62f); fr.sizeDelta = new Vector2(340f, 32f);
             ThemeImg(frame, SpriteSlot.BarBackground, ColorToken.Ink, true, 0.9f); frame.GetComponent<Image>().raycastTarget = false;
             var fill = Child(frame, "Fill", typeof(Image), typeof(ThemedImage)); Stretch(fill.GetComponent<RectTransform>(), 6f);
             ThemeImg(fill, SpriteSlot.BarFill, ColorToken.Ink, true, 1f);
-            var fi = fill.GetComponent<Image>(); fi.raycastTarget = false; fi.type = Image.Type.Filled; fi.fillMethod = Image.FillMethod.Vertical; fi.fillOrigin = 0; fi.fillAmount = 0f;
-            var phase = Label(meter, "Phase", 30, ColorToken.TextPrimary, 0f, 0f, 196f, 40f);
-            var hits = Label(meter, "Hits", 30, ColorToken.TextPrimary, 0f, 0f, 196f, 40f);
-            Bottom(phase, 112f); Bottom(hits, 70f); TopAnchor(tier, 46f);   // clear of the plate rim and its corner bolts
+            var fi = fill.GetComponent<Image>(); fi.raycastTarget = false; fi.type = Image.Type.Filled; fi.fillMethod = Image.FillMethod.Horizontal; fi.fillOrigin = 0; fi.fillAmount = 0f;
+            var phase = Label(meter, "Phase", 26, ColorToken.TextPrimary, 0f, 0f, 170f, 34f);
+            var hits = Label(meter, "Hits", 26, ColorToken.TextPrimary, 0f, 0f, 170f, 34f);
+            var pr = phase.rectTransform; pr.anchorMin = pr.anchorMax = new Vector2(0.28f, 0f); pr.pivot = new Vector2(0.5f, 0f); pr.anchoredPosition = new Vector2(0f, 16f);
+            var hr = hits.rectTransform; hr.anchorMin = hr.anchorMax = new Vector2(0.72f, 0f); hr.pivot = new Vector2(0.5f, 0f); hr.anchoredPosition = new Vector2(0f, 16f);
 
             var sub = Child(root, "Subtitle", typeof(CanvasGroup), typeof(Image), typeof(ThemedImage)); var sr = sub.GetComponent<RectTransform>();
             sr.anchorMin = new Vector2(0.5f, 0f); sr.anchorMax = new Vector2(0.5f, 0f); sr.pivot = new Vector2(0.5f, 0f); sr.anchoredPosition = new Vector2(0f, 190f); sr.sizeDelta = new Vector2(760f, 64f);
@@ -41,7 +39,7 @@ namespace RoadBuilderGame.UI.Editor
             sub.GetComponent<CanvasGroup>().alpha = 0f; sub.GetComponent<CanvasGroup>().blocksRaycasts = false;
 
             var so = new SerializedObject(root.GetComponent<HazardHudView>());
-            so.FindProperty("vignette").objectReferenceValue = vi; so.FindProperty("meterRoot").objectReferenceValue = mr; so.FindProperty("meterFill").objectReferenceValue = fi; so.FindProperty("robotIcon").objectReferenceValue = ii;
+            so.FindProperty("vignette").objectReferenceValue = vi; so.FindProperty("meterRoot").objectReferenceValue = mr; so.FindProperty("meterFill").objectReferenceValue = fi; 
             so.FindProperty("tierText").objectReferenceValue = tier; so.FindProperty("phaseText").objectReferenceValue = phase; so.FindProperty("hitsText").objectReferenceValue = hits;
             so.FindProperty("subtitleText").objectReferenceValue = st; so.FindProperty("subtitleGroup").objectReferenceValue = sub.GetComponent<CanvasGroup>();
             so.ApplyModifiedPropertiesWithoutUndo();

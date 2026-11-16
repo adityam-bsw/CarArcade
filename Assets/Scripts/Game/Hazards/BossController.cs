@@ -112,7 +112,7 @@ namespace RoadBuilderGame
             _tier = BossTierSO.ForDistance(_tiers, distanceM);
             _model.Reset(_seed); _model.ApplyTier(_tier);
             _world.Configure(WorldProjectiles.ForWorld(worldId)); _world.Begin();
-            _vel = Vector2.zero; _gone = false; _pos = AnchorWorld(carPos, false);
+            _vel = Vector2.zero; _gone = false; _offInit = false; _pos = AnchorWorld(carPos, false);
             _boss.gameObject.SetActive(true); _boss.position = new Vector3(_pos.x, _pos.y, 0f); _rig.Enter();
             _model.Begin();
         }
@@ -196,7 +196,7 @@ namespace RoadBuilderGame
 
         private int AliveCount() { int n = 0; for (int i = 0; i < _pool.Length; i++) if (_pool[i].Active && !_pool[i].Warning && !_pool[i].Dud) n++; return n; }
 
-        private Camera _hudCam;
+        private Camera _hudCam; private Vector2 _off, _lastCam; private bool _offInit, _camInit;
 
         /// <summary>Top-right hover point in camera viewport space (the enemy attacks from the front, facing left), clamped under the HUD band and left of the boss HUD panel. Leaving shifts it off the right edge.</summary>
         private Vector2 AnchorWorld(Vector2 car, bool leaving)
@@ -209,7 +209,7 @@ namespace RoadBuilderGame
             if (vx > maxVx) vx = maxVx;
             if (leaving) { vx += RoB0Data.RetreatViewportDx; vy += RoB0Data.RetreatViewportDy; }
             float x = c.x + (vx - 0.5f) * 2f * hw, y = c.y + (vy - 0.5f) * 2f * sz;
-            if (!leaving) y = Mathf.Max(y, car.y + _d.minAboveRoof + 1f);
+            if (!leaving) y = Mathf.Min(Mathf.Max(y, car.y + _d.minAboveRoof + 1f), c.y + 0.44f * sz);   // clear of a jumping car, never above 0.72 of the view
             return new Vector2(x, y);
         }
 
@@ -225,14 +225,21 @@ namespace RoadBuilderGame
             float ax = anchor.x, ay = anchor.y;
             float tx = ax + _d.hoverAx * RoB0Data.AnchorWanderScale * _charge * Mathf.Sin(6.2832f * _d.hoverFx * _clock + _phx);
             float ty = ay + _d.hoverAy * RoB0Data.AnchorWanderScale * _charge * Mathf.Sin(6.2832f * _d.hoverFy * _clock + _phy);
-            _pos.x = Mathf.SmoothDamp(_pos.x, tx, ref _vel.x, _d.followSmoothTime);
-            _pos.y = Mathf.SmoothDamp(_pos.y, ty, ref _vel.y, _d.followSmoothTime);
-            if (_model.State == BossState.Defeat) _pos.y -= 1.5f * dt;                                      // the defeated robot sinks
+            // Smooth in camera space: the camera moves with the car, so smoothing the world position would lag one smooth-time of travel behind the anchor.
+            if (_hudCam == null) _hudCam = Camera.main;
+            Vector2 cp = _hudCam != null ? (Vector2)_hudCam.transform.position : Vector2.zero;
+            Vector2 camStep = _camInit ? cp - _lastCam : Vector2.zero; _lastCam = cp; _camInit = true;
+            cp += camStep; tx += camStep.x; ty += camStep.y;                                                                          // the camera follows in LateUpdate, after this tick: aim at where it will be drawn
+            if (!_offInit) { _off = _pos - cp; _offInit = true; }
+            _off.x = Mathf.SmoothDamp(_off.x, tx - cp.x, ref _vel.x, _d.followSmoothTime);
+            _off.y = Mathf.SmoothDamp(_off.y, ty - cp.y, ref _vel.y, _d.followSmoothTime);
+            _pos = cp + _off;
+            if (_model.State == BossState.Defeat) { _pos.y -= 1.5f * dt; _off.y -= 1.5f * dt; }                                      // the defeated robot sinks
             // Keep the robot in clear sky below the HUD band (the overlay canvas draws over the world): its top, antenna included, stays under the top 16 percent of the view.
             if (!_gone && _model.State != BossState.Retreat)
             {
                 if (_hudCam == null) _hudCam = Camera.main;
-                if (_hudCam != null) { float sz = _hudCam.orthographicSize; float maxY = _hudCam.transform.position.y + sz * 0.68f - RoB0Data.TopClearance; if (_pos.y > maxY) { _pos.y = maxY; _vel.y = Mathf.Min(_vel.y, 0f); } }
+                if (_hudCam != null) { float sz = _hudCam.orthographicSize; float maxY = _hudCam.transform.position.y + sz * 0.68f - RoB0Data.TopClearance; if (_pos.y > maxY) { _off.y -= _pos.y - maxY; _pos.y = maxY; _vel.y = Mathf.Min(_vel.y, 0f); } }
             }
             _boss.position = new Vector3(_pos.x, _pos.y, 0f);
             _rig.Tick(dt, _vel, _pos.x, car.x, telling, _model.Meter01, _model.Phase);

@@ -51,7 +51,7 @@ namespace RoadBuilderGame
         public void Configure(EaterVariantSO v)
         {
             if (_variant == v) return;
-            DestroyModules(); _variant = v; _vTint = VariantTint(v);
+            DestroyModules(); _variant = v; _vTint = VariantTint(v); if (_maw != null) ApplyHue(_art != null && _art.eaterHeads != null && _art.eaterHeads.Length > 0);
             if (v != null) { _sig = EaterSignatures.Create(v.signature); _counter = EaterCounterplays.Create(v.defeat); }
         }
 
@@ -158,10 +158,11 @@ namespace RoadBuilderGame
         // ------------------------------------------------------------------ view (imported dragon art, sprites built once, nothing allocated per frame)
         // The art faces left; the car is to the right, so every renderer is flipped. Orders sit behind the car (5) and above the road/background.
         private const int FlameOrder = 0, SegOrder = 3, HeadOrder = 4, SegCount = 5;
-        private const float HeadX = -1.2f, HeadY = 0.3f, SegFirstX = -3.6f, SegSpacing = 0.5f, SegY = -0.3f, SegScale = 0.78f, SegTaper = 0.1f, SegSegDark = 0.28f, HeadHalfW = 2.9f, EdgeButtonFrac = 0.07f, WaveAmp = 0.22f, WaveSpeed = 3.2f, WavePhase = 0.9f;
+        private const float HeadX = -1.2f, HeadY = 0.3f, SegFirstX = -3.6f, SegSpacing = 0.5f, SegY = -0.3f, SegScale = 0.78f, SegTaper = 0.1f, SegSegDark = 0.28f, HeadHalfW = 2.9f, EdgeButtonFrac = 0.12f, WaveAmp = 0.22f, WaveSpeed = 3.2f, WavePhase = 0.9f;
         private const float FlameX = -4.2f, FlameY = 0.9f, FlameFps = 12f, ChompSlowFps = 5f, ChompFastFps = 13f, SnapFps = 16f;
         private readonly SpriteRenderer[] _seg = new SpriteRenderer[SegCount]; private readonly float[] _segX = new float[SegCount];
-        private SpriteRenderer _flame; private HazardArtSet _art; private Color _vTint = Color.white;
+        private SpriteRenderer _flame; private HazardArtSet _art; private Color _vTint = Color.white; private Material _hueMat;
+        private const float ArtHueDeg = 14f, SatFollow = 0.8f, ValFollow = 0.75f;
         private float _animT, _flameT;
 
         private void EnsureView()
@@ -171,6 +172,7 @@ namespace RoadBuilderGame
             _art = HazardArtSet.Load();
             bool art = _art != null && _art.eaterHeads != null && _art.eaterHeads.Length > 0;
             _body = SpriteFactory.CreateSprite("Head", _maw, art ? _art.eaterHeads[0] : SpriteFactory.Circle, Color.white, HeadOrder);
+            _defaultMat = _body.sharedMaterial;
             _body.flipX = true; _body.transform.localPosition = new Vector3(HeadX, HeadY, 0f);
             if (!art) _body.transform.localScale = new Vector3(3.6f, 3.2f, 1f);                      // missing art set: plain blob so the chase is still readable
             bool seg = art && _art.eaterBodySegment != null;
@@ -182,10 +184,31 @@ namespace RoadBuilderGame
                 _segX[i] = i == 0 ? SegFirstX : _segX[i - 1] - SegSpacing * 3.1f * (k + (SegScale - SegTaper * (i - 1))) * 0.5f;
                 _seg[i].transform.localPosition = new Vector3(_segX[i], SegY, 0f);
             }
+            ApplyHue(art);
             bool fl = art && _art.eaterFlames != null && _art.eaterFlames.Length > 0;
             _flame = SpriteFactory.CreateSprite("Flame", _maw, fl ? _art.eaterFlames[0] : null, Color.white, FlameOrder);
             _flame.flipX = true; _flame.enabled = false; _flame.transform.localPosition = new Vector3(FlameX, FlameY, 0f);
         }
+
+        /// <summary>Variant colour as a hue rotation (art hue to the variant's hue) with saturation and brightness following the tint only part of the way, so the painted detail stays. No shader = a gentle white-to-tint multiply.</summary>
+        private void ApplyHue(bool art)
+        {
+            if (!art) return;
+            bool shader = _art.hueShader != null;
+            if (shader && _hueMat == null) _hueMat = new Material(_art.hueShader) { name = "EaterHue" };
+            Material m = shader && _variant != null ? _hueMat : null;
+            if (m != null)
+            {
+                Color.RGBToHSV(_variant.tint, out float h, out float sat, out float v);
+                float d = Mathf.DeltaAngle(ArtHueDeg, h * 360f);
+                m.SetFloat("_Hue", d); m.SetFloat("_Sat", Mathf.Lerp(1f, Mathf.Max(0.35f, sat), SatFollow)); m.SetFloat("_Val", Mathf.Lerp(1f, Mathf.Max(0.5f, v), ValFollow));
+                _vTint = Color.white;
+            }
+            if (_body != null) _body.sharedMaterial = m != null ? m : _defaultMat;
+            for (int i = 0; i < SegCount; i++) if (_seg[i] != null) _seg[i].sharedMaterial = m != null ? m : _defaultMat;
+        }
+
+        private Material _defaultMat;
 
         private void SetVisible(bool on) { if (on) EnsureView(); if (_maw != null) _maw.gameObject.SetActive(on); }
 
@@ -230,12 +253,12 @@ namespace RoadBuilderGame
                 if (fl) { _flameT += dt * FlameFps; _flame.sprite = _art.eaterFlames[(int)_flameT % _art.eaterFlames.Length]; _flame.color = new Color(1f, 0.7f, 0.2f, 0.9f); }
             }
             bool gone = _model.State == EaterState.Escape || _model.State == EaterState.Retreat;
-            Color s = gone ? new Color(0.7f, 0.7f, 0.75f) : _model.Band == EaterBand.Snap ? new Color(1f, 0.5f, 0.5f) : _model.Band == EaterBand.Danger ? new Color(1f, 0.75f, 0.8f) : Color.white;
+            Color s = gone ? new Color(0.7f, 0.7f, 0.75f) : _model.Band == EaterBand.Snap ? new Color(1f, 0.82f, 0.8f) : _model.Band == EaterBand.Danger ? new Color(1f, 0.92f, 0.9f) : Color.white;
             Color c2 = dragon ? new Color(_vTint.r * s.r, _vTint.g * s.g, _vTint.b * s.b, 1f) : (_variant != null ? _variant.tint : new Color(0.22f, 0.1f, 0.28f));
             _body.color = c2;
             for (int i = 0; i < SegCount; i++) if (_seg[i] != null) { float d = 1f - SegSegDark * (i + 1) / SegCount; _seg[i].color = new Color(c2.r * d, c2.g * d, c2.b * d, 1f); }
         }
 
-        public void Destroy() { DestroyModules(); if (_maw != null) UnityEngine.Object.Destroy(_maw.gameObject); _maw = null; }
+        public void Destroy() { if (_hueMat != null) UnityEngine.Object.Destroy(_hueMat); DestroyModules(); if (_maw != null) UnityEngine.Object.Destroy(_maw.gameObject); _maw = null; }
     }
 }

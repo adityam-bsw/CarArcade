@@ -16,6 +16,7 @@ namespace RoadBuilderGame
         [Header("Road-Eater (imported dragon, Assets/Art/Smooth/Hazards/RoadEater, 40 ppu, faces left)")]
         [Tooltip("Five whole-head chomp frames.")] public Sprite[] eaterHeads = new Sprite[0];
         [Tooltip("Trailing body segment.")] public Sprite eaterBodySegment;
+        [Tooltip("RoadBuilder/SpriteHueShift: per-variant hue shift of the dragon art. Referenced here so it is never stripped.")] public Shader hueShader;
         [Tooltip("Four flame frames (white with yellow outline, tinted in code).")] public Sprite[] eaterFlames = new Sprite[0];
 
         private static HazardArtSet _cached; private static bool _tried;

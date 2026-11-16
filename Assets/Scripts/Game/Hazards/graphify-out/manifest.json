@@ -1,0 +1,152 @@
+{
+  "Announcer.cs": {
+    "mtime": 1794779635.471798,
+    "seen": 1794855906.994294,
+    "ast_hash": "39c9d09c7e2383633ca0305a798d19cd",
+    "semantic_hash": ""
+  },
+  "AttackPatternSO.cs": {
+    "mtime": 1794773232.8751388,
+    "seen": 1794855906.994299,
+    "ast_hash": "e6bf09c164f51f3af350c23a6930ffda",
+    "semantic_hash": ""
+  },
+  "BossController.cs": {
+    "mtime": 1794855728.082912,
+    "seen": 1794855906.9943008,
+    "ast_hash": "4035444a54f9ab17f382548e3f64d42b",
+    "semantic_hash": ""
+  },
+  "BossDefinitionSO.cs": {
+    "mtime": 1794773600.7196398,
+    "seen": 1794855906.994303,
+    "ast_hash": "31796f7222cf559c914587f8c994a371",
+    "semantic_hash": ""
+  },
+  "BossModel.cs": {
+    "mtime": 1794796368.1871562,
+    "seen": 1794855906.994304,
+    "ast_hash": "345ee4e2e43fd6deb40fa00d58880282",
+    "semantic_hash": ""
+  },
+  "BossTierSO.cs": {
+    "mtime": 1794779302.3168323,
+    "seen": 1794855906.9943051,
+    "ast_hash": "fc16aa4fb7b3ba4f81b227f105cd1136",
+    "semantic_hash": ""
+  },
+  "EaterCounterplay.cs": {
+    "mtime": 1794779834.0197592,
+    "seen": 1794855906.994306,
+    "ast_hash": "a8925c73f6a15b654873853103c4310c",
+    "semantic_hash": ""
+  },
+  "EaterSignatures.cs": {
+    "mtime": 1794779544.8817816,
+    "seen": 1794855906.994308,
+    "ast_hash": "4df91e4f958e4d9e2159a2a389ef729b",
+    "semantic_hash": ""
+  },
+  "EaterVariantSO.cs": {
+    "mtime": 1794849933.0146322,
+    "seen": 1794855906.9943092,
+    "ast_hash": "d20cbd7847b6b6540bd8ff800d4ab0ad",
+    "semantic_hash": ""
+  },
+  "HazardArtSet.cs": {
+    "mtime": 1794855230.5979424,
+    "seen": 1794855906.99431,
+    "ast_hash": "7f32db0ee0a9c8a1a5bda726303bff61",
+    "semantic_hash": ""
+  },
+  "HazardFeel.cs": {
+    "mtime": 1794779635.4787292,
+    "seen": 1794855906.9943109,
+    "ast_hash": "bc04eb780ec503f9027424ea95426a8e",
+    "semantic_hash": ""
+  },
+  "HazardRewards.cs": {
+    "mtime": 1794779435.3367462,
+    "seen": 1794855906.994312,
+    "ast_hash": "1f9de6ddb4edfbcff98f27caaa7ed9eb",
+    "semantic_hash": ""
+  },
+  "HazardWorlds.cs": {
+    "mtime": 1794782694.287416,
+    "seen": 1794855906.994313,
+    "ast_hash": "932ea345c8891054b7bc28b91087e3c7",
+    "semantic_hash": ""
+  },
+  "IProjectileSurfaceHook.cs": {
+    "mtime": 1794780021.8466535,
+    "seen": 1794855906.994315,
+    "ast_hash": "84cd7d81bc103b3ae53de4f69140d843",
+    "semantic_hash": ""
+  },
+  "MonsterDefinitionSO.cs": {
+    "mtime": 1794773600.7192976,
+    "seen": 1794855906.994316,
+    "ast_hash": "f492d07f404a6066d1693cc4dad32b46",
+    "semantic_hash": ""
+  },
+  "NearMissLedger.cs": {
+    "mtime": 1794773232.8635032,
+    "seen": 1794855906.994317,
+    "ast_hash": "7fadc2004a7d3b3b9ab96dfe9ca21f09",
+    "semantic_hash": ""
+  },
+  "ProjectileDefinitionSO.cs": {
+    "mtime": 1794779228.3919392,
+    "seen": 1794855906.994318,
+    "ast_hash": "c1d69887ecd61d164b73d13e0083cdc1",
+    "semantic_hash": ""
+  },
+  "RoB0Data.cs": {
+    "mtime": 1794855900.6586282,
+    "seen": 1794855906.9943192,
+    "ast_hash": "e98abd55fd05da8bc6953e14b84de777",
+    "semantic_hash": ""
+  },
+  "RoB0Fx.cs": {
+    "mtime": 1794853008.740219,
+    "seen": 1794855906.99432,
+    "ast_hash": "32dc447ea74ccfaccbcfe5fd10ed0905",
+    "semantic_hash": ""
+  },
+  "RoB0Rig.cs": {
+    "mtime": 1794853587.4557312,
+    "seen": 1794855906.9943209,
+    "ast_hash": "640cbe7aba6ea32d9d3f9dc53ca0a7e5",
+    "semantic_hash": ""
+  },
+  "RoadEaterController.cs": {
+    "mtime": 1794855542.9707444,
+    "seen": 1794855906.9943218,
+    "ast_hash": "0688af4662611485903cbc1cd84d4680",
+    "semantic_hash": ""
+  },
+  "RoadEaterModel.cs": {
+    "mtime": 1794849797.3557837,
+    "seen": 1794855906.994323,
+    "ast_hash": "7fed27318aa133b0b28422a96b18724b",
+    "semantic_hash": ""
+  },
+  "VoiceLines.cs": {
+    "mtime": 1794779622.1050487,
+    "seen": 1794855906.994324,
+    "ast_hash": "1963fc5c49e5d92fd81a77d16d5081b4",
+    "semantic_hash": ""
+  },
+  "WorldProjectileRunner.cs": {
+    "mtime": 1794855242.3693342,
+    "seen": 1794855906.994326,
+    "ast_hash": "53d31bf673db6ad35681c442cd004b66",
+    "semantic_hash": ""
+  },
+  "WorldProjectiles.cs": {
+    "mtime": 1794779178.2566066,
+    "seen": 1794855906.994327,
+    "ast_hash": "a71ce5564f6830d7c3699f301ae941a0",
+    "semantic_hash": ""
+  }
+}

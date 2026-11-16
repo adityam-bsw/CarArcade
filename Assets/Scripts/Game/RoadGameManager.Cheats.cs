@@ -89,7 +89,7 @@ namespace RoadBuilderGame
         public void CheatEater(string worldId)
         {
             if (!CheatsOn || !CheatPlaying || !_stage.Active) return;
-            _boss.Stop(); _eater.Stop();
+            _boss.Stop(); _eater.Stop(); _stagePresenter?.Reset();         // the cheat hazard has no stage event: drop the stale 'N M LEFT' pill
             _hazardWorldId = worldId;
             _eater.Configure(EaterVariantSO.ForWorld(worldId));
             float cx = _car.Body.position.x;
@@ -102,7 +102,7 @@ namespace RoadBuilderGame
         public void CheatBoss(BossTierSO tier)
         {
             if (!CheatsOn || !CheatPlaying || !_stage.Active || tier == null) return;
-            _eater.Stop();
+            _eater.Stop(); _stagePresenter?.Reset();
             if (string.IsNullOrEmpty(_hazardWorldId)) _hazardWorldId = HazardWorlds.Resolve(_selWorldId, IsCountrysideWorld(), _stageOn);
             _boss.Start(_car.Body.position, tier.minDistanceM, _hazardWorldId);
         }
@@ -113,7 +113,7 @@ namespace RoadBuilderGame
             _boss.CheatFire(def, _car.Body.position, _car.Body.linearVelocity);
         }
 
-        public void CheatStopHazards() { if (!CheatsOn || !CheatPlaying) return; _cEaterOwn = false; _eater.Stop(); _boss.Stop(); _announcer?.Clear(); }
+        public void CheatStopHazards() { if (!CheatsOn || !CheatPlaying) return; _cEaterOwn = false; _eater.Stop(); _boss.Stop(); _announcer?.Clear(); _stagePresenter?.Reset(); }
 
         // ---------------------------------------------------------------- player
         public void CheatSetHearts(int n)

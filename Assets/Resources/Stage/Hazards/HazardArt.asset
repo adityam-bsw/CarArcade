@@ -36,6 +36,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 05f788f09d06240db88685223857c582, type: 3}
   - {fileID: 21300000, guid: c840d729bc911464e818b342e25304d1, type: 3}
   eaterBodySegment: {fileID: 21300000, guid: aef94954858bb43df9c29415cd1b56be, type: 3}
+  hueShader: {fileID: 4800000, guid: 53d16266992bb4edc821cc5e1661e6c9, type: 3}
   eaterFlames:
   - {fileID: 21300000, guid: c5fd60b36a2124972b3263eeff67ddd9, type: 3}
   - {fileID: 21300000, guid: 7543606dad58f4bfe83fe763129d0d3c, type: 3}
