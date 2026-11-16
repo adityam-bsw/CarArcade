@@ -887,7 +887,7 @@ namespace RoadBuilderGame.UI.Editor
 
         private static void AutoFit(TMP_Text t, float min, float max)
         {
-            t.enableAutoSizing = true; t.fontSizeMin = min; t.fontSizeMax = max; t.textWrappingMode = TextWrappingModes.NoWrap; t.overflowMode = TextOverflowModes.Ellipsis;
+            t.enableAutoSizing = true; t.fontSizeMin = min; t.fontSizeMax = max; t.textWrappingMode = TextWrappingModes.NoWrap; t.overflowMode = TextOverflowModes.Truncate;
         }
 
         private static GameObject BuildResult()

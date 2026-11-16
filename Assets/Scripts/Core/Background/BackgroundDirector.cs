@@ -193,7 +193,7 @@ namespace RoadBuilderGame
 
                 sr.transform.position = new Vector3(x, y, 0f);
                 sr.transform.localScale = new Vector3(s, s, 1f);
-                sr.size = new Vector2(tiles * nativeW, nativeH);
+                { var ns = new Vector2(tiles * nativeW, nativeH); if (sr.size != ns) sr.size = ns; }   // a tiled sprite regenerates its mesh when size is written; only write on change
 
                 // The sky of the outgoing slot stays opaque while the new one fades in, so no gap ever shows.
                 float a = (l == 0 && slot == _a && anyFading) ? 1f : slot.alpha;
@@ -246,7 +246,7 @@ namespace RoadBuilderGame
                 float oy = ReferenceY + (c.y - ReferenceY) * StickY[0] + (nativeH * s - viewH) * 0.5f;
                 slot.overlay.transform.position = new Vector3(cx, oy, 0f);
                 slot.overlay.transform.localScale = new Vector3(s, s, 1f);
-                slot.overlay.size = new Vector2(tiles * nativeW, nativeH);
+                { var os = new Vector2(tiles * nativeW, nativeH); if (slot.overlay.size != os) slot.overlay.size = os; }
                 slot.overlay.color = new Color(tint.r, tint.g, tint.b, (slot == _a && _fading) ? 1f : a);
             }
 

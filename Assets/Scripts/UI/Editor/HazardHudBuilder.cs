@@ -65,7 +65,7 @@ namespace RoadBuilderGame.UI.Editor
         private static TMP_Text Label(GameObject parent, string name, float size, ColorToken color, float x, float y, float w, float h)
         {
             var g = Child(parent, name, typeof(TextMeshProUGUI), typeof(ThemedText)); var t = g.GetComponent<TextMeshProUGUI>();
-            t.fontSize = size; t.alignment = TextAlignmentOptions.Center; t.raycastTarget = false; t.textWrappingMode = TextWrappingModes.NoWrap; t.overflowMode = TextOverflowModes.Ellipsis;
+            t.fontSize = size; t.alignment = TextAlignmentOptions.Center; t.raycastTarget = false; t.textWrappingMode = TextWrappingModes.NoWrap; t.overflowMode = TextOverflowModes.Truncate;
             t.enableAutoSizing = true; t.fontSizeMax = size; t.fontSizeMin = 14f;
             var th = g.GetComponent<ThemedText>(); th.style = TextStyle.Button; th.overrideColor = true; th.colorToken = color; th.keepSize = true; th.Apply();
             var r = g.GetComponent<RectTransform>(); r.anchoredPosition = new Vector2(x, y); r.sizeDelta = new Vector2(w, h); return t;

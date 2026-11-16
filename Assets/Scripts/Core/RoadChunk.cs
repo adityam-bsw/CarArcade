@@ -152,7 +152,7 @@ namespace RoadBuilderGame
             int n = end - start + 1;
             if (n < 2) return;
 
-            Geometry = RoadGeometry.Compute(pts, start, end, roadThickness, supportDepth, startNormalHint);
+            Geometry = RoadGeometry.Compute(pts, start, end, roadThickness, supportDepth, startNormalHint, Geometry);   // reuses its arrays
 
             // Physics first: align the collider with the driving surface (slightly inset by the edge radius).
             _edgePoints.Clear();

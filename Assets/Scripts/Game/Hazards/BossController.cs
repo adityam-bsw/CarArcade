@@ -43,6 +43,10 @@ namespace RoadBuilderGame
 
         public BossModel Model => _model;
         public Func<bool> CanDamage = () => true;
+        /// <summary>QA11 B4: after the boss becomes active (normal play or a cheat jump) nothing it fires can cost a life for this long, so the first shot never lands before the player can read the telegraph.</summary>
+        public const float ArrivalGraceS = 4f;
+        private float _graceLeft;
+        private bool CanHurt() { return _graceLeft <= 0f && CanDamage(); }
         /// <summary>The car is hit: the manager takes a heart (a shield absorbs it) and returns true when a shield did.</summary>
         public Func<string, bool> Hit = r => false;
         public Func<bool> CounterAvailable = () => true, InkAvailable = () => true;
@@ -64,7 +68,7 @@ namespace RoadBuilderGame
         public BossController(RoadBuilder road, BossDefinitionSO data)
         {
             _road = road; _d = data; _model = new BossModel(data); _world = new WorldProjectileRunner(road);
-            _world.CanDamage = () => CanDamage(); _world.Hit = r => Hit(r); _world.Cue = id => Cue?.Invoke(id); _world.Shake = a => Shake?.Invoke(a);
+            _world.CanDamage = () => CanHurt(); _world.Hit = r => Hit(r); _world.Cue = id => Cue?.Invoke(id); _world.Shake = a => Shake?.Invoke(a);
             _world.Struck = shielded => _model.Resolve(shielded ? BossOutcome.HitShielded : BossOutcome.Hit);
             _world.Passed = OnWorldPassed;
             _world.Fired = () => _rig?.Fire(); _world.Trail = (slot, pos, fam) => _fx?.Trail(16 + slot, pos, fam);
@@ -114,6 +118,7 @@ namespace RoadBuilderGame
             _world.Configure(WorldProjectiles.ForWorld(worldId)); _world.Begin();
             _vel = Vector2.zero; _gone = false; _offInit = false; _pos = AnchorWorld(carPos, false);
             _boss.gameObject.SetActive(true); _boss.position = new Vector3(_pos.x, _pos.y, 0f); _rig.Enter();
+            _graceLeft = ArrivalGraceS;
             _model.Begin();
         }
 
@@ -175,6 +180,7 @@ namespace RoadBuilderGame
         public void Tick(float dt, Vector2 carPos, Vector2 carVel)
         {
             if (!_built || dt <= 0f) return;
+            if (_graceLeft > 0f) _graceLeft -= dt;
             _clock += dt; CarPosCache = carPos; CarVelCache = carVel;
             var ctx = new BossContext
             {
@@ -272,7 +278,7 @@ namespace RoadBuilderGame
                     continue;
                 }
                 float dx = Mathf.Abs(car.x - t.X), dist = Vector2.Distance(car, new Vector2(t.X, t.Y)); if (dist < t.MinD) t.MinD = dist;
-                if (dx <= tier.trapWidth * 0.5f + 0.45f && car.y - t.Y <= 1.3f && CanDamage())
+                if (dx <= tier.trapWidth * 0.5f + 0.45f && car.y - t.Y <= 1.3f && CanHurt())
                 {
                     bool shielded = Hit("ROAD TRAP!"); Deactivate(t); _model.Resolve(shielded ? BossOutcome.HitShielded : BossOutcome.Hit); continue;
                 }
@@ -424,7 +430,7 @@ namespace RoadBuilderGame
             p.Pos += p.Dir * def.speed * dt; p.Life -= dt; p.Body.position = p.Pos; p.Body.Rotate(0f, 0f, 360f * dt);
             float d = Vector2.Distance(p.Pos, car);
             if (d < p.MinDist) p.MinDist = d;
-            if (!p.Warning && d <= def.HitCentre && CanDamage()) { Strike(p, "CORN SHOT!"); return; }
+            if (!p.Warning && d <= def.HitCentre && CanHurt()) { Strike(p, "CORN SHOT!"); return; }
             bool passed = Vector2.Dot(p.Dir, car - p.Pos) < 0f;
             bool grounded = _road.TryGetRoadYAtX(p.Pos.x, out float ry) && p.Pos.y <= ry;
             if (passed || p.Life <= 0f || grounded) Finish(p);
@@ -460,7 +466,7 @@ namespace RoadBuilderGame
             {
                 float d = Vector2.Distance(car, p.Target);
                 if (d < p.MinDist) p.MinDist = d;
-                if (d <= def.HitCentre && car.y - p.Target.y <= def.blastHeight + 0.2f && CanDamage()) { Strike(p, "PUMPKIN BOMB!"); return; }
+                if (d <= def.HitCentre && car.y - p.Target.y <= def.blastHeight + 0.2f && CanHurt()) { Strike(p, "PUMPKIN BOMB!"); return; }
             }
             if (p.Life <= 0f) Finish(p);
         }
@@ -486,7 +492,7 @@ namespace RoadBuilderGame
             p.Body.position = p.Pos; p.Body.Rotate(0f, 0f, 400f * dt);
             float d = Vector2.Distance(p.Pos, car);
             if (d < p.MinDist) p.MinDist = d;
-            if (d <= def.HitCentre && CanDamage()) { Strike(p, "HAY ROLLER!"); return; }
+            if (d <= def.HitCentre && CanHurt()) { Strike(p, "HAY ROLLER!"); return; }
             if (p.Pos.x < car.x - 1.5f || p.Life <= 0f) Finish(p);
         }
 

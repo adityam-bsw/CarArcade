@@ -48,6 +48,10 @@ namespace RoadBuilderGame.UI
         private bool _signShown, _signActive;
         private string _signName;
         private Tween _bannerTween, _flashTween;
+        private bool _bannerShown;
+        private float _bannerHideAt, _pauseStartedAt;
+        private const float BannerLifeS = 0.22f + 1.1f + 0.3f + 0.1f;     // pop + hold + fade; the tween normally ends first, this is the safety net for a stale banner/icon (QA11 B1)
+        private const float FlashPeakAlpha = 0.28f, FlashRampInS = 0.35f, FlashOutS = 0.75f;
 
         // Android Back during a run opens the pause popup instead of leaving.
         public override bool BackCloses => true;
@@ -55,6 +59,7 @@ namespace RoadBuilderGame.UI
 
         private void Awake()
         {
+            foreach (var t in GetComponentsInChildren<TMP_Text>(true)) if (t.overflowMode == TextOverflowModes.Ellipsis) t.overflowMode = TextOverflowModes.Truncate;   // LilitaOne SDF lacks U+2026
             boostButton.onClick.AddListener(() => GameServices.Actions?.Boost());
             var hazardHud = Resources.Load<HazardHudView>("UI/HazardHud"); if (hazardHud != null) Instantiate(hazardHud, transform, false);      // boss meter, vignette and announcer subtitle (gap list B)
             if (pauseButton != null) pauseButton.onClick.AddListener(() => GameServices.Actions?.PauseRun());
@@ -69,7 +74,10 @@ namespace RoadBuilderGame.UI
             _signShown = false; _signActive = false; _signMetres = -1; _signName = null;
             if (stageBanner != null) stageBanner.alpha = 0f;
             if (stageBannerIcon != null) stageBannerIcon.gameObject.SetActive(false);
+            _bannerShown = false;
             if (stageSign != null) stageSign.gameObject.SetActive(false);
+            StyleBannerText();
+            SetupFlashOverlay();
             SetFlashAlpha(0f);
             if (toastText != null) toastText.alpha = 0f;
             if (_lowPulse) { UIAnim.StopPulse(inkBar); _lowPulse = false; }
@@ -99,6 +107,8 @@ namespace RoadBuilderGame.UI
         private void OnPausedChanged()
         {
             bool paused = GameServices.Model.Paused;
+            if (paused) _pauseStartedAt = Time.unscaledTime;
+            else if (_bannerShown) _bannerHideAt += Time.unscaledTime - _pauseStartedAt;
             SetTweenPaused(_bannerTween, paused); SetTweenPaused(_flashTween, paused); SetTweenPaused(_toastTween, paused);
         }
 
@@ -159,6 +169,24 @@ namespace RoadBuilderGame.UI
             RefreshStage(m, theme);
         }
 
+        // QA11 P2: banner words sit over any sky or cloud colour, so they carry a dark theme outline (set once; contrast no longer depends on the background).
+        private void StyleBannerText()
+        {
+            if (stageBanner == null) return;
+            var oc = UIThemeManager.Current.GetColor(ColorToken.Outline);
+            if (oc.r + oc.g + oc.b > 1.5f) oc = new Color(0.08f, 0.09f, 0.14f, 1f);      // a light theme outline would not help: fall back to a dark ink
+            oc.a = 1f;
+            stageBanner.outlineWidth = 0.3f; stageBanner.outlineColor = oc;
+        }
+
+        private void HideBanner()
+        {
+            _bannerShown = false;
+            if (_bannerTween != null && _bannerTween.IsActive()) _bannerTween.Kill(); _bannerTween = null;
+            if (stageBanner != null) stageBanner.alpha = 0f;
+            if (stageBannerIcon != null) stageBannerIcon.gameObject.SetActive(false);
+        }
+
         private void KillStageTweens()
         {
             if (_bannerTween != null && _bannerTween.IsActive()) _bannerTween.Kill(); _bannerTween = null;
@@ -170,6 +198,18 @@ namespace RoadBuilderGame.UI
             return theme.GetColor(System.Enum.TryParse(token, out ColorToken t) ? t : fallback);
         }
 
+        // QA11 P1: the two 110 px edge columns read as hard side bands. One full-screen overlay (stretched to the canvas, so it follows any camera/aspect, portrait included) with a soft ramp replaces them.
+        private void SetupFlashOverlay()
+        {
+            if (edgeFlashLeft != null)
+            {
+                var r = edgeFlashLeft.rectTransform;
+                r.anchorMin = Vector2.zero; r.anchorMax = Vector2.one; r.pivot = new Vector2(0.5f, 0.5f);
+                r.offsetMin = r.offsetMax = Vector2.zero; edgeFlashLeft.raycastTarget = false;
+            }
+            if (edgeFlashRight != null) edgeFlashRight.gameObject.SetActive(false);
+        }
+
         private void SetFlashAlpha(float a)
         {
             if (edgeFlashLeft != null) { var c = edgeFlashLeft.color; c.a = a; edgeFlashLeft.color = c; }
@@ -179,10 +219,13 @@ namespace RoadBuilderGame.UI
         // The three warning signals. Each part reacts to a changed id or value only, so a quiet frame touches nothing.
         private void RefreshStage(GameModel m, UITheme theme)
         {
+            if (_bannerShown && !m.Paused && Time.unscaledTime >= _bannerHideAt) HideBanner();       // expired by time: never leave text or icon stuck on screen
             if (stageBanner != null && m.StageBannerId != _bannerId)
             {
                 _bannerId = m.StageBannerId;
                 if (_bannerTween != null && _bannerTween.IsActive()) _bannerTween.Kill();
+                if (string.IsNullOrEmpty(m.StageBanner)) { HideBanner(); goto afterBanner; }       // an empty banner is a clear request (event ended)
+                _bannerShown = true; _bannerHideAt = Time.unscaledTime + BannerLifeS;
                 stageBanner.SetText(m.StageBanner);
                 stageBanner.color = TokenColor(theme, m.StageBannerTint, ColorToken.Accent);
                 stageBanner.alpha = 1f;
@@ -199,6 +242,7 @@ namespace RoadBuilderGame.UI
                 }
                 _bannerTween = seq;
             }
+            afterBanner:
 
             if (stageSign != null)
             {
@@ -234,8 +278,10 @@ namespace RoadBuilderGame.UI
                 var col = TokenColor(theme, m.StageFlashTint, ColorToken.Danger);
                 if (edgeFlashLeft != null) edgeFlashLeft.color = col;
                 if (edgeFlashRight != null) edgeFlashRight.color = col;
-                SetFlashAlpha(0.55f);
-                _flashTween = DOVirtual.Float(0.55f, 0f, 1f, SetFlashAlpha).SetUpdate(true);       // S3: a 1 s edge flash, not a full-screen flash
+                SetFlashAlpha(0f);
+                _flashTween = DOTween.Sequence().SetUpdate(true)
+                    .Append(DOVirtual.Float(0f, FlashPeakAlpha, FlashRampInS, SetFlashAlpha).SetEase(Ease.InOutSine))
+                    .Append(DOVirtual.Float(FlashPeakAlpha, 0f, FlashOutS, SetFlashAlpha).SetEase(Ease.InOutSine));       // S3: soft full-screen tint, 1.1 s total
             }
         }
 
@@ -247,7 +293,7 @@ namespace RoadBuilderGame.UI
             var sd = stageSign.sizeDelta; sd.x = Mathf.Max(sd.x, 560f); stageSign.sizeDelta = sd;
             Place(stageSignName.rectTransform, 0f, 0.58f, 22f, 4f, TextAlignmentOptions.MidlineLeft);
             Place(stageSignMetres.rectTransform, 0.58f, 1f, 4f, 22f, TextAlignmentOptions.MidlineRight);
-            foreach (var t in new[] { stageSignName, stageSignMetres }) { t.enableAutoSizing = true; t.fontSizeMax = 40f; t.fontSizeMin = 16f; t.overflowMode = TextOverflowModes.Ellipsis; t.textWrappingMode = TextWrappingModes.NoWrap; }
+            foreach (var t in new[] { stageSignName, stageSignMetres }) { t.enableAutoSizing = true; t.fontSizeMax = 40f; t.fontSizeMin = 16f; t.overflowMode = TextOverflowModes.Truncate; t.textWrappingMode = TextWrappingModes.NoWrap; }
         }
 
         private static void Place(RectTransform r, float x0, float x1, float padL, float padR, TextAlignmentOptions a)

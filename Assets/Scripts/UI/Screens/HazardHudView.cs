@@ -20,6 +20,11 @@ namespace RoadBuilderGame.UI
         private int _subId = -1; private float _subLeft;
         private float _vig; private int _fitKey = -1;
 
+        private void Awake()
+        {   // the LilitaOne SDF has no U+2026 glyph: baked Ellipsis overflow would log a warning, Truncate is the same fit without it
+            foreach (var t in GetComponentsInChildren<TMPro.TMP_Text>(true)) if (t.overflowMode == TMPro.TextOverflowModes.Ellipsis) t.overflowMode = TMPro.TextOverflowModes.Truncate;
+        }
+
         private void OnEnable()
         {
             GameServices.Model.HudChanged += Refresh;

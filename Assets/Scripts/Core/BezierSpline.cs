@@ -41,13 +41,20 @@ namespace RoadBuilderGame
         /// Applies iterative Laplacian relaxation to raw input knots while preserving endpoints.
         /// Eliminates hand/mouse micro-tremors before spline fitting.
         /// </summary>
-        public static List<Vector2> SmoothKnots(List<Vector2> rawKnots, int iterations = 2, float strength = 0.45f)
+        // Scratch lists reused by every call (main thread only) so a live road rebuild allocates nothing once warm.
+        private static readonly List<Vector2> _smoothNext = new List<Vector2>(256);
+        private static readonly List<Vector2> _sampKnots = new List<Vector2>(256);
+        private static readonly List<Vector2> _dense = new List<Vector2>(1024);
+
+        public static List<Vector2> SmoothKnots(List<Vector2> rawKnots, int iterations = 2, float strength = 0.45f, List<Vector2> into = null)
         {
             int n = rawKnots.Count;
-            if (n < 3) return new List<Vector2>(rawKnots);
+            var current = into ?? new List<Vector2>(n);
+            current.Clear(); current.AddRange(rawKnots);
+            if (n < 3) return current;
 
-            var current = new List<Vector2>(rawKnots);
-            var next = new List<Vector2>(rawKnots);
+            var next = _smoothNext;
+            next.Clear(); next.AddRange(rawKnots);
 
             for (int iter = 0; iter < iterations; iter++)
             {
@@ -73,9 +80,10 @@ namespace RoadBuilderGame
         /// Generates a sequence of ultra-smooth sampled points along a Centripetal Catmull-Rom / Cubic Bézier
         /// spline passing through the relaxed control knots, then resamples at uniform arc-length intervals.
         /// </summary>
-        public static List<Vector2> SampleSpline(List<Vector2> rawKnots, int samplesPerSpan = 10, float targetSpacing = 0.16f, Vector2 startTangent = default)
+        public static List<Vector2> SampleSpline(List<Vector2> rawKnots, int samplesPerSpan = 10, float targetSpacing = 0.16f, Vector2 startTangent = default, List<Vector2> into = null)
         {
-            var result = new List<Vector2>();
+            var result = into ?? new List<Vector2>();
+            result.Clear();
             int rawCount = rawKnots.Count;
             if (rawCount < 2)
             {
@@ -84,10 +92,10 @@ namespace RoadBuilderGame
             }
 
             // 1. Pre-relax raw knots to remove mouse/touch jitter
-            List<Vector2> knots = SmoothKnots(rawKnots, 2, 0.42f);
+            List<Vector2> knots = SmoothKnots(rawKnots, 2, 0.42f, _sampKnots);
             int n = knots.Count;
 
-            var densePoints = new List<Vector2>(n * samplesPerSpan);
+            var densePoints = _dense; densePoints.Clear();
 
             if (n == 2)
             {
@@ -96,9 +104,9 @@ namespace RoadBuilderGame
                 for (int i = 0; i <= steps; i++)
                 {
                     float t = (float)i / steps;
-                    densePoints.Add(Vector2.Lerp(knots[0], knots[1], t));
+                    result.Add(Vector2.Lerp(knots[0], knots[1], t));
                 }
-                return densePoints;
+                return result;
             }
 
             // 2. Compute Centripetal Catmull-Rom tangents (alpha = 0.5) converted to Cubic Bézier control points.
@@ -134,18 +142,19 @@ namespace RoadBuilderGame
             }
 
             // 3. Resample to uniform arc-length so physics EdgeCollider2D and mesh quads have consistent spacing
-            return ResampleUniformArcLength(densePoints, Mathf.Max(0.08f, targetSpacing));
+            return ResampleUniformArcLength(densePoints, Mathf.Max(0.08f, targetSpacing), result);
         }
 
         /// <summary>
         /// Resamples a polyline at uniform arc-length intervals so mesh triangles and physics collider edges
         /// never bunch up or stretch awkwardly.
         /// </summary>
-        public static List<Vector2> ResampleUniformArcLength(List<Vector2> pts, float spacing)
+        public static List<Vector2> ResampleUniformArcLength(List<Vector2> pts, float spacing, List<Vector2> into = null)
         {
             if (pts == null || pts.Count < 2) return pts;
 
-            var uniform = new List<Vector2>(pts.Count);
+            var uniform = into ?? new List<Vector2>(pts.Count);
+            uniform.Clear();
             uniform.Add(pts[0]);
 
             float accumulated = 0f;

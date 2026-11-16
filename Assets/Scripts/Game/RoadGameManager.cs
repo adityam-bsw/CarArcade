@@ -340,7 +340,14 @@ namespace RoadBuilderGame
         private string _dailySavedVehicle = "", _dailySavedWorld = "";
         private float _deathDistance;
 
-        private string VehicleKey() { return string.IsNullOrEmpty(_selVehicleId) ? "vehicle-enum-" + (int)SelectedVehicle : _selVehicleId; }
+        private string _vkKey; private int _vkEnum = -1;     // cached so the per-frame surface sample builds no string
+        private string VehicleKey()
+        {
+            if (!string.IsNullOrEmpty(_selVehicleId)) return _selVehicleId;
+            int e = (int)SelectedVehicle;
+            if (_vkKey == null || _vkEnum != e) { _vkEnum = e; _vkKey = "vehicle-enum-" + e; }
+            return _vkKey;
+        }
 
         private void RefreshUpgradeLevels()
         {
@@ -1478,6 +1485,15 @@ namespace RoadBuilderGame
             var m = Model; m.StageBanner = text; m.StageBannerTint = ""; m.StageBannerIcon = iconId ?? ""; m.StageBannerId++;
         }
 
+        private int _zoneHintBannerId = -1;
+        /// <summary>QA11 B1: a surface hint belongs to its zone; when the zone ends the banner and icon go, unless another message has replaced it since.</summary>
+        private void ClearZoneHint()
+        {
+            var m = Model;
+            if (_zoneHintBannerId < 0 || m.StageBannerId != _zoneHintBannerId) { _zoneHintBannerId = -1; return; }
+            _zoneHintBannerId = -1; m.StageBanner = ""; m.StageBannerIcon = ""; m.StageBannerId++;
+        }
+
         // ------------------------------------------------------------------ hazards per frame (Road-Eater, RO-B0, near-miss economy, finish gate)
         private void TickHazards(Vector2 carPos, float dt)
         {
@@ -1772,12 +1788,13 @@ namespace RoadBuilderGame
             int before = _profile.MarkSurfaceSeen(rule.surfaceId);
             SavePlayerData();
             string hint = SurfaceLearning.Hint(rule.behaviours, SurfaceLearning.Level(before));
-            if (!string.IsNullOrEmpty(hint)) ShowStageBanner(hint, rule.behaviours != null ? rule.behaviours.hintIcon : "");
+            if (!string.IsNullOrEmpty(hint)) { ShowStageBanner(hint, rule.behaviours != null ? rule.behaviours.hintIcon : ""); _zoneHintBannerId = Model.StageBannerId; }
         }
 
         private void ExitZone()
         {
             _zone.Exit();
+            ClearZoneHint();
             if (_car != null) _car.MotorOn = true;
             ApplySurface();                                                            // the player's own surface returns
         }

@@ -20,22 +20,25 @@ namespace RoadBuilderGame
         public Vector2 StartTangent;
         public Vector2 EndTangent;
 
-        public static RoadGeometry Compute(List<Vector2> pts, int start, int end, float thickness, float supportDepth, Vector2 startNormalHint = default)
+        // Scratch for the two normal passes (main thread only). Output arrays are reused via <paramref name="reuse"/>; they may be longer than Count, so always index by Count.
+        private static Vector2[] _nA = new Vector2[256];
+        private static Vector2[] _nB = new Vector2[256];
+
+        public static RoadGeometry Compute(List<Vector2> pts, int start, int end, float thickness, float supportDepth, Vector2 startNormalHint = default, RoadGeometry reuse = null)
         {
             int n = end - start + 1;
-            var g = new RoadGeometry
+            var g = reuse ?? new RoadGeometry();
+            g.Count = n;
+            if (g.Spine == null || g.Spine.Length < n)
             {
-                Count = n,
-                Spine = new Vector2[n],
-                Normals = new Vector2[n],
-                Arc = new float[n],
-                Thickness = thickness,
-                HalfThick = thickness * 0.5f,
-                SupportDepth = supportDepth
-            };
+                int cap = Mathf.Max(n, 64, g.Spine != null ? g.Spine.Length * 2 : 0);
+                g.Spine = new Vector2[cap]; g.Normals = new Vector2[cap]; g.Arc = new float[cap];
+            }
+            g.Thickness = thickness; g.HalfThick = thickness * 0.5f; g.SupportDepth = supportDepth;
+            if (_nA.Length < n) { _nA = new Vector2[n * 2]; _nB = new Vector2[n * 2]; }
 
             // 1. Smooth continuous normals along the spine
-            var normals = new Vector2[n];
+            var normals = _nA;
             for (int i = 0; i < n; i++)
             {
                 Vector2 dir;
@@ -65,7 +68,7 @@ namespace RoadBuilderGame
             // Smooth normals with a 3-tap filter so ribbon thickness never pinches on tight curves
             if (n >= 3)
             {
-                var smoothed = new Vector2[n];
+                var smoothed = _nB;
                 smoothed[0] = normals[0];
                 smoothed[n - 1] = normals[n - 1];
                 for (int i = 1; i < n - 1; i++)

@@ -30,15 +30,15 @@ MonoBehaviour:
   finishGate: {fileID: 21300000, guid: d60d3769f12564c1b897ae51470313c2, type: 3}
   vignette: {fileID: 21300000, guid: 7c440c7a98c774282a42265ee6acf04d, type: 3}
   eaterHeads:
-  - {fileID: 21300000, guid: e5b91b0b81df740ddbaf08713f529ef7, type: 3}
-  - {fileID: 21300000, guid: a19ad60a8a8c9403ab388f3da652914d, type: 3}
-  - {fileID: 21300000, guid: 57db782381de64310b5fb10e365ec3a0, type: 3}
-  - {fileID: 21300000, guid: 05f788f09d06240db88685223857c582, type: 3}
-  - {fileID: 21300000, guid: c840d729bc911464e818b342e25304d1, type: 3}
-  eaterBodySegment: {fileID: 21300000, guid: aef94954858bb43df9c29415cd1b56be, type: 3}
+  - {fileID: 21300000, guid: ee17e3ba680c4920bdf73f548be12414, type: 3}
+  - {fileID: 21300000, guid: af49de01d34d4ebca9eb83c328c4afae, type: 3}
+  - {fileID: 21300000, guid: 5c6836aaab2e47bfac1f7e33ccb2d91b, type: 3}
+  - {fileID: 21300000, guid: 7674c269df9348b0ae36cc3f268ef72b, type: 3}
+  - {fileID: 21300000, guid: a5b5f7f8b0fb447f8f3016c45a4a2d98, type: 3}
+  eaterBodySegment: {fileID: 21300000, guid: 626ae38008d441b8a6715ffad20881f5, type: 3}
   hueShader: {fileID: 4800000, guid: 53d16266992bb4edc821cc5e1661e6c9, type: 3}
   eaterFlames:
-  - {fileID: 21300000, guid: c5fd60b36a2124972b3263eeff67ddd9, type: 3}
-  - {fileID: 21300000, guid: 7543606dad58f4bfe83fe763129d0d3c, type: 3}
-  - {fileID: 21300000, guid: 1207d717b2edb4f06a1087911815265d, type: 3}
-  - {fileID: 21300000, guid: c1b1b5c32dfc547b89aa5515d6023429, type: 3}
+  - {fileID: 21300000, guid: 1acb736216fa4d07a1c0085b709b7edc, type: 3}
+  - {fileID: 21300000, guid: 372884930fd84bac9aba2aa1e673d06b, type: 3}
+  - {fileID: 21300000, guid: 267acba717e44691a30eaa0422d004c2, type: 3}
+  - {fileID: 21300000, guid: f730e1ae960f43e3ad14a2ad480a5f93, type: 3}

@@ -27,7 +27,7 @@ namespace RoadBuilderGame.UI
 
         private void Awake()
         {
-            if (bonusText != null) { bonusText.overflowMode = TextOverflowModes.Ellipsis; bonusText.enableAutoSizing = true; bonusText.fontSizeMax = bonusText.fontSize; bonusText.fontSizeMin = 14f; }
+            if (bonusText != null) { bonusText.overflowMode = TextOverflowModes.Truncate; bonusText.enableAutoSizing = true; bonusText.fontSizeMax = bonusText.fontSize; bonusText.fontSizeMin = 14f; }
             retryButton.onClick.AddListener(() => GameServices.Actions?.StartRace());
             menuButton.onClick.AddListener(() => GameServices.Actions?.GoHome());
             if (doubleButton != null) doubleButton.onClick.AddListener(() => GameServices.Actions?.WatchOffer(AdPlacement.DoubleCoins));

@@ -36,7 +36,7 @@ namespace RoadBuilderGame.Editor
         public const string ArtDir = "Assets/Art/Smooth/Hazards";
 
         private const string EaterArtDir = "Assets/Art/Smooth/Hazards/RoadEater/";
-        private static Sprite EaterSpr(string n) { return AssetDatabase.LoadAssetAtPath<Sprite>(EaterArtDir + n + ".png"); }
+        private static Sprite EaterSpr(string n) { return AssetDatabase.LoadAssetAtPath<Sprite>(EaterArtDir + n + "_hd.png") ?? AssetDatabase.LoadAssetAtPath<Sprite>(EaterArtDir + n + ".png"); }   // _hd = smooth 2x (tools/art/smooth_road_eater.py, ppu 80), same world size as the 40 ppu original
         private static void FillEaterArt(HazardArtSet art)
         {
             art.eaterHeads = new Sprite[5]; for (int i = 0; i < 5; i++) art.eaterHeads[i] = EaterSpr("eater_head_" + (i + 1));

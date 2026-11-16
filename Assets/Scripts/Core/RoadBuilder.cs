@@ -58,6 +58,7 @@ namespace RoadBuilderGame
         public float liveTipRebuildInterval = 0.04f;
         private float _lastLiveRebuild;
         private readonly List<Vector2> _working = new List<Vector2>(64);
+        private readonly List<Vector2> _relaxed = new List<Vector2>(64);
         /// <summary>Total sampled road points across all segments (diagnostics).</summary>
         public int SampledPointCount { get { int n = 0; foreach (var s in _segments) n += s.sampledPoints.Count; return n; } }
 
@@ -412,8 +413,9 @@ namespace RoadBuilderGame
             if (workingKnots.Count >= 2)
             {
                 // Stronger 4-pass Laplacian relaxation so valleys have a wide, gentle curvature radius larger than the car's wheelbase
-                var relaxedKnots = BezierSpline.SmoothKnots(workingKnots, 3, 0.48f);
-                _activeSegment.sampledPoints = BezierSpline.SampleSpline(relaxedKnots, splineSamplesPerSpan, uniformSampleSpacing, _activeSegment.startTangent);
+                var relaxedKnots = BezierSpline.SmoothKnots(workingKnots, 3, 0.48f, _relaxed);
+                // Reuse the segment's own point list (cleared and refilled); nothing else holds the old contents across a rebuild.
+                _activeSegment.sampledPoints = BezierSpline.SampleSpline(relaxedKnots, splineSamplesPerSpan, uniformSampleSpacing, _activeSegment.startTangent, _activeSegment.sampledPoints);
 
                 if (_activeSegment.sampledPoints.Count >= 2)
                 {
