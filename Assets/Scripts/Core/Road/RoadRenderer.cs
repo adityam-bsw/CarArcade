@@ -24,6 +24,7 @@ namespace RoadBuilderGame
         private const float BackingDepth = 0.6f;   // metres of opaque-to-clear backing under a smooth slab
 
         // Atlas mapping for the segment being built (textured mode only).
+        private float _uBase;         // whole tiles subtracted from u (precision); same for every vertex of a chunk
         private float _uScale;        // u units per world metre along the road
         private float _vCapMid;       // a point in the middle of the slab body, used for the flat end caps
 
@@ -61,7 +62,15 @@ namespace RoadBuilderGame
             _meshRenderer.sortingOrder = SortingOrder;
         }
 
-        public void Rebuild(RoadGeometry g, RoadSkin skin)
+        /// <summary>Taper length (m) of a free (cut or unjoined) slab end in smooth strips.</summary>
+        private const float FrayLength = 0.9f;
+
+        /// <summary>
+        /// Rebuilds the mesh. <paramref name="freeStart"/> / <paramref name="freeEnd"/> mark chunk ends that touch no neighbouring chunk (an Eater cut,
+        /// the runway ends): smooth slabs fray there (the body shrinks toward the end in a ragged, crumbling taper) instead of ending in a hard vertical rectangle.
+        /// Looks only; the collider is untouched.
+        /// </summary>
+        public void Rebuild(RoadGeometry g, RoadSkin skin, bool freeStart = false, bool freeEnd = false)
         {
             if (_mesh == null) Init();
             if (g == null || g.Count < 2) return;
@@ -103,12 +112,15 @@ namespace RoadBuilderGame
             }
 
             Color tint = skin.tint;
+            // The strip is mapped by WORLD x (minus a whole number of tiles, for float precision) so every chunk joins the next with the same
+            // texture phase: a chunk-local arc length restarted the art at each join (clipped craters, a tone step and a lip step).
+            _uBase = Mathf.Floor(g.Spine[0].x * _uScale);
 
             for (int i = 0; i < g.Count; i++)
             {
                 Vector2 p = g.Spine[i];
                 Vector2 norm = g.Normals[i];
-                float u = g.Arc[i] * _uScale;
+                float u = g.Spine[i].x * _uScale - _uBase;
 
                 Vector2 v0 = p + norm * (g.HalfThick + lipW);         // top of the art (the collider top when the lip is 0)
                 Vector2 v1 = p + norm * (g.HalfThick - curbThick);    // top surface to slab body
@@ -118,9 +130,18 @@ namespace RoadBuilderGame
                 if (smooth)
                 {
                     Vector2 vs = p + norm * g.HalfThick;                   // where tyres roll
+                    float f = FrayFactor(g, i, freeStart, freeEnd);        // 1 = full slab, smaller = crumbled end
+                    float vSl = vSlab;
+                    if (f < 0.999f)
+                    {
+                        float thick = g.Thickness * f;
+                        v2 = vs - norm * thick;
+                        v3 = v2 + new Vector2(0f, -skirtDepth * f);
+                        vSl = Mathf.Max(0.02f, vSurface - thick / (skin.texelWorld * texH));
+                    }
                     Add(v0, tint, u, vTop);
                     Add(vs, tint, u, vSurface);
-                    Add(v2, tint, u, vSlab);
+                    Add(v2, tint, u, vSl);
                     Add(v3, tint, u, vBottom);
                 }
                 else if (textured)
@@ -153,9 +174,9 @@ namespace RoadBuilderGame
             if (!smooth)
             {
                 if (g.StartTangent.sqrMagnitude > 1e-4f)
-                    AddRoundCap(g.Spine[0], -g.StartTangent, g.Normals[0], g.HalfThick, skin, textured, g.Arc[0]);
+                    AddRoundCap(g.Spine[0], -g.StartTangent, g.Normals[0], g.HalfThick, skin, textured, g.Spine[0].x);
                 if (g.EndTangent.sqrMagnitude > 1e-4f)
-                    AddRoundCap(g.Spine[g.Count - 1], g.EndTangent, g.Normals[g.Count - 1], g.HalfThick, skin, textured, g.Arc[g.Count - 1]);
+                    AddRoundCap(g.Spine[g.Count - 1], g.EndTangent, g.Normals[g.Count - 1], g.HalfThick, skin, textured, g.Spine[g.Count - 1].x);
             }
 
             // Backing under the slab: opaque at the slab bottom, clear BackingDepth lower, drawn before the strip (submesh 0),
@@ -169,7 +190,8 @@ namespace RoadBuilderGame
                 float bd = Mathf.Min(skirtDepth, BackingDepth);
                 for (int i = 0; i < g.Count; i++)
                 {
-                    Vector2 vTopB = g.Spine[i] - g.Normals[i] * g.HalfThick;
+                    float ff = FrayFactor(g, i, freeStart, freeEnd);
+                    Vector2 vTopB = g.Spine[i] + g.Normals[i] * g.HalfThick - g.Normals[i] * (g.Thickness * ff);
                     Vector2 vTopIn = g.Spine[i] + g.Normals[i] * (g.HalfThick * 0.5f);   // tucked under the slab so no gap shows
                     Add(vTopIn, bc, 0f, 0f);
                     Add(vTopB, bc, 0f, 0f);
@@ -209,13 +231,26 @@ namespace RoadBuilderGame
             _mesh.RecalculateBounds();
         }
 
+        // 1 inside the chunk; toward a free end the slab thins to ~15 % with a deterministic ragged jitter (no allocation, no randomness at run time).
+        private static float FrayFactor(RoadGeometry g, int i, bool freeStart, bool freeEnd)
+        {
+            float d = float.MaxValue;
+            if (freeStart) d = Mathf.Min(d, g.Arc[i]);
+            if (freeEnd) d = Mathf.Min(d, g.Arc[g.Count - 1] - g.Arc[i]);
+            if (d >= FrayLength) return 1f;
+            float t = 1f - d / FrayLength;                                 // 0 inside .. 1 at the very end
+            float h = Mathf.Abs(Mathf.Sin((i + 1) * 12.9898f) * 43758.5453f); h -= Mathf.Floor(h);
+            float f = 1f - t * (0.80f + 0.12f * (h - 0.5f) * 2f);
+            return Mathf.Clamp(f, 0.12f, 1f);
+        }
+
         private void AddRoundCap(Vector2 center, Vector2 outwardDir, Vector2 norm, float radius, RoadSkin skin, bool textured, float arc)
         {
             const int capSegments = 6;
             int centerIdx = _verts.Count;
             Color inner = textured ? skin.tint : skin.roadColor;
             Color outer = textured ? skin.tint : skin.curbColor;
-            float u = arc * _uScale;
+            float u = arc * _uScale - _uBase;
 
             Add(center, inner, u, _vCapMid);
             for (int i = 0; i <= capSegments; i++)

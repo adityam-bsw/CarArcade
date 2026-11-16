@@ -185,7 +185,7 @@ namespace RoadBuilderGame
             // facing: art faces left; the flip squashes through zero so the turn reads as a quick spin
             float want = carX > posX + D.FaceDeadZone ? -1f : 1f;
             _face = Mathf.MoveTowards(_face, want, D.FlipSpeed * dt);
-            _root.localScale = new Vector3(_face, 1f, 1f);
+            _root.localScale = new Vector3(_face * D.RigScale, D.RigScale, 1f);
 
             // hover bob, sway, lean and breathing (code driven: continuous and cheap)
             float bob = Mathf.Sin(6.2832f * D.BobHz * _t + _ph) * D.BobAmplitude;

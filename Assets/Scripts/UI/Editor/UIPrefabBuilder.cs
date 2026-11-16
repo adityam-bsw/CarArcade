@@ -743,13 +743,13 @@ namespace RoadBuilderGame.UI.Editor
 
             // Combo under the odometer, power-up timers above the ink bar, a toast for events, gems under the coin counter.
             var combo = Label(topCenter, "Combo", "", TextStyle.Heading, ColorToken.Accent, 54);
-            StackSlot(combo.rectTransform, -228f, 56f); AutoFit(combo, 28f, 48f);
+            StackSlot(combo.rectTransform, -358f, 56f); AutoFit(combo, 28f, 48f);
             var power = Label(bottomCenter, "PowerUps", "", TextStyle.Button, ColorToken.TextPrimary, 28);
             Place(power.rectTransform, BC, BC, new Vector2(0, 112), new Vector2(900, 40));
             // One top-centre message stack under the odometer (combo, toast, stage banner, zone sign), each in its own fixed slot so
             // no two ever overlap, side margins keep clear of the corner clusters and the boss meter, and every line auto-sizes to fit.
             var toast = Label(c, "Toast", "", TextStyle.Title, ColorToken.Accent, 48);
-            StackSlot(toast.rectTransform, -290f, 50f); AutoFit(toast, 26f, 44f);
+            StackSlot(toast.rectTransform, -306f, 50f); AutoFit(toast, 26f, 44f);
             // Gems: a dark pill with the gem icon, so the count keeps its contrast against any sky.
             var gemPill = Img(topRight, "GemsPill", SpriteSlot.Pill, ColorToken.Background, 0.85f);
             Place(gemPill.rectTransform, TR, TR, new Vector2(-36, -148), new Vector2(200, 62));
@@ -765,7 +765,7 @@ namespace RoadBuilderGame.UI.Editor
 
             // Stage event warning (S1 banner, S2 sign, S3 edge flash). Tints come from the zone colour tokens at run time; the words are the non-colour channel.
             var stageBanner = Label(c, "StageBanner", "", TextStyle.Heading, ColorToken.Accent, 64);
-            StackSlot(stageBanner.rectTransform, -346f, 76f); AutoFit(stageBanner, 30f, 56f);
+            StackSlot(stageBanner.rectTransform, -228f, 76f); AutoFit(stageBanner, 30f, 56f);
             stageBanner.alpha = 0f;
             // The surface tutorial icon hangs under the banner text (a child, so it scales with it); the HUD sets sprite and visibility.
             var bannerIconGo = new GameObject("StageBannerIcon", typeof(RectTransform), typeof(Image));

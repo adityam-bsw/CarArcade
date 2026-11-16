@@ -17,14 +17,18 @@ namespace RoadBuilderGame
         /// <summary>Highest point of the art above the pivot (cone tip) plus the bob: the hover clamp keeps this under the HUD band.</summary>
         public const float TopClearance = 1.6f + BobAmplitude + 0.15f;
 
+        // screen anchor: the robot hovers in camera viewport space (0..1) at the top-right, facing left toward the car; right edge kept left of the boss HUD panel (x > 0.86)
+        public const float AnchorX = 0.76f, AnchorY = 0.6f, AnchorWanderScale = 0.3f, RightEdgeMaxViewport = 0.84f, RightExtentM = 1.6f, RigScale = 0.9f;
+        public const float RetreatViewportDx = 0.5f, RetreatViewportDy = 0.15f;
+
         // shield bubble
-        public const float ShieldAlpha = 0.35f, ShieldPulse = 0.06f, ShieldScale = 0.9f, ShieldPopScale = 1.4f, ShieldPopSeconds = 0.3f;
+        public const float ShieldAlpha = 0.35f, ShieldPulse = 0.06f, ShieldScale = 0.8f, ShieldPopScale = 1.4f, ShieldPopSeconds = 0.3f;
         public static readonly Vector2 ShieldCentre = new Vector2(-0.35f, -0.1f);
         public static readonly Color ShieldPhase1 = new Color(0.55f, 0.8f, 1f), ShieldPhase2 = new Color(1f, 0.88f, 0.4f);
 
         // tweens
         public const float EnterSeconds = 1.5f, DefeatSeconds = 2.6f, RecoilSeconds = 0.28f, ShakeSeconds = 0.4f;
-        public static readonly Vector3 EnterFrom = new Vector3(9f, 2.5f, 0f), Recoil = new Vector3(0.45f, 0.12f, 0f);
+        public static readonly Vector3 EnterFrom = new Vector3(11f, 1.5f, 0f), Recoil = new Vector3(0.45f, 0.12f, 0f);
 
         // anchors (centroid-pivot local, metres)
         public static readonly Vector2 JetL = new Vector2(-0.41f, -1.5f), JetR = new Vector2(0.22f, -1.5f), SparkPoint = new Vector2(1.05f, 0.6f), FlashPoint = new Vector2(-1.45f, -0.25f);

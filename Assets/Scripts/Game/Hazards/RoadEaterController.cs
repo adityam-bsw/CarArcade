@@ -157,10 +157,10 @@ namespace RoadBuilderGame
 
         // ------------------------------------------------------------------ view (imported dragon art, sprites built once, nothing allocated per frame)
         // The art faces left; the car is to the right, so every renderer is flipped. Orders sit behind the car (5) and above the road/background.
-        private const int FlameOrder = 2, SegOrder = 3, HeadOrder = 4, SegCount = 4;
-        private const float HeadX = -1.2f, HeadY = 0.3f, SegFirstX = -3.75f, SegGap = 1.5f, SegY = -0.3f, SegScale = 0.7f, SegTaper = 0.05f, WaveAmp = 0.22f, WaveSpeed = 3.2f, WavePhase = 0.9f;
+        private const int FlameOrder = 0, SegOrder = 3, HeadOrder = 4, SegCount = 5;
+        private const float HeadX = -1.2f, HeadY = 0.3f, SegFirstX = -3.6f, SegSpacing = 0.5f, SegY = -0.3f, SegScale = 0.78f, SegTaper = 0.1f, SegSegDark = 0.28f, HeadHalfW = 2.9f, EdgeButtonFrac = 0.07f, WaveAmp = 0.22f, WaveSpeed = 3.2f, WavePhase = 0.9f;
         private const float FlameX = -4.2f, FlameY = 0.9f, FlameFps = 12f, ChompSlowFps = 5f, ChompFastFps = 13f, SnapFps = 16f;
-        private readonly SpriteRenderer[] _seg = new SpriteRenderer[SegCount];
+        private readonly SpriteRenderer[] _seg = new SpriteRenderer[SegCount]; private readonly float[] _segX = new float[SegCount];
         private SpriteRenderer _flame; private HazardArtSet _art; private Color _vTint = Color.white;
         private float _animT, _flameT;
 
@@ -178,7 +178,9 @@ namespace RoadBuilderGame
             {
                 _seg[i] = SpriteFactory.CreateSprite("Seg" + i, _maw, seg ? _art.eaterBodySegment : null, Color.white, SegOrder);
                 _seg[i].flipX = true; _seg[i].enabled = seg; float k = SegScale - SegTaper * i; _seg[i].transform.localScale = new Vector3(k, k, 1f);
-                _seg[i].transform.localPosition = new Vector3(SegFirstX - i * SegGap, SegY, 0f);
+                _seg[i].sortingOrder = SegOrder - i;                                                 // nearer the head draws over the next one
+                _segX[i] = i == 0 ? SegFirstX : _segX[i - 1] - SegSpacing * 3.1f * (k + (SegScale - SegTaper * (i - 1))) * 0.5f;
+                _seg[i].transform.localPosition = new Vector3(_segX[i], SegY, 0f);
             }
             bool fl = art && _art.eaterFlames != null && _art.eaterFlames.Length > 0;
             _flame = SpriteFactory.CreateSprite("Flame", _maw, fl ? _art.eaterFlames[0] : null, Color.white, FlameOrder);
@@ -187,19 +189,20 @@ namespace RoadBuilderGame
 
         private void SetVisible(bool on) { if (on) EnsureView(); if (_maw != null) _maw.gameObject.SetActive(on); }
 
-        /// <summary>Variant hue: its tint scaled to full brightness (the art is orange, so a raw dark tint would go muddy) and eased toward white.</summary>
+        /// <summary>Variant hue as a subtle shift: the tint at full brightness, blended 25 percent into white so the orange art keeps its detail (a multiply would flatten it to a solid colour).</summary>
         private static Color VariantTint(EaterVariantSO v)
         {
             if (v == null) return Color.white;
             Color t = v.tint; float m = Mathf.Max(0.001f, Mathf.Max(t.r, Mathf.Max(t.g, t.b)));
-            return Color.Lerp(new Color(t.r / m, t.g / m, t.b / m, 1f), Color.white, 0.15f);
+            return Color.Lerp(Color.white, new Color(t.r / m, t.g / m, t.b / m, 1f), TintStrength);
         }
+        private const float TintStrength = 0.25f;
 
         private void UpdateVisual(float dt, float carX, float carY)
         {
             if (_maw == null || !_maw.gameObject.activeSelf) return;
             float trueX = _startX + _model.S;
-            float edge = _cam != null ? _cam.transform.position.x - _cam.orthographicSize * _cam.aspect + 1.7f : trueX;
+            float edge = _cam != null ? _cam.transform.position.x - _cam.orthographicSize * _cam.aspect * (1f - 2f * EdgeButtonFrac) + HeadHalfW - HeadX : trueX;
             float x = Mathf.Max(trueX, edge);                          // at the left screen edge while far, at its real place once close
             float y = _road.TryGetRoadYAtX(x, out float ry) ? ry : carY;
             _maw.position = _host.UseMawOverride ? new Vector3(_host.MawOverride.x, _host.MawOverride.y, 0f) : new Vector3(x, y + 1.3f, 0f);   // maw point: the mouth is just ahead of it
@@ -229,7 +232,8 @@ namespace RoadBuilderGame
             bool gone = _model.State == EaterState.Escape || _model.State == EaterState.Retreat;
             Color s = gone ? new Color(0.7f, 0.7f, 0.75f) : _model.Band == EaterBand.Snap ? new Color(1f, 0.5f, 0.5f) : _model.Band == EaterBand.Danger ? new Color(1f, 0.75f, 0.8f) : Color.white;
             Color c2 = dragon ? new Color(_vTint.r * s.r, _vTint.g * s.g, _vTint.b * s.b, 1f) : (_variant != null ? _variant.tint : new Color(0.22f, 0.1f, 0.28f));
-            _body.color = c2; for (int i = 0; i < SegCount; i++) if (_seg[i] != null) _seg[i].color = c2;
+            _body.color = c2;
+            for (int i = 0; i < SegCount; i++) if (_seg[i] != null) { float d = 1f - SegSegDark * (i + 1) / SegCount; _seg[i].color = new Color(c2.r * d, c2.g * d, c2.b * d, 1f); }
         }
 
         public void Destroy() { DestroyModules(); if (_maw != null) UnityEngine.Object.Destroy(_maw.gameObject); _maw = null; }

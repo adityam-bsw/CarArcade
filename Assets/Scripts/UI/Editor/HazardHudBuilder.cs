@@ -20,7 +20,7 @@ namespace RoadBuilderGame.UI.Editor
             var meter = Child(root, "BossMeter", typeof(Image), typeof(ThemedImage)); var mr = meter.GetComponent<RectTransform>();
             mr.anchorMin = new Vector2(1f, 0.5f); mr.anchorMax = new Vector2(1f, 0.5f); mr.pivot = new Vector2(1f, 0.5f); mr.anchoredPosition = new Vector2(-32f, 0f); mr.sizeDelta = new Vector2(232f, 560f);
             ThemeImg(meter, SpriteSlot.PanelBoard, ColorToken.Tint, false, 1f); meter.GetComponent<Image>().raycastTarget = false;
-            var tier = Label(meter, "Tier", 34, ColorToken.Accent, 18f, 36f, 196f, 46f);
+            var tier = Label(meter, "Tier", 30, ColorToken.Accent, 18f, 36f, 164f, 44f);   // narrower than the plate's inner width so a long tier name auto-sizes down instead of crossing the rim
             var icon = Child(meter, "RoboIcon", typeof(Image)); var ir = icon.GetComponent<RectTransform>();
             ir.anchorMin = ir.anchorMax = new Vector2(0.5f, 1f); ir.pivot = new Vector2(0.5f, 0.5f); ir.anchoredPosition = new Vector2(0f, 24f); ir.sizeDelta = new Vector2(150f, 150f);
             var ii = icon.GetComponent<Image>(); ii.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Smooth/Hazards/RoB0/rob0_body_idle.png"); ii.preserveAspect = true; ii.raycastTarget = false;

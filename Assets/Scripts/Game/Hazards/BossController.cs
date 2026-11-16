@@ -112,7 +112,7 @@ namespace RoadBuilderGame
             _tier = BossTierSO.ForDistance(_tiers, distanceM);
             _model.Reset(_seed); _model.ApplyTier(_tier);
             _world.Configure(WorldProjectiles.ForWorld(worldId)); _world.Begin();
-            _pos = carPos + new Vector2(16f, 13f); _vel = Vector2.zero; _gone = false;
+            _vel = Vector2.zero; _gone = false; _pos = AnchorWorld(carPos, false);
             _boss.gameObject.SetActive(true); _boss.position = new Vector3(_pos.x, _pos.y, 0f); _rig.Enter();
             _model.Begin();
         }
@@ -198,6 +198,21 @@ namespace RoadBuilderGame
 
         private Camera _hudCam;
 
+        /// <summary>Top-right hover point in camera viewport space (the enemy attacks from the front, facing left), clamped under the HUD band and left of the boss HUD panel. Leaving shifts it off the right edge.</summary>
+        private Vector2 AnchorWorld(Vector2 car, bool leaving)
+        {
+            if (_hudCam == null) _hudCam = Camera.main;
+            if (_hudCam == null) return car + new Vector2(10f, 4f);
+            float sz = _hudCam.orthographicSize, hw = sz * _hudCam.aspect; Vector3 c = _hudCam.transform.position;
+            float vx = RoB0Data.AnchorX, vy = RoB0Data.AnchorY;
+            float maxVx = RoB0Data.RightEdgeMaxViewport - RoB0Data.RightExtentM * RoB0Data.RigScale / (2f * hw);
+            if (vx > maxVx) vx = maxVx;
+            if (leaving) { vx += RoB0Data.RetreatViewportDx; vy += RoB0Data.RetreatViewportDy; }
+            float x = c.x + (vx - 0.5f) * 2f * hw, y = c.y + (vy - 0.5f) * 2f * sz;
+            if (!leaving) y = Mathf.Max(y, car.y + _d.minAboveRoof + 1f);
+            return new Vector2(x, y);
+        }
+
         private void Hover(float dt, Vector2 car)
         {
             if (!_boss.gameObject.activeSelf) return;
@@ -205,12 +220,11 @@ namespace RoadBuilderGame
             for (int i = 0; i < _pool.Length; i++) if (_pool[i].Active && _pool[i].Stage == 0) { telling = true; break; }
             if (!telling) telling = _world.Telling;
             _charge = Mathf.MoveTowards(_charge, telling ? 0.2f : 1f, 4f * dt);
-            float ax = car.x + Mathf.Clamp(_d.hoverAhead, _d.hoverAheadMin, _d.hoverAheadMax);
-            float baseY = _road.TryGetRoadYAtX(ax, out float ry) ? Mathf.Max(car.y, ry) : car.y;
-            float ay = Mathf.Max(baseY + Mathf.Clamp(_d.hoverHeight, _d.hoverHeightMin, _d.hoverHeightMax), car.y + _d.minAboveRoof + 1f);
-            if (_gone || _model.State == BossState.Retreat) { ax += 14f; ay += 8f; }                       // retreat: rises and leaves to the right
-            float tx = ax + _d.hoverAx * _charge * Mathf.Sin(6.2832f * _d.hoverFx * _clock + _phx);
-            float ty = ay + _d.hoverAy * _charge * Mathf.Sin(6.2832f * _d.hoverFy * _clock + _phy);
+            bool leaving = _gone || _model.State == BossState.Retreat;
+            Vector2 anchor = AnchorWorld(car, leaving);
+            float ax = anchor.x, ay = anchor.y;
+            float tx = ax + _d.hoverAx * RoB0Data.AnchorWanderScale * _charge * Mathf.Sin(6.2832f * _d.hoverFx * _clock + _phx);
+            float ty = ay + _d.hoverAy * RoB0Data.AnchorWanderScale * _charge * Mathf.Sin(6.2832f * _d.hoverFy * _clock + _phy);
             _pos.x = Mathf.SmoothDamp(_pos.x, tx, ref _vel.x, _d.followSmoothTime);
             _pos.y = Mathf.SmoothDamp(_pos.y, ty, ref _vel.y, _d.followSmoothTime);
             if (_model.State == BossState.Defeat) _pos.y -= 1.5f * dt;                                      // the defeated robot sinks

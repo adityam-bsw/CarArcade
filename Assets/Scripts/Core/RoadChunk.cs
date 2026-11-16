@@ -35,6 +35,7 @@ namespace RoadBuilderGame
         public void SetOffsetY(float dy) { var t = transform.localPosition; if (Mathf.Abs(t.y - dy) > 0.0005f) { t.y = dy; transform.localPosition = t; } }
 
         private bool _hasStartGhost, _hasEndGhost;
+        private RoadSkin _skin;
         private Vector2 _startGhost, _endGhost;     // local space
 
         /// <summary>World-space collider ends: first, second, second-to-last and last point. False when the chunk has fewer than 2 points.</summary>
@@ -62,8 +63,10 @@ namespace RoadBuilderGame
             bool changed = hasStart != _hasStartGhost || hasEnd != _hasEndGhost
                 || (hasStart && (ls - _startGhost).sqrMagnitude > 0.0004f) || (hasEnd && (le - _endGhost).sqrMagnitude > 0.0004f);
             if (!changed) return;
+            bool joinChanged = hasStart != _hasStartGhost || hasEnd != _hasEndGhost;
             _hasStartGhost = hasStart; _hasEndGhost = hasEnd; _startGhost = ls; _endGhost = le;
             ApplyGhosts();
+            if (joinChanged && _renderer != null && Geometry != null && _skin != null) _renderer.Rebuild(Geometry, _skin, !hasStart, !hasEnd);   // free ends fray, joined ends stay flush
         }
 
         private void ApplyGhosts()
@@ -104,7 +107,8 @@ namespace RoadBuilderGame
             MaxX = maxX;
 
             // Then the look, from the same geometry.
-            if (_renderer != null) _renderer.Rebuild(Geometry, skin);
+            _skin = skin;
+            if (_renderer != null) _renderer.Rebuild(Geometry, skin, !_hasStartGhost, !_hasEndGhost);
         }
     }
 }

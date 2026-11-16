@@ -129,9 +129,9 @@ namespace RoadBuilderGame.Tests
                 Assert.AreEqual(1f, uvs[i * 4].y, 1e-6f, "top of the road samples the top row");
                 Assert.AreEqual(0f, uvs[i * 4 + 3].y, 1e-6f, "end of the skirt samples the bottom row");
             }
-            // Total u equals road length / (atlas width * texel size).
-            float expectedU = chunk.Geometry.Arc[knots - 1] / (64f * skin.texelWorld);
-            Assert.AreEqual(expectedU, uvs[(knots - 1) * 4].x, 1e-3f);
+            // u follows WORLD x (so chunks join with the same texture phase): the span equals the x span / (atlas width * texel size).
+            float expectedSpan = (chunk.Geometry.Spine[knots - 1].x - chunk.Geometry.Spine[0].x) / (64f * skin.texelWorld);
+            Assert.AreEqual(expectedSpan, uvs[(knots - 1) * 4].x - uvs[0].x, 1e-3f);
         }
     }
 }
