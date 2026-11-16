@@ -15,6 +15,9 @@ namespace RoadBuilderGame.UI
 
         public static event Action Changed;
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
+        private static void HookCheatFont() { CheatPanel.FontProvider = () => Current != null && Current.displayFont != null ? Current.displayFont.sourceFontFile : null; }
+
         public static UITheme Current
         {
             get

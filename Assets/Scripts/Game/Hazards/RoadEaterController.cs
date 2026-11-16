@@ -201,7 +201,9 @@ namespace RoadBuilderGame
             {
                 Color.RGBToHSV(_variant.tint, out float h, out float sat, out float v);
                 float d = Mathf.DeltaAngle(ArtHueDeg, h * 360f);
-                m.SetFloat("_Hue", d); m.SetFloat("_Sat", Mathf.Lerp(1f, Mathf.Max(0.35f, sat), SatFollow)); m.SetFloat("_Val", Mathf.Lerp(1f, Mathf.Max(0.5f, v), ValFollow));
+                float satS = _variant.satScale > 0f ? _variant.satScale : Mathf.Lerp(1f, Mathf.Max(0.35f, sat), SatFollow);
+                float valS = _variant.valScale > 0f ? _variant.valScale : Mathf.Lerp(1f, Mathf.Max(0.5f, v), ValFollow);
+                m.SetFloat("_Hue", d); m.SetFloat("_Sat", satS); m.SetFloat("_Val", valS);
                 _vTint = Color.white;
             }
             if (_body != null) _body.sharedMaterial = m != null ? m : _defaultMat;

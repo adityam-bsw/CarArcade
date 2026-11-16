@@ -21,7 +21,8 @@ namespace RoadBuilderGame
         private readonly List<int> _tris = new List<int>();
         private readonly List<int> _backTris = new List<int>();
         private Material[] _mats2;
-        private const float BackingDepth = 0.6f;   // metres of opaque-to-clear backing under a smooth slab
+        private const float BackingDepth = 3.0f;   // metres of backing under a smooth slab (never deeper than the strip's own skirt)
+        private const float BackingSolid = 0.6f;   // share of that depth that stays fully opaque before it fades out
 
         // Atlas mapping for the segment being built (textured mode only).
         private float _uBase;         // whole tiles subtracted from u (precision); same for every vertex of a chunk
@@ -195,15 +196,17 @@ namespace RoadBuilderGame
                     Vector2 vTopIn = g.Spine[i] + g.Normals[i] * (g.HalfThick * 0.5f);   // tucked under the slab so no gap shows
                     Add(vTopIn, bc, 0f, 0f);
                     Add(vTopB, bc, 0f, 0f);
-                    Add(vTopB + new Vector2(0f, -bd), bz, 0f, 0f);
+                    Add(vTopB + new Vector2(0f, -bd * BackingSolid * ff), bc, 0f, 0f);    // opaque through most of the skirt: props and ground never show through it
+                    Add(vTopB + new Vector2(0f, -bd * ff), bz, 0f, 0f);
                 }
                 for (int i = 0; i < g.Count - 1; i++)
                 {
-                    int a = backStart + i * 3, b = backStart + (i + 1) * 3;
-                    _backTris.Add(a); _backTris.Add(b); _backTris.Add(a + 1);
-                    _backTris.Add(a + 1); _backTris.Add(b); _backTris.Add(b + 1);
-                    _backTris.Add(a + 1); _backTris.Add(b + 1); _backTris.Add(a + 2);
-                    _backTris.Add(a + 2); _backTris.Add(b + 1); _backTris.Add(b + 2);
+                    int a = backStart + i * 4, b = backStart + (i + 1) * 4;
+                    for (int k = 0; k < 3; k++)
+                    {
+                        _backTris.Add(a + k); _backTris.Add(b + k); _backTris.Add(a + k + 1);
+                        _backTris.Add(a + k + 1); _backTris.Add(b + k); _backTris.Add(b + k + 1);
+                    }
                 }
             }
 

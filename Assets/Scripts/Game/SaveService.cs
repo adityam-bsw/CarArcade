@@ -29,6 +29,8 @@ namespace RoadBuilderGame
         public string selectedVehicleId = "";
         public System.Collections.Generic.List<string> unlockedVehicleIds = new System.Collections.Generic.List<string>();
         public string selectedSurfaceId = "";
+        /// <summary>True once the player picked a road themselves. False = each world shows its own default road (the gameplay stays the starter road's).</summary>
+        public bool surfaceChosen;
         public string selectedWorldId = "";
 
         /// <summary>The stage-event run record: seed, mode and layout of the last run, so a retry replays the same ladder. Written by the run start only.</summary>

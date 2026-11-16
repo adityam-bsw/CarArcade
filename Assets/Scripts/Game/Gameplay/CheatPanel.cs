@@ -33,8 +33,12 @@ namespace RoadBuilderGame
         private IReadOnlyList<ProjectileDefinitionSO> _projs;
         private BossTierSO[] _tiers;
         private GUIStyle _btn, _lbl, _head, _box, _tog, _field, _on;
-        private Texture2D _bg, _btnBg, _onBg, _hdBg;
+        private Texture2D _bg, _btnBg, _onBg, _hdBg, _chipBg;
+        private GUIStyle _chip; private Font _uiFont;
         private bool _dragging; private float _dragStartY, _dragScroll0; private Vector2 _dragStart;
+
+        /// <summary>Set by the UI layer: the themed display font's source font, so the chip uses the game's lettering (Game cannot see the UI theme).</summary>
+        public static System.Func<Font> FontProvider;
 
         public void Init(RoadGameManager g) { _g = g; }
 
@@ -85,12 +89,24 @@ namespace RoadBuilderGame
             GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
             float vw = Screen.width / s, vh = Screen.height / s;
             var safe = Screen.safeArea; float left = safe.xMin / s + 6f;
+            if (_uiFont == null && FontProvider != null) _uiFont = FontProvider();
 
-            if (GUI.Button(new Rect(left, vh * 0.42f, 112f, 54f), _open ? "CLOSE" : "CHEAT", _open ? _head : _btn)) Toggle();
+            // The toggle is a small, semi-transparent chip (about 70 x 36 dp): top-left under PAUSE in a run, bottom-left on Home. Drawn unscaled, in screen pixels.
+            var m = GUI.matrix; GUI.matrix = Matrix4x4.identity;
+            float u = Mathf.Max(1f, Mathf.Min(Screen.width, Screen.height) / 411f);            // pixels per dp on a 411 dp short-side phone
+            float cs = Mathf.Min(Screen.width / 1920f, Screen.height / 1080f);                  // the UI canvas scale: PAUSE sits at (40, 128) in a 214 x 80 box
+            float bw = 70f * u, bh = 36f * u;
+            float bx = _g.CheatPlaying ? safe.xMin + 40f * cs : safe.xMin + 12f * u;
+            float by = _g.CheatPlaying ? Screen.height - safe.yMax + 220f * cs : Screen.height - safe.yMin - bh - 12f * u;
+            if (_chip == null) { _chip = new GUIStyle(_btn) { fontSize = 14, fontStyle = FontStyle.Bold }; _chipBg = Solid(new Color(0.12f, 0.15f, 0.24f, 0.55f)); _chip.normal.background = _chipBg; _chip.hover.background = _chipBg; _chip.normal.textColor = new Color(1f, 1f, 1f, 0.8f); _chip.hover.textColor = Color.white; if (_uiFont != null) _chip.font = _uiFont; }
+            _chip.fontSize = Mathf.RoundToInt(13f * u);
+            bool hit = GUI.Button(new Rect(bx, by, bw, bh), _open ? "CLOSE" : "CHEAT", _open ? _head : _chip);
+            GUI.matrix = m;
+            if (hit) Toggle();
             if (!_open) return;
 
             float pw = vw > vh ? Mathf.Min(vw * 0.62f, 640f) : vw - 12f;
-            var panel = new Rect(left + 118f > vw - pw ? 6f : left + 118f, 8f, Mathf.Min(pw, vw - 12f), vh - 16f);
+            var panel = new Rect(left + 118f > vw - pw ? 6f : left + 118f, 8f, Mathf.Min(pw, vw - 12f), vh - 16f);   // beside the chip
             if (vw <= vh) panel = new Rect(6f, vh * 0.42f + 60f, vw - 12f, vh * 0.58f - 68f);
             GUI.Box(panel, GUIContent.none, _box);
             GUILayout.BeginArea(new Rect(panel.x + 8f, panel.y + 8f, panel.width - 16f, panel.height - 16f));

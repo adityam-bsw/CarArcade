@@ -97,7 +97,7 @@ def sports(c):
 def monster(c):
     # frame rails + axles are drawn first; a tall cab body sits on top; the huge tyres are the wheels (drawn separately)
     rail = c.rect(1.0, 15.6, 39.0, 17.2, T("#6B7885", "#3B434D", "#252B36"), rad=4)
-    for x in (8.5, 25.5):
+    for x in [w[0] / c.S for w in c.wheels]:                                            # axle posts follow the wheel layout
         c.rect(x - 0.8, 14.6, x + 0.8, 21.0, T("#8A939B", "#59636D", "#3B434D"), rad=3)
     prof = [(2.0, 15.8, 8), (1.0, 8.2, 12), (3.6, 7.2, 8), (10.0, 6.8, 8), (13.0, 3.8, 10), (22.0, 2.6, 10), (26.0, 7.0, 6),
             (36.0, 7.6, 18), (39.0, 9.4, 12), (38.6, 15.8, 8)]
@@ -279,8 +279,7 @@ def semi(c):
     c.rect(1.0, 3.0, 3.6, 20.0, T("#C9D2DA", "#8A939B", "#59636D"), rad=2)             # rear door frame
     c.rect(2.0, 9.0, 2.8, 14.0, DSTEEL, rad=1)
     c.rect(1.0, 20.4, 49.0, 23.2, DSTEEL, rad=3)                                        # frame
-    c.rect(38.0, 22.8, 40.0, 25.0, DSTEEL, rad=1)                                       # landing leg
-    c.rect(33.0, 24.0, 45.0, 25.0, DSTEEL, rad=1)
+    c.rect(39.2, 20.4, 40.8, 22.4, DSTEEL, rad=1)                                       # landing leg (jockey wheel below)
     c.lamp(1.05, 17.6, 2.3, 19.4, TAIL, rad=3)
     c.arches(cov, "#A0AEBE", extra=0.5)
     c.gloss(cov, 25, 2.2, 40, 0.9, 0.35)
@@ -527,7 +526,7 @@ def render(vid, out, only_wheels=False):
         if with_wheels:
             c.draw_wheels(wk, accent, **wkw)
         c.save(os.path.join(out, sub, vid + ".png"))
-    for i in range(len(INV[vid]["wheels"])):
+    for i in range(len(wheels_for(vid, INV))):
         wheel_sprite(vid, i, os.path.join(out, "wheels", "%s_w%d.png" % (vid, i)), wk, accent, **wkw)
 
 if __name__ == "__main__":

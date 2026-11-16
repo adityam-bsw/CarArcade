@@ -1,6 +1,6 @@
 # Asset status
 
-Generated 2026-11-16 from `Docs/asset-manifest/items/*.json` by `tools/assets/report.py`. Do not edit by hand.
+Generated 2026-11-17 from `Docs/asset-manifest/items/*.json` by `tools/assets/report.py`. Do not edit by hand.
 
 | Category | have | todo | scouting | found | downloaded | imported | not_found | forging | forged | ready | rejected | total |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|

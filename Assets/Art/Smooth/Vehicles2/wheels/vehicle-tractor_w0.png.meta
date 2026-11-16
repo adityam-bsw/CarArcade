@@ -116,10 +116,10 @@ TextureImporter:
       name: vehicle-tractor_w0_0
       rect:
         serializedVersion: 2
-        x: 4
-        y: 4
-        width: 82
-        height: 82
+        x: 0
+        y: 0
+        width: 99
+        height: 99
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

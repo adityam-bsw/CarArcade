@@ -55,6 +55,7 @@ namespace RoadBuilderGame
         [Tooltip("Smooth rig body (wheel arches empty). Same canvas as smoothPreview.")] public Sprite smoothBody;
         [Tooltip("Smooth wheel cut-outs; cx, cy, r in smooth body pixels (= old x smoothScale).")] public WheelArt[] smoothWheels;
         public int smoothScale = 1;
+        [Tooltip("Smooth wheels come from wheels_v4.json (re-proportioned layout: own radius per wheel, third wheel allowed). Set by SmoothVehicleLinker; false = old wheels x smoothScale.")] public bool smoothV4;
 
         /// <summary>True when smooth art may be used for this vehicle (ready in the manifest and fully linked).</summary>
         [Tooltip("Vehicle: centre of mass x midway between the wheels (long wheelbase offset: bus, semi, camper, fire truck, tractor). Set by SmoothVehicleLinker.")] public bool centerMassOnWheels;
@@ -68,11 +69,11 @@ namespace RoadBuilderGame
         /// </summary>
         public VehicleRig MakeRig(ArtStyle style)
         {
-            bool smooth = style == ArtStyle.Smooth && HasSmooth && smoothWheels != null && (wheels == null || smoothWheels.Length == wheels.Length);
+            bool smooth = style == ArtStyle.Smooth && HasSmooth && smoothWheels != null && (smoothV4 || wheels == null || smoothWheels.Length == wheels.Length);
             return new VehicleRig
             {
                 id = id, body = smooth ? smoothBody : preview, width = widthUnits, mass = mass, torque = torque, speedMultiplier = speed,
-                wheels = smooth ? smoothWheels : wheels, centerMassOnWheels = centerMassOnWheels
+                wheels = smooth ? smoothWheels : wheels, centerMassOnWheels = centerMassOnWheels, perWheelPhysics = smooth && smoothV4
             };
         }
 

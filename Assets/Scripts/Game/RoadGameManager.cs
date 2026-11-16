@@ -87,6 +87,7 @@ namespace RoadBuilderGame
         // Track traits of the current surface (CatalogEntry.speedFactor / inkFactor / coinFactor); 1 = plain asphalt.
         private float _trackSpeed = 1f, _trackInk = 1f;
         private string _selVehicleId = "", _selSurfaceId = "", _selWorldId = "";
+        private bool _surfChosen;     // the player picked a road explicitly; otherwise every world draws its own default road (display only)
         private readonly HashSet<string> _unlockedVehicleIds = new HashSet<string>();
         private readonly Dictionary<string, BackgroundSkin> _worldSkins = new Dictionary<string, BackgroundSkin>();
         // Art style of the world on screen. Surfaces switch to their smooth strip only when this is Smooth, so a road never
@@ -301,7 +302,8 @@ namespace RoadBuilderGame
             truckUnlocked = _profile.truckUnlocked;
             _soundEnabled = _profile.soundEnabled;
             _selVehicleId = _profile.selectedVehicleId ?? "";
-            _selSurfaceId = _profile.selectedSurfaceId ?? "";
+            _surfChosen = _profile.surfaceChosen;
+            _selSurfaceId = _surfChosen ? (_profile.selectedSurfaceId ?? "") : "";
             _selWorldId = _profile.selectedWorldId ?? "";
             _unlockedVehicleIds.Clear();
             if (_profile.unlockedVehicleIds != null) foreach (var id in _profile.unlockedVehicleIds) _unlockedVehicleIds.Add(id);
@@ -373,6 +375,7 @@ namespace RoadBuilderGame
             _profile.soundEnabled = _soundEnabled;
             _profile.selectedVehicleId = _selVehicleId;
             _profile.selectedSurfaceId = _selSurfaceId;
+            _profile.surfaceChosen = _surfChosen;
             _profile.selectedWorldId = _selWorldId;
             _profile.unlockedVehicleIds = new List<string>(_unlockedVehicleIds);
             SaveService.Save(_profile);
@@ -448,6 +451,7 @@ namespace RoadBuilderGame
         {
             CleanupAllCars();
             ApplySurface();
+            _cheatRunway = false;
             _road.ResetRoad(-15f, 25f, 0f);
             _car = CreateSelectedCar(new Vector2(0f, 1.2f));
             _car.MotorOn = false;
@@ -462,6 +466,7 @@ namespace RoadBuilderGame
 
             ApplyWorld();
             ApplySurface();
+            _cheatRunway = false;
             _road.ResetRoad(-20f, 12f, 0f);
 
             _car = CreateSelectedCar(new Vector2(-2f, 1.2f));
@@ -525,6 +530,7 @@ namespace RoadBuilderGame
                 if (CheatInfBoost && _run != null) _run.Boost01 = 1f;
 
                 if (_car == null) return;
+                TickCheatRunway();
 
                 Vector2 carPos = _car.Body.position;
                 _distance = Mathf.Max(_distance, carPos.x - _startX);
@@ -856,7 +862,7 @@ namespace RoadBuilderGame
             m.SoundEnabled = _soundEnabled;
             m.AdaptiveChallenge = _profile != null && _profile.adaptiveChallenge;
             m.SelectedVehicleId = _selVehicleId;
-            m.SelectedSurfaceId = _selSurfaceId;
+            m.SelectedSurfaceId = _surfChosen || string.IsNullOrEmpty(_selWorldId) ? _selSurfaceId : WorldRoads.DefaultFor(_selWorldId, SelectedTheme);
             m.SelectedWorldId = _selWorldId;
             m.Gems = _profile != null ? _profile.gems : 0;
             m.BoostLevel = boostLevel;
@@ -1221,7 +1227,7 @@ namespace RoadBuilderGame
             }
             if (kind == CatalogKind.Surface)
             {
-                _selSurfaceId = id;
+                _selSurfaceId = id; _surfChosen = true;
                 ApplySurface();
             }
             else
@@ -1348,6 +1354,11 @@ namespace RoadBuilderGame
         private RoadSkin SmoothDisplaySkin(string surfaceId)
         {
             if (_worldArt != ArtStyle.Smooth) return null;
+            if (!_surfChosen)
+            {
+                var themed = RoadSkins.GetSmooth(WorldRoads.DefaultFor(_selWorldId, SelectedTheme));      // no explicit road pick: the world's own road
+                if (themed != null) return themed;
+            }
             var own = RoadSkins.GetSmooth(surfaceId);
             if (own != null) return own;
             string defId = ThemeArtStyles.DefaultSmoothRoad(SelectedTheme);

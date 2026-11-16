@@ -6,6 +6,7 @@ factor S (new canvas = old * S, so every anchor is old * S exactly). Designs are
 """
 import json, math, os
 from smoothart import *
+from vehicle_layout import wheels_for
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 INV = json.load(open(os.path.join(HERE, "vehicles2_inventory.json")))
@@ -27,7 +28,7 @@ class Ctx:
         self.x0, self.x1 = self.S + self.o, (self.W - 1) * self.S - self.o
         self.y0, self.y1 = self.S + self.o, (self.H - 1) * self.S - self.o
         self.with_wheels = with_wheels
-        self.wheels = [(w["cx"] * self.S, w["cy"] * self.S, w["r"] * self.S - 0.5, w) for w in s["wheels"]]
+        self.wheels = [(w["cx"] * self.S, w["cy"] * self.S, w["r"] * self.S - 0.5, w) for w in wheels_for(vid, INV)]
     # ---- coordinates
     def X(self, x): return self.x0 + (x - 1.0) / (self.W - 2.0) * (self.x1 - self.x0)
     def Y(self, y): return self.y0 + (y - 1.0) / (self.H - 2.0) * (self.y1 - self.y0)
@@ -97,7 +98,8 @@ class Ctx:
     def arches(self, env, deep, extra=3.0):
         """Wheel arch liners, centred on the wheel anchors, clipped to the body envelope."""
         e = env if isinstance(env, Cov) else env.cov()
-        for (cx, cy, R, _) in self.wheels:
+        for (cx, cy, R, wd) in self.wheels:
+            if wd.get("noarch"): continue
             out = self.sp.mask(); out.circle(cx, cy, R + extra * self.k + 2.0 * self.k)
             inn = self.sp.mask(); inn.circle(cx, cy, R + extra * self.k)
             self.sp.paint(out.cov().minus(inn.cov()), hexrgb(deep), clip=e)
@@ -195,7 +197,7 @@ def cl_fn(cx, cy, r):
 
 def wheel_sprite(vid, idx, path, kind="car", accent="#D8323C", **kw):
     """Stand-alone wheel PNG, size*S square, disc filling it (same as the old cut-out, so RoadCar scales it identically)."""
-    s = INV[vid]; w = s["wheels"][idx]; n = int(w["size"] * s["S"])
+    s = INV[vid]; w = wheels_for(vid, INV)[idx]; n = int(w["size"] * s["S"])
     sp = Sprite(n, n, display_ppu=s["W"] * s["S"] / s["units"])
     draw_wheel(sp, n / 2.0, n / 2.0, w["r"] * s["S"] - 0.5, sp.ppu / 200.0, kind=kind, accent=accent, **kw)
     write_png(sp.img, path)

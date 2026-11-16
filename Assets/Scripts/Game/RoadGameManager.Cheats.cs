@@ -35,6 +35,31 @@ namespace RoadBuilderGame
         public string CheatSurfaceId => _selSurfaceId;
         public string CheatArtLabel => _cArt.HasValue ? _cArt.Value.ToString() : "Default (Smooth)";
 
+        // ---------------------------------------------------------------- cheat runway
+        // A cheat jump lays 170 m of flat road, which a fast car outruns. While the flag is on, flat road keeps being laid ahead of the car (only where the player
+        // has drawn nothing), so the car never falls after a jump. Cleared when the run ends. Cheat builds only: nothing calls it otherwise.
+        private bool _cheatRunway; private float _cheatRunwayEndX;
+        private const float CheatRunwayLead = 140f, CheatRunwayChunk = 120f;
+
+        private void CheatRunwayOn(float worldX) { _cheatRunway = true; _cheatRunwayEndX = worldX + QaRunwayAheadM; }
+
+        private void TickCheatRunway()
+        {
+            if (!_cheatRunway) return;
+            if (_state != ScreenState.Playing || _car == null || !CheatsOn) { _cheatRunway = false; return; }
+            if (_brush.IsDrawing) return;
+            float cx = _car.Body.position.x;
+            if (cx + CheatRunwayLead < _cheatRunwayEndX) return;
+            float x0 = _cheatRunwayEndX, x1 = x0 + CheatRunwayChunk;
+            if (!_road.HasRoadAt(x0 + 3f))
+            {
+                _road.BeginNewSegment(new Vector2(x0, 0f), allowSnap: true);
+                for (float x = x0 + 2f; x <= x1; x += 2f) _road.AddPointToCurrent(new Vector2(x, 0f));
+                _road.EndSegment();
+            }
+            _cheatRunwayEndX = x1;
+        }
+
         // ---------------------------------------------------------------- jump
         /// <summary>Lays a flat runway at <paramref name="metres"/> and replays the director there. Past the slice gate the endless ladder takes over from that distance, so events, boss tier and stage index are the ones for that distance.</summary>
         public void CheatJump(float metres)
@@ -48,6 +73,7 @@ namespace RoadBuilderGame
                 _stage.ContinueEndless(_endlessLadder, metres, _worldCtx);
             }
             JumpRun(metres);
+            CheatRunwayOn(_startX + metres);
             var rec = _profile.lastStageRun; rec.debugJumped = true; _profile.lastStageRun = rec;
             ShowStageBanner("CHEAT JUMP " + Mathf.RoundToInt(metres) + " m");
         }
@@ -71,6 +97,7 @@ namespace RoadBuilderGame
             float start = _distance + 110f;
             _stage.Director.DebugInject(d, start, true);
             JumpRun(start - 95f);
+            CheatRunwayOn(_startX + start - 95f);
             ShowStageBanner("CHEAT EVENT " + d.id);
         }
 

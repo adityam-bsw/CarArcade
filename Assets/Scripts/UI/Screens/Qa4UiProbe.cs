@@ -42,8 +42,12 @@ namespace RoadBuilderGame.UI
             EndRt(); m.GoHome(); Done = true;
         }
 
+        /// <summary>Direct mode (w = h = 0): no render texture, the screenshots are the Game view itself at whatever fixed size it has (overlay UI and IMGUI included).</summary>
+        private bool Direct => _w <= 0;
+
         private void BeginRt()
         {
+            if (Direct) return;
             _cam = Camera.main; _rt = new RenderTexture(_w, _h, 24, RenderTextureFormat.ARGB32);
             _cam.targetTexture = _rt;
             foreach (var c in FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None))
@@ -52,6 +56,7 @@ namespace RoadBuilderGame.UI
 
         private void EndRt()
         {
+            if (Direct) return;
             foreach (var c in _canvases) if (c != null) { c.renderMode = RenderMode.ScreenSpaceOverlay; c.worldCamera = null; }
             if (_cam != null) _cam.targetTexture = null;
             if (_rt != null) _rt.Release();
@@ -60,6 +65,12 @@ namespace RoadBuilderGame.UI
         private IEnumerator Save(string path)
         {
             yield return new WaitForEndOfFrame();
+            if (Direct)
+            {
+                var shot = ScreenCapture.CaptureScreenshotAsTexture();
+                System.IO.File.WriteAllBytes(path, shot.EncodeToPNG()); Destroy(shot);
+                yield break;
+            }
             var prev = RenderTexture.active; RenderTexture.active = _rt;
             var t = new Texture2D(_w, _h, TextureFormat.RGB24, false); t.ReadPixels(new Rect(0, 0, _w, _h), 0, 0); t.Apply();
             RenderTexture.active = prev;

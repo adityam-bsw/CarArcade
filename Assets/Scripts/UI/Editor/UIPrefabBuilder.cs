@@ -42,6 +42,31 @@ namespace RoadBuilderGame.UI.Editor
             Debug.Log("[UIPrefabBuilder] HudScreen prefab rebuilt");
         }
 
+        /// <summary>Rebuilds only the screens that carry a portrait layout (Home, Worlds, Garage, Result); everything else is left byte for byte alone.</summary>
+        [MenuItem("Road Builder/UI/Build Portrait Screens Only")]
+        public static void BuildPortraitScreens()
+        {
+            _coin = Load("Assets/Resources/RoadBuilder/Coin.png");
+            _gem = Load("Assets/Resources/RoadBuilder/Pickup_Gem.png");
+            _heart = Load("Assets/Resources/RoadBuilder/Heart.png");
+            _podium = Load("Assets/Resources/RoadBuilder/Art/Podium.png");
+            _gear = Load(IconFactory.GearPath);
+            _star = Load(IconFactory.StarPath);
+            var cardPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ComponentsDir + "/CollectionCard.prefab").GetComponent<CollectionCard>();
+            _scene = EditorSceneManager.NewPreviewScene();
+            try
+            {
+                Save(BuildHome(), "HomeScreen");
+                Save(BuildWorlds(cardPrefab), "WorldsScreen");
+                Save(BuildGarage(cardPrefab), "GarageScreen");
+                Save(BuildResult(), "ResultScreen");
+            }
+            finally { EditorSceneManager.ClosePreviewScene(_scene); }
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Debug.Log("[UIPrefabBuilder] Portrait screens rebuilt");
+        }
+
         [MenuItem("Road Builder/UI/Build Screen Prefabs")]
         public static void BuildAll()
         {
@@ -111,7 +136,7 @@ namespace RoadBuilderGame.UI.Editor
             WallBackdrop(c, true);
             var full = c;                 // full-bleed parent (rails and fills that must reach the screen edges)
             c = DesignFrameRect(c);       // everything else is anchored inside the 1920x1080 frame
-            Props(c, PropMode.Full);
+            Props(full, PropMode.Full);
 
             // Grouped by area; every element keeps its own edge anchor.
             var hdrL = Group(c, "HeaderLeft");
@@ -175,7 +200,14 @@ namespace RoadBuilderGame.UI.Editor
             // Hand-stuck details that overlap the plates (never tappable).
             ArtImg(hdrL, "TapeCounter", SpriteSlot.DecoTape, TL, TL, new Vector2(300, -26), new Vector2(130, 40), -9f);
             ArtImg(hdrR, "TapeBest", SpriteSlot.DecoTape, TR, TR, new Vector2(-270, -158), new Vector2(130, 40), 11f);
-            ArtImg(controls, "StickerStar", SpriteSlot.DecoSticker, BC, BC, new Vector2(250, 214), new Vector2(104, 104), 12f);
+            var homeStar = ArtImg(controls, "StickerStar", SpriteSlot.DecoSticker, BC, BC, new Vector2(250, 214), new Vector2(104, 104), 12f);
+
+            // Portrait: the three controls stack on the floor below the door (big, thumb height); the header keeps its landscape layout.
+            Port(play.rt, BC, BC, new Vector2(0, 800), 1.9f);
+            Port(homeStar.rectTransform, BC, BC, new Vector2(470, 1060), 1.8f);
+            Port(garage.rt, BC, BC, new Vector2(-560, 300), 1.5f);
+            Port(worlds.rt, BC, BC, new Vector2(560, 300), 1.5f);
+            PortraitDone(c);
 
             var s = root.GetComponent<HomeScreen>();
             Ref(s, "coinsText", coinsText); Ref(s, "bestText", best);
@@ -232,6 +264,7 @@ namespace RoadBuilderGame.UI.Editor
 
             // Full width, 1080 high, centred; the two edge holders pin their groups to the left or right screen edge.
             var holder = Rect("Props", c);
+            holder.SetSiblingIndex(1);          // right after Background, behind the screen's frame
             holder.anchorMin = new Vector2(0, 0.5f); holder.anchorMax = new Vector2(1, 0.5f);
             holder.pivot = new Vector2(0.5f, 0.5f); holder.sizeDelta = new Vector2(0, 1080); holder.anchoredPosition = Vector2.zero;
             holder.gameObject.AddComponent<WorkshopProps>();
@@ -352,7 +385,9 @@ namespace RoadBuilderGame.UI.Editor
             var back = Rect("Background", c);
             Stretch(back, -400, -400, -400, -400);
 
+            // Above the 1080-high stage (4:3 and portrait screens) the same wall planks continue, so no flat void shows; below it the floor colour fills.
             var top = Img(back, "FillTop", SpriteSlot.None, ColorToken.Background);
+            TileFill(top, SpriteSlot.BgWallTile);
             // The fills only cover what lies above and below the 1080-high stage, so the door's opening stays see-through.
             top.rectTransform.anchorMin = new Vector2(0, 0.5f); top.rectTransform.anchorMax = Vector2.one;
             top.rectTransform.offsetMin = new Vector2(0, 540); top.rectTransform.offsetMax = Vector2.zero;
@@ -369,14 +404,15 @@ namespace RoadBuilderGame.UI.Editor
             // use the same tile origin, so the planks line up across the joins (no seams) and the door opening stays see-through.
             if (door)
             {
-                WallWindow(stage, "WallTop", 0f, 1f, 0f, 1f, new Vector4(0, 810, 0, 50));      // above the door
+                WallWindow(stage, "WallTop", 0f, 1f, 0f, 1f, new Vector4(0, 810, 0, 0));      // above the door
                 WallWindow(stage, "WallLeft", 0f, 0.5f, 0f, 2f, new Vector4(0, 330, 470, 270)); // left of the door
                 WallWindow(stage, "WallRight", 0.5f, 1f, -1f, 1f, new Vector4(470, 330, 0, 270)); // right of the door
             }
-            else WallWindow(stage, "Wall", 0f, 1f, 0f, 1f, new Vector4(0, 330, 0, 50));
+            else WallWindow(stage, "Wall", 0f, 1f, 0f, 1f, new Vector4(0, 330, 0, 0));
             TileStrip(stage, "Floor", SpriteSlot.BgFloorTile, 750, 330);
             TileStrip(stage, "HazardLine", SpriteSlot.BgHazardTile, 740, 20);
-            TileStrip(stage, "Beam", SpriteSlot.BgBeamTile, 0, 50);
+            // The ceiling beam hangs at the real top of the screen (the stage top only is the screen top on 16:9).
+            TileStrip(back, "Beam", SpriteSlot.BgBeamTile, 400, 50);
             if (door) ArtImg(stage, "Door", SpriteSlot.BgDoor, TC, TC, new Vector2(0, -270), new Vector2(940, 510));
         }
 
@@ -399,7 +435,13 @@ namespace RoadBuilderGame.UI.Editor
             img.raycastTarget = false;
             var rt = (RectTransform)go.transform;
             rt.anchorMin = new Vector2(childXMin, 0); rt.anchorMax = new Vector2(childXMax, 1);
-            rt.offsetMin = new Vector2(0, 330); rt.offsetMax = new Vector2(0, -50);   // wall band: 50 px below the stage top down to 750
+            rt.offsetMin = new Vector2(0, 330); rt.offsetMax = Vector2.zero;   // wall band: from the stage top (the ceiling beam hangs over it) down to 750
+        }
+
+        private static void TileFill(Image img, SpriteSlot slot)
+        {
+            img.sprite = ThemeSprite(slot); img.type = Image.Type.Tiled; img.color = Color.white;
+            var ti = img.GetComponent<ThemedImage>(); if (ti != null) Object.DestroyImmediate(ti);
         }
 
         private static void TileStrip(Transform stage, string name, SpriteSlot slot, float top, float height,
@@ -540,7 +582,7 @@ namespace RoadBuilderGame.UI.Editor
             WallBackdrop(c, true);
             var full = c;                 // full-bleed parent (rails and fills that must reach the screen edges)
             c = DesignFrameRect(c);       // everything else is anchored inside the 1920x1080 frame
-            Props(c, PropMode.Lamps);
+            Props(full, PropMode.Lamps);
 
             // Grouped by area; every element keeps its own edge anchor.
             var header = Group(c, "Header");
@@ -565,7 +607,7 @@ namespace RoadBuilderGame.UI.Editor
             Place(summary.rectTransform, C, C, new Vector2(0, -2), new Vector2(400, 56));
             var race = ArtButton(rightPanel, "RaceButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
                 "RACE!", 52, ColorToken.TextOnAccent, TR, TR, new Vector2(-40, -310), new Vector2(480, 187), 0f, new Vector4(100, 40, 40, 34));
-            ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -296), new Vector2(84, 84), 14f);
+            var raceStar = ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -296), new Vector2(84, 84), 14f);
 
             var rail = BuildRail(full, "Rail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 310));
             // The hint (road traits, why something is locked) sits on a dark banner so it reads against the road in the door.
@@ -575,6 +617,16 @@ namespace RoadBuilderGame.UI.Editor
             hint.enableAutoSizing = true; hint.fontSizeMin = 18; hint.fontSizeMax = 30; hint.textWrappingMode = TextWrappingModes.NoWrap;
             Stretch(hint.rectTransform, 28, 4, 28, 4);
             hintBanner.gameObject.SetActive(false);
+
+            // Portrait: tabs and the picked combination on the wall above the door, a big RACE on the floor, a taller card rail underneath.
+            Port(worldTab.rt, TC, TC, new Vector2(-330, -330), 1.45f);
+            Port(roadTab.rt, TC, TC, new Vector2(330, -330), 1.45f);
+            Port(plate.rectTransform, TC, TC, new Vector2(0, -640), 1.7f);
+            Port(race.rt, BC, BC, new Vector2(0, 760), 1.8f);
+            Port(raceStar.rectTransform, BC, BC, new Vector2(420, 1060), 1.6f);
+            Port(hintBanner.rectTransform, BC, BC, new Vector2(0, 620), 1.3f);
+            Port(rail.GetComponent<RectTransform>(), BC, BC, new Vector2(0, 6), 2f, new Vector2(-960, 310));
+            PortraitDone(c);
 
             var s = root.GetComponent<WorldsScreen>();
             Ref(s, "rail", rail);
@@ -668,7 +720,7 @@ namespace RoadBuilderGame.UI.Editor
             Place(carName.rectTransform, C, C, new Vector2(0, -2), new Vector2(380, 56));
             var action = ArtButton(rightPanel, "ActionButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
                 "EQUIP", 48, ColorToken.TextOnAccent, TR, TR, new Vector2(-40, -312), new Vector2(480, 187), 0f, new Vector4(100, 40, 40, 34), manualSprite: true);
-            ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -298), new Vector2(84, 84), 14f);
+            var actionStar = ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -298), new Vector2(84, 84), 14f);
             // Tier, strength and weakness of the focused vehicle, and the way into its mastery (stickers, colours, trim) and the scrap workshop.
             var mastery = ArtButton(rightPanel, "MasteryButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "MASTERY AND STYLE",
                 32, ColorToken.TextPrimary, TR, TR, new Vector2(-40, -516), new Vector2(480, 100), 0f, new Vector4(26, 26, 26, 26));
@@ -678,6 +730,16 @@ namespace RoadBuilderGame.UI.Editor
 
             // The vehicle rail runs along the floor.
             var rail = BuildRail(full, "VehicleRail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 290));
+
+            // Portrait: upgrades (left) and tier/mastery (right) on the wall above the door, name and a big action button on the floor, a taller rail.
+            Port((RectTransform)scrollGo.transform, TL, TL, new Vector2(30, -330), 1.5f, new Vector2(rowW + 8, 640));
+            Port(mastery.rt, TR, TR, new Vector2(-50, -330), 1.4f);
+            Port((RectTransform)profileText.transform, TR, TR, new Vector2(-54, -500), 1.4f);
+            Port(namePlate.rectTransform, BC, BC, new Vector2(0, 1130), 1.5f);
+            Port(action.rt, BC, BC, new Vector2(0, 760), 1.8f);
+            Port(actionStar.rectTransform, BC, BC, new Vector2(420, 1060), 1.6f);
+            Port(rail.GetComponent<RectTransform>(), BC, BC, new Vector2(0, 6), 2f, new Vector2(-960, 290));
+            PortraitDone(c);
 
             Ref(g, "rail", rail);
             Ref(g, "coinsText", coinsText); Ref(g, "scrapText", scrapG); Ref(g, "carNameText", carName); Ref(g, "actionLabel", action.label);
@@ -801,6 +863,18 @@ namespace RoadBuilderGame.UI.Editor
         private static Vector2 BL() => Vector2.zero;
 
         /// <summary>Full-width top slot inside the safe-area frame: <paramref name="top"/> below the top edge, side margins so text never reaches a screen edge or the boss meter.</summary>
+        // ---- Portrait variants (see PortraitLayout / DesignFrame). Canvas units: 1920 wide, 3413 high minimum. ----
+        private static readonly System.Collections.Generic.List<PortraitLayout.Entry> _port = new System.Collections.Generic.List<PortraitLayout.Entry>();
+
+        private static void Port(RectTransform rt, Vector2 anchor, Vector2 pivot, Vector2 pos, float scale, Vector2? size = null)
+            => _port.Add(new PortraitLayout.Entry { target = rt, anchorMin = anchor, anchorMax = anchor, pivot = pivot, position = pos, size = size ?? rt.sizeDelta, scale = scale });
+
+        private static void PortraitDone(RectTransform frame)
+        {
+            var pl = frame.gameObject.AddComponent<PortraitLayout>();
+            pl.Entries = _port.ToArray(); _port.Clear();
+        }
+
         private static void StackSlot(RectTransform r, float top, float height)
         {
             r.anchorMin = new Vector2(0f, 1f); r.anchorMax = new Vector2(1f, 1f); r.pivot = new Vector2(0.5f, 1f);
@@ -820,7 +894,7 @@ namespace RoadBuilderGame.UI.Editor
             c = DesignFrameRect(c);       // everything else is anchored inside the 1920x1080 frame
 
             var actions = Group(c, "Actions");
-            Props(c, PropMode.Lamps);
+            Props(full, PropMode.Lamps);
 
             // An award certificate on the wall, with the verdict on its red banner and a wax seal at the bottom.
             var cert = ArtImg(c, "Certificate", SpriteSlot.CertPaper, C, C, new Vector2(-170, 76), new Vector2(920, 640), -1.5f);
@@ -885,6 +959,16 @@ namespace RoadBuilderGame.UI.Editor
             var offerDouble = Offer("DoubleCoinsButton", "2X COINS (2 LEFT)\n<size=62%>OPTIONAL AD</size>", -166f);
             var offerRevive = Offer("ReviveButton", "REVIVE\n<size=62%>OPTIONAL AD</size>", -296f);
             var offerExtra = Offer("ExtraDailyButton", "EXTRA DAILY\n<size=62%>OPTIONAL AD</size>", -426f);
+
+            // Portrait: one centred column down the screen, spread by height (anchors are fractions of the screen height), buttons last at thumb height.
+            Port(cert.rectTransform, new Vector2(0.5f, 0.821f), C, Vector2.zero, 1.5f);
+            Port(board.rectTransform, new Vector2(0.5f, 0.528f), C, Vector2.zero, 1.9f);
+            Port(offerDouble.rt, new Vector2(0.5f, 0.351f), C, new Vector2(-440, 0), 1.3f);
+            Port(offerRevive.rt, new Vector2(0.5f, 0.351f), C, new Vector2(0, 0), 1.3f);
+            Port(offerExtra.rt, new Vector2(0.5f, 0.351f), C, new Vector2(440, 0), 1.3f);
+            Port(retry.rt, new Vector2(0.5f, 0.226f), C, Vector2.zero, 1.8f);
+            Port(menu.rt, new Vector2(0.5f, 0.098f), C, Vector2.zero, 1.4f);
+            PortraitDone(c);
 
             var s = root.GetComponent<ResultScreen>();
             Ref(s, "doubleButton", offerDouble.button); Ref(s, "reviveButton", offerRevive.button); Ref(s, "extraDailyButton", offerExtra.button);

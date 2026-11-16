@@ -3,6 +3,7 @@ using System.IO;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using RoadBuilderGame.Editor;
 
 namespace RoadBuilderGame.Tests
 {
@@ -129,6 +130,7 @@ namespace RoadBuilderGame.Tests
         [Test]
         public void SmoothWheels_AreOldWheelsTimesS_AndMatchMappingMd()
         {
+            var v4 = SmoothVehicleLinker.ReadV4();
             // MAPPING.md lists, per vehicle, new wheel cx, cy, r, size in new pixels.
             var map = new Dictionary<string, List<float[]>>();
             var lines = new List<string>(File.ReadAllLines(Folder + "MAPPING.md"));
@@ -154,6 +156,25 @@ namespace RoadBuilderGame.Tests
             foreach (var e in Catalog().entries)
             {
                 if (e.kind != CatalogKind.Vehicle || !e.HasSmooth) continue;
+                if (v4.TryGetValue(e.id, out var vc) && vc.changed)
+                {
+                    // re-proportioned vehicle: the anchors are wheels_v4.json (canvas px), MAPPING.md's old table no longer applies
+                    Assert.IsTrue(e.smoothV4, e.id + " is changed in wheels_v4.json but not linked to it (run Link Smooth Vehicles)");
+                    Assert.AreEqual(vc.wheels.Count, e.smoothWheels.Length, e.id);
+                    Assert.AreEqual(vc.canvasW, e.smoothBody.rect.width, 1e-3f, e.id + " canvas w"); Assert.AreEqual(vc.canvasH, e.smoothBody.rect.height, 1e-3f, e.id + " canvas h");
+                    Assert.AreEqual(vc.widthUnits, e.widthUnits, 1e-3f, e.id + " widthUnits unchanged");
+                    for (int i = 0; i < vc.wheels.Count; i++)
+                    {
+                        var a = vc.wheels[i]; var w = e.smoothWheels[i];
+                        Assert.AreEqual(a.cx, w.cx, Tol, e.id + " cx"); Assert.AreEqual(a.cy, w.cy, Tol, e.id + " cy"); Assert.AreEqual(a.r, w.r, Tol, e.id + " r");
+                        Assert.AreEqual(a.size, w.sprite.rect.width, 0.01f, e.id + " wheel png size");
+                        Assert.AreEqual(0f, w.visualScale, e.id + " no visual enlargement hack");
+                        Assert.GreaterOrEqual(a.cx - a.r, -0.5f, e.id + " wheel inside body bounds (left)"); Assert.LessOrEqual(a.cx + a.r, vc.canvasW + 0.5f, e.id + " (right)");
+                        Assert.GreaterOrEqual(a.cy - a.r, -0.5f, e.id + " (top)"); Assert.LessOrEqual(a.cy + a.r, vc.canvasH + 0.5f, e.id + " (bottom)");
+                    }
+                    checkedCars++;
+                    continue;
+                }
                 Assert.IsTrue(map.TryGetValue(e.id, out var rows), e.id + " missing in MAPPING.md");
                 int oldCount = e.wheels == null ? 0 : e.wheels.Length;
                 Assert.AreEqual(oldCount, e.smoothWheels.Length, e.id);
@@ -189,9 +210,10 @@ namespace RoadBuilderGame.Tests
                 g.bodySize = sr.bounds.size; g.bodyCenter = sr.bounds.center - body.position;
                 g.poly = body.GetComponent<PolygonCollider2D>().points;
                 g.mass = car.Body.mass; g.torque = car.maxTorquePerWheel;
-                foreach (var name in new[] { "BackWheel", "FrontWheel" })
+                for (int ci = 0; ci < car.transform.childCount; ci++)
                 {
-                    var t = car.transform.Find(name);
+                    var t = car.transform.GetChild(ci);
+                    if (!t.name.EndsWith("Wheel") && !t.name.StartsWith("MidWheel")) continue;
                     g.wheelPos.Add(t.position);
                     g.wheelRadius.Add(t.GetComponent<CircleCollider2D>().radius);
                     var ws = t.Find("WheelSprite");
@@ -208,9 +230,11 @@ namespace RoadBuilderGame.Tests
         public void SmoothBuild_HasSamePhysicsAndWorldGeometry_AsPixelBuild()
         {
             int n = 0;
+            var v4 = SmoothVehicleLinker.ReadV4();
             foreach (var e in Catalog().entries)
             {
                 if (e.kind != CatalogKind.Vehicle || !e.HasSmooth) continue;
+                if (v4.TryGetValue(e.id, out var vc0) && vc0.changed) { n++; continue; }      // re-proportioned: see ChangedVehicles_BuildWheelsAtV4Anchors
                 var p = Measure(e.MakeRig(ArtStyle.Pixel));
                 var s = Measure(e.MakeRig(ArtStyle.Smooth));
                 string id = e.id;
@@ -224,16 +248,61 @@ namespace RoadBuilderGame.Tests
                     Assert.AreEqual(0f, (p.wheelPos[i] - s.wheelPos[i]).magnitude, Tol, id + " wheel pos " + i);
                     Assert.AreEqual(p.wheelRadius[i], s.wheelRadius[i], Tol, id + " wheel radius " + i);
                     Assert.AreEqual(0f, (p.wheelAnchor[i] - s.wheelAnchor[i]).magnitude, Tol, id + " joint anchor " + i);
-                    // the drawn wheel may be enlarged (WheelArt.visualScale, <= 1.25) about its centre; the physics radius above is unchanged
-                    float vs = 1f;
-                    foreach (var wa in e.smoothWheels) if (wa.visualScale > 0f) vs = Mathf.Max(vs, wa.visualScale);
-                    Assert.LessOrEqual(vs, 1.25f + 1e-4f, id + " visual wheel scale");
-                    Assert.That(s.wheelSpriteSize[i].x, Is.EqualTo(p.wheelSpriteSize[i].x).Within(Tol).Or.EqualTo(p.wheelSpriteSize[i].x * vs).Within(Tol), id + " wheel sprite w " + i);
+                    foreach (var wa in e.smoothWheels) Assert.AreEqual(0f, wa.visualScale, id + " no visual wheel enlargement");
+                    Assert.AreEqual(p.wheelSpriteSize[i].x, s.wheelSpriteSize[i].x, Tol, id + " wheel sprite w " + i);
                     Assert.AreEqual(0f, (p.wheelSpriteCenter[i] - s.wheelSpriteCenter[i]).magnitude, Tol, id + " wheel sprite centre " + i);
                 }
                 n++;
             }
             Assert.AreEqual(ExpectedReadyCount(), n);
+        }
+
+        [Test]
+        public void ChangedVehicles_BuildWheelsAtV4Anchors_CentreOfMassMidAxle()
+        {
+            var v4 = SmoothVehicleLinker.ReadV4();
+            int n = 0;
+            foreach (var e in Catalog().entries)
+            {
+                if (e.kind != CatalogKind.Vehicle || !e.HasSmooth || !v4.TryGetValue(e.id, out var vc) || !vc.changed) continue;
+                var rig = e.MakeRig(ArtStyle.Smooth);
+                Assert.IsTrue(rig.perWheelPhysics, e.id);
+                var car = RoadCar.Create(Vector2.zero, rig);
+                try
+                {
+                    var joints = car.Body.GetComponents<WheelJoint2D>();
+                    Assert.AreEqual(vc.wheels.Count, joints.Length, e.id + " one joint per v4 wheel");
+                    float k = vc.widthUnits / vc.canvasW;
+                    var sorted = new List<SmoothVehicleLinker.V4Wheel>(vc.wheels); sorted.Sort((a, b) => a.cx.CompareTo(b.cx));
+                    for (int i = 0; i < sorted.Count; i++)
+                    {
+                        var a = sorted[i];
+                        var exp = new Vector2((a.cx - vc.canvasW * 0.5f) * k, (vc.canvasH * 0.5f - a.cy) * k);
+                        Assert.AreEqual(0f, (joints[i].anchor - exp).magnitude, Tol, e.id + " joint anchor " + i);
+                        Assert.AreEqual(a.worldX, exp.x, 2e-3f, e.id + " worldX"); Assert.AreEqual(a.worldY, exp.y, 2e-3f, e.id + " worldY");
+                        Assert.AreEqual(a.r * k, joints[i].connectedBody.GetComponent<CircleCollider2D>().radius, Tol, e.id + " collider radius " + i);
+                        Assert.AreEqual(a.worldR, a.r * k, 2e-3f, e.id + " worldR");
+                    }
+                    if (e.centerMassOnWheels) Assert.AreEqual((joints[0].anchor.x + joints[joints.Length - 1].anchor.x) * 0.5f, car.Body.centerOfMass.x, Tol, e.id + " centre of mass mid axle");
+                    n++;
+                }
+                finally { Object.DestroyImmediate(car.gameObject); }
+            }
+            Assert.GreaterOrEqual(n, 16);
+        }
+
+        [Test]
+        public void SemiTruck_HasThreeWheels_WithSpringJoints()
+        {
+            var rig = Catalog().Find("vehicle-semi-truck").MakeRig(ArtStyle.Smooth);
+            var car = RoadCar.Create(Vector2.zero, rig);
+            try
+            {
+                var joints = car.Body.GetComponents<WheelJoint2D>();
+                Assert.AreEqual(3, joints.Length);
+                foreach (var j in joints) { Assert.Greater(j.suspension.frequency, 0f); Assert.Greater(j.suspension.dampingRatio, 0f); }
+            }
+            finally { Object.DestroyImmediate(car.gameObject); }
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RoadBuilderGame
@@ -52,6 +53,8 @@ namespace RoadBuilderGame
         public WheelArt[] wheels;
         [Tooltip("Opt-in for long-wheelbase vehicles whose wheels sit off the body centre: puts the centre of mass (x) midway between the two wheel anchors so the body does not pitch on slopes.")]
         public bool centerMassOnWheels;
+        [Tooltip("Smooth wheel layout v4 (wheels_v4.json): every wheel in the list is a physics wheel with its own radius (3 for the tandem trucks). Off = the outer two, sharing the rear wheel's radius.")]
+        public bool perWheelPhysics;
     }
 
     public class RoadCar : MonoBehaviour
@@ -131,13 +134,14 @@ namespace RoadBuilderGame
             _backAnchor *= r; _frontAnchor *= r;
             if (r > 1f) Body.position += Vector2.up * ((r - 1f) * (_baseWheelRadius + 0.35f));      // a growing car is lifted so the bigger wheels do not start inside the road
             Quaternion rot = Quaternion.Euler(0f, 0f, Body.rotation);
-            for (int i = 0; i < 2 && _wheels != null && i < _wheels.Length; i++)
+            for (int i = 0; _wheels != null && i < _wheels.Length; i++)
             {
                 var w = _wheels[i];
                 if (w == null) continue;
+                _anchors[i] *= r;
                 w.transform.localScale = new Vector3(s, s, 1f);
                 w.mass *= mr;
-                Vector2 pos = Body.position + (Vector2)(rot * (i == 0 ? _backAnchor : _frontAnchor));
+                Vector2 pos = Body.position + (Vector2)(rot * _anchors[i]);
                 w.position = pos; w.transform.position = pos;
                 w.linearVelocity = Body.linearVelocity;
             }
@@ -150,9 +154,11 @@ namespace RoadBuilderGame
         private float _wheelRadius = 0.42f;
         private Vector2 _backAnchor;
         private Vector2 _frontAnchor;
+        private Vector2[] _anchors;          // one per physics wheel, body space, current scale
+        private float[] _baseRadii;          // one per physics wheel at scale 1
         private SpriteRenderer[] _renderers;
         private bool _invisibleWheels;
-        private WheelArt _artBack, _artFront;
+        private WheelArt[] _arts;
         private float _artScale;
         private bool _isInvincible;
         private float _invincibleTimer;
@@ -194,15 +200,29 @@ namespace RoadBuilderGame
                 foreach (var wa in wheels) { if (wa.cx < back.cx) back = wa; if (wa.cx > front.cx) front = wa; }
                 float k = w / rig.body.rect.width;
                 Vector2 Anchor(WheelArt wa) => new Vector2((wa.cx - rig.body.rect.width * 0.5f) * k, (rig.body.rect.height * 0.5f - wa.cy) * k);
-                _artBack = back; _artFront = front; _artScale = k;
-                BuildCore(position, rig.body, null, w, h, Mathf.Clamp(back.r * k, 0.18f, 1f), rig.mass, Anchor(back), Anchor(front));
+                _artScale = k;
+                if (rig.perWheelPhysics)
+                {
+                    var sorted = new List<WheelArt>(wheels);
+                    sorted.Sort((a, b) => a.cx.CompareTo(b.cx));
+                    var an = new Vector2[sorted.Count]; var rad = new float[sorted.Count];
+                    for (int i = 0; i < an.Length; i++) { an[i] = Anchor(sorted[i]); rad[i] = Mathf.Clamp(sorted[i].r * k, 0.12f, 1f); }
+                    _arts = sorted.ToArray();
+                    BuildCore(position, rig.body, null, w, h, rad[0], rig.mass, an, rad);
+                }
+                else
+                {
+                    _arts = new[] { back, front };
+                    float wrr = Mathf.Clamp(back.r * k, 0.18f, 1f);
+                    BuildCore(position, rig.body, null, w, h, wrr, rig.mass, new[] { Anchor(back), Anchor(front) }, new[] { wrr, wrr });
+                }
                 if (rig.centerMassOnWheels) Body.centerOfMass = new Vector2((Anchor(back).x + Anchor(front).x) * 0.5f, Body.centerOfMass.y);
                 return;
             }
             // No cut-outs: wheel centres sit a little inside the ends, bottoms level with the bottom of the picture.
             float ay = -h * 0.5f + wr;
             BuildCore(position, rig.body, null, w, h, wr, rig.mass,
-                new Vector2(-0.30f * w, ay), new Vector2(0.30f * w, ay));
+                new[] { new Vector2(-0.30f * w, ay), new Vector2(0.30f * w, ay) }, new[] { wr, wr });
         }
 
         void Build(Vector2 position, VehicleType type, ArtStyle art)
@@ -247,7 +267,7 @@ namespace RoadBuilderGame
                 }
             }
             if (wheelSprite == null) wheelSprite = Resources.Load<Sprite>(wheelPath);
-            BuildCore(position, bodySprite, wheelSprite, w, h, wr, mass, backAnchor, frontAnchor);
+            BuildCore(position, bodySprite, wheelSprite, w, h, wr, mass, new[] { backAnchor, frontAnchor }, new[] { wr, wr });
         }
 
         // Shared by every car: creating them per car leaked two materials per run.
@@ -256,7 +276,7 @@ namespace RoadBuilderGame
         private static PhysicsMaterial2D BodyMaterial => _bodyMat != null ? _bodyMat : (_bodyMat = new PhysicsMaterial2D("CarBody") { friction = 0.0f, bounciness = 0.02f });
 
         void BuildCore(Vector2 position, Sprite bodySprite, Sprite wheelSprite, float w, float h, float wr, float mass,
-            Vector2 backAnchor, Vector2 frontAnchor)
+            Vector2[] anchors, float[] radii)
         {
             _wheelRadius = wr; _baseWheelRadius = wr;
 
@@ -310,19 +330,23 @@ namespace RoadBuilderGame
             head.AddComponent<CarRoofSensor>().car = this;
 
             // ---- Wheels ----
-            _backAnchor = backAnchor;
-            _frontAnchor = frontAnchor;
-            _joints = new WheelJoint2D[2];
-            _wheels = new[]
+            int n = anchors.Length;
+            _anchors = (Vector2[])anchors.Clone(); _baseRadii = (float[])radii.Clone();
+            _backAnchor = anchors[0];
+            _frontAnchor = anchors[n - 1];
+            _joints = new WheelJoint2D[n];
+            _wheels = new Rigidbody2D[n];
+            for (int i = 0; i < n; i++)
             {
-                CreateWheel("BackWheel", position, backAnchor, wr, wheelSprite, tyreMat, out _joints[0]),
-                CreateWheel("FrontWheel", position, frontAnchor, wr, wheelSprite, tyreMat, out _joints[1])
-            };
+                string wn = i == 0 ? "BackWheel" : (i == n - 1 ? "FrontWheel" : "MidWheel" + i);
+                WheelArt art = _arts != null && _arts.Length == n ? _arts[i] : null;
+                _wheels[i] = CreateWheel(wn, position, anchors[i], radii[i], wheelSprite, tyreMat, art, out _joints[i]);
+            }
 
             _renderers = GetComponentsInChildren<SpriteRenderer>();
         }
 
-        Rigidbody2D CreateWheel(string name, Vector2 bodyPos, Vector2 anchor, float radius, Sprite sprite, PhysicsMaterial2D mat, out WheelJoint2D joint)
+        Rigidbody2D CreateWheel(string name, Vector2 bodyPos, Vector2 anchor, float radius, Sprite sprite, PhysicsMaterial2D mat, WheelArt art, out WheelJoint2D joint)
         {
             var go = new GameObject(name);
             go.transform.SetParent(transform, false);
@@ -340,7 +364,6 @@ namespace RoadBuilderGame
             go.AddComponent<CarImpactSensor>().car = this;
 
             // Catalogue vehicles have their wheels drawn into the body picture, so their physics wheels stay invisible.
-            var art = name == "BackWheel" ? _artBack : (name == "FrontWheel" ? _artFront : null);
             if (art != null && art.sprite != null)
             {
                 float d = art.sprite.rect.width * _artScale * (art.visualScale > 0f ? art.visualScale : 1f);      // the cut-out is a square of whole pixels; visualScale only enlarges the drawing about the anchor
@@ -423,6 +446,9 @@ namespace RoadBuilderGame
             }
         }
 
+        /// <summary>Wheel spin (deg/s) that rolls wheel i at TargetSpeed; the 0.25 floor scales with the car (a Tiny wheel is smaller than 0.25 m).</summary>
+        private float WheelTargetDeg(int i) => -TargetSpeed / Mathf.Max(0.25f * Scale, _baseRadii[i] * Scale) * Mathf.Rad2Deg;
+
         void FixedUpdate()
         {
             if (_wheels == null || Body == null) return;
@@ -443,7 +469,6 @@ namespace RoadBuilderGame
                 return;
             }
 
-            float targetDeg = -TargetSpeed / Mathf.Max(0.25f * Scale, _wheelRadius) * Mathf.Rad2Deg;      // the 0.25 floor scales with the car (a Tiny wheel is smaller than 0.25 m)
 
             // 1. Drive both WheelJoint2D motors AND direct wheel torque for unstoppable hill climbing
             if (_joints != null)
@@ -455,7 +480,7 @@ namespace RoadBuilderGame
                         _joints[i].useMotor = true;
                         _joints[i].motor = new JointMotor2D
                         {
-                            motorSpeed = targetDeg,
+                            motorSpeed = WheelTargetDeg(i),
                             maxMotorTorque = maxTorquePerWheel * 15f
                         };
                     }
@@ -463,11 +488,12 @@ namespace RoadBuilderGame
             }
 
             bool anyWheelGrounded = false;
-            foreach (var w in _wheels)
+            for (int wi = 0; wi < _wheels.Length; wi++)
             {
+                var w = _wheels[wi];
                 if (w != null)
                 {
-                    float errRad = (targetDeg - w.angularVelocity) * Mathf.Deg2Rad;
+                    float errRad = (WheelTargetDeg(wi) - w.angularVelocity) * Mathf.Deg2Rad;
                     w.AddTorque(Mathf.Clamp(errRad * torqueGain, -maxTorquePerWheel, maxTorquePerWheel));
                     if (w.IsTouchingLayers()) anyWheelGrounded = true;
                 }
@@ -545,22 +571,16 @@ namespace RoadBuilderGame
 
             if (_wheels != null && _wheels.Length >= 2)
             {
-                Vector2 backPos = targetBodyPos + _backAnchor;
-                Vector2 frontPos = targetBodyPos + _frontAnchor;
-
-                _wheels[0].linearVelocity = Vector2.zero;
-                _wheels[0].angularVelocity = 0f;
-                _wheels[0].position = backPos;
-                _wheels[0].rotation = 0f;
-                _wheels[0].transform.position = backPos;
-                _wheels[0].transform.rotation = Quaternion.identity;
-
-                _wheels[1].linearVelocity = Vector2.zero;
-                _wheels[1].angularVelocity = 0f;
-                _wheels[1].position = frontPos;
-                _wheels[1].rotation = 0f;
-                _wheels[1].transform.position = frontPos;
-                _wheels[1].transform.rotation = Quaternion.identity;
+                for (int i = 0; i < _wheels.Length; i++)
+                {
+                    Vector2 pos = targetBodyPos + _anchors[i];
+                    _wheels[i].linearVelocity = Vector2.zero;
+                    _wheels[i].angularVelocity = 0f;
+                    _wheels[i].position = pos;
+                    _wheels[i].rotation = 0f;
+                    _wheels[i].transform.position = pos;
+                    _wheels[i].transform.rotation = Quaternion.identity;
+                }
             }
 
             TriggerInvincibility(2.5f);
@@ -574,14 +594,14 @@ namespace RoadBuilderGame
         {
             const float gap = 0.01f;
             float best = float.MaxValue; bool found = false;
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; _anchors != null && i < _anchors.Length; i++)
             {
-                Vector2 c = bodyPos + (i == 0 ? _backAnchor : _frontAnchor);
+                Vector2 c = bodyPos + _anchors[i];
                 var hits = Physics2D.RaycastAll(new Vector2(c.x, c.y + 4f), Vector2.down, 10f);
                 for (int h = 0; h < hits.Length; h++)
                 {
                     if (hits[h].collider == null || hits[h].collider.isTrigger || hits[h].collider.GetComponentInParent<RoadChunk>() == null) continue;
-                    float clearance = (c.y - _wheelRadius) - hits[h].point.y;
+                    float clearance = (c.y - _baseRadii[i] * Scale) - hits[h].point.y;
                     if (clearance < best) best = clearance;
                     found = true; break;
                 }
