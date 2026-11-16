@@ -72,7 +72,7 @@ namespace RoadBuilderGame.Editor
         {
             foreach (var d in new[] { Dir + "/World", Dir + "/Tiers", Dir + "/Eaters" }) if (!AssetDatabase.IsValidFolder(d)) AssetDatabase.CreateFolder(Dir, Path.GetFileName(d));
             var art = ScriptableObject.CreateInstance<HazardArtSet>();
-            art.robotBody = Spr("robo_body", 85f); art.robotTrim = Spr("robo_trim", 85f); art.robotEye = Spr("robo_eye", 100f); art.robotAntenna = Spr("robo_antenna", 130f); art.robotJet = Spr("robo_jet", 80f);
+            FillRob0(art);
             art.tellRing = Spr("tell_ring", 96f); art.tellMarker = Spr("tell_marker", 96f); art.tellGlow = Spr("tell_glow", 96f); art.trapStrip = Spr("trap_strip", 96f); art.finishGate = Spr("finish_gate", 32f); art.vignette = Spr("vignette", 128f);
             foreach (var v in EaterVariantSO.Defaults()) { var row = Object.Instantiate(v); row.name = v.id; Save(row, Dir + "/Eaters/" + v.id + ".asset"); }
             FillEaterArt(art); Save(art, Dir + "/HazardArt.asset");
@@ -88,6 +88,27 @@ namespace RoadBuilderGame.Editor
             foreach (var t in BossTierSO.Defaults()) { var row = Object.Instantiate(t); row.name = t.id; Save(row, Dir + "/Tiers/" + t.id + ".asset"); }
             AssetDatabase.SaveAssets(); AssetDatabase.Refresh();
             Debug.Log("[Hazards] world projectiles, tiers, eater variants and art set written");
+        }
+
+        private const string Rob0Dir = "Assets/Art/Smooth/Hazards/RoB0";
+        private static Sprite Rob0(string name) { return AssetDatabase.LoadAssetAtPath<Sprite>(Rob0Dir + "/" + name + ".png"); }
+
+        /// <summary>RO-B0 rig art (ppu and pivots come from the import settings written by the art pipeline).</summary>
+        private static void FillRob0(HazardArtSet art)
+        {
+            art.rob0Idle = Rob0("rob0_body_idle"); art.rob0EyeOpen = Rob0("rob0_eye_open"); art.rob0EyeAngry = Rob0("rob0_eye_angry"); art.rob0Hurt = Rob0("rob0_eye_hurt_dizzy");
+            art.rob0Firing = Rob0("rob0_cannon_firing"); art.rob0Damaged = Rob0("rob0_body_damaged"); art.rob0Shield = Rob0("rob0_shield_bubble");
+            art.rob0Rock = Rob0("rob0_projectile_rock"); art.rob0Bolt = Rob0("rob0_projectile_bolt"); art.rob0Bubble = Rob0("rob0_projectile_bubble");
+            art.flashShader = Shader.Find("RoadBuilder/SpriteWhiteFlash");
+        }
+
+        /// <summary>Fills only the RO-B0 fields of the existing HazardArt asset (keeps every other hazard asset untouched).</summary>
+        [MenuItem("Road Builder/Stage/Assign RO-B0 Art")]
+        public static void AssignRob0Art()
+        {
+            var art = AssetDatabase.LoadAssetAtPath<HazardArtSet>(Dir + "/HazardArt.asset");
+            if (art == null) { Debug.LogError("[Hazards] HazardArt.asset missing: run Build World Hazard Assets first"); return; }
+            FillRob0(art); EditorUtility.SetDirty(art); AssetDatabase.SaveAssets(); Debug.Log("[Hazards] RO-B0 art assigned");
         }
 
         private static T Save<T>(T so, string path) where T : ScriptableObject

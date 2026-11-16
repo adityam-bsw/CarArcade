@@ -7,7 +7,11 @@ namespace RoadBuilderGame
     public class HazardArtSet : ScriptableObject
     {
         public const string ResourcePath = "Stage/Hazards/HazardArt";
-        [Header("RO-B0")] public Sprite robotBody, robotTrim, robotEye, robotAntenna, robotJet;
+        [Header("RO-B0 rig (Assets/Art/Smooth/Hazards/RoB0; poses 956x958 ppu 240 share one pivot, faces left)")]
+        public Sprite rob0Idle, rob0EyeOpen, rob0EyeAngry, rob0Hurt, rob0Firing, rob0Damaged;
+        [Tooltip("771x779, ppu 170, about 90 percent opaque: drawn at alpha 0.35 in code.")] public Sprite rob0Shield;
+        [Tooltip("Projectile art, ppu 128, about 0.85 u.")] public Sprite rob0Rock, rob0Bolt, rob0Bubble;
+        [Tooltip("RoadBuilder/SpriteWhiteFlash: white silhouette for the hurt flash. Referenced here so it is never stripped.")] public Shader flashShader;
         [Header("Shared")] public Sprite tellRing, tellMarker, tellGlow, trapStrip, finishGate, vignette;
         [Header("Road-Eater (imported dragon, Assets/Art/Smooth/Hazards/RoadEater, 40 ppu, faces left)")]
         [Tooltip("Five whole-head chomp frames.")] public Sprite[] eaterHeads = new Sprite[0];

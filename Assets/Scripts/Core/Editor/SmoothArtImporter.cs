@@ -36,13 +36,21 @@ namespace RoadBuilderGame.Editor
             }
             imp.alphaIsTransparency = true;
             imp.maxTextureSize = SmoothArt.MaxTextureSize;
-            imp.textureCompression = TextureImporterCompression.Compressed;
+            // Sun and moon discs carry a long, faint alpha halo (1 to 25 % alpha): block compression bands and darkens it, so they stay precise.
+            imp.textureCompression = IsSoftHalo(path) ? TextureImporterCompression.Uncompressed : TextureImporterCompression.Compressed;
 
             var android = imp.GetPlatformTextureSettings("Android");
             android.overridden = true;
             android.maxTextureSize = SmoothArt.MaxTextureSize;
             android.format = AndroidFormat(path);
             imp.SetPlatformTextureSettings(android);
+        }
+
+        /// <summary>True for the sun and moon sprites (bg_*_sun_256, bg_*_moon_*): Uncompressed in the editor, ASTC 4x4 on Android.</summary>
+        public static bool IsSoftHalo(string path)
+        {
+            string n = System.IO.Path.GetFileName(path);
+            return n.StartsWith("bg_") && (n.Contains("_sun_") || n.Contains("_moon_"));
         }
 
         // ASTC 6x6 for backgrounds, scenery and surfaces; 5x5 for vehicles, hazards and UI plates.
@@ -52,6 +60,7 @@ namespace RoadBuilderGame.Editor
             bool detail = p.StartsWith(SmoothArt.UiFolder, System.StringComparison.Ordinal)
                           || SmoothArt.IsVehicleFolder(p)
                           || p.StartsWith(SmoothArt.Root + "Hazards/", System.StringComparison.Ordinal);
+            if (IsSoftHalo(p)) return TextureImporterFormat.ASTC_4x4;
             return detail ? TextureImporterFormat.ASTC_5x5 : TextureImporterFormat.ASTC_6x6;
         }
     }

@@ -35,7 +35,7 @@ namespace RoadBuilderGame
         private BossTierSO[] _tiers; private BossTierSO _tier; private HazardArtSet _art; private float _lastTrap = -99f; private uint _seed;
         private readonly float[] _lastFire = new float[3] { -10f, -10f, -10f };
         private readonly ProjectileSkinSO[] _skins = new ProjectileSkinSO[3];
-        private Transform _boss; private SpriteRenderer _bossBody, _bossTrim;
+        private Transform _boss; private RoB0Rig _rig; private RoB0Fx _fx; private readonly int[] _family = new int[3]; private readonly Sprite[] _rob = new Sprite[3];
         private Vector2 _pos, _vel;
         private float _clock, _charge = 1f, _phx, _phy;
         private Pcg32 _rng;
@@ -67,6 +67,7 @@ namespace RoadBuilderGame
             _world.CanDamage = () => CanDamage(); _world.Hit = r => Hit(r); _world.Cue = id => Cue?.Invoke(id); _world.Shake = a => Shake?.Invoke(a);
             _world.Struck = shielded => _model.Resolve(shielded ? BossOutcome.HitShielded : BossOutcome.Hit);
             _world.Passed = OnWorldPassed;
+            _world.Fired = () => _rig?.Fire(); _world.Trail = (slot, pos, fam) => _fx?.Trail(16 + slot, pos, fam);
             _pool = new Proj[Count(data.bolt) + Count(data.bomb) + Count(data.roller)];
             _model.Beat += OnBeat;
             _model.Raised += OnEvent;
@@ -95,10 +96,10 @@ namespace RoadBuilderGame
             _seed = seed; _model.Reset(seed); _rng = new Pcg32(seed ^ 0x9E3779B9u); _world.Begin(); _lastTrap = -99f; _clock = 0f; _gone = false; _charge = 1f;
             _phx = _rng.NextFloat01() * 6.283f; _phy = _rng.NextFloat01() * 6.283f;
             for (int i = 0; i < _lastFire.Length; i++) _lastFire[i] = -10f;
-            ClearAll(); _boss.gameObject.SetActive(false);
+            ClearAll(); _rig.Hide(); _boss.gameObject.SetActive(false);
         }
 
-        public void Stop() { if (!_built) return; _model.Reset(1u); ClearAll(); _boss.gameObject.SetActive(false); }
+        public void Stop() { if (!_built) return; _model.Reset(1u); ClearAll(); _rig.Hide(); _boss.gameObject.SetActive(false); }
 
         /// <summary>The boss event started: hover in, 2 s intro, then phase 1.</summary>
         public void Start(Vector2 carPos) { Start(carPos, 0f, null); }
@@ -112,7 +113,7 @@ namespace RoadBuilderGame
             _model.Reset(_seed); _model.ApplyTier(_tier);
             _world.Configure(WorldProjectiles.ForWorld(worldId)); _world.Begin();
             _pos = carPos + new Vector2(16f, 13f); _vel = Vector2.zero; _gone = false;
-            _boss.gameObject.SetActive(true);
+            _boss.gameObject.SetActive(true); _boss.position = new Vector3(_pos.x, _pos.y, 0f); _rig.Enter();
             _model.Begin();
         }
 
@@ -130,6 +131,13 @@ namespace RoadBuilderGame
         {
             if (_built) return;
             for (int k = 0; k < 3; k++) if (_skins[k] == null) _skins[k] = DefaultSkin((ProjectileKind)k);
+            _art = HazardArtSet.Load();
+            if (_art == null || _art.rob0Idle == null) Debug.LogError("[RO-B0] HazardArt has no RO-B0 sprites: run Road Builder > Stage > Assign RO-B0 Art");
+            for (int k = 0; k < 3; k++)                     // the three behaviour families wear RO-B0's own projectiles unless the skin brings art: bolt = energy, bomb and roller = rock
+            {
+                var rs = _art != null ? (k == 0 ? _art.rob0Bolt : _art.rob0Rock) : null;
+                if (_skins[k].sprite == null && rs != null) { _rob[k] = rs; _family[k] = k == 0 ? 2 : 1; }
+            }
             int n = 0;
             for (int k = 0; k < 3; k++)
             {
@@ -138,7 +146,7 @@ namespace RoadBuilderGame
                 for (int i = 0; i < _poolCount[k]; i++)
                 {
                     var p = new Proj { Kind = (ProjectileKind)k, Def = def };
-                    p.Body = SpriteFactory.CreateSprite("Prj" + k + "_" + i, null, _skins[k].sprite != null ? _skins[k].sprite : SpriteFactory.Circle, _skins[k].tint, 22).transform;
+                    p.Body = SpriteFactory.CreateSprite("Prj" + k + "_" + i, null, _rob[k] != null ? _rob[k] : _skins[k].sprite != null ? _skins[k].sprite : SpriteFactory.Circle, _rob[k] != null ? Color.white : _skins[k].tint, 22).transform;
                     p.BodySr = p.Body.GetComponent<SpriteRenderer>();
                     p.Tell = SpriteFactory.CreateSprite("Tell" + k + "_" + i, null, _skins[k].tellSprite != null ? _skins[k].tellSprite : (k == 0 ? SpriteFactory.Box(Color.white) : SpriteFactory.Circle), _skins[k].tellTint, 21).transform;
                     p.TellSr = p.Tell.GetComponent<SpriteRenderer>();
@@ -151,19 +159,14 @@ namespace RoadBuilderGame
                 var r = new Ring(); r.Sr = SpriteFactory.CreateSprite("OverloadRing" + i, null, SpriteFactory.Circle, new Color(1f, 0.84f, 0.2f, 0.9f), 20); r.T = r.Sr.transform;
                 r.T.localScale = new Vector3(1.6f, 1.6f, 1f); r.T.gameObject.SetActive(false); _rings[i] = r;
             }
-            _art = HazardArtSet.Load();
             for (int i = 0; i < _traps.Length; i++)
             {
                 var t = new Trap(); t.Sr = SpriteFactory.CreateSprite("BossTrap" + i, null, _art != null && _art.trapStrip != null ? _art.trapStrip : SpriteFactory.Box(Color.white), new Color(1f, 0.25f, 0.2f, 0.8f), 13);
                 t.Tr = t.Sr.transform; t.Tr.gameObject.SetActive(false); _traps[i] = t;
             }
             _boss = new GameObject("RO-B0").transform;
-            if (_art != null && _art.robotBody != null) { BuildArtBoss(); _boss.gameObject.SetActive(false); _built = true; return; }
-            _bossTrim = SpriteFactory.CreateSprite("Trim", _boss, SpriteFactory.Circle, new Color(0.3f, 0.6f, 1f), 24); _bossTrim.transform.localScale = new Vector3(2.2f, 1.7f, 1f);
-            _bossBody = SpriteFactory.CreateSprite("Body", _boss, SpriteFactory.Circle, new Color(0.55f, 0.6f, 0.68f), 25); _bossBody.transform.localScale = new Vector3(1.9f, 1.4f, 1f);
-            var eye = SpriteFactory.CreateSprite("Eye", _boss, SpriteFactory.Circle, Color.white, 26); eye.transform.localPosition = new Vector3(-0.35f, 0.1f, 0f); eye.transform.localScale = new Vector3(0.6f, 0.6f, 1f);
-            var pupil = SpriteFactory.CreateSprite("Pupil", _boss, SpriteFactory.Circle, new Color(0.1f, 0.12f, 0.2f), 27); pupil.transform.localPosition = new Vector3(-0.45f, 0.1f, 0f); pupil.transform.localScale = new Vector3(0.28f, 0.28f, 1f);
-            var ant = SpriteFactory.CreateSprite("Antenna", _boss, SpriteFactory.Circle, new Color(0.9f, 0.9f, 0.95f), 26); ant.transform.localPosition = new Vector3(0.2f, 0.95f, 0f); ant.transform.localScale = new Vector3(0.22f, 0.5f, 1f);
+            _fx = new RoB0Fx(SpriteFactory.Circle);
+            _rig = new RoB0Rig(_boss, _art, _fx) { Shake = a => Shake?.Invoke(a) };
             _boss.gameObject.SetActive(false);
             _built = true;
         }
@@ -181,11 +184,15 @@ namespace RoadBuilderGame
             };
             _model.Tick(dt, ctx);
             Hover(dt, carPos);
-            _world.Tick(dt, carPos, carVel, _pos, _model.Phase);
+            var muzzle = Muzzle;
+            _world.Tick(dt, carPos, carVel, muzzle, _model.Phase);
             TickTraps(dt, carPos, carVel);
-            for (int i = 0; i < _pool.Length; i++) { var p = _pool[i]; if (p.Active) UpdateProj(p, dt, carPos, carVel); }
+            for (int i = 0; i < _pool.Length; i++) { var p = _pool[i]; if (p.Active) UpdateProj(p, dt, carPos, carVel, i); }
             for (int i = 0; i < _rings.Length; i++) { var r = _rings[i]; if (r.Active) UpdateRing(r, dt, carPos); }
         }
+
+        /// <summary>Cannon tip in world space (the visual muzzle: tells and shots start here).</summary>
+        private Vector2 Muzzle => _rig != null && _boss.gameObject.activeSelf ? _rig.MuzzleWorld : _pos;
 
         private int AliveCount() { int n = 0; for (int i = 0; i < _pool.Length; i++) if (_pool[i].Active && !_pool[i].Warning && !_pool[i].Dud) n++; return n; }
 
@@ -196,6 +203,7 @@ namespace RoadBuilderGame
             if (!_boss.gameObject.activeSelf) return;
             bool telling = false;
             for (int i = 0; i < _pool.Length; i++) if (_pool[i].Active && _pool[i].Stage == 0) { telling = true; break; }
+            if (!telling) telling = _world.Telling;
             _charge = Mathf.MoveTowards(_charge, telling ? 0.2f : 1f, 4f * dt);
             float ax = car.x + Mathf.Clamp(_d.hoverAhead, _d.hoverAheadMin, _d.hoverAheadMax);
             float baseY = _road.TryGetRoadYAtX(ax, out float ry) ? Mathf.Max(car.y, ry) : car.y;
@@ -210,41 +218,11 @@ namespace RoadBuilderGame
             if (!_gone && _model.State != BossState.Retreat)
             {
                 if (_hudCam == null) _hudCam = Camera.main;
-                if (_hudCam != null) { float sz = _hudCam.orthographicSize; float maxY = _hudCam.transform.position.y + sz * 0.68f - 1.3f; if (_pos.y > maxY) { _pos.y = maxY; _vel.y = Mathf.Min(_vel.y, 0f); } }
+                if (_hudCam != null) { float sz = _hudCam.orthographicSize; float maxY = _hudCam.transform.position.y + sz * 0.68f - RoB0Data.TopClearance; if (_pos.y > maxY) { _pos.y = maxY; _vel.y = Mathf.Min(_vel.y, 0f); } }
             }
             _boss.position = new Vector3(_pos.x, _pos.y, 0f);
-            _bossTrim.color = _model.Phase <= 1 ? new Color(0.3f, 0.6f, 1f) : _model.Phase == 2 ? new Color(1f, 0.85f, 0.2f) : new Color(1f, 0.55f, 0.15f);   // blue, yellow, orange; red is for damage
-            if (_gone && Mathf.Abs(_pos.x - ax) < 1f) _boss.gameObject.SetActive(false);
-        }
-
-        private static Sprite _ring;
-        /// <summary>Own procedural shield ring: the imported robo_trim art is clipped flat at the bottom of its canvas (ring wider than the 192 px texture), so a full anti-aliased ring is drawn once instead.</summary>
-        private static Sprite ShieldRing()
-        {
-            if (_ring != null) return _ring;
-            const int n = 192; var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp, name = "ShieldRing" };
-            var px = new Color32[n * n]; float c = (n - 1) * 0.5f, ro = n * 0.5f - 3f, ri = ro - 12f;
-            for (int y = 0; y < n; y++) for (int x = 0; x < n; x++)
-            {
-                float d = Mathf.Sqrt((x - c) * (x - c) + (y - c) * (y - c));
-                float a = Mathf.Clamp01(ro - d + 0.5f) * Mathf.Clamp01(d - ri + 0.5f) * 0.9f + Mathf.Clamp01(ri - d + 0.5f) * 0.18f;
-                px[y * n + x] = new Color32(255, 255, 255, (byte)(a * 255f));
-            }
-            tex.SetPixels32(px); tex.Apply(false, true);
-            _ring = Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 85f);
-            return _ring;
-        }
-
-        private void BuildArtBoss()
-        {
-            var a = _art; float ppu = 1f;
-            Transform jet = a.robotJet != null ? SpriteFactory.CreateSprite("Jet", _boss, a.robotJet, Color.white, 23).transform : null;
-            if (jet != null) jet.localPosition = new Vector3(0f, -0.95f, 0f);
-            _bossTrim = SpriteFactory.CreateSprite("Trim", _boss, ShieldRing(), new Color(0.3f, 0.6f, 1f), 24);
-            _bossBody = SpriteFactory.CreateSprite("Body", _boss, a.robotBody, Color.white, 25);
-            if (a.robotEye != null) { var e = SpriteFactory.CreateSprite("Eye", _boss, a.robotEye, Color.white, 26); e.transform.localPosition = new Vector3(-0.35f, 0.1f, 0f); }
-            if (a.robotAntenna != null) { var t = SpriteFactory.CreateSprite("Antenna", _boss, a.robotAntenna, Color.white, 26); t.transform.localPosition = new Vector3(0.2f, 0.95f, 0f); }
-            _ = ppu;
+            _rig.Tick(dt, _vel, _pos.x, car.x, telling, _model.Meter01, _model.Phase);
+            if (_gone && (_rig.IsDefeated || Mathf.Abs(_pos.x - ax) < 1f)) { _rig.Hide(); _boss.gameObject.SetActive(false); }
         }
 
         // ------------------------------------------------------------------ world projectile outcomes and road traps
@@ -300,9 +278,9 @@ namespace RoadBuilderGame
             {
                 case BossEvent.IntroStart: Banner?.Invoke(_tier != null ? "RO-B0 " + _tier.displayName.ToUpperInvariant() : "RO-B0"); Cue?.Invoke("vo.rob0.s1.boss"); break;
                 case BossEvent.RingDue: SpawnRing(); break;
-                case BossEvent.PhaseTelegraph: Cue?.Invoke("vo.rob0.boss.phase"); Cue?.Invoke("sfx.boss.phaseFlare"); Shake?.Invoke(0.3f); Banner?.Invoke("PHASE " + _model.Phase); break;
+                case BossEvent.PhaseTelegraph: _rig.PhaseTelegraph(); Cue?.Invoke("vo.rob0.boss.phase"); Cue?.Invoke("sfx.boss.phaseFlare"); Shake?.Invoke(0.3f); Banner?.Invoke("PHASE " + _model.Phase); break;
                 case BossEvent.Cleared: ClearAll(); break;
-                case BossEvent.Defeated: Cue?.Invoke("vo.rob0.boss.defeat"); Shake?.Invoke(0.5f); Decided?.Invoke(false); break;
+                case BossEvent.Defeated: _rig.Defeat(); Cue?.Invoke("vo.rob0.boss.defeat"); Shake?.Invoke(0.5f); Decided?.Invoke(false); break;
                 case BossEvent.TimedOut: Cue?.Invoke("vo.rob0.boss.retreat"); Decided?.Invoke(true); break;
                 case BossEvent.Gone: _gone = true; break;
                 case BossEvent.Overpowered: Cue?.Invoke("vo.rob0.boss.retreat"); Banner?.Invoke("RO-B0 WINS THIS ROUND"); Overpowered?.Invoke(); break;
@@ -320,7 +298,7 @@ namespace RoadBuilderGame
         {
             if (req.Kind == ProjectileKind.Bolt && _world.Has)
             {
-                if (_world.Fire(_pos, CarPosCache, CarVelCache, req.WarningOnly, _seed ^ (uint)(_clock * 997f))) _lastFire[0] = _clock;
+                if (_world.Fire(Muzzle, CarPosCache, CarVelCache, req.WarningOnly, _seed ^ (uint)(_clock * 997f))) _lastFire[0] = _clock;
                 return;
             }
             var p = Free(req.Kind); if (p == null) return;
@@ -330,7 +308,7 @@ namespace RoadBuilderGame
             {
                 case ProjectileKind.Bolt:
                 {
-                    Vector2 muzzle = _pos;
+                    Vector2 muzzle = Muzzle;
                     if (Vector2.Distance(muzzle, car) < def.minMuzzleDistance) return;          // FR-2: never from inside the safe distance
                     p.Start = muzzle; p.Target = BoltTarget(p, muzzle, car, vel);
                     p.Dir = (p.Target - muzzle).normalized; p.Aim = Mathf.Atan2(p.Dir.y, p.Dir.x) * Mathf.Rad2Deg;
@@ -380,7 +358,7 @@ namespace RoadBuilderGame
         }
 
         // ------------------------------------------------------------------ projectiles
-        private void UpdateProj(Proj p, float dt, Vector2 car, Vector2 vel)
+        private void UpdateProj(Proj p, float dt, Vector2 car, Vector2 vel, int slot)
         {
             var def = p.Def; p.T += dt;
             switch (p.Kind)
@@ -388,6 +366,12 @@ namespace RoadBuilderGame
                 case ProjectileKind.Bolt: UpdateBolt(p, def, dt, car, vel); break;
                 case ProjectileKind.Bomb: UpdateBomb(p, def, dt, car); break;
                 default: UpdateRoller(p, def, dt, car); break;
+            }
+            int fam = _family[(int)p.Kind];
+            if (fam != 0 && p.Active && p.Stage >= 1 && p.Body.gameObject.activeSelf)
+            {
+                if (p.Kind == ProjectileKind.Bomb) p.Body.Rotate(0f, 0f, -280f * dt);                // the lobbed rock tumbles
+                _fx.Trail(slot < 16 ? slot : 15, p.Body.position, fam);
             }
         }
 
@@ -397,14 +381,14 @@ namespace RoadBuilderGame
             {
                 if (!p.Locked)
                 {
-                    Vector2 target = BoltTarget(p, _pos, car, vel);
-                    float want = Mathf.Atan2(target.y - _pos.y, target.x - _pos.x) * Mathf.Rad2Deg;
+                    Vector2 mz = Muzzle; Vector2 target = BoltTarget(p, mz, car, vel);
+                    float want = Mathf.Atan2(target.y - mz.y, target.x - mz.x) * Mathf.Rad2Deg;
                     float rate = def.aimTurnRate[Mathf.Clamp(_model.Phase, 1, def.aimTurnRate.Length) - 1];
                     p.Aim = Mathf.MoveTowardsAngle(p.Aim, want, rate * dt);                      // aim tracker turns slower than a player can out-turn (FR-6)
                     p.Dir = new Vector2(Mathf.Cos(p.Aim * Mathf.Deg2Rad), Mathf.Sin(p.Aim * Mathf.Deg2Rad));
                     if (p.T >= def.tellSeconds - def.lockLeadSeconds) p.Locked = true;
                 }
-                p.Start = _pos;
+                p.Start = Muzzle;
                 float pulse = 0.5f + 0.5f * Mathf.Abs(Mathf.Sin(p.T * 14f));
                 p.Tell.position = (Vector3)(p.Start + p.Dir * 9f); p.Tell.rotation = Quaternion.Euler(0f, 0f, p.Aim); p.Tell.localScale = new Vector3(18f, p.Locked ? 0.14f : 0.08f, 1f);
                 var tc = _skins[0].tellTint; tc.a = p.Locked ? 0.9f : 0.35f + 0.4f * pulse; p.TellSr.color = tc;
@@ -412,7 +396,7 @@ namespace RoadBuilderGame
                 {
                     p.Stage = 1; p.Life = def.activeSeconds; p.Pos = p.Start; p.TravelM = car.x - p.SpawnCarX;
                     p.Tell.gameObject.SetActive(false); p.Body.gameObject.SetActive(true); p.Body.localScale = Vector3.one * _skins[0].scale;
-                    Cue?.Invoke(def.fireSfxId);
+                    Cue?.Invoke(def.fireSfxId); _rig.Fire();
                 }
                 return;
             }
@@ -436,7 +420,7 @@ namespace RoadBuilderGame
                     var tc = _skins[1].tellTint; tc.a = 0.35f + 0.45f * pulse * (p.T / def.tellSeconds + 0.3f); p.TellSr.color = tc;
                     if (p.T >= def.launchDelay)
                     {
-                        if (!p.Body.gameObject.activeSelf) { p.Start = _pos; p.Body.gameObject.SetActive(true); p.Body.localScale = Vector3.one * _skins[1].scale; Cue?.Invoke(def.fireSfxId); }
+                        if (!p.Body.gameObject.activeSelf) { p.Start = Muzzle; p.Body.gameObject.SetActive(true); p.Body.localScale = Vector3.one * _skins[1].scale; Cue?.Invoke(def.fireSfxId); _rig.Fire(); }
                         float k = Mathf.Clamp01((p.T - def.launchDelay) / def.flightSeconds);
                         p.Body.position = (Vector3)Vector2.Lerp(p.Start, p.Target, k) + Vector3.up * (4f * k * (1f - k) * 4f);
                     }
@@ -548,7 +532,7 @@ namespace RoadBuilderGame
             for (int i = 0; i < _rings.Length; i++) UnityEngine.Object.Destroy(_rings[i].T.gameObject);
             for (int i = 0; i < _traps.Length; i++) if (_traps[i] != null) UnityEngine.Object.Destroy(_traps[i].Tr.gameObject);
             _world.Destroy();
-            UnityEngine.Object.Destroy(_boss.gameObject); _built = false;
+            _rig.Destroy(); UnityEngine.Object.Destroy(_boss.gameObject); _built = false;
         }
     }
 }

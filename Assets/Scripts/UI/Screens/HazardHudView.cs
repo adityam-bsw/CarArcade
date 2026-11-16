@@ -13,6 +13,7 @@ namespace RoadBuilderGame.UI
         [SerializeField] private Image vignette;
         [SerializeField] private RectTransform meterRoot;
         [SerializeField] private Image meterFill;
+        [Tooltip("RO-B0 portrait above the meter (rob0_body_idle, aspect kept, so the art is never cut by a flat edge).")] [SerializeField] private Image robotIcon;
         [SerializeField] private TMP_Text tierText, phaseText, hitsText, subtitleText;
         [SerializeField] private CanvasGroup subtitleGroup;
 
@@ -58,6 +59,7 @@ namespace RoadBuilderGame.UI
             var m = GameServices.Model; var theme = UIThemeManager.Current; if (theme == null) return;
             bool boss = m.BossOn;
             if (meterRoot != null && meterRoot.gameObject.activeSelf != boss) meterRoot.gameObject.SetActive(boss);
+            if (robotIcon != null && robotIcon.enabled != boss) robotIcon.enabled = boss;
             if (boss)
             {
                 FitMeter();

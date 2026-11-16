@@ -12,11 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d83ac4d6c60f40adacb3f09d607cf85, type: 3}
   m_Name: HazardArt
   m_EditorClassIdentifier: RB.Game::RoadBuilderGame.HazardArtSet
-  robotBody: {fileID: 21300000, guid: ebc3a64fc84c446a4b4e4dc942986cd8, type: 3}
-  robotTrim: {fileID: 21300000, guid: 8fd36e8e5a4d744a5a88a7a5275eb994, type: 3}
-  robotEye: {fileID: 21300000, guid: f6d7155cc041b497995abea213b8eb70, type: 3}
-  robotAntenna: {fileID: 21300000, guid: 55390dbfedc964f72b37955e60d4f1d8, type: 3}
-  robotJet: {fileID: 21300000, guid: 0359037e8acad461ead8300a2b8784a0, type: 3}
+  rob0Idle: {fileID: 21300000, guid: 34448fa340afd4b558722bb5aa7c0cdf, type: 3}
+  rob0EyeOpen: {fileID: 21300000, guid: 0e9939312bb4645b59545f0f169c8ddc, type: 3}
+  rob0EyeAngry: {fileID: 21300000, guid: b089f4c7aa76e4cc6988cc7d58f37b51, type: 3}
+  rob0Hurt: {fileID: 21300000, guid: bbbf85975a14d49c0b010be22a15f854, type: 3}
+  rob0Firing: {fileID: 21300000, guid: 97087ca1bfd854ff0a4c9eab95db5b80, type: 3}
+  rob0Damaged: {fileID: 21300000, guid: 502a4460082084c929503d462f35f417, type: 3}
+  rob0Shield: {fileID: 21300000, guid: 4c8110b9112374da7bd59a4e42804949, type: 3}
+  rob0Rock: {fileID: 21300000, guid: 7c57118c9b6094d6e9d0e8408989d3ad, type: 3}
+  rob0Bolt: {fileID: 21300000, guid: 498e1e1ac24ae43a8a3bca217f8851f2, type: 3}
+  rob0Bubble: {fileID: 21300000, guid: 170476d0e338547c3985ec0664e811fa, type: 3}
+  flashShader: {fileID: 4800000, guid: 29534708820b64b0aa3201041d231f65, type: 3}
   tellRing: {fileID: 21300000, guid: 33665d39858cb4ae9aa5d82455caab93, type: 3}
   tellMarker: {fileID: 21300000, guid: 88cec6bc7700b4548bd62b1fd3669bf4, type: 3}
   tellGlow: {fileID: 21300000, guid: 3ae7bd17a97504c6b956522ea3400ee9, type: 3}

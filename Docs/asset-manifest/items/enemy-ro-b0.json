@@ -1,25 +1,37 @@
 {
   "id": "enemy-ro-b0",
   "category": "enemy",
-  "name": "RO-B0 traffic-inspector robot boss",
-  "status": "downloaded",
+  "name": "RO-B0 traffic-inspector robot boss (user-supplied, AI-generated)",
+  "status": "ready",
   "requirements": "Side-view hovering robot/drone, cartoon smooth, ideally parts (body, eye, arm/gun).",
   "have": [],
-  "notes": "Single 512x512 smooth Blender-rendered eye-bot, 3/4 view, black sphere body, red eye faces right, two antenna arms. No frames or separate parts (eye is painted on; would need crop/overlay by forge). Fit 3/5. Credit not required (appreciated: NetSysFire).",
-  "source": "https://opengameart.org/content/futuristic-drone (NetSysFire)",
-  "licence": "CC0",
-  "licence_evidence": "CC0 on creator page; Attribution not required but appreciated.",
-  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/b3ea3f91-1251-4ca5-991a-9457d21419c5/scratchpad/quarantine/robot-netsysfire-drone",
-  "bytes": 233822,
-  "sha256": "cfbc0d41725d1ac3ed78e7ea540c5e369630ce4c28c233fce5dce05e22c82a78",
-  "project_path": null,
-  "quality": 3,
+  "notes": "User-supplied GPT-generated set (user-approved exception to the no-AI rule; commercial terms must be checked by the user). 6 whole-body poses (idle, eye_open, eye_angry, eye_hurt_dizzy, cannon_firing, body_damaged) registered on the shell centroid and cropped with one shared box 956x958, pivot (0.6148,0.5471), ppu 240 (hull+cone ~3.0 units tall). Shield 771x779 ppu 170 (~4.5 units). Projectiles rock 124x123, bolt 106x122, bubble 114x119 at ppu 128 (~0.85 units). Robot faces LEFT (flip for right-facing). Cleaned by tools/art/clean_rob0.py; originals in Docs/incoming-art/RO-B0/. Quality 4. Replaces the NetSysFire candidate. Not wired.",
+  "source": "User-supplied: GPT image generation (user-run), 2026-11-16; Docs/incoming-art/RO-B0/PROVENANCE.txt",
+  "licence": "user-owned output of GPT image generation; AI-generated, user-approved exception, user must verify commercial terms",
+  "licence_evidence": "Assets/Art/Smooth/Hazards/RoB0/LICENCE_EVIDENCE.txt",
+  "download_dir": null,
+  "bytes": null,
+  "sha256": null,
+  "project_path": "Assets/Art/Smooth/Hazards/RoB0",
+  "quality": 4,
   "history": [
     {
       "date": "2026-11-16",
       "from": "todo",
       "to": "downloaded",
       "note": "NetSysFire futuristic drone CC0 quarantined"
+    },
+    {
+      "date": "2026-11-16",
+      "from": "downloaded",
+      "to": "imported",
+      "note": "inspector: user-supplied RO-B0 cleaned and imported"
+    },
+    {
+      "date": "2026-11-16",
+      "from": "downloaded",
+      "to": "ready",
+      "note": "inspector: user-supplied RO-B0 cleaned, imported, no dark rim"
     }
   ]
 }

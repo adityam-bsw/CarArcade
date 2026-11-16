@@ -21,15 +21,18 @@ namespace RoadBuilderGame.UI.Editor
             mr.anchorMin = new Vector2(1f, 0.5f); mr.anchorMax = new Vector2(1f, 0.5f); mr.pivot = new Vector2(1f, 0.5f); mr.anchoredPosition = new Vector2(-32f, 0f); mr.sizeDelta = new Vector2(232f, 560f);
             ThemeImg(meter, SpriteSlot.PanelBoard, ColorToken.Tint, false, 1f); meter.GetComponent<Image>().raycastTarget = false;
             var tier = Label(meter, "Tier", 34, ColorToken.Accent, 18f, 36f, 196f, 46f);
+            var icon = Child(meter, "RoboIcon", typeof(Image)); var ir = icon.GetComponent<RectTransform>();
+            ir.anchorMin = ir.anchorMax = new Vector2(0.5f, 1f); ir.pivot = new Vector2(0.5f, 0.5f); ir.anchoredPosition = new Vector2(0f, 24f); ir.sizeDelta = new Vector2(150f, 150f);
+            var ii = icon.GetComponent<Image>(); ii.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Smooth/Hazards/RoB0/rob0_body_idle.png"); ii.preserveAspect = true; ii.raycastTarget = false;
             var frame = Child(meter, "BarFrame", typeof(Image), typeof(ThemedImage)); var fr = frame.GetComponent<RectTransform>();
-            fr.anchorMin = fr.anchorMax = new Vector2(0.5f, 0.5f); fr.pivot = new Vector2(0.5f, 0.5f); fr.anchoredPosition = new Vector2(0f, 6f); fr.sizeDelta = new Vector2(52f, 340f);
+            fr.anchorMin = fr.anchorMax = new Vector2(0.5f, 0.5f); fr.pivot = new Vector2(0.5f, 0.5f); fr.anchoredPosition = new Vector2(0f, 10f); fr.sizeDelta = new Vector2(52f, 280f);
             ThemeImg(frame, SpriteSlot.BarBackground, ColorToken.Ink, true, 0.9f); frame.GetComponent<Image>().raycastTarget = false;
             var fill = Child(frame, "Fill", typeof(Image), typeof(ThemedImage)); Stretch(fill.GetComponent<RectTransform>(), 6f);
             ThemeImg(fill, SpriteSlot.BarFill, ColorToken.Ink, true, 1f);
             var fi = fill.GetComponent<Image>(); fi.raycastTarget = false; fi.type = Image.Type.Filled; fi.fillMethod = Image.FillMethod.Vertical; fi.fillOrigin = 0; fi.fillAmount = 0f;
             var phase = Label(meter, "Phase", 30, ColorToken.TextPrimary, 0f, 0f, 196f, 40f);
             var hits = Label(meter, "Hits", 30, ColorToken.TextPrimary, 0f, 0f, 196f, 40f);
-            Bottom(phase, 78f); Bottom(hits, 34f); TopAnchor(tier, 18f);
+            Bottom(phase, 112f); Bottom(hits, 70f); TopAnchor(tier, 46f);   // clear of the plate rim and its corner bolts
 
             var sub = Child(root, "Subtitle", typeof(CanvasGroup), typeof(Image), typeof(ThemedImage)); var sr = sub.GetComponent<RectTransform>();
             sr.anchorMin = new Vector2(0.5f, 0f); sr.anchorMax = new Vector2(0.5f, 0f); sr.pivot = new Vector2(0.5f, 0f); sr.anchoredPosition = new Vector2(0f, 190f); sr.sizeDelta = new Vector2(760f, 64f);
@@ -38,7 +41,7 @@ namespace RoadBuilderGame.UI.Editor
             sub.GetComponent<CanvasGroup>().alpha = 0f; sub.GetComponent<CanvasGroup>().blocksRaycasts = false;
 
             var so = new SerializedObject(root.GetComponent<HazardHudView>());
-            so.FindProperty("vignette").objectReferenceValue = vi; so.FindProperty("meterRoot").objectReferenceValue = mr; so.FindProperty("meterFill").objectReferenceValue = fi;
+            so.FindProperty("vignette").objectReferenceValue = vi; so.FindProperty("meterRoot").objectReferenceValue = mr; so.FindProperty("meterFill").objectReferenceValue = fi; so.FindProperty("robotIcon").objectReferenceValue = ii;
             so.FindProperty("tierText").objectReferenceValue = tier; so.FindProperty("phaseText").objectReferenceValue = phase; so.FindProperty("hitsText").objectReferenceValue = hits;
             so.FindProperty("subtitleText").objectReferenceValue = st; so.FindProperty("subtitleGroup").objectReferenceValue = sub.GetComponent<CanvasGroup>();
             so.ApplyModifiedPropertiesWithoutUndo();

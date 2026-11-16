@@ -110,8 +110,9 @@ namespace RoadBuilderGame.Tests
         [Test]
         public void SurfacesWithoutSmoothStrip_ResolveToNull_SoTheWorldDefaultIsUsed()
         {
-            Assert.IsNull(RoadSkins.GetSmooth("surface-lava-crust"));
-            Assert.IsNull(RoadSkins.GetSmooth("surface-sea-water"));
+            foreach (var id in new[] { "surface-lava-crust", "surface-sea-water", "surface-magma-bridge", "surface-river", "surface-candy", "surface-cloud", "surface-coral", "surface-beach", "surface-floating-islands", "surface-ice-bridge", "surface-rope-bridge", "surface-salt-flat" })
+                Assert.IsNotNull(RoadSkins.GetSmooth(id), id + " has its own smooth strip");
+            Assert.IsNull(RoadSkins.GetSmooth("surface-no-such-strip"));
             Assert.IsNull(RoadSkins.GetSmooth(null));
         }
 

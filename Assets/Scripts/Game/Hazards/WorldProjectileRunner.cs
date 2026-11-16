@@ -40,8 +40,15 @@ namespace RoadBuilderGame
         public Action<bool> Struck;
         public Action<string> Cue;
         public Action<float> Shake;
+        /// <summary>A projectile left the cannon (drives the robot's recoil and pose).</summary>
+        public Action Fired;
+        /// <summary>Trail puff request for RO-B0 art families: slot, position, family (1 rock, 2 bolt, 3 bubble).</summary>
+        public Action<int, Vector2, int> Trail;
+        private int _family;
         public int AliveCount { get { int n = 0; for (int i = 0; i < PoolSize; i++) if (_pool[i] != null && _pool[i].Active && !_pool[i].Warning && !_pool[i].Dud) n++; return n; } }
         public bool PatchLive => _patchLive;
+        /// <summary>True while any projectile is in its tell (the robot shows its angry pose).</summary>
+        public bool Telling { get { for (int i = 0; i < PoolSize; i++) { var p = _pool[i]; if (p != null && p.Active && p.Stage == 0) return true; } return false; } }
 
         public WorldProjectileRunner(RoadBuilder road) { _road = road; }
 
@@ -54,10 +61,13 @@ namespace RoadBuilderGame
 
         private void Skin()
         {
+            var art = HazardArtSet.Load(); _family = _d != null ? RoB0Data.FamilyForWorldProjectile(_d.id) : 0;
+            Sprite rob = art == null ? null : _family == 1 ? art.rob0Rock : _family == 2 ? art.rob0Bolt : _family == 3 ? art.rob0Bubble : null;
+            if (rob == null) _family = 0;
             for (int i = 0; i < PoolSize; i++)
             {
                 var p = _pool[i];
-                p.BodySr.sprite = _d != null && _d.sprite != null ? _d.sprite : SpriteFactory.Circle; p.BodySr.color = _d != null && _d.sprite != null ? Color.white : (_d != null ? _d.tint : Color.white);
+                p.BodySr.sprite = rob != null ? rob : _d != null && _d.sprite != null ? _d.sprite : SpriteFactory.Circle; p.BodySr.color = rob != null || (_d != null && _d.sprite != null) ? Color.white : (_d != null ? _d.tint : Color.white);
                 p.TellSr.sprite = _d != null && _d.tellSprite != null ? _d.tellSprite : (_d != null && _d.telegraph == TelegraphShape.Line ? SpriteFactory.Box(Color.white) : SpriteFactory.Circle);
             }
         }
@@ -134,7 +144,7 @@ namespace RoadBuilderGame
             if (!_built || dt <= 0f) return;
             _clock += dt;
             if (_patchLive) { _patchLeft -= dt; if (_patchLeft <= 0f) EndPatch(); else { var c = _patchSr.color; c.a = Mathf.Clamp01(_patchLeft * 2f) * 0.55f; _patchSr.color = c; } }
-            for (int i = 0; i < PoolSize; i++) { var p = _pool[i]; if (p.Active) Update(p, dt, car, vel, muzzle, phase); }
+            for (int i = 0; i < PoolSize; i++) { var p = _pool[i]; if (p.Active) { Update(p, dt, car, vel, muzzle, phase); if (_family != 0 && p.Active && p.Stage >= 1 && p.Body.gameObject.activeSelf) { if (_family == 3) p.Body.rotation = Quaternion.identity; Trail?.Invoke(i, p.Body.position, _family); } } }
         }
 
         private void Update(P p, float dt, Vector2 car, Vector2 vel, Vector2 muzzle, int phase)
@@ -158,7 +168,7 @@ namespace RoadBuilderGame
             if (ground)
             {
                 if (!p.Dud) { tr.position = new Vector3(p.Target.x, p.Target.y + 0.12f, 0f); tr.rotation = Quaternion.identity; tr.localScale = new Vector3(Mathf.Max(1.6f, d.surfaceRadius) * (0.7f + 0.3f * k), 0.45f, 1f); }
-                if (d.pattern == ProjectilePattern.Arc && !p.Body.gameObject.activeSelf && p.T >= d.tellSeconds * 0.35f) { p.Body.gameObject.SetActive(true); p.Body.localScale = Vector3.one * d.scale; Cue?.Invoke(d.fireSfxId); }
+                if (d.pattern == ProjectilePattern.Arc && !p.Body.gameObject.activeSelf && p.T >= d.tellSeconds * 0.35f) { p.Body.gameObject.SetActive(true); p.Body.localScale = Vector3.one * d.scale; Cue?.Invoke(d.fireSfxId); Fired?.Invoke(); }
                 float f = Mathf.Clamp01((p.T - d.tellSeconds * 0.35f) / Mathf.Max(0.1f, d.tellSeconds * 0.65f + d.flightSeconds * 0f));
                 if (d.pattern == ProjectilePattern.Arc && p.Body.gameObject.activeSelf) { Vector2 pos = Vector2.Lerp(p.Start, p.Target, f); pos.y += d.arcHeight * 4f * f * (1f - f); p.Body.position = pos; p.Pos = pos; }
             }
@@ -182,14 +192,14 @@ namespace RoadBuilderGame
             if (p.T < d.tellSeconds) return;
             // launch
             p.Stage = 1; p.Life = d.activeSeconds; p.TravelM = car.x - p.TravelM; p.Tell.gameObject.SetActive(false);
-            if (!p.Body.gameObject.activeSelf) { p.Body.gameObject.SetActive(true); Cue?.Invoke(d.fireSfxId); }
+            if (!p.Body.gameObject.activeSelf) { p.Body.gameObject.SetActive(true); Cue?.Invoke(d.fireSfxId); Fired?.Invoke(); }
             p.Body.localScale = Vector3.one * d.scale;
             if (ground)
             {
                 p.Start = p.Pos; p.T = 0f;
                 if (d.pattern == ProjectilePattern.Bouncing)
                 {
-                    p.Start = muzzle; p.Pos = muzzle; p.Body.gameObject.SetActive(true); Cue?.Invoke(d.fireSfxId);
+                    p.Start = muzzle; p.Pos = muzzle; p.Body.gameObject.SetActive(true); Cue?.Invoke(d.fireSfxId); Fired?.Invoke();
                     float fl = Mathf.Max(0.4f, d.flightSeconds);
                     p.Vel = new Vector2((p.Target.x - muzzle.x) / fl, (p.Target.y - muzzle.y + 7f * fl * fl) / fl);       // lands on the marker after flightSeconds (gravity 14)
                 }
