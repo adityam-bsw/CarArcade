@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: spring-blossom (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: d50f1ac8041bc48f99b4a4a0d17f8f93, type: 3}
   far: {fileID: 21300000, guid: 3444b37412293416d9217075f62e5362, type: 3}
   mid: {fileID: 21300000, guid: 55579e74ca9f3424e87d128cbe05741f, type: 3}

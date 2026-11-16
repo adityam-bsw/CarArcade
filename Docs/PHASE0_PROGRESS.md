@@ -76,3 +76,6 @@ Plain C# classes created in `RoadGameManager.Awake`, no scene changes, Inspector
 - Verified in Play mode: legacy 570 coins / engine 3 / Sport unlock migrated; saved 999 coins
   survived a Play-mode restart; test data cleaned afterwards.
 - Known limit: save is not encrypted or cloud-synced (later phase).
+
+## Road collider growth (flat-road wheel contact)
+`RoadChunk.ApplyColliders` freezes settled points into one `EdgeCollider2D` per 8 points (never rebuilt unless a point or its neighbour really changed, joined by adjacent-point ghosts) and rebuilds only the live end in a separate `_tail` collider. Measured on the drawn road (hill 0, 500 m): wheel contact 0.82-0.86 -> 1.000 (car, bus, monster truck, bicycle), lifts 0, max vertical accel 4.9-9.8 m/s^2. With hills: ~0.975, no gentle-road lifts. Probe CSV: `Application.persistentDataPath/continuity.csv`.

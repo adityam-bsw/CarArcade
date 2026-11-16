@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: moon (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: b124406462827495ea14c9b5c2bf219b, type: 3}
   far: {fileID: 21300000, guid: cd775b61a021a4c34b0cbf2464fe7d92, type: 3}
   mid: {fileID: 21300000, guid: fc01b271910164c6ab93568c2faa5303, type: 3}

@@ -19,6 +19,17 @@ namespace RoadBuilderGame
     public class RoadChunk : MonoBehaviour
     {
         private EdgeCollider2D _edge;
+        private EdgeCollider2D _tail;                 // live end of a chunk that is rebuilt while the car drives on its settled part
+        private PhysicsMaterial2D _mat;
+        private readonly List<EdgeCollider2D> _blocks = new List<EdgeCollider2D>(16);   // _blocks[0] is _edge; each frozen block is never touched again
+        private readonly List<int> _blockEnd = new List<int>(16);                       // last point index of each block
+        private int _nFrozen;                                                           // blocks in use; the rest are disabled spares
+        private int _colRebuilds;
+        private readonly List<Vector2> _part = new List<Vector2>(64);
+        private readonly List<Vector2> _prevPoints = new List<Vector2>(64);
+        /// <summary>Collider SetPoints calls so far (diagnostics and tests: a settled stretch must not be recreated while the end grows).</summary>
+        public int ColliderRebuilds => _colRebuilds;
+        private const int SettleBlock = 8;
         private RoadRenderer _renderer;
         private readonly List<Vector2> _edgePoints = new List<Vector2>();
 
@@ -72,7 +83,8 @@ namespace RoadBuilderGame
         private void ApplyGhosts()
         {
             _edge.useAdjacentStartPoint = _hasStartGhost; if (_hasStartGhost) _edge.adjacentStartPoint = _startGhost;
-            _edge.useAdjacentEndPoint = _hasEndGhost; if (_hasEndGhost) _edge.adjacentEndPoint = _endGhost;
+            if (_nFrozen == 0) { _edge.useAdjacentEndPoint = _hasEndGhost; if (_hasEndGhost) _edge.adjacentEndPoint = _endGhost; }
+            else if (_tail != null) { _tail.useAdjacentEndPoint = _hasEndGhost; if (_hasEndGhost) _tail.adjacentEndPoint = _endGhost; }
         }
 
         public void Init(PhysicsMaterial2D physicsMaterial)
@@ -84,6 +96,55 @@ namespace RoadBuilderGame
             _edge = GetComponent<EdgeCollider2D>();
             _edge.sharedMaterial = physicsMaterial;
             _edge.edgeRadius = 0.04f;
+            _mat = physicsMaterial;
+            _blocks.Clear(); _blockEnd.Clear(); _blocks.Add(_edge); _blockEnd.Add(0); _nFrozen = 0;
+        }
+
+        /// <summary>
+        /// Writes the collider. Recreating an EdgeCollider2D destroys its contacts, so while a chunk grows under the car the settled points are
+        /// frozen into small blocks (one EdgeCollider2D per SettleBlock points, never rebuilt again, joined by adjacent-point ghosts) and only the
+        /// live end is recreated. A frozen block is dropped only if one of its points or its neighbours actually changed (spline resample).
+        /// </summary>
+        private void ApplyColliders()
+        {
+            int n = _edgePoints.Count;
+            int common = 0, pn = _prevPoints.Count;
+            while (common < n && common < pn && (_edgePoints[common] - _prevPoints[common]).sqrMagnitude < 1e-10f) common++;
+            int maxM = Mathf.Min(common - 2, n - 3);       // last unchanged point whose neighbours are unchanged; the live end keeps >= 3 points
+            while (_nFrozen > 0 && _blockEnd[_nFrozen - 1] > maxM) { _nFrozen--; if (_nFrozen > 0) _blocks[_nFrozen].enabled = false; }
+            int s = _nFrozen > 0 ? _blockEnd[_nFrozen - 1] : 0;
+            while (maxM - s >= SettleBlock)
+            {
+                int e = s + SettleBlock;
+                EdgeCollider2D col;
+                if (_nFrozen == 0) col = _edge;
+                else
+                {
+                    if (_blocks.Count <= _nFrozen) { col = gameObject.AddComponent<EdgeCollider2D>(); col.sharedMaterial = _mat; col.edgeRadius = 0.04f; _blocks.Add(col); _blockEnd.Add(0); }
+                    col = _blocks[_nFrozen]; col.enabled = true;
+                }
+                _part.Clear(); for (int i = s; i <= e; i++) _part.Add(_edgePoints[i]);
+                col.SetPoints(_part); _colRebuilds++;
+                col.useAdjacentStartPoint = s == 0 ? _hasStartGhost : true; col.adjacentStartPoint = s == 0 ? _startGhost : _edgePoints[s - 1];
+                col.useAdjacentEndPoint = true; col.adjacentEndPoint = _edgePoints[e + 1];
+                _blockEnd[_nFrozen] = e;
+                _nFrozen++; s = e;
+            }
+            if (_nFrozen == 0)
+            {
+                _edge.SetPoints(_edgePoints); _colRebuilds++;
+                if (_tail != null) _tail.enabled = false;
+            }
+            else
+            {
+                if (_tail == null) { _tail = gameObject.AddComponent<EdgeCollider2D>(); _tail.sharedMaterial = _mat; _tail.edgeRadius = 0.04f; }
+                _tail.enabled = true;
+                _part.Clear(); for (int i = s; i < n; i++) _part.Add(_edgePoints[i]);
+                _tail.SetPoints(_part); _colRebuilds++;
+                _tail.useAdjacentStartPoint = true; _tail.adjacentStartPoint = _edgePoints[s - 1];
+            }
+            ApplyGhosts();
+            _prevPoints.Clear(); _prevPoints.AddRange(_edgePoints);
         }
 
         public void Build(List<Vector2> pts, int start, int end, float roadThickness, float supportDepth, RoadSkin skin, Vector2 startNormalHint = default)
@@ -102,8 +163,7 @@ namespace RoadBuilderGame
                 if (p.x > maxX) maxX = p.x;
                 _edgePoints.Add(p + Geometry.Normals[i] * (Geometry.HalfThick - 0.03f));
             }
-            _edge.SetPoints(_edgePoints);
-            ApplyGhosts();
+            ApplyColliders();
             MaxX = maxX;
 
             // Then the look, from the same geometry.

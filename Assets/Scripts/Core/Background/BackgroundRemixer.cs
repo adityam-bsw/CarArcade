@@ -151,9 +151,9 @@ namespace RoadBuilderGame
         private static BackgroundSkin[] Pool(Mood mood, ArtStyle style)
         {
             var list = new System.Collections.Generic.List<BackgroundSkin>();
-            foreach (var s in All) if (s != null && s.mood == mood && s.artStyle == style) list.Add(s);
+            foreach (var s in All) if (s != null && !s.excludeFromRemix && s.mood == mood && s.artStyle == style) list.Add(s);
             if (list.Count == 0)   // nothing in that style for this mood yet: fall back to the other style rather than an empty world
-                foreach (var s in All) if (s != null && s.mood == mood) list.Add(s);
+                foreach (var s in All) if (s != null && !s.excludeFromRemix && s.mood == mood) list.Add(s);
             return list.ToArray();
         }
 

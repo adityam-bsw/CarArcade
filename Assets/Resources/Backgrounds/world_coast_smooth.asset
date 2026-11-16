@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: coast (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 2ed90a880d1db43d78de059d82f76c09, type: 3}
   far: {fileID: 21300000, guid: 034d3777533924fba9c066fb6131925e, type: 3}
   mid: {fileID: 21300000, guid: 1a0c48cd0ed0244f297011cc7d3c2540, type: 3}

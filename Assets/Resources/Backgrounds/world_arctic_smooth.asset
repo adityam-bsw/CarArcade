@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: arctic (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 972a70859433d4916b471c4ce80a4bbf, type: 3}
   far: {fileID: 21300000, guid: 69daf158f94b74a93ab3ebcc7985f09c, type: 3}
   mid: {fileID: 21300000, guid: 950cc8ac3902d4ea7a8db49ecc1aae97, type: 3}

@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: industrial (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 2a5a762bb6e82460c9900d05eefd890e, type: 3}
   far: {fileID: 21300000, guid: 7c0233986629646258c3917889ee1133, type: 3}
   mid: {fileID: 21300000, guid: f6f23967f9fd643baa8ff05fc6c0a042, type: 3}

@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: haunted-halloween (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 8b7fc5fd54b6f4652a1ca11b81a413a3, type: 3}
   far: {fileID: 21300000, guid: 9a9a3887ee3464e69afe29e10fd6f1c2, type: 3}
   mid: {fileID: 21300000, guid: 5c237f645a0ae4d398583c75ca784482, type: 3}

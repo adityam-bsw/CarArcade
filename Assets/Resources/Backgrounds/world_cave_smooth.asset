@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: cave (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: f8d3ee09bfe8847208646daef8db2f13, type: 3}
   far: {fileID: 21300000, guid: aa651e1e0f3da4707b997f77498c0552, type: 3}
   mid: {fileID: 21300000, guid: 831230103d1e443ad9c653599271dc4f, type: 3}

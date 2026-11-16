@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: farm (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 390a9916917ad4a42bb1db8f220547dc, type: 3}
   far: {fileID: 21300000, guid: 3b9b890f10f4d4eb4962ff93ecbce117, type: 3}
   mid: {fileID: 21300000, guid: 5980eb9eb2f3b4e2a969889c4dc135be, type: 3}

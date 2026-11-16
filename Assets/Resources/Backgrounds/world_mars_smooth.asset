@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: mars (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 9811dd056e5a64e4593e6524b53230c0, type: 3}
   far: {fileID: 21300000, guid: f9eb5184970974770a61f4b11d40fd73, type: 3}
   mid: {fileID: 21300000, guid: c2b88c89b5ebf467b964dbce2cd9861e, type: 3}

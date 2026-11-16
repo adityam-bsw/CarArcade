@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: winter (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: fc4bea6b847ad4788b92644a1bc3772f, type: 3}
   far: {fileID: 21300000, guid: 7a29d0a75605f4cb9bcbe62a0654516a, type: 3}
   mid: {fileID: 21300000, guid: fc60076e6ddf749fb932b9cf0a647528, type: 3}

@@ -17,6 +17,9 @@ namespace RoadBuilderGame
         [Tooltip("Pixel (default) snaps the layers to the art-pixel grid. Smooth scrolls in float with no snapping.")]
         public ArtStyle artStyle = ArtStyle.Pixel;
 
+        [Tooltip("True for a single-world scene (the generated world_<id>_smooth sets): shown only when that world is picked, never mixed into a theme's remix pool.")]
+        public bool excludeFromRemix;
+
         [Header("Layers, back to front")]
         public Sprite sky;
         public Sprite far;

@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: synthwave (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 89047bd18018b48aa8ef72bbcb5502f9, type: 3}
   far: {fileID: 21300000, guid: 605c7313f1fb14846b781bdb12ec28ce, type: 3}
   mid: {fileID: 21300000, guid: ef71e3fac125741e4b5bb39572fcf5b8, type: 3}

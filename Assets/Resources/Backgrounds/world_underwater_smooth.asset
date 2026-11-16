@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: underwater (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 4eae0cebf768241aca2c967a77b3aeb3, type: 3}
   far: {fileID: 21300000, guid: fe5e5832171c94b01b7fcde040428aae, type: 3}
   mid: {fileID: 21300000, guid: 75f6563ada54d42da912df86f51a6fc1, type: 3}

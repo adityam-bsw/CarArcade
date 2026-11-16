@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: autumn-leaves (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 070b6249c64e942dc88e5453ee0e0072, type: 3}
   far: {fileID: 21300000, guid: d4c4842632af844babda706e35854f0a, type: 3}
   mid: {fileID: 21300000, guid: 4e6746fc5f19b4305b42617f161d71cd, type: 3}

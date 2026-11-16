@@ -29,6 +29,7 @@ namespace RoadBuilderGame.Editor
                 if (skin == null) { skin = ScriptableObject.CreateInstance<BackgroundSkin>(); AssetDatabase.CreateAsset(skin, path); }
                 skin.displayName = id + " (Smooth)";
                 skin.artStyle = ArtStyle.Smooth;
+                skin.excludeFromRemix = true;
                 skin.sky = S("bg_" + key + "_sky_4x576"); skin.far = S("bg_" + key + "_far_2048x576");
                 skin.mid = S("bg_" + key + "_mid_2048x576"); skin.near = S("bg_" + key + "_near_2048x864");
                 skin.sun = S("bg_" + key + "_sun_256");

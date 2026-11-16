@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: christmas (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: 9eecfc1c8b35d4ef2852ac80cd36aac2, type: 3}
   far: {fileID: 21300000, guid: ae90a4c45ee0e492d9c7431cec552365, type: 3}
   mid: {fileID: 21300000, guid: 1d849dd01b70243089de73f381e23cf2, type: 3}

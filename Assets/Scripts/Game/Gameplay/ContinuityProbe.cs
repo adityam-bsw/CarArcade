@@ -38,6 +38,14 @@ namespace RoadBuilderGame
         private RoadCar _car;
 
         public static float Hill = 1f;
+        /// <summary>Optional extra CSV path (for example a scratchpad file). The CSV is always also written to persistentDataPath.</summary>
+        public static string CsvPath = "";
+        private void WriteCsv(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return;
+            try { System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path)); System.IO.File.WriteAllText(path, _csv.ToString()); Log("csv -> " + path); }
+            catch (System.Exception e) { Log("csv write failed " + path + ": " + e.Message); }
+        }
         public static void Run(string vehicleIds, float metres)
         {
             Lines.Clear(); Done = false;
@@ -233,7 +241,8 @@ namespace RoadBuilderGame
                 Destroy(drawer);
                 _m.GoHome(); yield return Seconds(0.5f);
             }
-            try { System.IO.File.WriteAllText("/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/b3ea3f91-1251-4ca5-991a-9457d21419c5/scratchpad/continuity.csv", _csv.ToString()); } catch { }
+            WriteCsv(CsvPath);
+            WriteCsv(System.IO.Path.Combine(Application.persistentDataPath, "continuity.csv"));
             Done = true; Log("DONE csv written");
         }
 

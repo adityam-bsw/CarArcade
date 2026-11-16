@@ -15,6 +15,7 @@ MonoBehaviour:
   displayName: wild-west (Smooth)
   mood: 0
   artStyle: 1
+  excludeFromRemix: 1
   sky: {fileID: 21300000, guid: f5ffa0035c4de469a891de8a0f6a9c6a, type: 3}
   far: {fileID: 21300000, guid: a6da1b5cd51f24521a3e84422b09c74b, type: 3}
   mid: {fileID: 21300000, guid: 7b6b09966ffec4b099f05175065d8074, type: 3}
