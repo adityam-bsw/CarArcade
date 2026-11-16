@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import make_bg_countryside as mc
 from smoothart import *
 from make_bg_countryside import W, H, HN, SS, pdist, env, cache_cols, paint_hill, mountains
-from make_bg_worlds import sky_img, glow_disc
+from make_bg_worlds import sky_img, glow_disc, radial_bleed
 
 def spec(sky_top, sky_hor, haze, far, mid, near, prop, sun="#FFF1C2", far_amp=200, accent="#FFFFFF", mprop=None, dark=False):
     return dict(sky_top=sky_top, sky_hor=sky_hor, haze=haze, far=far, mid=mid, near=near, prop=prop, sun=sun, far_amp=far_amp, accent=accent, mprop=mprop or prop, dark=dark)
@@ -49,7 +49,7 @@ def hx(c): return hexrgb(c)
 def sun_img(sp, n=256):
     img = glow_disc(n, tuple(int(v) for v in hx(sp["sun"])), 0.65); c = n / 2
     img.paint(Mask(n, n, SS).circle(c, c, 46).cov(), vgrad(c - 46, c + 46, Ramp([(0, "#FFFFFF"), (1, sp["sun"])])))
-    return img
+    return radial_bleed(img)
 
 def make_sky(sp):
     return sky_img(Ramp([(0, sp["sky_top"]), (0.62, sp["sky_hor"]), (1, sp["haze"])]))

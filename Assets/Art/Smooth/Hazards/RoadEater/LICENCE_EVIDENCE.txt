@@ -1,0 +1,7 @@
+Source: https://opengameart.org/content/dragon-1-m484
+Author: Master484 (http://m484games.ucoz.com/)
+Licence: CC0 (listed on page). Page wording: "These graphics are in the Public Domain. Attribution is not needed."
+File: M484OrangeDragon.png 1520x758 RGBA, sha256 daba68138d6a8081c70e45edb4c4b2720ebb8c6a085185e18e6194e4014f8f97
+Contents: 4-frame head, separated upper head + lower jaw, body ball, flames, assembled worm examples. Faces left.
+Date read: 2026-11-16. Read by asset-scout.
+Inspector 2026-11-16: licence page not re-fetched (no network check in this run); evidence text above taken from scout. Sliced into parts by tools/art/slice_road_eater.py (black background keyed out). Source sheet not imported.

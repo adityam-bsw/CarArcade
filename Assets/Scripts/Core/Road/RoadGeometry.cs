@@ -20,7 +20,7 @@ namespace RoadBuilderGame
         public Vector2 StartTangent;
         public Vector2 EndTangent;
 
-        public static RoadGeometry Compute(List<Vector2> pts, int start, int end, float thickness, float supportDepth)
+        public static RoadGeometry Compute(List<Vector2> pts, int start, int end, float thickness, float supportDepth, Vector2 startNormalHint = default)
         {
             int n = end - start + 1;
             var g = new RoadGeometry
@@ -58,6 +58,9 @@ namespace RoadBuilderGame
                 if (norm.y < 0f) norm = -norm;
                 normals[i] = norm;
             }
+
+            // Chunk join: reuse the previous chunk's end normal so both colliders share the exact same boundary vertex.
+            if (startNormalHint.sqrMagnitude > 0.25f) normals[0] = startNormalHint.normalized;
 
             // Smooth normals with a 3-tap filter so ribbon thickness never pinches on tight curves
             if (n >= 3)

@@ -108,11 +108,34 @@ namespace RoadBuilderGame.Editor
                 skin.texelWorld = 1f / SmoothArt.GameplayPpu;
                 skin.lipPx = r.lip;
                 skin.tint = Color.white;
+                skin.skirtColor = SampleSkirt(RoadArt + r.file, r.lip);
                 var fr = new System.Collections.Generic.List<Texture2D>();
                 foreach (var f in Frames) if (f.id == r.id) { var ft = AssetDatabase.LoadAssetAtPath<Texture2D>(RoadArt + f.file); if (ft != null) fr.Add(ft); else Debug.LogError("[SmoothSkinFactory] missing frame " + f.file); }
                 skin.frames = fr.ToArray();
                 EditorUtility.SetDirty(skin);
             }
+        }
+
+        // Mean colour of the opaque pixels a few rows above the slab bottom (row lip + 0.38 m * 128 ppu): what the shadow skirt fades out of.
+        private static Color SampleSkirt(string path, float lipPx)
+        {
+            var tmp = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            tmp.LoadImage(File.ReadAllBytes(path));
+            int w = tmp.width, h = tmp.height;
+            int row = Mathf.Clamp(Mathf.RoundToInt(lipPx + 0.38f * SmoothArt.GameplayPpu) - 6, 0, h - 1);   // rows from the top
+            float r = 0, g = 0, b = 0, n = 0;
+            for (int dy = 0; dy < 4; dy++)
+            {
+                int y = h - 1 - Mathf.Min(h - 1, row + dy);
+                for (int x = 0; x < w; x++)
+                {
+                    var c = tmp.GetPixel(x, y);
+                    if (c.a < 0.9f) continue;
+                    r += c.r; g += c.g; b += c.b; n++;
+                }
+            }
+            Object.DestroyImmediate(tmp);
+            return n < 1 ? new Color(0f, 0f, 0f, 0f) : new Color(r / n, g / n, b / n, 1f);
         }
 
         private static Sprite S(string file) { return AssetDatabase.LoadAssetAtPath<Sprite>(BgArt + file); }

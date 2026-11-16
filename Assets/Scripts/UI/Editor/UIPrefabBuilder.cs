@@ -831,25 +831,26 @@ namespace RoadBuilderGame.UI.Editor
 
             var badge = new GameObject("NewBestBadge", typeof(RectTransform));
             badge.transform.SetParent(cert.transform, false);
-            Place((RectTransform)badge.transform, C, C, new Vector2(250, 36), new Vector2(340, 120));
-            badge.transform.localEulerAngles = new Vector3(0, 0, -10f);
-            ArtImg(badge.transform, "Stamp", SpriteSlot.StampRecord, C, C, Vector2.zero, new Vector2(340, 120));
+            Place((RectTransform)badge.transform, C, C, new Vector2(312, 252), new Vector2(250, 88));
+            badge.transform.localEulerAngles = new Vector3(0, 0, -8f);   // certificate top-right corner, clear of distance and unit
+            ArtImg(badge.transform, "Stamp", SpriteSlot.StampRecord, C, C, Vector2.zero, new Vector2(250, 88));
             var bt = Label(badge.transform, "BadgeText", "NEW BEST!", TextStyle.Heading, ColorToken.Danger, 46);
-            Place(bt.rectTransform, C, C, new Vector2(0, -2), new Vector2(290, 70));
+            Place(bt.rectTransform, C, C, new Vector2(0, -2), new Vector2(214, 52));
+            bt.enableAutoSizing = true; bt.fontSizeMin = 20; bt.fontSizeMax = 34;
 
             var counter = CoinCounter(cert.transform, C, C, new Vector2(40, -170), out var won);
             var total = Label(cert.transform, "Total", "TOTAL 0", TextStyle.Button, ColorToken.TextOnAccent, 28);
             Place(total.rectTransform, C, C, new Vector2(40, -240), new Vector2(400, 40));
 
             // The bonus board pinned beside the certificate: flips, air time, chests and gems earned in the run.
-            var board = ArtImg(c, "BonusBoard", SpriteSlot.PanelBoard, C, C, new Vector2(640, 76), new Vector2(520, 315), 2f);
+            var board = ArtImg(c, "BonusBoard", SpriteSlot.PanelBoard, C, C, new Vector2(640, 96), new Vector2(520, 360), 2f);
             var boardTitle = Label(board.transform, "Title", "BONUSES", TextStyle.Heading, ColorToken.Accent, 36);
-            Place(boardTitle.rectTransform, C, C, new Vector2(0, 84), new Vector2(380, 50));
+            Place(boardTitle.rectTransform, C, C, new Vector2(0, 104), new Vector2(380, 50));
             var bonus = Label(board.transform, "Lines", "", TextStyle.Button, ColorToken.TextPrimary, 26);
             bonus.enableAutoSizing = true; bonus.fontSizeMin = 14; bonus.fontSizeMax = 28; bonus.textWrappingMode = TextWrappingModes.Normal;
-            Place(bonus.rectTransform, C, C, new Vector2(0, -2), new Vector2(400, 150));
+            Place(bonus.rectTransform, C, C, new Vector2(0, 8), new Vector2(400, 120));
             var gemsWon = Label(board.transform, "Gems", "", TextStyle.Number, ColorToken.Accent, 34);
-            Place(gemsWon.rectTransform, C, C, new Vector2(0, -102), new Vector2(380, 44));
+            Place(gemsWon.rectTransform, C, C, new Vector2(0, -92), new Vector2(380, 44));
 
             var retry = ArtButton(actions, "RetryButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled,
                 "PLAY AGAIN", 48, ColorToken.TextOnAccent, BC, BC, new Vector2(-250, 30), new Vector2(480, 187), 0f, new Vector4(100, 40, 40, 34));
@@ -867,9 +868,9 @@ namespace RoadBuilderGame.UI.Editor
                 b.button.gameObject.SetActive(false);
                 return b;
             }
-            var offerDouble = Offer("DoubleCoinsButton", "2X COINS (2 LEFT)\n<size=62%>OPTIONAL AD</size>", -156f);
-            var offerRevive = Offer("ReviveButton", "REVIVE\n<size=62%>OPTIONAL AD</size>", -286f);
-            var offerExtra = Offer("ExtraDailyButton", "EXTRA DAILY\n<size=62%>OPTIONAL AD</size>", -416f);
+            var offerDouble = Offer("DoubleCoinsButton", "2X COINS (2 LEFT)\n<size=62%>OPTIONAL AD</size>", -166f);
+            var offerRevive = Offer("ReviveButton", "REVIVE\n<size=62%>OPTIONAL AD</size>", -296f);
+            var offerExtra = Offer("ExtraDailyButton", "EXTRA DAILY\n<size=62%>OPTIONAL AD</size>", -426f);
 
             var s = root.GetComponent<ResultScreen>();
             Ref(s, "doubleButton", offerDouble.button); Ref(s, "reviveButton", offerRevive.button); Ref(s, "extraDailyButton", offerExtra.button);

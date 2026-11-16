@@ -372,8 +372,22 @@ namespace RoadBuilderGame
 
         public bool IsInvincible => _isInvincible;
 
+        /// <summary>Cheat god mode: a steady subtle cyan tint instead of the hit-flash (set by the manager; never flickers).</summary>
+        public bool GodVisual
+        {
+            get => _godVisual;
+            set
+            {
+                if (_godVisual == value) return;
+                _godVisual = value;
+                foreach (var r in _renderers) if (r != null) r.color = value ? new Color(0.78f, 1f, 1f, 1f) : Color.white;
+            }
+        }
+        private bool _godVisual;
+
         private void Update()
         {
+            if (_godVisual) { _invincibleTimer -= Time.deltaTime; if (_invincibleTimer <= 0f) _isInvincible = false; return; }
             if (_isInvincible)
             {
                 _invincibleTimer -= Time.deltaTime;

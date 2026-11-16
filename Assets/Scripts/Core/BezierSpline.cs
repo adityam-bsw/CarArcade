@@ -73,7 +73,7 @@ namespace RoadBuilderGame
         /// Generates a sequence of ultra-smooth sampled points along a Centripetal Catmull-Rom / Cubic Bézier
         /// spline passing through the relaxed control knots, then resamples at uniform arc-length intervals.
         /// </summary>
-        public static List<Vector2> SampleSpline(List<Vector2> rawKnots, int samplesPerSpan = 10, float targetSpacing = 0.16f)
+        public static List<Vector2> SampleSpline(List<Vector2> rawKnots, int samplesPerSpan = 10, float targetSpacing = 0.16f, Vector2 startTangent = default)
         {
             var result = new List<Vector2>();
             int rawCount = rawKnots.Count;
@@ -106,7 +106,7 @@ namespace RoadBuilderGame
             // when knot spacing is uneven (e.g. fast drag vs slow drag).
             for (int i = 0; i < n - 1; i++)
             {
-                Vector2 p0 = (i == 0) ? knots[0] + (knots[0] - knots[1]) : knots[i - 1];
+                Vector2 p0 = (i == 0) ? (startTangent.sqrMagnitude > 0.25f ? knots[0] - startTangent.normalized * Vector2.Distance(knots[0], knots[1]) : knots[0] + (knots[0] - knots[1])) : knots[i - 1];
                 Vector2 p1 = knots[i];
                 Vector2 p2 = knots[i + 1];
                 Vector2 p3 = (i + 2 < n) ? knots[i + 2] : knots[n - 1] + (knots[n - 1] - knots[n - 2]);

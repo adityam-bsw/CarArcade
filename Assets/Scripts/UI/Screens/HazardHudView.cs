@@ -33,18 +33,7 @@ namespace RoadBuilderGame.UI
             var canvas = meterRoot.GetComponentInParent<Canvas>();
             float scale = canvas != null && canvas.scaleFactor > 0f ? canvas.scaleFactor : 1f;
             float inset = Mathf.Max(0f, Screen.width - Screen.safeArea.xMax) / scale;
-            var ap = meterRoot.anchoredPosition; ap.x = -(24f + inset); meterRoot.anchoredPosition = ap;
-            FitLabel(tierText, 250f); FitLabel(phaseText, -250f); FitLabel(hitsText, -290f);
-        }
-
-        private static void FitLabel(TMP_Text t, float y)
-        {
-            if (t == null) return;
-            var rt = t.rectTransform;
-            rt.anchorMin = rt.anchorMax = new Vector2(1f, 0.5f); rt.pivot = new Vector2(1f, 0.5f);
-            rt.anchoredPosition = new Vector2(0f, y); rt.sizeDelta = new Vector2(220f, 44f);
-            t.alignment = TextAlignmentOptions.MidlineRight; t.overflowMode = TextOverflowModes.Ellipsis;
-            t.enableAutoSizing = true; t.fontSizeMax = 30f; t.fontSizeMin = 14f;
+            var ap = meterRoot.anchoredPosition; ap.x = -(32f + inset); meterRoot.anchoredPosition = ap;
         }
 
         private void OnDisable() { if (GameServices.Model != null) GameServices.Model.HudChanged -= Refresh; }

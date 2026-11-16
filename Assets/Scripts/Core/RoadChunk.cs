@@ -45,12 +45,12 @@ namespace RoadBuilderGame
             _edge.edgeRadius = 0.04f;
         }
 
-        public void Build(List<Vector2> pts, int start, int end, float roadThickness, float supportDepth, RoadSkin skin)
+        public void Build(List<Vector2> pts, int start, int end, float roadThickness, float supportDepth, RoadSkin skin, Vector2 startNormalHint = default)
         {
             int n = end - start + 1;
             if (n < 2) return;
 
-            Geometry = RoadGeometry.Compute(pts, start, end, roadThickness, supportDepth);
+            Geometry = RoadGeometry.Compute(pts, start, end, roadThickness, supportDepth, startNormalHint);
 
             // Physics first: align the collider with the driving surface (slightly inset by the edge radius).
             _edgePoints.Clear();

@@ -17,6 +17,10 @@ namespace RoadBuilderGame
         private static readonly float[] StickY = { 1f, 0.95f, 0.9f, 0.85f };
         private static readonly int[] Orders = { -50, -46, -42, -38 };
         private const int FillOrder = -39;
+        // The near art is solid only in its bottom ~8% (72 of 864 px). The ground fill reaches this far (in view-scale units)
+        // above the bottom of the near layer, then fades out over FeatherUnits, so it never shows a hard edge or hides
+        // the near art's own ground line.
+        private const float FillSolidUnits = 1.1f, FeatherUnits = 0.6f;
         private const int OverlayOrder = -49, SunOrder = -48, CloudOrder = -47;   // sky < stars < sun/moon < clouds < far layer
         private const int MaxClouds = 4;
         private const float CloudPeriod = 64f;                // world units before a cloud repeats (at scale 1)
@@ -28,6 +32,7 @@ namespace RoadBuilderGame
         {
             public readonly SpriteRenderer[] layer = new SpriteRenderer[Layers];
             public SpriteRenderer fill;
+            public SpriteRenderer feather;   // soft top edge of the fill (alpha 1 at the bottom, 0 at the top)
             public SpriteRenderer overlay;
             public SpriteRenderer sun;
             public readonly SpriteRenderer[] clouds = new SpriteRenderer[MaxClouds];
@@ -41,7 +46,7 @@ namespace RoadBuilderGame
         private float _anchorX, _nextAt, _fadeStart;
         private bool _fading;
         private bool _locked;   // a single scene shown as drawn: no remix, no cross-fade
-        private static Sprite _whiteSprite;
+        private static Sprite _whiteSprite, _featherSprite;
 
         public EnvironmentTheme CurrentTheme { get; private set; } = EnvironmentTheme.Country;
 
@@ -197,11 +202,25 @@ namespace RoadBuilderGame
 
                 if (l == Layers - 1 && slot.fill != null)
                 {
-                    float bottom = y - viewH * 0.5f;
-                    slot.fill.transform.position = new Vector3(c.x, bottom - 20f, 0f);
-                    slot.fill.transform.localScale = new Vector3(viewW + 40f, 40f, 1f);
+                    // Anchored to the true bottom of the near layer (y here already includes the bottom-align shift).
+                    float nearBottom = smooth ? y - nativeH * s * 0.5f : y - viewH * 0.5f;
+                    float solidTop = nearBottom + (smooth ? FillSolidUnits * s : 0f);
+                    float h = solidTop - (nearBottom - 40f);
+                    slot.fill.transform.position = new Vector3(c.x, solidTop - h * 0.5f, 0f);
+                    slot.fill.transform.localScale = new Vector3(viewW + 40f, h, 1f);
                     var f = recipe.fill;
-                    slot.fill.color = new Color(f.r * tint.r, f.g * tint.g, f.b * tint.b, slot.alpha);
+                    // The outgoing slot keeps an opaque fill (like its sky) so the fade never lets ghost props show through.
+                    float fa = (slot == _a && anyFading) ? 1f : slot.alpha;
+                    var fc = new Color(f.r * tint.r, f.g * tint.g, f.b * tint.b, fa);
+                    slot.fill.color = fc;
+                    if (slot.feather != null)
+                    {
+                        slot.feather.enabled = smooth;
+                        float fh = FeatherUnits * s;
+                        slot.feather.transform.position = new Vector3(c.x, solidTop, 0f);   // pivot at the bottom edge
+                        slot.feather.transform.localScale = new Vector3((viewW + 40f) * 32f, fh, 1f);
+                        slot.feather.color = fc;
+                    }
                 }
             }
 
@@ -308,6 +327,13 @@ namespace RoadBuilderGame
             slot.fill.sharedMaterial = SpriteFactory.SpriteMaterial;
             slot.fill.sprite = WhiteSprite();
             slot.fill.sortingOrder = FillOrder;
+
+            var featherGo = new GameObject("FillFeather");
+            featherGo.transform.SetParent(root, false);
+            slot.feather = featherGo.AddComponent<SpriteRenderer>();
+            slot.feather.sharedMaterial = SpriteFactory.SpriteMaterial;
+            slot.feather.sprite = FeatherSprite();
+            slot.feather.sortingOrder = FillOrder;
             return slot;
         }
 
@@ -320,6 +346,24 @@ namespace RoadBuilderGame
             sr.sortingOrder = order;
             sr.enabled = false;
             return sr;
+        }
+
+        // 2x64 white strip, alpha 1 at the bottom to 0 at the top; 1 unit tall, 1/32 unit wide, pivot bottom-centre.
+        private static Sprite FeatherSprite()
+        {
+            if (_featherSprite != null) return _featherSprite;
+            var tex = new Texture2D(2, 64, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[128];
+            for (int y = 0; y < 64; y++)
+            {
+                float t = 1f - y / 63f;
+                byte a = (byte)Mathf.RoundToInt(255f * t * t * (3f - 2f * t));
+                px[y * 2] = px[y * 2 + 1] = new Color32(255, 255, 255, a);
+            }
+            tex.SetPixels32(px);
+            tex.Apply();
+            _featherSprite = Sprite.Create(tex, new Rect(0, 0, 2, 64), new Vector2(0.5f, 0f), 64f);
+            return _featherSprite;
         }
 
         private static Sprite WhiteSprite()

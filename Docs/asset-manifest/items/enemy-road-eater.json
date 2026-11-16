@@ -1,0 +1,31 @@
+{
+  "id": "enemy-road-eater",
+  "category": "enemy",
+  "name": "Road Eater monster",
+  "status": "imported",
+  "requirements": "Big chomping creature head/maw, side view, separate jaw ideal.",
+  "have": [],
+  "notes": "RECOMMENDED. 1520x758 sheet, smooth cartoon (not strict pixel), faces LEFT (flip). 4 head frames, separate upper head + lower jaw, round body ball for segments, flames. Runner-up: Kenney Monster Builder (CC0, /private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/b3ea3f91-1251-4ca5-991a-9457d21419c5/scratchpad/quarantine/roadeater-kenney-monster-builder, front-view parts, no side maw). No robot/drone found.",
+  "source": "https://opengameart.org/content/dragon-1-m484 (Master484)",
+  "licence": "CC0",
+  "licence_evidence": "These graphics are in the Public Domain. Attribution is not needed.",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/b3ea3f91-1251-4ca5-991a-9457d21419c5/scratchpad/quarantine/roadeater-m484-dragon",
+  "bytes": 37800,
+  "sha256": "daba68138d6a8081c70e45edb4c4b2720ebb8c6a085185e18e6194e4014f8f97",
+  "project_path": "Assets/Art/Smooth/Hazards/RoadEater/",
+  "quality": 4,
+  "history": [
+    {
+      "date": "2026-11-16",
+      "from": "todo",
+      "to": "downloaded",
+      "note": "M484 dragon CC0 + Kenney Monster Builder CC0 quarantined"
+    },
+    {
+      "date": "2026-11-16",
+      "from": "downloaded",
+      "to": "imported",
+      "note": "sliced and imported"
+    }
+  ]
+}

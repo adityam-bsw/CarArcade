@@ -1,0 +1,25 @@
+{
+  "id": "enemy-ro-b0",
+  "category": "enemy",
+  "name": "RO-B0 traffic-inspector robot boss",
+  "status": "downloaded",
+  "requirements": "Side-view hovering robot/drone, cartoon smooth, ideally parts (body, eye, arm/gun).",
+  "have": [],
+  "notes": "Single 512x512 smooth Blender-rendered eye-bot, 3/4 view, black sphere body, red eye faces right, two antenna arms. No frames or separate parts (eye is painted on; would need crop/overlay by forge). Fit 3/5. Credit not required (appreciated: NetSysFire).",
+  "source": "https://opengameart.org/content/futuristic-drone (NetSysFire)",
+  "licence": "CC0",
+  "licence_evidence": "CC0 on creator page; Attribution not required but appreciated.",
+  "download_dir": "/private/tmp/claude-503/-Users-Aditya-unity-projects-CarArcade/b3ea3f91-1251-4ca5-991a-9457d21419c5/scratchpad/quarantine/robot-netsysfire-drone",
+  "bytes": 233822,
+  "sha256": "cfbc0d41725d1ac3ed78e7ea540c5e369630ce4c28c233fce5dce05e22c82a78",
+  "project_path": null,
+  "quality": 3,
+  "history": [
+    {
+      "date": "2026-11-16",
+      "from": "todo",
+      "to": "downloaded",
+      "note": "NetSysFire futuristic drone CC0 quarantined"
+    }
+  ]
+}

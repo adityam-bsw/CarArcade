@@ -44,6 +44,8 @@ namespace RoadBuilderGame
             SurfaceSlowMul = slowMul <= 0f ? 1f : slowMul; SurfaceEatMul = eatMul <= 0f ? 1f : eatMul;
             if (stunSeconds > 0f && StunLeft <= 0f && StunCooldown <= 0f) { StunLeft = stunSeconds; StunCooldown = stunSeconds + 4f; }
         }
+        /// <summary>Cheat spawn: own timeout in metres of Eater-relative distance (0 = the data's timeoutDistance). Cleared by Reset.</summary>
+        public float TimeoutOverrideS;
         public MonsterDefinitionSO Data => _d;
 
         public event Action<EaterEvent> Raised;
@@ -52,7 +54,7 @@ namespace RoadBuilderGame
 
         public void Reset(uint seed)
         {
-            SurfaceSlowMul = SurfaceEatMul = 1f; StunLeft = StunCooldown = 0f;
+            SurfaceSlowMul = SurfaceEatMul = 1f; StunLeft = StunCooldown = 0f; TimeoutOverrideS = 0f;
             State = EaterState.Dormant; Band = EaterBand.Calm; S = Gap = Speed = EatFront = 0f;
             _chewLeft = _chewCooldown = _surgeTelegraphLeft = _surgeLeft = _snapLeft = _snapAirborne = _freezeLeft = _exitLeft = 0f;
             _escapeHold = _belowResetFor = _warnClock = _nearCooldown = _graceLeft = 0f; _lowGapAgo = -1f; _jumps = 0;
@@ -132,7 +134,7 @@ namespace RoadBuilderGame
             }
 
             Gap = carS - S;
-            if (carS >= _d.timeoutDistance) { Retreat(true); return; }
+            if (carS >= (TimeoutOverrideS > 0f ? TimeoutOverrideS : _d.timeoutDistance)) { Retreat(true); return; }
 
             // ---- snap
             if (State == EaterState.Snap)

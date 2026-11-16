@@ -1448,7 +1448,7 @@ namespace RoadBuilderGame
             // Behaviour modules registered by event id on the existing run controller (no switch): the director only knows ids and distances.
             _stage.Register("MON-EATER", new DelegateBehaviour(
                 s => { ProgressionEvents.Record(_profile, ProgressionEvent.MonsterReached); _eater.StartChase(_car.Body.position.x); },
-                s => { if (!_runEnding && _eater.Model.Chasing) _eater.Model.Retreat(true); }));      // the window ended at 1750 m: timeout retreat
+                s => { if (!_runEnding && !_cEaterOwn && _eater.Model.Chasing) _eater.Model.Retreat(true); }));      // the window ended at 1750 m: timeout retreat
             _stage.Register("BOS-ROB0", new DelegateBehaviour(
                 s => { ProgressionEvents.Record(_profile, ProgressionEvent.BossReached); _boss.Start(_car.Body.position, _distance, _hazardWorldId); },
                 s => { },                                                                              // the fight outlives its planned window: it ends by Overload or the 105 s timeout
@@ -1470,6 +1470,7 @@ namespace RoadBuilderGame
         private void TickHazards(Vector2 carPos, float dt)
         {
             if (_hitGraceLeft > 0f) _hitGraceLeft -= dt;
+            if (_car != null) _car.GodVisual = CheatGod;
             _nearLedger.Tick(dt);
             Vector2 vel = _car.Body.linearVelocity;
             _recentSpeed += (vel.x - _recentSpeed) * Mathf.Min(1f, dt);                      // about a 1 s average
@@ -1565,7 +1566,7 @@ namespace RoadBuilderGame
             if (ladder != null) _stage.UseLadder(ladder);
             _stageOn = ladder != null && StageRunController.ShouldRun(_tuning.stageEvents, country) && _stage.HasData;
             _meteors.StageDriven = _stageOn;
-            _eater.Stop(); _boss.Stop(); _hitStop.Release(); _announcer?.Clear(); _gateProp.Hide();
+            _cEaterOwn = false; _eater.Stop(); _boss.Stop(); _hitStop.Release(); _announcer?.Clear(); _gateProp.Hide();
             _road.ClearNoEatRanges();
             _nearLedger.Reset(); _hitGraceLeft = 0f; _recentSpeed = 0f; _bossEndS = -1f; _finishing = false; _runEnding = false;
             Model.EaterOn = false; Model.BossOn = false;

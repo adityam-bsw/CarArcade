@@ -42,6 +42,24 @@ def glow_disc(n, glow_col, glow_a, power=2.2):
             if d < c: g.d[y * n + x] = (1 - d / c) ** power * glow_a
     img.paint(g, glow_col); return img
 
+def radial_bleed(img):
+    """Fill RGB of every alpha-0 pixel with the colour of the outermost visible pixel on the ray to the centre.
+    Without this the transparent corners are black and bilinear filtering draws a dark rim/square round the glow (QA7-05)."""
+    w, h = img.w, img.h; cx, cy = w / 2, h / 2
+    for y in range(h):
+        for x in range(w):
+            i = y * w + x
+            if img.a[i] > 0: continue
+            dx, dy = cx - (x + .5), cy - (y + .5); L = math.hypot(dx, dy) or 1; k = 0
+            while k < L:
+                k += 1; xx = int(x + .5 + dx / L * k); yy = int(y + .5 + dy / L * k); j = yy * w + xx
+                if 0 <= xx < w and 0 <= yy < h and img.a[j] > 0:
+                    img.r[i], img.g[i], img.b[i] = img.r[j], img.g[j], img.b[j]; break
+    for i in range(w * h):  # +-0.5/255 hashed alpha dither breaks 8-bit banding rings in the glow falloff
+        if 0 < img.a[i] < 0.98:
+            n = ((i * 2654435761) >> 7) & 255; img.a[i] = min(1.0, max(1.0 / 255, img.a[i] + (n / 255.0 - 0.5) / 255.0))
+    return img
+
 def shaded(items, ramp, dflt, reach=1.6):
     """Colour fn for blobs: items (cx, cy, R); t > 0 faces the upper-left light. Nearest item wins."""
     def f(x, y):

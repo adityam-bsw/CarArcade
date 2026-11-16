@@ -19,6 +19,9 @@ namespace RoadBuilderGame
         private readonly List<Color> _colors = new List<Color>();
         private readonly List<Vector2> _uvs = new List<Vector2>();
         private readonly List<int> _tris = new List<int>();
+        private readonly List<int> _backTris = new List<int>();
+        private Material[] _mats2;
+        private const float BackingDepth = 0.6f;   // metres of opaque-to-clear backing under a smooth slab
 
         // Atlas mapping for the segment being built (textured mode only).
         private float _uScale;        // u units per world metre along the road
@@ -71,6 +74,7 @@ namespace RoadBuilderGame
             _colors.Clear();
             _uvs.Clear();
             _tris.Clear();
+            _backTris.Clear();
 
             float curbThick = g.Thickness * (textured ? skin.CurbFraction : 0.22f);
             bool smooth = skin.SmoothStrip;
@@ -144,18 +148,64 @@ namespace RoadBuilderGame
                 AddQuad(a + 2, b + 2, a + 3, b + 3);
             }
 
-            // Rounded end caps keep both ends of a stroke from looking cut off.
-            if (g.StartTangent.sqrMagnitude > 1e-4f)
-                AddRoundCap(g.Spine[0], -g.StartTangent, g.Normals[0], g.HalfThick, skin, textured, g.Arc[0]);
-            if (g.EndTangent.sqrMagnitude > 1e-4f)
-                AddRoundCap(g.Spine[g.Count - 1], g.EndTangent, g.Normals[g.Count - 1], g.HalfThick, skin, textured, g.Arc[g.Count - 1]);
+            // Smooth strips: skip the round end caps. They are flat slab-colour fans without the lip art, so every segment
+            // joint showed a notch on the top edge (the neighbouring strips already meet flush).
+            if (!smooth)
+            {
+                if (g.StartTangent.sqrMagnitude > 1e-4f)
+                    AddRoundCap(g.Spine[0], -g.StartTangent, g.Normals[0], g.HalfThick, skin, textured, g.Arc[0]);
+                if (g.EndTangent.sqrMagnitude > 1e-4f)
+                    AddRoundCap(g.Spine[g.Count - 1], g.EndTangent, g.Normals[g.Count - 1], g.HalfThick, skin, textured, g.Arc[g.Count - 1]);
+            }
+
+            // Backing under the slab: opaque at the slab bottom, clear BackingDepth lower, drawn before the strip (submesh 0),
+            // so the strip's own fading skirt no longer lets background props show through right under the road.
+            bool backing = smooth && skin.skirtColor.a > 0f;
+            int backStart = _verts.Count;
+            if (backing)
+            {
+                Color bc = skin.skirtColor; bc.a = 1f;
+                Color bz = skin.skirtColor; bz.a = 0f;
+                float bd = Mathf.Min(skirtDepth, BackingDepth);
+                for (int i = 0; i < g.Count; i++)
+                {
+                    Vector2 vTopB = g.Spine[i] - g.Normals[i] * g.HalfThick;
+                    Vector2 vTopIn = g.Spine[i] + g.Normals[i] * (g.HalfThick * 0.5f);   // tucked under the slab so no gap shows
+                    Add(vTopIn, bc, 0f, 0f);
+                    Add(vTopB, bc, 0f, 0f);
+                    Add(vTopB + new Vector2(0f, -bd), bz, 0f, 0f);
+                }
+                for (int i = 0; i < g.Count - 1; i++)
+                {
+                    int a = backStart + i * 3, b = backStart + (i + 1) * 3;
+                    _backTris.Add(a); _backTris.Add(b); _backTris.Add(a + 1);
+                    _backTris.Add(a + 1); _backTris.Add(b); _backTris.Add(b + 1);
+                    _backTris.Add(a + 1); _backTris.Add(b + 1); _backTris.Add(a + 2);
+                    _backTris.Add(a + 2); _backTris.Add(b + 1); _backTris.Add(b + 2);
+                }
+            }
 
             _baseColors.Clear(); _baseColors.AddRange(_colors);      // untinted copy for TintRange (section C surfaces)
             _mesh.Clear();
             _mesh.SetVertices(_verts);
             _mesh.SetColors(_colors);
             _mesh.SetUVs(0, _uvs);
-            _mesh.SetTriangles(_tris, 0);
+            if (backing)
+            {
+                _mesh.subMeshCount = 2;
+                _mesh.SetTriangles(_backTris, 0);   // backing first, then the strip over it
+                _mesh.SetTriangles(_tris, 1);
+                if (_mats2 == null) _mats2 = new Material[2];
+                _mats2[0] = SpriteFactory.MeshMaterial;
+                _mats2[1] = skin.GetMaterial();
+                _meshRenderer.sharedMaterials = _mats2;
+            }
+            else
+            {
+                _mesh.subMeshCount = 1;
+                _mesh.SetTriangles(_tris, 0);
+                _meshRenderer.sharedMaterial = skin.GetMaterial();
+            }
             _mesh.RecalculateBounds();
         }
 

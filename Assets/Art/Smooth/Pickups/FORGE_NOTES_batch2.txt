@@ -1,0 +1,6 @@
+Smooth pickups (QA7-01). Own procedural code (scratchpad make_pk2.py, uses tools/art/smoothart + coin/star helpers of make_pickups_smooth.py). No generative AI, no downloads.
+128x128 RGBA, DeepInk outline (0.04 world units at 0.75 display size), 3-tone cel shading, 4 px bleed. Same names as Resources/RoadBuilder.
+Colours: Gem cyan faceted, Magnet blue U with cream tips, Shield teal with check, Double two gold coins with "2", SlowMo ice-blue clock, Ghost white-blue ghost, Star neutral WHITE (tint-ready; previous smooth gold Star differs).
+Limits: Double "2" is a plain stroked polyline, not a font. Magnet is blue not red (red = warning only). Gem and SlowMo both cyan-family; shapes differ. Not checked in-game.
+quality: 4 (Magnet/Shield/Ghost/Gem 4, Double 3.5, SlowMo 4, Star 4)
+Generator: tools/art/make_pickups2.py <outdir> (inspector reproduced all 7 files byte for byte, 2026-11-16). Star imported as Star_White.png so the gold Star.png (batch 1) stays.

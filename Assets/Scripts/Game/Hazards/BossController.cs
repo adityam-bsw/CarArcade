@@ -189,6 +189,8 @@ namespace RoadBuilderGame
 
         private int AliveCount() { int n = 0; for (int i = 0; i < _pool.Length; i++) if (_pool[i].Active && !_pool[i].Warning && !_pool[i].Dud) n++; return n; }
 
+        private Camera _hudCam;
+
         private void Hover(float dt, Vector2 car)
         {
             if (!_boss.gameObject.activeSelf) return;
@@ -204,9 +206,33 @@ namespace RoadBuilderGame
             _pos.x = Mathf.SmoothDamp(_pos.x, tx, ref _vel.x, _d.followSmoothTime);
             _pos.y = Mathf.SmoothDamp(_pos.y, ty, ref _vel.y, _d.followSmoothTime);
             if (_model.State == BossState.Defeat) _pos.y -= 1.5f * dt;                                      // the defeated robot sinks
+            // Keep the robot in clear sky below the HUD band (the overlay canvas draws over the world): its top, antenna included, stays under the top 16 percent of the view.
+            if (!_gone && _model.State != BossState.Retreat)
+            {
+                if (_hudCam == null) _hudCam = Camera.main;
+                if (_hudCam != null) { float sz = _hudCam.orthographicSize; float maxY = _hudCam.transform.position.y + sz * 0.68f - 1.3f; if (_pos.y > maxY) { _pos.y = maxY; _vel.y = Mathf.Min(_vel.y, 0f); } }
+            }
             _boss.position = new Vector3(_pos.x, _pos.y, 0f);
             _bossTrim.color = _model.Phase <= 1 ? new Color(0.3f, 0.6f, 1f) : _model.Phase == 2 ? new Color(1f, 0.85f, 0.2f) : new Color(1f, 0.55f, 0.15f);   // blue, yellow, orange; red is for damage
             if (_gone && Mathf.Abs(_pos.x - ax) < 1f) _boss.gameObject.SetActive(false);
+        }
+
+        private static Sprite _ring;
+        /// <summary>Own procedural shield ring: the imported robo_trim art is clipped flat at the bottom of its canvas (ring wider than the 192 px texture), so a full anti-aliased ring is drawn once instead.</summary>
+        private static Sprite ShieldRing()
+        {
+            if (_ring != null) return _ring;
+            const int n = 192; var tex = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp, name = "ShieldRing" };
+            var px = new Color32[n * n]; float c = (n - 1) * 0.5f, ro = n * 0.5f - 3f, ri = ro - 12f;
+            for (int y = 0; y < n; y++) for (int x = 0; x < n; x++)
+            {
+                float d = Mathf.Sqrt((x - c) * (x - c) + (y - c) * (y - c));
+                float a = Mathf.Clamp01(ro - d + 0.5f) * Mathf.Clamp01(d - ri + 0.5f) * 0.9f + Mathf.Clamp01(ri - d + 0.5f) * 0.18f;
+                px[y * n + x] = new Color32(255, 255, 255, (byte)(a * 255f));
+            }
+            tex.SetPixels32(px); tex.Apply(false, true);
+            _ring = Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), 85f);
+            return _ring;
         }
 
         private void BuildArtBoss()
@@ -214,7 +240,7 @@ namespace RoadBuilderGame
             var a = _art; float ppu = 1f;
             Transform jet = a.robotJet != null ? SpriteFactory.CreateSprite("Jet", _boss, a.robotJet, Color.white, 23).transform : null;
             if (jet != null) jet.localPosition = new Vector3(0f, -0.95f, 0f);
-            _bossTrim = SpriteFactory.CreateSprite("Trim", _boss, a.robotTrim != null ? a.robotTrim : SpriteFactory.Circle, new Color(0.3f, 0.6f, 1f), 24);
+            _bossTrim = SpriteFactory.CreateSprite("Trim", _boss, ShieldRing(), new Color(0.3f, 0.6f, 1f), 24);
             _bossBody = SpriteFactory.CreateSprite("Body", _boss, a.robotBody, Color.white, 25);
             if (a.robotEye != null) { var e = SpriteFactory.CreateSprite("Eye", _boss, a.robotEye, Color.white, 26); e.transform.localPosition = new Vector3(-0.35f, 0.1f, 0f); }
             if (a.robotAntenna != null) { var t = SpriteFactory.CreateSprite("Antenna", _boss, a.robotAntenna, Color.white, 26); t.transform.localPosition = new Vector3(0.2f, 0.95f, 0f); }

@@ -12,7 +12,7 @@ namespace RoadBuilderGame
     {
         public bool CheatsOn => _tuning != null && _tuning.cheatsEnabled;
 
-        private bool _cGod, _cInk, _cBoost;
+        private bool _cGod, _cInk, _cBoost, _cEaterOwn;
         private float _cSpeed = 1f, _cTime = 1f;
         private ArtStyle? _cArt;
         private List<StageEventDefinition> _cEvents;
@@ -82,7 +82,7 @@ namespace RoadBuilderGame
             var ev = _stage.Director.Plan.Events;
             for (int i = 0; i < ev.Count; i++) if (ev[i].Phase == StagePhase.Active || ev[i].Phase == StagePhase.Warning) to = Mathf.Max(to, ev[i].EndM + 2f);
             if (to > _distance) JumpRun(to);
-            _eater.Stop(); _boss.Stop(); _announcer?.Clear();
+            _cEaterOwn = false; _eater.Stop(); _boss.Stop(); _announcer?.Clear();
         }
 
         // ---------------------------------------------------------------- hazards
@@ -92,8 +92,11 @@ namespace RoadBuilderGame
             _boss.Stop(); _eater.Stop();
             _hazardWorldId = worldId;
             _eater.Configure(EaterVariantSO.ForWorld(worldId));
-            _eater.Begin(_startX, 0x00E47E8u ^ (uint)Time.frameCount);
-            _eater.StartChase(_car.Body.position.x);
+            float cx = _car.Body.position.x;
+            _eater.Begin(cx, 0x00E47E8u ^ (uint)Time.frameCount);       // own origin = the car now, so its timers and timeout (spawn + 750 m) are relative to the current distance
+            _eater.Model.TimeoutOverrideS = 750f;
+            _cEaterOwn = true;
+            _eater.StartChase(cx);
         }
 
         public void CheatBoss(BossTierSO tier)
@@ -110,7 +113,7 @@ namespace RoadBuilderGame
             _boss.CheatFire(def, _car.Body.position, _car.Body.linearVelocity);
         }
 
-        public void CheatStopHazards() { if (!CheatsOn || !CheatPlaying) return; _eater.Stop(); _boss.Stop(); _announcer?.Clear(); }
+        public void CheatStopHazards() { if (!CheatsOn || !CheatPlaying) return; _cEaterOwn = false; _eater.Stop(); _boss.Stop(); _announcer?.Clear(); }
 
         // ---------------------------------------------------------------- player
         public void CheatSetHearts(int n)

@@ -34,6 +34,10 @@ namespace RoadBuilderGame
             public bool hasLiveTip;
             /// <summary>Never deleted by <see cref="RoadBuilder.EatBefore"/> (safety platforms).</summary>
             public bool noEat;
+            /// <summary>Surface normal shared with the previous chunk's last point (zero = none), so chunk joins are watertight.</summary>
+            public Vector2 startNormal;
+            /// <summary>Tangent shared with the previous chunk's last point (zero = none), so the joint has no slope kink.</summary>
+            public Vector2 startTangent;
         }
         private float _offsetY;
 
@@ -164,6 +168,20 @@ namespace RoadBuilderGame
             }
 
             _activeSegment = new Segment();
+            // A stroke that starts on the end of an earlier chunk (runway, ink pickup, platform) shares its exact point, normal and tangent.
+            for (int si = _segments.Count - 1; si >= 0; si--)
+            {
+                var prev = _segments[si];
+                if (prev.chunk == null || prev.chunk.Geometry == null || prev.sampledPoints.Count < 2) continue;
+                if (Mathf.Abs(prev.maxX - p.x) > 0.1f) continue;
+                Vector2 end = prev.sampledPoints[prev.sampledPoints.Count - 1];
+                if (Vector2.Distance(end, p) > 0.1f) continue;
+                p = end;
+                var pg = prev.chunk.Geometry;
+                _activeSegment.startNormal = pg.Normals[pg.Count - 1];
+                _activeSegment.startTangent = pg.EndTangent;
+                break;
+            }
             _activeSegment.rawKnots.Add(p);
             _activeSegment.liveTip = p;
             _activeSegment.hasLiveTip = false;
@@ -274,6 +292,7 @@ namespace RoadBuilderGame
             Vector2 joint = full.rawKnots[full.rawKnots.Count - 1];
 
             var next = new Segment();
+            if (full.chunk != null && full.chunk.Geometry != null) { next.startNormal = full.chunk.Geometry.Normals[full.chunk.Geometry.Count - 1]; next.startTangent = full.chunk.Geometry.EndTangent; }
             next.rawKnots.Add(joint);
             next.liveTip = joint;
             next.hasLiveTip = false;
@@ -393,7 +412,7 @@ namespace RoadBuilderGame
             {
                 // Stronger 4-pass Laplacian relaxation so valleys have a wide, gentle curvature radius larger than the car's wheelbase
                 var relaxedKnots = BezierSpline.SmoothKnots(workingKnots, 3, 0.48f);
-                _activeSegment.sampledPoints = BezierSpline.SampleSpline(relaxedKnots, splineSamplesPerSpan, uniformSampleSpacing);
+                _activeSegment.sampledPoints = BezierSpline.SampleSpline(relaxedKnots, splineSamplesPerSpan, uniformSampleSpacing, _activeSegment.startTangent);
 
                 if (_activeSegment.sampledPoints.Count >= 2)
                 {
@@ -403,7 +422,8 @@ namespace RoadBuilderGame
                         _activeSegment.sampledPoints.Count - 1,
                         roadThickness,
                         supportDepth,
-                        CurrentSkin
+                        CurrentSkin,
+                        _activeSegment.startNormal
                     );
                     _activeSegment.maxX = Mathf.Max(_activeSegment.maxX, _activeSegment.chunk.MaxX);
                     FrontierMaxX = Mathf.Max(FrontierMaxX, _activeSegment.maxX);
@@ -551,7 +571,7 @@ namespace RoadBuilderGame
                 {
                     pts.RemoveRange(a, n - a);
                     seg.maxX = pts[pts.Count - 1].x;
-                    seg.chunk.Build(pts, 0, pts.Count - 1, roadThickness, supportDepth, CurrentSkin);
+                    seg.chunk.Build(pts, 0, pts.Count - 1, roadThickness, supportDepth, CurrentSkin, seg.startNormal);
                 }
                 else { DestroyNow(seg.chunk.gameObject); _segments.RemoveAt(i); insertAt = i; }
                 if (right != null) _segments.Insert(insertAt, right);
@@ -614,6 +634,7 @@ namespace RoadBuilderGame
                     if (cut <= 0) continue;
                     if (pts.Count - cut < 2) { Destroy(seg.chunk.gameObject); _segments.RemoveAt(i); changed++; continue; }
                     pts.RemoveRange(0, cut);
+                    seg.startNormal = Vector2.zero; seg.startTangent = Vector2.zero;
                     seg.minX = pts[0].x;
                     seg.chunk.Build(pts, 0, pts.Count - 1, roadThickness, supportDepth, CurrentSkin);     // collider and mesh in the same frame
                     trims++; changed++;

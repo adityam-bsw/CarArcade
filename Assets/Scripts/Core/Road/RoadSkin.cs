@@ -38,6 +38,8 @@ namespace RoadBuilderGame
         public float lipPx;
         [Tooltip("Surface id (surface-asphalt, surface-grass-trail ...) this smooth skin replaces when the world is Smooth. Empty on pixel skins.")]
         public string surfaceId;
+        [Tooltip("Smooth strips: colour of the slab just above the shadow skirt (alpha 0 = none). The renderer draws a short opaque-to-clear backing in this colour under the slab so background props never show through the skirt gradient. Set by SmoothSkinFactory.")]
+        public Color skirtColor = new Color(0f, 0f, 0f, 0f);
 
         [Header("Animation frames (smooth strips): the strip repeated in another state, swapped on the shared material (no rebuild)")]
         [Tooltip("Frame 0 is the atlas; frame i is frames[i-1]. Conveyor belt B, electric rail off, fragile paper torn.")]
