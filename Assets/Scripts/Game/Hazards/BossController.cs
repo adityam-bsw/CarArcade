@@ -118,6 +118,14 @@ namespace RoadBuilderGame
 
         public void OnRespawn() { _model.Interrupt(); }
 
+        /// <summary>Cheat panel: fires one projectile of <paramref name="def"/> from ahead of the car (the world runner ticks whether or not the boss is fighting).</summary>
+        public bool CheatFire(ProjectileDefinitionSO def, Vector2 carPos, Vector2 carVel)
+        {
+            if (def == null) return false;
+            Build(); _world.Configure(def);
+            return _world.Fire(carPos + new Vector2(18f, 7f), carPos, carVel, false, (uint)(_clock * 1000f) + 7u);
+        }
+
         private void Build()
         {
             if (_built) return;

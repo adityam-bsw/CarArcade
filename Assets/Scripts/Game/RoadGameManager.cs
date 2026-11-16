@@ -6,7 +6,7 @@ using UnityEngine.InputSystem.UI;
 
 namespace RoadBuilderGame
 {
-    public class RoadGameManager : MonoBehaviour, IGameActions
+    public partial class RoadGameManager : MonoBehaviour, IGameActions
     {
         public static RoadGameManager Instance { get; private set; }
 
@@ -235,9 +235,7 @@ namespace RoadBuilderGame
             _surf.Debris = (p, c, n) => { if (ParticleManager.Instance == null) return; if (_road.TryGetRoadYAtX(p.x, out float ry)) p.y = ry + 0.3f; ParticleManager.Instance.SpawnBurst(p, c, n); };
             ProjectileSurfaceHooks.Current = new SurfaceProjectileHook(_surf);
             _surf.FragileBroken = () => { if (!_runEnding) ProgressionEvents.Record(_profile, ProgressionEvent.FragileBroken); };
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            gameObject.AddComponent<QaJumpOverlay>().Init(this);
-#endif
+            if (_tuning != null && _tuning.cheatsEnabled) gameObject.AddComponent<CheatPanel>().Init(this);   // cheat/dev panel: must be off (cheatsEnabled false) in a release build, see PLAY_STORE_READINESS.md
 
             VehicleEconomy.SyncCatalog(AssetCatalog.Load(), VehicleGateSO.Load());   // blueprint D2 prices into the catalogue (idempotent)
             LoadPlayerData();
@@ -486,7 +484,7 @@ namespace RoadBuilderGame
             _startX = _car.Body.position.x;
             _distance = 0f;
             _upsideDownTime = 0f;
-            _pickups.Art = _worldArt;
+            _pickups.Art = VehicleArt;   // gameplay sprites are smooth in every world (each piece falls back to its original when no smooth version exists)
             _pickups.Reset(16f);
             _brush.Cancel();
             currentLives = maxLives;
@@ -522,6 +520,8 @@ namespace RoadBuilderGame
                 _brush.Tick();
 
                 currentInk = Mathf.Min(maxInk, currentInk + _tuning.inkRegenPerSec * _fx.InkRegenMul * Time.deltaTime);
+                if (CheatInfInk) currentInk = maxInk;
+                if (CheatInfBoost && _run != null) _run.Boost01 = 1f;
 
                 if (_car == null) return;
 
@@ -548,11 +548,11 @@ namespace RoadBuilderGame
                 _w2?.Tick(Time.deltaTime);
                 baseTarget = TickSurfaceRuntime(carPos, baseTarget);
                 if (_state != ScreenState.Playing) return;                  // a durability hit ended the run
-                _car.TargetSpeed = (baseTarget * _fx.SpeedMul + _run.BoostSpeedBonus) * _fx.MotorDir;      // MotorDir is -0.5 during a Reverse Drive burst
+                _car.TargetSpeed = (baseTarget * _fx.SpeedMul + _run.BoostSpeedBonus) * _fx.MotorDir * CheatSpeed;      // MotorDir is -0.5 during a Reverse Drive burst
                 _run.Tick(Time.unscaledDeltaTime, _car, _distance);
                 Collectible.MagnetTarget = _run.MagnetOn ? _car.Body.transform : null;
                 Collectible.MagnetRadius = _tuning.magnetRadius;
-                ApplyTimeScale(_run.TimeScale);
+                ApplyTimeScale(_run.TimeScale * CheatTime);
                 if (SoundManager.Instance) SoundManager.Instance.SetEngineRunning(true, speedRatio);
 
                 _pickups.Tick(carPos.x);
@@ -653,6 +653,12 @@ namespace RoadBuilderGame
         private bool HandleLifeLoss(string reason)
         {
             _brush.Cancel();
+            if (CheatGod)                           // cheat panel: god mode (inert unless GameplayTuning.cheatsEnabled)
+            {
+                if (_car != null && (reason == "FELL INTO THE CHASM!" || reason == "VEHICLE FLIPPED!" || reason == "DRIVER CRASHED!"))
+                { _car.RespawnSafely(_road.CreateSafetyPlatformAndFindRespawn(_car.Body.position.x, 0f)); _upsideDownTime = 0f; }
+                return true;
+            }
             bool shielded = _run.AbsorbHit();       // a shield soaks up one crash
             _run.Interrupt();
             _cameraRig?.Shake(shielded ? 0.2f : 0.45f, 0.4f);
@@ -1241,11 +1247,14 @@ namespace RoadBuilderGame
         private RoadCar CreateSelectedCar(Vector2 pos)
         {
             var e = CatalogVehicle();
-            if (e == null) return RoadCar.Create(pos, SelectedVehicle, _worldArt);   // slice vehicles follow the world's art style; catalogue vehicles keep their own art
-            var made = RoadCar.Create(pos, e.MakeRig(_worldArt));
+            if (e == null) return RoadCar.Create(pos, SelectedVehicle, VehicleArt);   // vehicle art is independent of the world: smooth wherever a smooth version exists
+            var made = RoadCar.Create(pos, e.MakeRig(VehicleArt));
             CosmeticApplier.Apply(made.gameObject, _profile, _prog, e.id);
             return made;   // Smooth worlds: smooth body and wheels for vehicles whose smooth art is ready; same size, mass, torque
         }
+
+        /// <summary>Vehicles and pickups are drawn smooth in every world; a vehicle without ready smooth art keeps its original sprite.</summary>
+        private ArtStyle VehicleArt => CheatArtOverride ?? ArtStyle.Smooth;
 
         /// <summary>The scenery for the current world pick: a remix of its mood, or one scene shown as drawn.</summary>
         private void ApplyWorld()
@@ -1264,9 +1273,14 @@ namespace RoadBuilderGame
                 {
                     if (!_worldSkins.TryGetValue(e.id, out var skin) || skin == null)
                     {
+                        // A generated smooth set (Resources/Backgrounds/world_<id>_smooth) wins over the pixel layers of the catalogue entry.
+                        skin = CheatArtOverride == ArtStyle.Pixel ? null : Resources.Load<BackgroundSkin>("Backgrounds/world_" + e.id.Replace("world-", "") + "_smooth");
+                        if (skin == null)
+                        {
                         skin = ScriptableObject.CreateInstance<BackgroundSkin>();
                         skin.displayName = e.displayName;
                         skin.sky = e.layers[0]; skin.far = e.layers[1]; skin.mid = e.layers[2]; skin.near = e.layers[3];
+                        }
                         _worldSkins[e.id] = skin;
                     }
                     _worldArt = skin.artStyle;

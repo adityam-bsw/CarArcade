@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37986f04a88b4716a736139def980fa, type: 3}
+  m_Name: world_farm_smooth
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.BackgroundSkin
+  displayName: farm (Smooth)
+  mood: 0
+  artStyle: 1
+  sky: {fileID: 21300000, guid: 390a9916917ad4a42bb1db8f220547dc, type: 3}
+  far: {fileID: 21300000, guid: 3b9b890f10f4d4eb4962ff93ecbce117, type: 3}
+  mid: {fileID: 21300000, guid: 5980eb9eb2f3b4e2a969889c4dc135be, type: 3}
+  near: {fileID: 21300000, guid: af253ece10457488895fe4879f061147, type: 3}
+  sun: {fileID: 21300000, guid: 62d923da297be48238771e4cf9fd5088, type: 3}
+  clouds: []
+  cloudScroll: 0.08
+  overlay: {fileID: 0}
+  nearAlternates: []
+  groundFill: {r: 0.38431373, g: 0.6313726, b: 0.2627451, a: 1}
+  scroll:
+  - 0
+  - 0.2
+  - 0.4
+  - 0.8

@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37986f04a88b4716a736139def980fa, type: 3}
+  m_Name: world_canyon_smooth
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.BackgroundSkin
+  displayName: canyon (Smooth)
+  mood: 0
+  artStyle: 1
+  sky: {fileID: 21300000, guid: da4fee13af436469aac64e307cbcf46c, type: 3}
+  far: {fileID: 21300000, guid: 84691882b2be74207ae75313992b49c6, type: 3}
+  mid: {fileID: 21300000, guid: 44ee62a1a5f2b41e494f9e53ae530f25, type: 3}
+  near: {fileID: 21300000, guid: 2f2ff090ca499442bbaf3feec021b64b, type: 3}
+  sun: {fileID: 21300000, guid: dadb0381960684d25bbdbf34d3b80da8, type: 3}
+  clouds: []
+  cloudScroll: 0.08
+  overlay: {fileID: 0}
+  nearAlternates: []
+  groundFill: {r: 0.5686275, g: 0.29803923, b: 0.18431373, a: 1}
+  scroll:
+  - 0
+  - 0.2
+  - 0.4
+  - 0.8

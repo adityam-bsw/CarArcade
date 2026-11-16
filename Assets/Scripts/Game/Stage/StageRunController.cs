@@ -175,10 +175,8 @@ namespace RoadBuilderGame
 
         public void JumpTo(float distanceM)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (!_running) return;
             _director.JumpTo(distanceM);
-#endif
         }
 
         // ------------------------------------------------------------------ director events

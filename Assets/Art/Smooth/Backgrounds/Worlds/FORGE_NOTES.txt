@@ -1,0 +1,3 @@
+make_bg_generic.py: palette per world (SPECS), 2 hill silhouettes far, 1 mid with small props, near ground with props under 190 px.
+Prop kinds: round, pine, rock, crystal, cactus, lolli, dead, kelp, puff, stack, spire. Same contract as Desert/NightCity (41 ppu, 2048 wide, tiling in X).
+Known limits: props are flat two-tone shapes without the DeepInk outline; skies have no clouds; one prop kind per world.

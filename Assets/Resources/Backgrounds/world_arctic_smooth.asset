@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37986f04a88b4716a736139def980fa, type: 3}
+  m_Name: world_arctic_smooth
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.BackgroundSkin
+  displayName: arctic (Smooth)
+  mood: 0
+  artStyle: 1
+  sky: {fileID: 21300000, guid: 972a70859433d4916b471c4ce80a4bbf, type: 3}
+  far: {fileID: 21300000, guid: 69daf158f94b74a93ab3ebcc7985f09c, type: 3}
+  mid: {fileID: 21300000, guid: 950cc8ac3902d4ea7a8db49ecc1aae97, type: 3}
+  near: {fileID: 21300000, guid: bb109c6701fa54fa2a1a92e902c26204, type: 3}
+  sun: {fileID: 21300000, guid: 7760932cb81c14e4b9a52d4084acdf75, type: 3}
+  clouds: []
+  cloudScroll: 0.08
+  overlay: {fileID: 0}
+  nearAlternates: []
+  groundFill: {r: 0.83137256, g: 0.9254902, b: 0.96862745, a: 1}
+  scroll:
+  - 0
+  - 0.2
+  - 0.4
+  - 0.8

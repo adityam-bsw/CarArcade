@@ -102,6 +102,10 @@ namespace RoadBuilderGame
         [Tooltip("Haptic cue on the S3 warning. Default OFF, nothing is built on it until the open question is answered.")]
         public bool stageHaptics = false;
 
+        [Header("Cheats (dev only)")]
+        [Tooltip("Shows the CHEAT button and panel on Home and in the HUD. MUST be false (or the panel compiled out) in a Play Store build: Docs/design/PLAY_STORE_READINESS.md.")]
+        public bool cheatsEnabled = true;
+
         [Header("Daily reward (7 day streak)")]
         public int[] dailyCoins = { 50, 75, 100, 125, 150, 200, 300 };
         public int dailyGemsOnLastDay = 3;

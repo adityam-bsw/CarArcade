@@ -202,7 +202,6 @@ namespace RoadBuilderGame
 
         public void JumpTo(float distanceM)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (_plan == null || _plan.Events.Count == 0) return;
             var rec = _plan.Record; rec.debugJumped = true; _plan.Record = rec;
             _enabled = true;
@@ -225,11 +224,9 @@ namespace RoadBuilderGame
                 if (p == StagePhase.Active && !wasActive && Started != null) Started(e);
                 else if (wasActive && p != StagePhase.Active && Ended != null) Ended(e);
             }
-#endif
         }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        /// <summary>QA only: puts <paramref name="d"/> into the live plan at <paramref name="startM"/> (optionally replacing every other event) so a real run can be driven through exactly that event.</summary>
+        /// <summary>Cheat panel and QA: puts <paramref name="d"/> into the live plan at <paramref name="startM"/> (optionally replacing every other event) so a real run can be driven through exactly that event.</summary>
         public StageEventState DebugInject(StageEventDefinition d, float startM, bool clearOthers)
         {
             if (_plan == null || d == null) return null;
@@ -246,7 +243,6 @@ namespace RoadBuilderGame
             _enabled = true;
             return st;
         }
-#endif
 
         // ------------------------------------------------------------------ internals
 

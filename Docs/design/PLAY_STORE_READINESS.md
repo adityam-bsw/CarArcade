@@ -23,3 +23,7 @@
 4. Release build on a real low-end device: 60 fps, cold start < 4 s, no ANR, no per-frame GC.
 5. Asset ledger complete (`AssetLedgerCoverageTests` passing), CC-BY credits screen if any CC-BY asset is used.
 6. Internal testing track, then closed test, then production.
+
+## Cheat panel (added 2026-11-16)
+- `GameplayTuning.cheatsEnabled` (Resources/Gameplay/GameplayTuning.asset) shows the CHEAT button and panel (`CheatPanel`, `RoadGameManager.Cheats.cs`). Default TRUE during testing.
+- **Must be FALSE (or the panel compiled out) for any Play Store build.** Check it in the release checklist; the cheat actions are inert when it is false.

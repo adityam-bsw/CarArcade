@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37986f04a88b4716a736139def980fa, type: 3}
+  m_Name: world_candy-land_smooth
+  m_EditorClassIdentifier: RB.Core::RoadBuilderGame.BackgroundSkin
+  displayName: candy-land (Smooth)
+  mood: 0
+  artStyle: 1
+  sky: {fileID: 21300000, guid: 3b073d272d5d944148422954f01121f2, type: 3}
+  far: {fileID: 21300000, guid: e4ffc7b64061640df811941a75b59295, type: 3}
+  mid: {fileID: 21300000, guid: b2006ba9ca332472f99ef0fc0267afc4, type: 3}
+  near: {fileID: 21300000, guid: 5a1c2c9ede60f4d31818f96c385eaea5, type: 3}
+  sun: {fileID: 21300000, guid: 482161ad35e204b3fb8930ef3f95171d, type: 3}
+  clouds: []
+  cloudScroll: 0.08
+  overlay: {fileID: 0}
+  nearAlternates: []
+  groundFill: {r: 0.9490196, g: 0.6313726, b: 0.78431374, a: 1}
+  scroll:
+  - 0
+  - 0.2
+  - 0.4
+  - 0.8
