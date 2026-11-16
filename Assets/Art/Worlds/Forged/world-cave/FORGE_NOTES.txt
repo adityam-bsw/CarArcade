@@ -1,0 +1,7 @@
+world-cave: four looping 384x216 layers (cave_0_sky, _1_far, _2_mid, _3_near), VISTA layer format.
+Method: Fully procedural: gradient sky with dithered noise haze; far/mid/near caverns from ridge-noise ceilings and floors with generated stalactites and stalagmites, dithered ramps, drawn glow crystals. Made with tools/assets/pixel.py plus Python scripts. Not hand-drawn; props are drawn from coordinates in code.
+Source: palette inspired by CC0 ansimuz Warped Caves (no pixels copied)
+Limits: Spikes are plain triangles; no bespoke rock texture. Crystals are tiny.
+Seam scores: see tools/assets/pixel.py tileable_score; checked at build time (all layers loop by construction, sparse sharp details raise the score a little).
+quality: 3 of 5
+Unity import (to do in inspector): point filter, no mipmaps, uncompressed, 16 px per unit.

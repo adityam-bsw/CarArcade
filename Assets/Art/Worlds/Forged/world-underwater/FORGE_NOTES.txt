@@ -1,0 +1,7 @@
+world-underwater: four looping 384x216 layers (underwater_0_sky, _1_far, _2_mid, _3_near), VISTA layer format.
+Method: Fully procedural sky (blue gradient, dithered light rays, bubbles); far rocky arches, fish and jellyfish drawn from coordinates; mid kelp forest; near sand with drawn coral fans, brain corals and rocks. Made with tools/assets/pixel.py plus Python scripts. Not hand-drawn; props are drawn from coordinates in code.
+Source: palette inspired by CC0 ansimuz Underwater Diving Pack (no pixels copied)
+Limits: Rock arches are blocky; fish are tiny; mid layer is busy.
+Seam scores: see tools/assets/pixel.py tileable_score; checked at build time (all layers loop by construction, sparse sharp details raise the score a little).
+quality: 3 of 5
+Unity import (to do in inspector): point filter, no mipmaps, uncompressed, 16 px per unit.

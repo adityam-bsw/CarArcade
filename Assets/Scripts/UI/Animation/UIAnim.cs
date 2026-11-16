@@ -63,16 +63,20 @@ namespace RoadBuilderGame.UI
                 .OnComplete(() => done?.Invoke());
         }
 
-        public static void Press(Transform tr, float scale)
+        public static void Press(Transform tr, float scale) { Press(tr, Vector3.one * scale); }
+
+        public static void Press(Transform tr, Vector3 scale)
         {
             tr.DOKill();
             tr.DOScale(scale, 0.08f).SetEase(Ease.OutQuad).SetUpdate(true).SetLink(tr.gameObject);
         }
 
-        public static void Release(Transform tr)
+        public static void Release(Transform tr) { Release(tr, Vector3.one); }
+
+        public static void Release(Transform tr, Vector3 rest)
         {
             tr.DOKill();
-            tr.DOScale(1f, 0.25f).SetEase(Ease.OutBack).SetUpdate(true).SetLink(tr.gameObject);
+            tr.DOScale(rest, 0.25f).SetEase(Ease.OutBack).SetUpdate(true).SetLink(tr.gameObject);
         }
 
         /// <summary>Quick scale punch for "this just changed" (a heart lost, a level gained).</summary>

@@ -204,12 +204,12 @@ namespace RoadBuilderGame
             if (_hudCam == null) _hudCam = Camera.main;
             if (_hudCam == null) return car + new Vector2(10f, 4f);
             float sz = _hudCam.orthographicSize, hw = sz * _hudCam.aspect; Vector3 c = _hudCam.transform.position;
-            float vx = RoB0Data.AnchorX, vy = RoB0Data.AnchorY;
+            float vx = RoB0Data.AnchorX, vy = Mathf.Lerp(RoB0Data.AnchorY, RoB0Data.PortraitAnchorY, Mathf.InverseLerp(1.1f, 0.65f, _hudCam.aspect));   // tall screens: up under the gems pill and the boss plate
             float maxVx = RoB0Data.RightEdgeMaxViewport - RoB0Data.RightExtentM * RoB0Data.RigScale / (2f * hw);
             if (vx > maxVx) vx = maxVx;
             if (leaving) { vx += RoB0Data.RetreatViewportDx; vy += RoB0Data.RetreatViewportDy; }
             float x = c.x + (vx - 0.5f) * 2f * hw, y = c.y + (vy - 0.5f) * 2f * sz;
-            if (!leaving) y = Mathf.Min(Mathf.Max(y, car.y + _d.minAboveRoof + 1f), c.y + 0.44f * sz);   // clear of a jumping car, never above 0.72 of the view
+            if (!leaving) y = Mathf.Min(Mathf.Max(y, car.y + _d.minAboveRoof + 1f), c.y + Mathf.Max(0.44f, (vy - 0.5f) * 2f) * sz);   // clear of a jumping car, never above 0.72 of the view (higher on tall screens)
             return new Vector2(x, y);
         }
 

@@ -1,0 +1,9 @@
+Method: procedural, own code (pixel.py + periodic value noise, hash speckle, 4x4 Bayer ordered dither). Not hand-drawn.
+Look: Pink and cream diagonal-stripe body under a wavy white icing top with sprinkles.
+Palette inspiration (colours approximated, no pixels copied): no pack (original colours).
+Layout: 128x26 strip. Rows 0-1 top surface, 2-5 slab body, 6-25 shadow skirt (dither fade to transparent). Same layout as surface-mud.
+Tiling: noise is periodic across 128 px; last column copies column 0, tileable_score 0.000.
+Physics hint: grip normal
+Limits: No source pixels used. Needs a look in game on the road ribbon.
+quality: 3 of 5 (usable, not polished)
+Unity import (to do in inspector): point filter, no mipmaps, uncompressed, 16 px per unit, wrap mode Repeat.

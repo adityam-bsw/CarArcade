@@ -18,7 +18,8 @@ MonoBehaviour:
   signature: 7
   defeat: 2
   tint: {r: 0.5, g: 0.5, b: 0.55, a: 1}
-  body: {fileID: 21300000, guid: 8da9952e47d50429b8f6ed916fb333ff, type: 3}
+  satScale: 0.15
+  valScale: 0.75
   firstAfterSeconds: 4
   everySeconds: 9
   tellSeconds: 1.2

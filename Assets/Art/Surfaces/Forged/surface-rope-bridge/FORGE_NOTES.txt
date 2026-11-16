@@ -1,0 +1,9 @@
+Method: procedural, own code (pixel.py + periodic value noise, hash speckle, 4x4 Bayer ordered dither). Not hand-drawn.
+Look: 8 px planks with dark gaps under a twisted two-tone rope top.
+Palette inspiration (colours approximated, no pixels copied): Buch Floating Islands plank piece (CC0), rope drawn from scratch.
+Layout: 128x26 strip. Rows 0-1 top surface, 2-5 slab body, 6-25 shadow skirt (dither fade to transparent). Same layout as surface-mud.
+Tiling: noise is periodic across 128 px; last column copies column 0, tileable_score 0.000.
+Physics hint: grip normal
+Limits: PLACEHOLDER: rope is a flat 2 px twisted line, planks read as stripes, no sag. Needs a human redraw. Needs a look in game on the road ribbon.
+quality: 2 of 5 (PLACEHOLDER, under 3)
+Unity import (to do in inspector): point filter, no mipmaps, uncompressed, 16 px per unit, wrap mode Repeat.

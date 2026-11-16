@@ -18,7 +18,7 @@ namespace RoadBuilderGame
         public const float TopClearance = 1.6f + BobAmplitude + 0.15f;
 
         // screen anchor: the robot hovers in camera viewport space (0..1) at the top-right, facing left toward the car; right edge kept left of the boss HUD panel (x > 0.86)
-        public const float AnchorX = 0.72f, AnchorY = 0.6f, AnchorWanderScale = 0.3f, RightEdgeMaxViewport = 0.8f, RightExtentM = 1.6f, RigScale = 0.9f;
+        public const float AnchorX = 0.72f, AnchorY = 0.6f, PortraitAnchorY = 0.78f, AnchorWanderScale = 0.3f, RightEdgeMaxViewport = 0.8f, RightExtentM = 1.6f, RigScale = 0.9f;
         public const float RetreatViewportDx = 0.5f, RetreatViewportDy = 0.15f;
 
         // shield bubble

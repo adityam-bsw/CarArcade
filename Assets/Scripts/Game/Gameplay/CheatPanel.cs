@@ -93,7 +93,7 @@ namespace RoadBuilderGame
 
             // The toggle is a small, semi-transparent chip (about 70 x 36 dp): top-left under PAUSE in a run, bottom-left on Home. Drawn unscaled, in screen pixels.
             var m = GUI.matrix; GUI.matrix = Matrix4x4.identity;
-            float u = Mathf.Max(1f, Mathf.Min(Screen.width, Screen.height) / 411f);            // pixels per dp on a 411 dp short-side phone
+            float u = Mathf.Max(1f, Mathf.Min(Screen.width, Screen.height) / 520f);            // pixels per dp on a 411 dp short-side phone
             float cs = Mathf.Min(Screen.width / 1920f, Screen.height / 1080f);                  // the UI canvas scale: PAUSE sits at (40, 128) in a 214 x 80 box
             float bw = 70f * u, bh = 36f * u;
             float bx = _g.CheatPlaying ? safe.xMin + 40f * cs : safe.xMin + 12f * u;

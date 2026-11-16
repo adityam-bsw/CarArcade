@@ -16,6 +16,7 @@ namespace RoadBuilderGame.UI
 
         private Selectable _selectable;
         private bool _down;
+        private Vector3 _base = Vector3.one;      // the scale at rest (a portrait layout may rest above 1): press squashes from it and release returns to it
 
         private bool CanPress()
         {
@@ -26,10 +27,11 @@ namespace RoadBuilderGame.UI
         public void OnPointerDown(PointerEventData eventData)
         {
             if (!CanPress()) return;
+            if (!_down) _base = transform.localScale;
             _down = true;
             Pressed?.Invoke();
             var theme = UIThemeManager.Current;
-            UIAnim.Press(transform, theme != null ? theme.pressedScale : 0.92f);
+            UIAnim.Press(transform, _base * (theme != null ? theme.pressedScale : 0.92f));
         }
 
         public void OnPointerUp(PointerEventData eventData) { Release(); }
@@ -39,13 +41,13 @@ namespace RoadBuilderGame.UI
         {
             if (!_down) return;
             _down = false;
-            UIAnim.Release(transform);
+            UIAnim.Release(transform, _base);
         }
 
         private void OnDisable()
         {
+            if (_down) transform.localScale = _base;
             _down = false;
-            transform.localScale = Vector3.one;
         }
     }
 }

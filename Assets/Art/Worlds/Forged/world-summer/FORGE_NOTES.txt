@@ -1,0 +1,7 @@
+world-summer: four looping 384x216 layers (summer_0_sky, _1_far, _2_mid, _3_near), VISTA layer format.
+Method: Recolour of VISTA downs layers (gradient-mapped to saturated greens) with own sky (blue gradient, dithered sun, clouds) and drawn trees and flowers. Made with tools/assets/pixel.py plus Python scripts. Not hand-drawn; props are drawn from coordinates in code.
+Source: CC0 VISTA by najjar320 (Assets/Art/Backgrounds/Vista/downs)
+Limits: Flowers are thin 1px stems; same hill silhouette as world-farm and spring.
+Seam scores: see tools/assets/pixel.py tileable_score; checked at build time (all layers loop by construction, sparse sharp details raise the score a little).
+quality: 4 of 5
+Unity import (to do in inspector): point filter, no mipmaps, uncompressed, 16 px per unit.

@@ -22,7 +22,7 @@ namespace RoadBuilderGame
         private readonly List<int> _backTris = new List<int>();
         private Material[] _mats2;
         private const float BackingDepth = 3.0f;   // metres of backing under a smooth slab (never deeper than the strip's own skirt)
-        private const float BackingSolid = 0.6f;   // share of that depth that stays fully opaque before it fades out
+        private const float BackingSolid = 0.97f;   // share of that depth that stays fully opaque before it fades out
 
         // Atlas mapping for the segment being built (textured mode only).
         private float _uBase;         // whole tiles subtracted from u (precision); same for every vertex of a chunk

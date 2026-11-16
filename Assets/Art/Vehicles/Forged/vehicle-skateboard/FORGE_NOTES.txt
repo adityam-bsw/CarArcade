@@ -1,0 +1,7 @@
+vehicle-skateboard  (forged 2026-11-15 by asset-forge; replaces the 29x12 imported OpenGameArt board for use as a two-wheel rig)
+Method: board drawn from per-column rules in code (kicked ends, grip tape row, outlined), trucks as small blocks, wheel drawn from an ASCII map.
+Sources: none copied; palette chosen to match Kenney Pixel Vehicle Pack (CC0). Code: tools/assets/pixel.py plus a scratch script. No generative AI.
+Files: board.png 32x9, wheel.png 6x6 (separate, spin it), preview_assembled.png 32x16.
+Rig: two wheel. board.png at (0,0); wheel top-left (5,9) rear and (21,9) front, wheel centres (8,12) and (24,12); ground contact y=15. No rider.
+Limits: no rider; deck is a plain wooden board; wheels are simple grey discs.
+Quality: 3 / 5 (usable stand-in, not hand-drawn art)

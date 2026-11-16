@@ -390,7 +390,7 @@ namespace RoadBuilderGame.UI.Editor
             TileFill(top, SpriteSlot.BgWallTile);
             // The fills only cover what lies above and below the 1080-high stage, so the door's opening stays see-through.
             top.rectTransform.anchorMin = new Vector2(0, 0.5f); top.rectTransform.anchorMax = Vector2.one;
-            top.rectTransform.offsetMin = new Vector2(0, 540); top.rectTransform.offsetMax = Vector2.zero;
+            top.rectTransform.offsetMin = new Vector2(0, 536);     // 4 units of overlap: no hairline of world between fill and stage top.rectTransform.offsetMax = Vector2.zero;
             var bottom = Img(back, "FillBottom", SpriteSlot.None, ColorToken.Surface);
             bottom.rectTransform.anchorMin = Vector2.zero; bottom.rectTransform.anchorMax = new Vector2(1, 0.5f);
             bottom.rectTransform.offsetMin = Vector2.zero; bottom.rectTransform.offsetMax = new Vector2(0, -540);
@@ -404,9 +404,9 @@ namespace RoadBuilderGame.UI.Editor
             // use the same tile origin, so the planks line up across the joins (no seams) and the door opening stays see-through.
             if (door)
             {
-                WallWindow(stage, "WallTop", 0f, 1f, 0f, 1f, new Vector4(0, 810, 0, 0));      // above the door
-                WallWindow(stage, "WallLeft", 0f, 0.5f, 0f, 2f, new Vector4(0, 330, 470, 270)); // left of the door
-                WallWindow(stage, "WallRight", 0.5f, 1f, -1f, 1f, new Vector4(470, 330, 0, 270)); // right of the door
+                WallWindow(stage, "WallTop", 0f, 1f, 0f, 1f, new Vector4(0, 806, 0, 0));      // above the door (4 units overlap with the side windows)
+                WallWindow(stage, "WallLeft", 0f, 0.5f, 0f, 2f, new Vector4(0, 330, 470, 266)); // left of the door
+                WallWindow(stage, "WallRight", 0.5f, 1f, -1f, 1f, new Vector4(470, 330, 0, 266)); // right of the door
             }
             else WallWindow(stage, "Wall", 0f, 1f, 0f, 1f, new Vector4(0, 330, 0, 0));
             TileStrip(stage, "Floor", SpriteSlot.BgFloorTile, 750, 330);
@@ -625,7 +625,7 @@ namespace RoadBuilderGame.UI.Editor
             Port(race.rt, BC, BC, new Vector2(0, 760), 1.8f);
             Port(raceStar.rectTransform, BC, BC, new Vector2(420, 1060), 1.6f);
             Port(hintBanner.rectTransform, BC, BC, new Vector2(0, 620), 1.3f);
-            Port(rail.GetComponent<RectTransform>(), BC, BC, new Vector2(0, 6), 2f, new Vector2(-960, 310));
+            PortRail(rail.GetComponent<RectTransform>(), 2f, 310);
             PortraitDone(c);
 
             var s = root.GetComponent<WorldsScreen>();
@@ -738,7 +738,7 @@ namespace RoadBuilderGame.UI.Editor
             Port(namePlate.rectTransform, BC, BC, new Vector2(0, 1130), 1.5f);
             Port(action.rt, BC, BC, new Vector2(0, 760), 1.8f);
             Port(actionStar.rectTransform, BC, BC, new Vector2(420, 1060), 1.6f);
-            Port(rail.GetComponent<RectTransform>(), BC, BC, new Vector2(0, 6), 2f, new Vector2(-960, 290));
+            PortRail(rail.GetComponent<RectTransform>(), 2f, 290);
             PortraitDone(c);
 
             Ref(g, "rail", rail);
@@ -868,6 +868,10 @@ namespace RoadBuilderGame.UI.Editor
 
         private static void Port(RectTransform rt, Vector2 anchor, Vector2 pivot, Vector2 pos, float scale, Vector2? size = null)
             => _port.Add(new PortraitLayout.Entry { target = rt, anchorMin = anchor, anchorMax = anchor, pivot = pivot, position = pos, size = size ?? rt.sizeDelta, scale = scale });
+
+        /// <summary>A rail runs edge to edge: in portrait it is scaled up, so its stretched width shrinks by the same factor.</summary>
+        private static void PortRail(RectTransform rt, float scale, float height)
+            => _port.Add(new PortraitLayout.Entry { target = rt, anchorMin = new Vector2(0f, 0f), anchorMax = new Vector2(1f, 0f), pivot = BC, position = new Vector2(0f, 6f), size = new Vector2(-1920f * (1f - 1f / scale), height), scale = scale });
 
         private static void PortraitDone(RectTransform frame)
         {

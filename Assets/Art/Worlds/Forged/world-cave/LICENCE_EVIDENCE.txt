@@ -1,0 +1,4 @@
+Item: world-cave
+Origin: own work made by the asset-forge agent (code). Source: palette inspired by CC0 ansimuz Warped Caves (no pixels copied). VISTA licence file: Assets/Art/Backgrounds/Vista/LICENCE.txt (CC0 1.0).
+Licence of this derivative: CC0 / own work. No generative AI. No downloaded art.
+Written 2026-11-15. Status: unreviewed by the asset-inspector.
