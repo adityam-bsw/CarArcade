@@ -42,6 +42,9 @@ namespace RoadBuilderGame
         /// <summary>Tints the part of this chunk between world x0 and x1 (looks only).</summary>
         public void TintRange(float x0, float x1, Color c) { if (_renderer != null) _renderer.TintRange(x0, x1, c); }
         public void ClearTint() { if (_renderer != null) _renderer.ClearTint(); }
+        public Color FirstTint { get { return _renderer != null ? _renderer.FirstTint : Color.white; } }
+        public Color LastTint { get { return _renderer != null ? _renderer.LastTint : Color.white; } }
+        public void SetNeighbourTints(Color left, Color right) { if (_renderer != null) _renderer.SetNeighbourTints(left, right); }
         /// <summary>Lifts or sinks the whole chunk (rope sway, floating rocks). Collider and mesh move together as they share the transform.</summary>
         public void SetOffsetY(float dy) { var t = transform.localPosition; if (Mathf.Abs(t.y - dy) > 0.0005f) { t.y = dy; transform.localPosition = t; } }
 

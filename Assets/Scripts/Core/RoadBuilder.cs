@@ -610,6 +610,15 @@ namespace RoadBuilderGame
         public void TintRange(float x0, float x1, Color c)
         {
             for (int i = 0; i < _segments.Count; i++) { var s = _segments[i]; if (s.chunk != null && s.maxX >= x0 && s.minX <= x1) s.chunk.TintRange(x0, x1, c); }
+            // feather across chunk joins: each touched chunk (and its two neighbours) learns the end tints of the chunks next to it
+            for (int i = 0; i < _segments.Count; i++)
+            {
+                var s = _segments[i]; if (s.chunk == null || s.maxX < x0 - 12f || s.minX > x1 + 12f) continue;
+                Color l = Color.white, r = Color.white;
+                if (i > 0 && _segments[i - 1].chunk != null && Mathf.Abs(_segments[i - 1].maxX - s.minX) < 0.6f) l = _segments[i - 1].chunk.LastTint;
+                if (i + 1 < _segments.Count && _segments[i + 1].chunk != null && Mathf.Abs(_segments[i + 1].minX - s.maxX) < 0.6f) r = _segments[i + 1].chunk.FirstTint;
+                s.chunk.SetNeighbourTints(l, r);
+            }
         }
 
         /// <summary>Lifts or sinks every road chunk by dy metres (rope sway, floating rocks, lava river). One value for all chunks so joins never step.</summary>

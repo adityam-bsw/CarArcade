@@ -53,6 +53,16 @@ namespace RoadBuilderGame
             ApplyTint();
         }
 
+        // QA13-02: tint of the neighbouring chunks' end columns, so the feather also crosses a chunk boundary (otherwise a piece edge on a chunk join is a hard step).
+        private Color _nbLeft = Color.white, _nbRight = Color.white;
+        public Color FirstTint { get { return _colTint.Count > 0 ? _colTint[0] : Color.white; } }
+        public Color LastTint { get { return _colTint.Count > 0 ? _colTint[_colTint.Count - 1] : Color.white; } }
+        public void SetNeighbourTints(Color left, Color right)
+        {
+            if (_mesh == null || _colTint.Count == 0 || (left == _nbLeft && right == _nbRight)) return;
+            _nbLeft = left; _nbRight = right; ApplyTint();
+        }
+
         /// <summary>Restores the untinted vertex colours.</summary>
         public void ClearTint()
         {
@@ -67,6 +77,7 @@ namespace RoadBuilderGame
             for (int i = 0; i < n; i++)
             {
                 float xi = _colX[i], wsum = 1f; Color acc = _colTint[i];
+                { float d = xi - _colX[0]; if (d < TintFeather) { float w = 1f - d / TintFeather; acc += _nbLeft * w; wsum += w; } d = _colX[n - 1] - xi; if (d < TintFeather) { float w = 1f - d / TintFeather; acc += _nbRight * w; wsum += w; } }
                 for (int j = i - 1; j >= 0; j--) { float d = xi - _colX[j]; if (d >= TintFeather) break; float w = 1f - d / TintFeather; acc += _colTint[j] * w; wsum += w; }
                 for (int j = i + 1; j < n; j++) { float d = _colX[j] - xi; if (d >= TintFeather) break; float w = 1f - d / TintFeather; acc += _colTint[j] * w; wsum += w; }
                 Color s = acc / wsum;

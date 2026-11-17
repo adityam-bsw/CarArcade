@@ -8,6 +8,8 @@ namespace RoadBuilderGame
         Rigidbody2D Body { get; }
         bool IsGrounded { get; }
         float Scale { get; }
+        /// <summary>Short hop: adds vy upward to the whole car (body and wheels).</summary>
+        void Hop(float vy);
         /// <summary>The car's sprite renderers (body, wheels, overlays). Allocates; call once per event start.</summary>
         SpriteRenderer[] Renderers { get; }
     }

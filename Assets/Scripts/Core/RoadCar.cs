@@ -421,6 +421,14 @@ namespace RoadBuilderGame
             return rb;
         }
 
+        /// <summary>Short hop (flappy events): body AND wheels leave the ground together. Lifting only the body gained about 0.3 m because the grounded wheels hold the suspension down.</summary>
+        public void ApplyHop(float vy)
+        {
+            if (Body == null) return;
+            var v = Body.linearVelocity; v.y = Mathf.Max(v.y, 0f) + vy; Body.linearVelocity = v;
+            if (_wheels != null) for (int i = 0; i < _wheels.Length; i++) if (_wheels[i] != null) { var wv = _wheels[i].linearVelocity; wv.y = Mathf.Max(wv.y, 0f) + vy; _wheels[i].linearVelocity = wv; }
+        }
+
         public void TriggerInvincibility(float duration = 2.0f)
         {
             _isInvincible = true;

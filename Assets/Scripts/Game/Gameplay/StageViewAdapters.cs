@@ -10,6 +10,7 @@ namespace RoadBuilderGame
         public bool IsGrounded { get { return Target != null && Target.IsGrounded; } }
         public SpriteRenderer[] Renderers { get { return Target != null ? Target.GetComponentsInChildren<SpriteRenderer>() : null; } }
         public float Scale { get { return Target != null ? Target.Scale : 1f; } }
+        public void Hop(float vy) { if (Target != null) Target.ApplyHop(vy); }
     }
 
     /// <summary>Wraps the live RoadBuilder for the stage layer.</summary>

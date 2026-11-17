@@ -46,7 +46,7 @@ namespace RoadBuilderGame
 
         private struct Ovl { public object Owner; public Color C; public float Target, Cur; }
         private readonly Ovl[] _ovl = new Ovl[OvlSlots];
-        private SpriteRenderer _ovlSr, _fogSr, _fogFillSr, _cursor;
+        private SpriteRenderer _ovlSr, _fogSr, _fogBackSr, _fogFillSr, _cursor;
         private object _fogOwner; private float _fogVis, _fogTarget, _fogCur;
 
         public float Time { get; private set; }
@@ -89,14 +89,16 @@ namespace RoadBuilderGame
             return _circle = Sprite.Create(t, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), n);
         }
 
+        /// <summary>Horizontal alpha ramp 0 to 1 (smoothstep), pivot on the left edge, exactly 1 x 1 unit so scale = size in metres (QA13-01: the old 64 x 1 px version was 1/64 m tall, so the fog was a thin streak).</summary>
         private static Sprite Ramp()
         {
             if (_ramp != null) return _ramp;
-            var t = new Texture2D(64, 1, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
-            var px = new Color32[64];
-            for (int x = 0; x < 64; x++) px[x] = new Color32(255, 255, 255, (byte)(255 * Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(x / 63f))));
+            const int n = 64;
+            var t = new Texture2D(n, n, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
+            var px = new Color32[n * n];
+            for (int y = 0; y < n; y++) for (int x = 0; x < n; x++) px[y * n + x] = new Color32(255, 255, 255, (byte)(255 * Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(x / (float)(n - 1)))));
             t.SetPixels32(px); t.Apply(false, true);
-            return _ramp = Sprite.Create(t, new Rect(0, 0, 64, 1), new Vector2(0f, 0.5f), 64f);
+            return _ramp = Sprite.Create(t, new Rect(0, 0, n, n), new Vector2(0f, 0.5f), n);
         }
 
         private void EnsurePool()
@@ -221,7 +223,7 @@ namespace RoadBuilderGame
 
         private static Sprite _pillar, _carArt, _lavaArt, _beamArt, _glowArt;
         /// <summary>Rounded column with a lit left edge and a darker rim (flappy gates). White: the prop colour tints it.</summary>
-        public static Sprite Pillar() { return _pillar != null ? _pillar : _pillar = MakeSprite((x, y) => { float e = Mathf.Min(Mathf.Min(x, 31 - x), 3f) / 3f; byte v = (byte)(150 + 105 * (1f - Mathf.Abs(x - 10f) / 22f) * e); byte al = (byte)(255 * Mathf.Clamp01(Mathf.Min(x, 31 - x) + 0.5f)); return new Color32(v, v, v, al); }); }
+        public static Sprite Pillar() { return _pillar != null ? _pillar : _pillar = MakeSprite((x, y) => { float e = Mathf.Min(Mathf.Min(x, 31 - x), 3f) / 3f; byte v = (byte)(150 + 105 * (1f - Mathf.Abs(x - 10f) / 22f) * e); if (x <= 2 || x >= 29 || y <= 1 || y >= 30) v = 35; byte al = (byte)(255 * Mathf.Clamp01(Mathf.Min(x, 31 - x) + 0.5f)); return new Color32(v, v, v, al); }); }
         /// <summary>Side view of a small car: body, cabin with window, two dark wheels. Drawn into a square and stretched by the prop's scale.</summary>
         public static Sprite CarArt()
         {
@@ -308,7 +310,7 @@ namespace RoadBuilderGame
         public void Hop()
         {
             var car = Car; if (car == null || car.Body == null || _hopCd > 0f || !car.IsGrounded) return;
-            var v = car.Body.linearVelocity; v.y = Mathf.Max(v.y, 0f) + 4.6f; car.Body.linearVelocity = v; _hopCd = 0.5f;
+            car.Hop(FlappyTunnelGeometry.HopV); _hopCd = 0.5f;
         }
 
         public float BeatPhase { get { float b = Time * Bpm / 60f; return b - Mathf.Floor(b); } }
@@ -354,6 +356,8 @@ namespace RoadBuilderGame
             _ovlSr = a.AddComponent<SpriteRenderer>(); _ovlSr.sprite = Square(); _ovlSr.sortingOrder = 390; _ovlSr.enabled = false;
             var b = new GameObject("StageFog"); b.transform.SetParent(cam.transform, false); b.transform.localPosition = new Vector3(0f, 0f, 5f);
             _fogSr = b.AddComponent<SpriteRenderer>(); _fogSr.sprite = Ramp(); _fogSr.sortingOrder = 380; _fogSr.enabled = false;
+            var k = new GameObject("StageFogBack"); k.transform.SetParent(cam.transform, false); k.transform.localPosition = new Vector3(0f, 0f, 5f);
+            _fogBackSr = k.AddComponent<SpriteRenderer>(); _fogBackSr.sprite = Ramp(); _fogBackSr.sortingOrder = 380; _fogBackSr.enabled = false;
             var f = new GameObject("StageFogFill"); f.transform.SetParent(cam.transform, false); f.transform.localPosition = new Vector3(0f, 0f, 5f);
             _fogFillSr = f.AddComponent<SpriteRenderer>(); _fogFillSr.sprite = Square(); _fogFillSr.sortingOrder = 380; _fogFillSr.enabled = false;
         }
@@ -408,31 +412,34 @@ namespace RoadBuilderGame
             _fogCur += (_fogTarget - _fogCur) * k;
             bool fogOn = _fogOwner != null && (_fogTarget > 0f || _fogCur > 0.004f);
             if (_fogTarget <= 0f && _fogCur < 0.004f) { _fogOwner = null; _fogCur = 0f; }
-            if (!any && !fogOn) { FogReach = 0f; FogAmount = 0f; if (_ovlSr != null) { _ovlSr.enabled = false; _fogSr.enabled = false; _fogFillSr.enabled = false; } return; }
+            if (!any && !fogOn) { FogReach = 0f; FogAmount = 0f; if (_ovlSr != null) { _ovlSr.enabled = false; _fogSr.enabled = false; _fogFillSr.enabled = false; if (_fogBackSr != null) _fogBackSr.enabled = false; } return; }
             EnsureOverlay(cam);
             float h = cam.orthographicSize * 2f + 2f, w = h * cam.aspect + 2f;
             if (any) { _ovlSr.enabled = true; bc.a = best; _ovlSr.color = bc; _ovlSr.transform.localScale = new Vector3(w, h, 1f); } else _ovlSr.enabled = false;
             if (fogOn)
             {
-                // A whiteout: clear around the car (FogNearM), a smooth white ramp, then (almost) opaque white to the right edge of the screen at every aspect.
-                // The rule says 30 m; a phone shows only 15..25 m ahead, so the full-white edge sits at min(visibility, 62 % of what is on screen).
-                float carLocal = car != null && car.Body != null ? car.Body.position.x - cam.transform.position.x : 0f;
-                float rightLocal = h * cam.aspect * 0.5f - 1f + 1.2f;              // right screen edge (+ margin) in camera space
-                float onScreen = Mathf.Max(6f, rightLocal - carLocal);
-                float far = Mathf.Clamp(Mathf.Min(Mathf.Max(6f, _fogVis), onScreen * 0.62f), FogNearM + 3f, 40f);
-                float pulse = 1f + 0.05f * Mathf.Sin(Time * 1.7f);
+                // QA13-01: the whiteout is defined in normalized screen space (half-width = orthographicSize * aspect), so it looks the same in portrait (8 m wide) and landscape.
+                // Clear zone around the car = 35 % of the half-width, a smooth ramp to full strength at the screen edge ahead, a softer ramp behind (45 %), plus a light overall haze.
+                float halfW = cam.orthographicSize * cam.aspect, hh = cam.orthographicSize * 2f + 2f;
+                float carLocal = car != null && car.Body != null ? Mathf.Clamp(car.Body.position.x - cam.transform.position.x, -halfW * 0.8f, halfW * 0.8f) : 0f;
+                float clear = halfW * FogClear01, edge = halfW + 0.6f;
+                float pulse = 1f + 0.04f * Mathf.Sin(Time * 1.7f);
                 float a = Mathf.Clamp01(_fogCur * pulse);
-                var col = new Color(0.95f, 0.97f, 1f, a);
-                float x0 = carLocal + FogNearM, rampLen = far - FogNearM, fillStart = carLocal + far, fillLen = Mathf.Max(1f, w * 0.5f + 2f - fillStart);
-                _fogSr.enabled = true; _fogSr.color = col; _fogSr.transform.localPosition = new Vector3(x0, 0f, 5f); _fogSr.transform.localScale = new Vector3(rampLen, h, 1f);
-                _fogFillSr.enabled = true; _fogFillSr.color = col; _fogFillSr.transform.localPosition = new Vector3(fillStart + fillLen * 0.5f, 0f, 5f); _fogFillSr.transform.localScale = new Vector3(fillLen, h, 1f);
+                float aheadLen = Mathf.Max(0.5f, edge - (carLocal + clear)), backLen = Mathf.Max(0.5f, (carLocal - clear) + edge);
+                var ahead = new Color(0.95f, 0.97f, 1f, a * 0.85f); var back = new Color(0.95f, 0.97f, 1f, a * 0.85f * 0.45f); var haze = new Color(0.95f, 0.97f, 1f, a * FogHaze);
+                _fogSr.enabled = true; _fogSr.color = ahead; _fogSr.transform.localPosition = new Vector3(carLocal + clear, 0f, 5f); _fogSr.transform.localScale = new Vector3(aheadLen, hh, 1f);
+                _fogBackSr.enabled = true; _fogBackSr.color = back; _fogBackSr.transform.localPosition = new Vector3(carLocal - clear, 0f, 5f); _fogBackSr.transform.localScale = new Vector3(-backLen, hh, 1f);
+                _fogFillSr.enabled = true; _fogFillSr.color = haze; _fogFillSr.transform.localPosition = new Vector3(0f, 0f, 5f); _fogFillSr.transform.localScale = new Vector3(halfW * 2f + 2f, hh, 1f);
+                float far = Mathf.Max(FogNearM, edge - carLocal);
                 FogReach = far; FogAmount = a;
             }
-            else { _fogSr.enabled = false; _fogFillSr.enabled = false; FogReach = 0f; FogAmount = 0f; }
+            else { _fogSr.enabled = false; _fogFillSr.enabled = false; if (_fogBackSr != null) _fogBackSr.enabled = false; FogReach = 0f; FogAmount = 0f; }
         }
 
         /// <summary>Metres around the car that stay fully clear in a whiteout.</summary>
         public const float FogNearM = 3.5f;
+        /// <summary>Clear zone around the car as a fraction of the half screen width; light overall haze strength (fraction of the fog alpha).</summary>
+        public const float FogClear01 = 0.35f, FogHaze = 0.2f;
         /// <summary>Distance ahead of the car where the whiteout is at full strength (0 when no fog) and the current fog strength 0..1; read by the marker line.</summary>
         public float FogReach { get; private set; }
         public float FogAmount { get; private set; }
@@ -442,7 +449,7 @@ namespace RoadBuilderGame
         {
             _paused = paused;
             if (_root != null) _root.gameObject.SetActive(!paused);
-            if (_ovlSr != null && paused) { _ovlSr.enabled = false; _fogSr.enabled = false; _fogFillSr.enabled = false; }
+            if (_ovlSr != null && paused) { _ovlSr.enabled = false; _fogSr.enabled = false; _fogFillSr.enabled = false; _fogBackSr.enabled = false; }
             _tapOn = false;
         }
 
@@ -452,7 +459,7 @@ namespace RoadBuilderGame
             if (_pool != null) for (int i = 0; i < PoolSize; i++) Free(_pool[i]);
             for (int i = 0; i < OvlSlots; i++) _ovl[i] = default;
             _fogOwner = null; _fogCur = _fogTarget = 0f;
-            if (_ovlSr != null) { _ovlSr.enabled = false; _fogSr.enabled = false; _fogFillSr.enabled = false; }
+            if (_ovlSr != null) { _ovlSr.enabled = false; _fogSr.enabled = false; _fogFillSr.enabled = false; _fogBackSr.enabled = false; }
             FogReach = 0f; FogAmount = 0f;
             if (_cursor != null) _cursor.enabled = false;
             HopEnabled = false; _hitCd = 0f; _hopCd = 0f; _tapOn = false; _paused = false; Time = 0f; LastGroundY = 0f;
@@ -638,7 +645,37 @@ namespace RoadBuilderGame
         }
     }
 
-    /// <summary>Flappy Tunnel: pairs of ceiling and floor blocks form gaps; the short-hop tap (a quick press and release) clears the low floor blocks.</summary>
+    /// <summary>Flappy Tunnel geometry as pure functions, so a test can prove a perfectly timed hop clears every gap (QA13-04). The hit box is narrower than the generic
+    /// forgiving one: a hop only lifts the car about 1.1 m, so a 3 m wide footprint would be impassable at normal speed.</summary>
+    public static class FlappyTunnelGeometry
+    {
+        public const float PillarW = 0.8f, FloorH = 0.45f, CarHalfX = 0.55f, CarHalfY = 0.5f, RestCentreY = 0.64f, HopV = 4.6f, Gravity = 9.81f, MinGap = 2.8f, TelegraphS = 2.0f, MinSpacingS = 2.6f;
+        public static float Gap(float sb) { return Mathf.Max(MinGap, sb); }
+        /// <summary>Distance between gates: the data value, but never less than MinSpacingS of travel at the current speed (and at least 6 m/s).</summary>
+        public static float Spacing(float sa, float speed) { return Mathf.Max(Mathf.Max(18f, sa), MinSpacingS * Mathf.Max(6f, speed)); }
+        /// <summary>Spawn distance ahead: at least TelegraphS of travel, at least the screen edge, at most 30 m.</summary>
+        public static float SpawnAhead(float aheadM, float speed) { return Mathf.Clamp(TelegraphS * speed, aheadM, 30f); }
+        public static bool Hits(float carX, float carY, float scale, float px, float py, float pw, float ph)
+        {
+            return Mathf.Abs(carX - px) < CarHalfX * scale + pw * 0.5f && Mathf.Abs(carY - py) < CarHalfY * scale + ph * 0.5f;
+        }
+        /// <summary>Ballistic hop launched when the car is launchDist metres before the gate centre (gate on flat ground at y = 0): true when it clears the floor post and the ceiling.</summary>
+        public static bool HopClears(float speed, float launchDist, float gap, float scale = 1f)
+        {
+            float gapBottom = FloorH, gapTop = gapBottom + Gap(gap);
+            const float dt = 1f / 240f; float x = -launchDist, y = RestCentreY * scale, vy = HopV;
+            for (int i = 0; i < 2400; i++)
+            {
+                if (Hits(x, y, scale, 0f, FloorH * 0.5f, PillarW, FloorH) || Hits(x, y, scale, 0f, gapTop + 4f, PillarW, 8f)) return false;
+                vy -= Gravity * dt; y += vy * dt; x += speed * dt;
+                if (y <= RestCentreY * scale && vy < 0f) { y = RestCentreY * scale; vy = 0f; if (x > 0f) return true; }
+            }
+            return true;
+        }
+    }
+
+    /// <summary>Flappy Tunnel: each gate is a ceiling column and a short floor post with a gap between them; the short-hop tap (a quick press and release) clears the floor post.
+    /// Gates appear at least 2 s of travel ahead, are at least 2.6 s of travel apart, and are drawn with an outlined column sprite above the road.</summary>
     public sealed class FlappyTunnelBehaviour : Fx2Behaviour
     {
         private readonly FxProp[] _top = new FxProp[3], _bot = new FxProp[3];
@@ -649,25 +686,32 @@ namespace RoadBuilderGame
         protected override void Respawned() { for (int i = 0; i < 3; i++) { W.Free(_top[i]); W.Free(_bot[i]); _top[i] = _bot[i] = null; } _nextX = Car.Body.position.x + W.AheadM; }
         protected override void Step(float dt, float distanceM)
         {
-            float cx = Car.Body.position.x, gap = Mathf.Max(2.2f, SB), spacing = Mathf.Max(18f, SA);
-            if (Hold <= 0f && _nextX < cx + W.AheadM + 4f)
+            float cx = Car.Body.position.x, vx = Mathf.Max(0f, Car.Body.linearVelocity.x), cs = Car.Scale;
+            float gap = FlappyTunnelGeometry.Gap(SB), spacing = FlappyTunnelGeometry.Spacing(SA, vx), ahead = FlappyTunnelGeometry.SpawnAhead(W.AheadM, vx);
+            if (Hold <= 0f && _nextX < cx + ahead + 4f)
             {
                 int slot = -1; for (int i = 0; i < 3; i++) if (_top[i] == null || !_top[i].Live) { slot = i; break; }
                 if (slot >= 0)
                 {
-                    float x = Mathf.Max(_nextX, cx + W.AheadM), g = W.GroundY(x); bool low = R.NextFloat01() < 0.5f;
-                    float lowOff = low ? 0.95f : 0f, gapBottom = g + lowOff, gapTop = gapBottom + gap + (low ? 0f : 0.4f);
-                    _top[slot] = W.Spawn(this, x, gapTop + 4f, 1.3f, 8f, new Color(0.85f, 0.35f, 0.55f));
-                    _bot[slot] = low ? W.Spawn(this, x, g + lowOff * 0.5f - 0.05f, 1.3f, lowOff, new Color(0.95f, 0.55f, 0.7f)) : null;
-                    W.SetSprite(_top[slot], StageWorld2.Pillar()); W.SetSprite(_bot[slot], StageWorld2.Pillar());
+                    float x = Mathf.Max(_nextX, cx + ahead), g = W.GroundY(x);
+                    float floorH = FlappyTunnelGeometry.FloorH, gapTop = g + floorH + gap, pw = FlappyTunnelGeometry.PillarW;
+                    _top[slot] = W.Spawn(this, x, gapTop + 4f, pw, 8f, new Color(0.85f, 0.35f, 0.55f));
+                    _bot[slot] = W.Spawn(this, x, g + floorH * 0.5f, pw, floorH, new Color(1f, 0.75f, 0.2f));
+                    W.SetSprite(_top[slot], StageWorld2.Pillar()); W.SetSprite(_bot[slot], StageWorld2.Pillar()); W.SetOrder(_top[slot], 36); W.SetOrder(_bot[slot], 36);
                     _nextX = x + spacing; _n++;
                 }
             }
             for (int i = 0; i < 3; i++)
             {
                 var a = _top[i]; if (a == null || !a.Live) continue;
-                if (cx - a.X > 10f) { W.Free(a); W.Free(_bot[i]); _top[i] = _bot[i] = null; continue; }
-                if (W.Overlaps(a) || (_bot[i] != null && W.Overlaps(_bot[i]))) W.Hit("FLAPPY GATE!");
+                var bt = _bot[i];
+                if (cx - a.X > 10f) { W.Free(a); W.Free(bt); _top[i] = _bot[i] = null; continue; }
+                bool dangerClose = a.X - cx < 14f;                                // the floor post flashes while it is the next gate, so the hop point is readable
+                if (bt != null && bt.Live) bt.Color = dangerClose && ((int)(W.Time * 6f) & 1) == 0 ? new Color(1f, 0.95f, 0.5f) : new Color(1f, 0.75f, 0.2f);
+                var c = Car.Body.position;
+                bool hit = FlappyTunnelGeometry.Hits(c.x, c.y, cs, a.X, a.Y, a.W, a.H) || (bt != null && bt.Live && FlappyTunnelGeometry.Hits(c.x, c.y, cs, bt.X, bt.Y, bt.W, bt.H));
+                if (hit) W.Hit("FLAPPY GATE!");
+                if (_top[i] == null) continue;       // a respawn inside Hit() already freed and nulled the gate
             }
         }
     }
@@ -954,28 +998,40 @@ namespace RoadBuilderGame
     /// <summary>Electric Fences: tall barriers pulse on a cycle; safe for the window, charged (and hurtful) for the rest, with a flicker before charging.</summary>
     public sealed class ElectricFencesBehaviour : Fx2Behaviour
     {
-        private readonly FxProp[] _f = new FxProp[3]; private readonly float[] _off = new float[3]; private float _nextX;
+        private const float PreFlashS = 0.5f;
+        private readonly FxProp[] _f = new FxProp[3]; private readonly float[] _off = new float[3], _jit = new float[3]; private readonly bool[] _synced = new bool[3]; private float _nextX;
         public ElectricFencesBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h) : base(d, fx, h, StageEffectKind.ElectricFences, new Color(0.5f, 0.6f, 1f), 0.04f) { }
         protected override void Begin() { _nextX = Car != null && Car.Body != null ? Car.Body.position.x + 30f : 0f; }
         protected override void Respawned() { for (int i = 0; i < 3; i++) { W.Free(_f[i]); _f[i] = null; } _nextX = Car.Body.position.x + 30f; }
+
+        /// <summary>Phase the fence so the car, at its current speed, reaches it inside the safe window (jitter keeps it from being identical every time). QA13-06: a passive car used to meet a charged fence 60 % of the time.</summary>
+        private void Align(int i, float cx, float vx, float cycle, float safe)
+        {
+            float tArr = Mathf.Max(0f, _f[i].X - cx - 0.9f) / Mathf.Max(4f, vx);
+            _off[i] = Mathf.Repeat(safe * 0.5f + _jit[i] * safe * 0.25f - tArr - W.Time, cycle);
+        }
+
         protected override void Step(float dt, float distanceM)
         {
-            float cx = Car.Body.position.x, cycle = Mathf.Max(1f, SA), safe = Mathf.Clamp(SB, 0.3f, cycle - 0.3f);
+            float cx = Car.Body.position.x, vx = Car.Body.linearVelocity.x, cs = Car.Scale, cycle = Mathf.Max(2f, SA), safe = Mathf.Clamp(SB, 0.8f, cycle - 0.6f);
             if (Hold <= 0f && _nextX < cx + 32f)
                 for (int i = 0; i < 3; i++) if (_f[i] == null || !_f[i].Live)
                 {
                     float x = Mathf.Max(_nextX, cx + 27f);
-                    _f[i] = W.Spawn(this, x, W.GroundY(x) + 2.3f, 0.4f, 4.6f, Color.white); _off[i] = R.NextFloat01() * cycle; _nextX = x + 44f; break;
+                    _f[i] = W.Spawn(this, x, W.GroundY(x) + 2.3f, 0.4f, 4.6f, Color.white); if (_f[i] == null) break;
+                    _jit[i] = R.NextFloat01() * 2f - 1f; _synced[i] = false; Align(i, cx, vx, cycle, safe); _nextX = x + 44f; break;
                 }
             for (int i = 0; i < 3; i++)
             {
                 var f = _f[i]; if (f == null || !f.Live) continue;
                 if (cx - f.X > 10f) { W.Free(f); _f[i] = null; continue; }
+                if (!_synced[i] && f.X - cx < 16f) { _synced[i] = true; Align(i, cx, vx, cycle, safe); }      // one re-sync once it is on screen, from the real speed
                 float ph = (W.Time + _off[i]) % cycle; bool charged = ph >= safe;
                 if (charged) f.Color = new Color(1f, 0.95f, 0.4f, 0.95f);
-                else if (safe - ph < 0.35f) f.Color = ((int)(W.Time * 20f) & 1) == 0 ? new Color(1f, 0.95f, 0.4f, 0.4f) : new Color(0.35f, 0.9f, 0.5f, 0.45f);   // flicker before it charges
+                else if (safe - ph < PreFlashS) f.Color = ((int)(W.Time * 14f) & 1) == 0 ? new Color(1f, 0.95f, 0.4f, 0.55f) : new Color(0.35f, 0.9f, 0.5f, 0.45f);   // pre-flash before it charges
                 else f.Color = new Color(0.35f, 0.9f, 0.5f, 0.45f);
-                if (charged && Hold <= 0f && W.Overlaps(f)) W.Hit("ELECTRIC FENCE!");
+                var c = Car.Body.position;
+                if (charged && Hold <= 0f && Mathf.Abs(c.x - f.X) < 0.55f * cs + 0.2f && Mathf.Abs(c.y - f.Y) < 0.5f * cs + f.H * 0.5f) W.Hit("ELECTRIC FENCE!");
             }
         }
     }
@@ -1065,8 +1121,16 @@ namespace RoadBuilderGame
     public sealed class RollingBoulderBehaviour : Fx2Behaviour
     {
         private FxProp _b, _mark; private int _st; private float _tm, _vy, _x, _dustT;
+        /// <summary>Crater half width: a 1.0 m notch the car's wheelbase bridges at speed, so one boulder is a jump or a short draw, not a chasm.</summary>
+        public const float CraterHalfM = 0.5f;
         public RollingBoulderBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h) : base(d, fx, h, StageEffectKind.RollingBoulder, new Color(0.7f, 0.55f, 0.4f), 0.03f) { }
         protected override void Begin() { _st = 0; _tm = 3f; }
+        /// <summary>Round hit box (0.75 r + car half size) instead of the generic forgiving square, so a jump clears the rock.</summary>
+        private bool BoulderTouches(FxProp p, float r)
+        {
+            var c = Car.Body.position; float s = Car.Scale;
+            return Mathf.Abs(c.x - p.X) < 0.6f * s + r * 0.8f && Mathf.Abs(c.y - p.Y) < 0.35f * s + r * 0.75f;
+        }
         protected override void Respawned() { W.Free(_b); W.Free(_mark); _b = _mark = null; _st = 0; _tm = 3f; }
         protected override void Step(float dt, float distanceM)
         {
@@ -1078,7 +1142,7 @@ namespace RoadBuilderGame
                 {
                     _x = cx + 24f + R.NextFloat01() * 6f;
                     if (!W.HasRoad(_x)) { _tm = 0.4f; return; }
-                    _mark = W.Spawn(this, _x, W.GroundY(_x) + 0.1f, 2.4f, 0.4f, new Color(1f, 0.3f, 0.2f, 0.7f), true); _st = 1; _tm = 0.9f; Banner("BOULDER!"); W.Host.Cue?.Invoke(Def.cueSfxId);
+                    _mark = W.Spawn(this, _x, W.GroundY(_x) + 0.1f, 2.4f, 0.4f, new Color(1f, 0.3f, 0.2f, 0.7f), true); _st = 1; _tm = 1.2f; Banner("BOULDER!"); W.Host.Cue?.Invoke(Def.cueSfxId);
                 }
             }
             else if (_st == 1)
@@ -1089,7 +1153,7 @@ namespace RoadBuilderGame
                     W.Free(_mark); _mark = null; _b = W.Spawn(this, _x, W.GroundY(_x) + 10f, 2.2f, 2.2f, Color.white, false); if (_b != null) { W.SetSprite(_b, StageWorld2.BoulderArt()); _b.A = 0f; } _vy = 0f; _st = 2;
                 }
             }
-            else if (_b == null || !_b.Live) { _st = 0; _tm = Mathf.Max(4f, SB); }
+            else if (_b == null || !_b.Live) { _st = 0; _tm = Mathf.Max(7f, SB); }
             else
             {
                 float r = _b.W * 0.5f * 0.9f; var road = W.Road;           // 0.9: the rock art fills 90 % of its square, outline included
@@ -1098,7 +1162,7 @@ namespace RoadBuilderGame
                     _vy -= 20f * dt; _b.Y += _vy * dt; _b.Rot += 90f * dt;
                     if (W.TryRestY(_b.X, r, out float rest) && _b.Y <= rest)
                     {
-                        _b.Y = rest; if (!road.IsRangeProtected(_b.X - 1.6f, _b.X + 1.6f)) road.CutRange(_b.X - 1.6f, _b.X + 1.6f);
+                        _b.Y = rest; if (!road.IsRangeProtected(_b.X - CraterHalfM, _b.X + CraterHalfM)) road.CutRange(_b.X - CraterHalfM, _b.X + CraterHalfM);
                         W.Dust(_b.X, rest - r + 0.2f, 14); _st = 3; _dustT = 0f;
                     }
                     else if (_b.Y < body.position.y - 16f) { W.Free(_b); _b = null; }
@@ -1109,7 +1173,13 @@ namespace RoadBuilderGame
                     if (W.TryRestY(_b.X, r, out float rest3)) { _b.Y = rest3; _dustT += dt; if (_dustT > 0.2f) { _dustT = 0f; W.Dust(_b.X + r * 0.7f, rest3 - r + 0.15f, 3); } }
                     else { _vy -= 20f * dt; _b.Y += _vy * dt; }
                     if (_b.Y < body.position.y - 16f || cx - _b.X > 12f) { W.Free(_b); _b = null; }
-                    else if (Hold <= 0f && W.Overlaps(_b)) { W.Hit("BOULDER!"); W.Dust(_b.X, _b.Y, 10); W.Free(_b); _b = null; }
+                    else if (Hold <= 0f && BoulderTouches(_b, r))
+                    {
+                        // Hit() can end the run or respawn, which frees this behaviour's props and nulls _b (QA13-05): cache first, never touch the prop afterwards.
+                        float hx = _b.X, hy = _b.Y; var rock = _b;
+                        W.Hit("BOULDER!"); W.Dust(hx, hy, 10);
+                        W.Free(rock); if (_b == rock) _b = null;
+                    }
                 }
             }
         }

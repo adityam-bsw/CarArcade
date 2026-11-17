@@ -80,7 +80,7 @@ namespace RoadBuilderGame
         private Announcer _announcer; private readonly HitStop _hitStop = new HitStop(); private readonly FinishGateProp _gateProp = new FinishGateProp(); private string _hazardWorldId = "";
         private BossDefinitionSO _bossData;
         private readonly NearMissLedger _nearLedger = new NearMissLedger();
-        private float _hitGraceLeft, _recentSpeed, _bossEndS = -1f, _meteorWarnDist;
+        private float _iFramesLeft, _hitGraceLeft, _recentSpeed, _bossEndS = -1f, _meteorWarnDist;
         private bool _finishing, _runEnding;
         private ScreenState _previousState = ScreenState.HomeDashboard;
         private float _frenzyTrailTimer;
@@ -664,6 +664,9 @@ namespace RoadBuilderGame
             Model.SetPaused(false);
         }
 
+        /// <summary>Hit invulnerability after any damage: no further heart for this long.</summary>
+        public const float IFrameS = 1.5f;
+
         private bool HandleLifeLoss(string reason)
         {
             _brush.Cancel();
@@ -673,6 +676,13 @@ namespace RoadBuilderGame
                 { _car.RespawnSafely(_road.CreateSafetyPlatformAndFindRespawn(_car.Body.position.x, 0f)); _upsideDownTime = 0f; }
                 return true;
             }
+            // QA13-03: one contact window = one heart. After any hit (shielded or not) every further damage source is ignored for IFrameS, except a fall into the chasm
+            // (the car must still be recovered) and QA probes. The car flickers through the existing invincibility mechanism.
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log("[Hit] " + reason + " iframes=" + _iFramesLeft.ToString("0.00") + " lives=" + currentLives + " dist=" + _distance.ToString("0"));
+#endif
+            if (_iFramesLeft > 0f && reason != "FELL INTO THE CHASM!" && !reason.StartsWith("QA")) return false;
+            _iFramesLeft = IFrameS;
             bool shielded = _run.AbsorbHit();       // a shield soaks up one crash
             _run.Interrupt();
             _cameraRig?.Shake(shielded ? 0.2f : 0.45f, 0.4f);
@@ -681,6 +691,7 @@ namespace RoadBuilderGame
             {
                 if (ParticleManager.Instance && _car != null)
                     ParticleManager.Instance.SpawnBurst(_car.Body.position, new Color(0.4f, 0.65f, 1f), 18);
+                if (_car != null) _car.TriggerInvincibility(IFrameS);
             }
             else
             {
@@ -1498,6 +1509,7 @@ namespace RoadBuilderGame
         private void TickHazards(Vector2 carPos, float dt)
         {
             if (_hitGraceLeft > 0f) _hitGraceLeft -= dt;
+            if (_iFramesLeft > 0f) _iFramesLeft -= dt;
             if (_car != null) _car.GodVisual = CheatGod;
             _nearLedger.Tick(dt);
             Vector2 vel = _car.Body.linearVelocity;
@@ -1596,7 +1608,7 @@ namespace RoadBuilderGame
             _meteors.StageDriven = _stageOn;
             _cEaterOwn = false; _eater.Stop(); _boss.Stop(); _hitStop.Release(); _announcer?.Clear(); _gateProp.Hide();
             _road.ClearNoEatRanges();
-            _nearLedger.Reset(); _hitGraceLeft = 0f; _recentSpeed = 0f; _bossEndS = -1f; _finishing = false; _runEnding = false;
+            _nearLedger.Reset(); _hitGraceLeft = 0f; _iFramesLeft = 0f; _recentSpeed = 0f; _bossEndS = -1f; _finishing = false; _runEnding = false;
             Model.EaterOn = false; Model.BossOn = false;
             if (!_stageOn) return;
             bool endless = _stage.OnEndless;

@@ -312,7 +312,7 @@ namespace RoadBuilderGame
             if (key == cell.tintKey) return;
             cell.tintKey = key;
             Color tint = stage >= 2 ? _set.dangerTint : stage == 1 ? _set.warnTint : Color.white;
-            if (a < 0.999f) { float v = Mathf.Lerp(0.25f, 1f, a); tint = new Color(tint.r * v, tint.g * v, tint.b * v, Mathf.Max(0.35f, a)); }
+            if (a < 0.999f) { var lifted = Color.Lerp(tint, Color.white, 0.3f * (1f - a)); tint = new Color(lifted.r, lifted.g, lifted.b, Mathf.Max(0.2f, a)); }   // QA13-02: fade the ALPHA and lift the brightness a little, never darken toward grey: the texture (puffs) stays
             _road.TintRange(x0, x1, tint);
         }
 
