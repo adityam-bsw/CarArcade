@@ -124,6 +124,9 @@ namespace RoadBuilderGame
             }
         }
 
+        /// <summary>Test hook: grants and equips without paying scrap.</summary>
+        public static void GrantQuiet_ForTests(PlayerProfile p, string id) { GrantQuiet(p, null, id); }
+
         private static void GrantQuiet(PlayerProfile p, ProgressionTuningSO t, string id) { int scrap = p.scrap; Grant(p, t, id); p.scrap = scrap; }
 
         /// <summary>Awards the goal sticker when a vehicle's mastery goal has just been met. Returns true when granted.</summary>

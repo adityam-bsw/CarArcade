@@ -341,5 +341,25 @@ namespace RoadBuilderGame.Tests
             }
             finally { Object.DestroyImmediate(car.gameObject); }
         }
+
+        [Test]
+        public void CosmeticSticker_IsSmallBadgeOnLowerBodyPanel_NotBlobAtSeat()
+        {
+            var e = Catalog().Find("vehicle-golf-cart");
+            var car = RoadCar.Create(Vector2.zero, e.MakeRig(ArtStyle.Smooth));
+            try
+            {
+                var p = new PlayerProfile();
+                Cosmetics.GrantQuiet_ForTests(p, "sticker:vehicle-golf-cart");
+                CosmeticApplier.Apply(car.gameObject, p, null, "vehicle-golf-cart");
+                var body = car.transform.Find("Body") != null ? car.transform.Find("Body").Find("BodySprite").GetComponent<SpriteRenderer>() : car.Body.transform.Find("BodySprite").GetComponent<SpriteRenderer>();
+                var st = body.transform.Find("Sticker");
+                Assert.IsNotNull(st);
+                var sr = st.GetComponent<SpriteRenderer>();
+                Assert.LessOrEqual(sr.bounds.size.y, body.bounds.size.y * 0.25f, "small");
+                Assert.Less(sr.bounds.center.y, body.bounds.center.y, "below the body's centre line (lower panel)");
+            }
+            finally { Object.DestroyImmediate(car.gameObject); }
+        }
     }
 }
