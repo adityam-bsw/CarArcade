@@ -130,7 +130,7 @@ namespace RoadBuilderGame.Tests
         [Test]
         public void SmoothWheels_AreOldWheelsTimesS_AndMatchMappingMd()
         {
-            var v4 = SmoothVehicleLinker.ReadV4();
+            var v4 = SmoothVehicleLinker.ReadLayout();
             // MAPPING.md lists, per vehicle, new wheel cx, cy, r, size in new pixels.
             var map = new Dictionary<string, List<float[]>>();
             var lines = new List<string>(File.ReadAllLines(Folder + "MAPPING.md"));
@@ -230,7 +230,7 @@ namespace RoadBuilderGame.Tests
         public void SmoothBuild_HasSamePhysicsAndWorldGeometry_AsPixelBuild()
         {
             int n = 0;
-            var v4 = SmoothVehicleLinker.ReadV4();
+            var v4 = SmoothVehicleLinker.ReadLayout();
             foreach (var e in Catalog().entries)
             {
                 if (e.kind != CatalogKind.Vehicle || !e.HasSmooth) continue;
@@ -260,7 +260,7 @@ namespace RoadBuilderGame.Tests
         [Test]
         public void ChangedVehicles_BuildWheelsAtV4Anchors_CentreOfMassMidAxle()
         {
-            var v4 = SmoothVehicleLinker.ReadV4();
+            var v4 = SmoothVehicleLinker.ReadLayout();
             int n = 0;
             foreach (var e in Catalog().entries)
             {
@@ -301,6 +301,43 @@ namespace RoadBuilderGame.Tests
                 var joints = car.Body.GetComponents<WheelJoint2D>();
                 Assert.AreEqual(3, joints.Length);
                 foreach (var j in joints) { Assert.Greater(j.suspension.frequency, 0f); Assert.Greater(j.suspension.dampingRatio, 0f); }
+            }
+            finally { Object.DestroyImmediate(car.gameObject); }
+        }
+
+        [Test]
+        public void Pickup_HasTwoWheels_FromWheelsV5()
+        {
+            var e = Catalog().Find("vehicle-pickup");
+            Assert.IsTrue(e.smoothV4); Assert.AreEqual(2, e.smoothWheels.Length);
+            var rig = e.MakeRig(ArtStyle.Smooth);
+            Assert.IsTrue(rig.perWheelPhysics);
+            var car = RoadCar.Create(Vector2.zero, rig);
+            try
+            {
+                var joints = car.Body.GetComponents<WheelJoint2D>();
+                Assert.AreEqual(2, joints.Length);
+                foreach (var j in joints) { Assert.Greater(j.suspension.frequency, 0f); Assert.Greater(j.suspension.dampingRatio, 0f); }
+            }
+            finally { Object.DestroyImmediate(car.gameObject); }
+        }
+
+        [Test]
+        public void SemiTruck_HasThreeEqualWheels_FromWheelsV5_AndCentreOfMassMidAxle()
+        {
+            var e = Catalog().Find("vehicle-semi-truck");
+            Assert.AreEqual(3, e.smoothWheels.Length);
+            Assert.AreEqual(e.smoothWheels[0].r, e.smoothWheels[1].r, 1e-3f); Assert.AreEqual(e.smoothWheels[0].r, e.smoothWheels[2].r, 1e-3f);
+            Assert.IsTrue(e.centerMassOnWheels);
+            var rig = e.MakeRig(ArtStyle.Smooth);
+            var car = RoadCar.Create(Vector2.zero, rig);
+            try
+            {
+                var joints = car.Body.GetComponents<WheelJoint2D>();
+                Assert.AreEqual(3, joints.Length);
+                var r0 = joints[0].connectedBody.GetComponent<CircleCollider2D>().radius;
+                foreach (var j in joints) Assert.AreEqual(r0, j.connectedBody.GetComponent<CircleCollider2D>().radius, 1e-3f);
+                Assert.AreEqual((joints[0].anchor.x + joints[2].anchor.x) * 0.5f, car.Body.centerOfMass.x, Tol);
             }
             finally { Object.DestroyImmediate(car.gameObject); }
         }

@@ -9,7 +9,7 @@ namespace RoadBuilderGame.Editor
     /// Links the smooth catalogue vehicles (Assets/Art/Smooth/Vehicles2) to their AssetCatalog entries. Only vehicles whose manifest
     /// item says smooth_status = ready AND whose files exist are linked; everything else (needs_work, sent back, not yet imported)
     /// keeps its old art. Touches only the smooth* fields: widthUnits, mass, torque, speed and the old wheels stay as built by CatalogBuilder.
-    /// Wheel geometry: vehicles marked changed in wheels_v4.json use those anchors (canvas px, own radius per wheel, 3 wheels allowed); the rest use the old Catalog/wheels.json times the smooth scale S (checked by SmoothVehicleTests).
+    /// Wheel geometry: vehicles marked changed in wheels_v5.json, else wheels_v4.json use those anchors (canvas px, own radius per wheel, 3 wheels allowed); the rest use the old Catalog/wheels.json times the smooth scale S (checked by SmoothVehicleTests).
     /// Safe to re-run.
     /// </summary>
     public static class SmoothVehicleLinker
@@ -26,6 +26,9 @@ namespace RoadBuilderGame.Editor
 
         /// <summary>wheels_v4.json (written by the art forge, tools/art/vehicle_layout.py): anchors in smooth canvas pixels per vehicle; only entries with changed = true are used.</summary>
         public const string V4Json = Folder + "wheels_v4.json";
+
+        /// <summary>wheels_v5.json (pickup and semi-truck redesign, same schema): wins over wheels_v4.json for vehicles it marks changed.</summary>
+        public const string V5Json = Folder + "wheels_v5.json";
 
         [System.Serializable] public class V4Wheel { public float cx, cy, r, size, worldX, worldY, worldR; }
         [System.Serializable] public class V4Car { public int canvasW, canvasH, S; public float widthUnits; public bool changed; public List<V4Wheel> wheels; }
@@ -50,6 +53,15 @@ namespace RoadBuilderGame.Editor
             return map;
         }
 
+        /// <summary>Wheel layout per vehicle: wheels_v5.json (changed) over wheels_v4.json (changed). Old wheels.json x S applies to vehicles in neither.</summary>
+        public static Dictionary<string, V4Car> ReadLayout()
+        {
+            var map = ReadV4();
+            foreach (var kv in ReadV4(V5Json))
+                if (kv.Value != null && kv.Value.changed) map[kv.Key] = kv.Value;
+            return map;
+        }
+
         [System.Serializable] private class Manifest { public string smooth_status; public int smooth_scale; public string smooth_project_path; }
         [System.Serializable] private class WheelRow { public float cx, cy, r; }
         [System.Serializable] private class WheelCar { public string id; public List<WheelRow> wheels; }
@@ -71,7 +83,7 @@ namespace RoadBuilderGame.Editor
             var old = new Dictionary<string, WheelCar>();
             if (File.Exists(OldWheels))
                 foreach (var c in JsonUtility.FromJson<WheelFile>(File.ReadAllText(OldWheels)).vehicles) old[c.id] = c;
-            var v4 = ReadV4();
+            var v4 = ReadLayout();
             int linked = 0;
             foreach (var e in catalog.entries)
             {

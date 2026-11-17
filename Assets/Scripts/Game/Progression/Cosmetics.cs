@@ -156,7 +156,7 @@ namespace RoadBuilderGame
             if (body == null) return;
             if (e.colour.Length > 0) { var c = Cosmetics.Resolve(t, e.colour); if (c.valid) body.color = c.color; }
             var bb = body.bounds;
-            if (e.sticker.Length > 0) { var c = Cosmetics.Resolve(t, e.sticker); if (c.valid) Add(body, "Sticker", Badge(), c.color, bb.center + new Vector3(bb.size.x * 0.12f, bb.size.y * 0.02f, 0f), bb.size.y * 0.42f); }
+            if (e.sticker.Length > 0) { var c = Cosmetics.Resolve(t, e.sticker); if (c.valid) Add(body, "Sticker", Badge(), c.color, bb.center + new Vector3(bb.size.x * 0.27f, -bb.size.y * 0.16f, 0f), bb.size.y * 0.2f); }
             if (e.trim.Length > 0) { var c = Cosmetics.Resolve(t, e.trim); if (c.valid) Add(body, "Trim", Star(), c.color, bb.center + new Vector3(-bb.size.x * 0.2f, bb.size.y * 0.18f, 0f), bb.size.y * 0.34f); }
         }
 
@@ -181,8 +181,12 @@ namespace RoadBuilderGame
             {
                 float d = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), new Vector2(n / 2f, n / 2f)) / (n / 2f);
                 float a = d < 0.82f ? 1f : (d < 1f ? Mathf.Clamp01((1f - d) / 0.18f) : 0f);
-                float ring = d > 0.58f && d < 0.7f ? 0.55f : 1f;
-                tex.SetPixel(x, y, new Color(ring, ring, ring, a));
+                float ring = d > 0.66f && d < 0.78f ? 0.5f : 1f;
+                // a small star cut into the patch so the sticker reads as a badge, not a flat disc
+                Vector2 q = new Vector2(x + 0.5f - n / 2f, y + 0.5f - n / 2f) / (n / 2f);
+                float edge = 0.2f + 0.38f * Mathf.Pow(Mathf.Abs(Mathf.Cos(Mathf.Atan2(q.y, q.x) * 2.5f)), 1.5f);
+                if (d < edge) ring = 0.22f;
+                tex.SetPixel(x, y, new Color(ring, ring, ring, a * 0.95f));
             }
             tex.Apply(false, true);
             return _badge = Sprite.Create(tex, new Rect(0, 0, n, n), new Vector2(0.5f, 0.5f), n);

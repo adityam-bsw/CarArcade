@@ -688,19 +688,14 @@ MonoBehaviour:
     smoothBody: {fileID: 21300000, guid: 4dd6a261322d44cb9bbe626b7ed293a2, type: 3}
     smoothWheels:
     - sprite: {fileID: 21300000, guid: 6eeaa02616bb3435e9dd56d052258301, type: 3}
-      cx: 58.5
-      cy: 188.1
-      r: 32.4
+      cx: 79.2
+      cy: 182.7
+      r: 37.8
       visualScale: 0
     - sprite: {fileID: 21300000, guid: 33fbe5d1afb134911a200186379e13be, type: 3}
-      cx: 117
-      cy: 188.1
-      r: 32.4
-      visualScale: 0
-    - sprite: {fileID: 21300000, guid: 2340a4c3736a442f1ba37c7bbbb2f339, type: 3}
-      cx: 315
-      cy: 188.1
-      r: 32.4
+      cx: 282.6
+      cy: 182.7
+      r: 37.8
       visualScale: 0
     smoothScale: 9
     smoothV4: 1
@@ -745,19 +740,19 @@ MonoBehaviour:
     smoothBody: {fileID: 21300000, guid: 684153512f3a2465bb38a5276d9e689c, type: 3}
     smoothWheels:
     - sprite: {fileID: 21300000, guid: bd729adf232c64102b44684147c3e020, type: 3}
-      cx: 64
-      cy: 167.2
-      r: 28.8
+      cx: 56
+      cy: 165.6
+      r: 30.4
       visualScale: 0
     - sprite: {fileID: 21300000, guid: 73f0a7a6eedc247e8a67916a3c17cce0, type: 3}
-      cx: 116
-      cy: 167.2
-      r: 28.8
+      cx: 112
+      cy: 165.6
+      r: 30.4
       visualScale: 0
     - sprite: {fileID: 21300000, guid: dd3219a6e27c467db93b93822cbb2b93, type: 3}
-      cx: 320
-      cy: 176.8
-      r: 19.2
+      cx: 328
+      cy: 165.6
+      r: 30.4
       visualScale: 0
     smoothScale: 8
     smoothV4: 1
