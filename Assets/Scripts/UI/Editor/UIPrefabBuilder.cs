@@ -662,21 +662,34 @@ namespace RoadBuilderGame.UI.Editor
 
             // Five upgrade plates in a vertical scroll strip on the left wall: each plate is drawn at its real size (no scale trick) so
             // every label is readable. Four and a bit rows show, the fifth peeks in to say "scroll".
-            const float rowW = 300f, rowH = 146f, pitch = 150f;
+            const float rowW = 300f, rowH = 142f, pitch = 142f, barW = 16f;
             var scrollGo = new GameObject("UpgradeScroll", typeof(RectTransform), typeof(ScrollRect));
             scrollGo.transform.SetParent(upgrades, false);
-            Place((RectTransform)scrollGo.transform, TL, TL, new Vector2(14, -156), new Vector2(rowW + 8, 628));
+            Place((RectTransform)scrollGo.transform, TL, TL, new Vector2(14, -150), new Vector2(rowW + 8 + barW + 4, 634));
             var viewport = Rect("Viewport", (RectTransform)scrollGo.transform);
-            Stretch(viewport);
+            Stretch(viewport, 0, 0, barW + 4, 0);
             viewport.gameObject.AddComponent<RectMask2D>();
             viewport.gameObject.AddComponent<Image>().color = new Color(0, 0, 0, 0);       // takes the drag anywhere on the strip
             var rowsContent = Rect("Content", viewport);
             rowsContent.anchorMin = new Vector2(0, 1); rowsContent.anchorMax = new Vector2(1, 1); rowsContent.pivot = new Vector2(0.5f, 1);
-            rowsContent.anchoredPosition = Vector2.zero; rowsContent.sizeDelta = new Vector2(0, pitch * 5 - 4);
+            rowsContent.anchoredPosition = Vector2.zero; rowsContent.sizeDelta = new Vector2(0, pitch * 5 + 4);
             var rowsScroll = scrollGo.GetComponent<ScrollRect>();
             rowsScroll.viewport = viewport; rowsScroll.content = rowsContent;
             rowsScroll.horizontal = false; rowsScroll.vertical = true;
             rowsScroll.movementType = ScrollRect.MovementType.Elastic; rowsScroll.scrollSensitivity = 30f;
+            // Visible scrollbar (steel track, orange handle): says "more below" and can be dragged. Permanent so the viewport never resizes.
+            var barRt = Rect("Scrollbar", (RectTransform)scrollGo.transform);
+            barRt.anchorMin = new Vector2(1, 0); barRt.anchorMax = new Vector2(1, 1); barRt.pivot = new Vector2(1, 0.5f);
+            barRt.offsetMin = new Vector2(-barW, 4); barRt.offsetMax = new Vector2(0, -4);
+            var barTrack = barRt.gameObject.AddComponent<Image>();
+            var trackTi = barRt.gameObject.AddComponent<ThemedImage>(); trackTi.slot = SpriteSlot.Pill; trackTi.colorToken = ColorToken.Secondary; trackTi.Apply();
+            var slide = Rect("SlidingArea", barRt); Stretch(slide, 2, 2, 2, 2);
+            var handleRt = Rect("Handle", slide); handleRt.sizeDelta = Vector2.zero;
+            handleRt.gameObject.AddComponent<Image>();
+            var handleTi = handleRt.gameObject.AddComponent<ThemedImage>(); handleTi.slot = SpriteSlot.Pill; handleTi.colorToken = ColorToken.Accent; handleTi.Apply();
+            var sb = barRt.gameObject.AddComponent<Scrollbar>();
+            sb.handleRect = handleRt; sb.targetGraphic = handleRt.GetComponent<Image>(); sb.direction = Scrollbar.Direction.BottomToTop;
+            rowsScroll.verticalScrollbar = sb; rowsScroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
 
             var g = root.GetComponent<GarageScreen>();
             for (int i = 0; i < 5; i++)
@@ -723,16 +736,16 @@ namespace RoadBuilderGame.UI.Editor
             var actionStar = ArtImg(rightPanel, "StickerStar", SpriteSlot.DecoSticker, TR, TR, new Vector2(-24, -298), new Vector2(84, 84), 14f);
             // Tier, strength and weakness of the focused vehicle, and the way into its mastery (stickers, colours, trim) and the scrap workshop.
             var mastery = ArtButton(rightPanel, "MasteryButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "MASTERY AND STYLE",
-                32, ColorToken.TextPrimary, TR, TR, new Vector2(-40, -516), new Vector2(480, 100), 0f, new Vector4(26, 26, 26, 26));
+                32, ColorToken.TextPrimary, TR, TR, new Vector2(-40, -508), new Vector2(400, 149), 0f, new Vector4(36, 30, 36, 30));
             var profileText = Label(rightPanel, "ProfileText", "", TextStyle.Button, ColorToken.Accent, 26, TextAlignmentOptions.TopRight);
             profileText.enableAutoSizing = true; profileText.fontSizeMin = 16; profileText.fontSizeMax = 26;
-            Place(profileText.rectTransform, TR, TR, new Vector2(-44, -630), new Vector2(480, 130));
+            Place(profileText.rectTransform, TR, TR, new Vector2(-44, -664), new Vector2(480, 110));
 
             // The vehicle rail runs along the floor.
             var rail = BuildRail(full, "VehicleRail", cardPrefab, BC, BC, new Vector2(0, 6), new Vector2(1920, 290));
 
             // Portrait: upgrades (left) and tier/mastery (right) on the wall above the door, name and a big action button on the floor, a taller rail.
-            Port((RectTransform)scrollGo.transform, TL, TL, new Vector2(30, -330), 1.5f, new Vector2(rowW + 8, 640));
+            Port((RectTransform)scrollGo.transform, TL, TL, new Vector2(30, -330), 1.5f, new Vector2(rowW + 8 + barW + 4, pitch * 5 + 8));
             Port(mastery.rt, TR, TR, new Vector2(-50, -330), 1.4f);
             Port((RectTransform)profileText.transform, TR, TR, new Vector2(-54, -500), 1.4f);
             Port(namePlate.rectTransform, BC, BC, new Vector2(0, 1130), 1.5f);
@@ -868,6 +881,10 @@ namespace RoadBuilderGame.UI.Editor
 
         private static void Port(RectTransform rt, Vector2 anchor, Vector2 pivot, Vector2 pos, float scale, Vector2? size = null)
             => _port.Add(new PortraitLayout.Entry { target = rt, anchorMin = anchor, anchorMax = anchor, pivot = pivot, position = pos, size = size ?? rt.sizeDelta, scale = scale });
+
+        /// <summary>Portrait entry with separate min/max anchors (a rect that stretches with the screen height). With a stretched axis the size is an offset pair, as in a RectTransform's sizeDelta.</summary>
+        private static void PortS(RectTransform rt, Vector2 aMin, Vector2 aMax, Vector2 pivot, Vector2 pos, Vector2 size, float scale = 1f)
+            => _port.Add(new PortraitLayout.Entry { target = rt, anchorMin = aMin, anchorMax = aMax, pivot = pivot, position = pos, size = size, scale = scale });
 
         /// <summary>A rail runs edge to edge: in portrait it is scaled up, so its stretched width shrinks by the same factor.</summary>
         private static void PortRail(RectTransform rt, float scale, float height)
@@ -1041,6 +1058,11 @@ namespace RoadBuilderGame.UI.Editor
                 Ref(s, row + ".claim", cl.button); Ref(s, row + ".claimLabel", cl.label); Ref(s, row + ".claimImage", cl.image);
             }
 
+            // Portrait: the daily board over the missions board, both big, spread down the screen (anchors are fractions of the screen height).
+            Port(board.rectTransform, new Vector2(0.5f, 0.71f), C, Vector2.zero, 1.85f);
+            Port(mBoard.rectTransform, new Vector2(0.5f, 0.37f), C, Vector2.zero, 1.85f);
+            PortraitDone(c);
+
             Ref(s, "coinsText", coinsText); Ref(s, "gemsText", gems);
             Ref(s, "dailyTitle", dayText); Ref(s, "dailyReward", dReward);
             Ref(s, "dailyRewardGems", dRewardGems); Ref(s, "dailyRewardGemsGroup", dGemsGroup);
@@ -1121,6 +1143,9 @@ namespace RoadBuilderGame.UI.Editor
             var credits = Label(board.transform, "Credits", "Fonts: Lilita One and Baloo 2 (SIL OFL 1.1)", TextStyle.Button, ColorToken.TextSecondary, 22);
             Place(credits.rectTransform, C, C, new Vector2(0, -130), new Vector2(700, 36));
 
+            Port(board.rectTransform, new Vector2(0.5f, 0.55f), C, Vector2.zero, 1.9f);
+            PortraitDone(c);
+
             var s = root.GetComponent<SettingsScreen>();
             Ref(s, "soundButton", sound.button); Ref(s, "soundButtonImage", sound.image); Ref(s, "soundLabel", sound.label);
             Ref(s, "adaptiveButton", adaptive.button); Ref(s, "adaptiveButtonImage", adaptive.image); Ref(s, "adaptiveLabel", adaptive.label);
@@ -1152,6 +1177,9 @@ namespace RoadBuilderGame.UI.Editor
                 "RESUME", 52, ColorToken.TextOnAccent, C, C, new Vector2(0, -20), new Vector2(460, 179), 0f, new Vector4(96, 38, 36, 32));
             var quit = ArtButton(board.transform, "QuitButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "QUIT TO MENU",
                 30, ColorToken.TextPrimary, BC, BC, new Vector2(0, 54), new Vector2(340, 127), 0f, new Vector4(30, 30, 30, 30));
+
+            Port(board.rectTransform, new Vector2(0.5f, 0.55f), C, Vector2.zero, 1.9f);
+            PortraitDone(c);
 
             var s = root.GetComponent<PauseScreen>();
             Ref(s, "resumeButton", resume.button); Ref(s, "quitButton", quit.button);
@@ -1303,6 +1331,12 @@ namespace RoadBuilderGame.UI.Editor
             Place(dFoot.rectTransform, BC, BC, new Vector2(0, 142), new Vector2(520, 56));
             var select = ArtButton(detail.transform, "SelectButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled, "SELECT", 40, ColorToken.TextOnAccent, BC, BC, new Vector2(0, 34), new Vector2(440, 172), 0f, new Vector4(90, 36, 34, 32));
             select.button.transition = Selectable.Transition.None;
+
+            // Portrait: the detail panel moves under the grid (full width), the grid takes the rest and flows into more columns; tabs shrink to fit the width.
+            Port(tabs, TC, TC, new Vector2(0, -150), 0.88f);
+            PortS(scrollRt, Vector2.zero, Vector2.one, C, new Vector2(0, 442), new Vector2(-80, -1404));
+            PortS(detail.rectTransform, new Vector2(0, 0), new Vector2(1, 0), BC, new Vector2(0, 40), new Vector2(1840f / 1.4f - 1920f, 760), 1.4f);
+            PortraitDone(c);
 
             var s = root.GetComponent<CollectionScreen>();
             Ref(s, "titleText", title); Ref(s, "countText", count); Ref(s, "backButton", back.button);

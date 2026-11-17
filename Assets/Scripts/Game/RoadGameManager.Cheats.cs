@@ -118,7 +118,7 @@ namespace RoadBuilderGame
             if (!CheatsOn || !CheatPlaying || !_stage.Active) return;
             _boss.Stop(); _eater.Stop(); _stagePresenter?.Reset();         // the cheat hazard has no stage event: drop the stale 'N M LEFT' pill
             _hazardWorldId = worldId;
-            _eater.Configure(EaterVariantSO.ForWorld(worldId));
+            _eater.Configure(EaterVariantSO.ForWorld(worldId), worldId);
             float cx = _car.Body.position.x;
             _eater.Begin(cx, 0x00E47E8u ^ (uint)Time.frameCount);       // own origin = the car now, so its timers and timeout (spawn + 750 m) are relative to the current distance
             _eater.Model.TimeoutOverrideS = 750f;

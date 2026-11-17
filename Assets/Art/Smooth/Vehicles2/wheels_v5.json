@@ -1,0 +1,92 @@
+{
+ "vehicle-pickup": {
+  "canvasW": 369,
+  "canvasH": 234,
+  "S": 9,
+  "widthUnits": 2.9286,
+  "changed": true,
+  "wheels": [
+   {
+    "cx": 79.2,
+    "cy": 182.7,
+    "r": 37.8,
+    "size": 81,
+    "worldX": -0.8357,
+    "worldY": -0.5214,
+    "worldR": 0.3
+   },
+   {
+    "cx": 282.6,
+    "cy": 182.7,
+    "r": 37.8,
+    "size": 81,
+    "worldX": 0.7786,
+    "worldY": -0.5214,
+    "worldR": 0.3
+   }
+  ]
+ },
+ "vehicle-semi-truck": {
+  "canvasW": 400,
+  "canvasH": 208,
+  "S": 8,
+  "widthUnits": 3.0,
+  "changed": true,
+  "wheels": [
+   {
+    "cx": 56.0,
+    "cy": 165.6,
+    "r": 30.4,
+    "size": 64,
+    "worldX": -1.08,
+    "worldY": -0.462,
+    "worldR": 0.228
+   },
+   {
+    "cx": 112.0,
+    "cy": 165.6,
+    "r": 30.4,
+    "size": 64,
+    "worldX": -0.66,
+    "worldY": -0.462,
+    "worldR": 0.228
+   },
+   {
+    "cx": 328.0,
+    "cy": 165.6,
+    "r": 30.4,
+    "size": 64,
+    "worldX": 0.96,
+    "worldY": -0.462,
+    "worldR": 0.228
+   }
+  ]
+ },
+ "vehicle-golf-cart": {
+  "canvasW": 288,
+  "canvasH": 171,
+  "S": 9,
+  "widthUnits": 2.2857,
+  "changed": false,
+  "wheels": [
+   {
+    "cx": 66.6,
+    "cy": 124.2,
+    "r": 37.8,
+    "size": 81,
+    "worldX": -0.6143,
+    "worldY": -0.3071,
+    "worldR": 0.3
+   },
+   {
+    "cx": 223.2,
+    "cy": 124.2,
+    "r": 37.8,
+    "size": 81,
+    "worldX": 0.6286,
+    "worldY": -0.3071,
+    "worldR": 0.3
+   }
+  ]
+ }
+}

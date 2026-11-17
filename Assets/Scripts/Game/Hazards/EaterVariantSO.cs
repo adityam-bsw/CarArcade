@@ -75,6 +75,21 @@ namespace RoadBuilderGame
             return v;
         }
 
+        /// <summary>Visual-only dragon look for worlds that have no variant row (snow/arctic, night city, forest, cloud, toxic): hue, saturation scale and brightness scale applied by the
+        /// same hue shader the variants use, so every world's dragon is distinct from the orange Volcano art. No gameplay: those worlds still have no signature attack.</summary>
+        public static bool TryLook(string worldId, out Color tint, out float sat, out float val)
+        {
+            switch (ShortId(worldId))
+            {
+                case "snow": tint = new Color(0.45f, 0.78f, 1f); sat = 0.55f; val = 1.18f; return true;      // pale ice blue
+                case "city": tint = new Color(0.62f, 0.2f, 1f); sat = 0.95f; val = 0.95f; return true;       // neon violet
+                case "forest": tint = new Color(0.25f, 0.75f, 0.3f); sat = 0.8f; val = 0.95f; return true;
+                case "cloud": tint = new Color(1f, 0.7f, 0.9f); sat = 0.45f; val = 1.2f; return true;        // pastel pink
+                case "toxic": tint = new Color(0.72f, 0.92f, 0.1f); sat = 0.9f; val = 1f; return true;       // acid green
+            }
+            tint = Color.white; sat = val = 1f; return false;
+        }
+
         public static EaterVariantSO ForWorld(string worldId)
         {
             string s = ShortId(worldId); if (s.Length == 0) return null;

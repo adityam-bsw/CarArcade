@@ -17,6 +17,7 @@ namespace RoadBuilderGame
         private Transform _maw;
         private SpriteRenderer _body;
         private float _trimClock, _startX, _carX, _carY, _rescueCd;
+        private bool _hasLook; private string _lookWorld; private Color _lookTint; private float _lookSat = 1f, _lookVal = 1f;
         private EaterVariantSO _variant; private EaterSignatureModule _sig; private EaterCounterplay _counter; private readonly EaterHost _host = new EaterHost();
         private bool _inGap;
 
@@ -48,9 +49,11 @@ namespace RoadBuilderGame
         }
 
         /// <summary>World variant (null = the plain Countryside Road-Eater). Call before <see cref="Begin"/>.</summary>
-        public void Configure(EaterVariantSO v)
+        public void Configure(EaterVariantSO v, string worldId = null)
         {
-            if (_variant == v) return;
+            bool look = v == null && worldId != null && EaterVariantSO.TryLook(worldId, out _lookTint, out _lookSat, out _lookVal);
+            if (_variant == v && look == _hasLook && (!look || _lookWorld == worldId)) return;
+            _hasLook = look; _lookWorld = look ? worldId : null;
             DestroyModules(); _variant = v; _vTint = VariantTint(v); if (_maw != null) ApplyHue(_art != null && _art.eaterHeads != null && _art.eaterHeads.Length > 0);
             if (v != null) { _sig = EaterSignatures.Create(v.signature); _counter = EaterCounterplays.Create(v.defeat); }
         }
@@ -196,13 +199,13 @@ namespace RoadBuilderGame
             if (!art) return;
             bool shader = _art.hueShader != null;
             if (shader && _hueMat == null) _hueMat = new Material(_art.hueShader) { name = "EaterHue" };
-            Material m = shader && _variant != null ? _hueMat : null;
+            Material m = shader && (_variant != null || _hasLook) ? _hueMat : null;
             if (m != null)
             {
-                Color.RGBToHSV(_variant.tint, out float h, out float sat, out float v);
+                Color.RGBToHSV(_variant != null ? _variant.tint : _lookTint, out float h, out float sat, out float v);
                 float d = Mathf.DeltaAngle(ArtHueDeg, h * 360f);
-                float satS = _variant.satScale > 0f ? _variant.satScale : Mathf.Lerp(1f, Mathf.Max(0.35f, sat), SatFollow);
-                float valS = _variant.valScale > 0f ? _variant.valScale : Mathf.Lerp(1f, Mathf.Max(0.5f, v), ValFollow);
+                float satS = _variant == null ? _lookSat : _variant.satScale > 0f ? _variant.satScale : Mathf.Lerp(1f, Mathf.Max(0.35f, sat), SatFollow);
+                float valS = _variant == null ? _lookVal : _variant.valScale > 0f ? _variant.valScale : Mathf.Lerp(1f, Mathf.Max(0.5f, v), ValFollow);
                 m.SetFloat("_Hue", -d); m.SetFloat("_Sat", satS); m.SetFloat("_Val", valS);
                 _vTint = Color.white;
             }

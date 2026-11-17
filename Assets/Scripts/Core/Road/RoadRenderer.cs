@@ -33,24 +33,47 @@ namespace RoadBuilderGame
 
         private readonly List<Color> _baseColors = new List<Color>();
 
-        /// <summary>Multiplies the vertex colours of every vertex whose world x lies in [x0, x1] by <paramref name="c"/> (surface crack, burn and fade looks). Looks only; no allocation.</summary>
+        // Per-column tint (one entry per spine column). The mesh colour of a column is base x the tint averaged over +-TintFeather metres, so a piece that
+        // fades (Cloud dissolve, Shadow Road) ramps smoothly into its neighbours instead of showing a hard brightness step at the piece edge.
+        private const float TintFeather = 1.4f;
+        private readonly List<Color> _colTint = new List<Color>();
+        private readonly List<float> _colX = new List<float>();
+        private int _backStartIdx = -1;
+
+        /// <summary>Tints the columns whose world x lies in [x0, x1] by <paramref name="c"/> (surface crack, burn and fade looks); edges are feathered. Looks only; no allocation.</summary>
         public void TintRange(float x0, float x1, Color c)
         {
-            if (_mesh == null || _verts.Count == 0 || _baseColors.Count != _verts.Count) return;
+            if (_mesh == null || _verts.Count == 0 || _baseColors.Count != _verts.Count || _colTint.Count == 0) return;
             float ox = transform.position.x;
-            for (int i = 0; i < _verts.Count; i++)
+            for (int i = 0; i < _colTint.Count; i++)
             {
-                float x = _verts[i].x + ox;
-                if (x >= x0 && x <= x1) _colors[i] = _baseColors[i] * c;
+                float x = _colX[i] + ox;
+                if (x >= x0 && x <= x1) _colTint[i] = c;
             }
-            _mesh.SetColors(_colors);
+            ApplyTint();
         }
 
         /// <summary>Restores the untinted vertex colours.</summary>
         public void ClearTint()
         {
             if (_mesh == null || _baseColors.Count != _verts.Count || _verts.Count == 0) return;
-            for (int i = 0; i < _colors.Count; i++) _colors[i] = _baseColors[i];
+            for (int i = 0; i < _colTint.Count; i++) _colTint[i] = Color.white;
+            ApplyTint();
+        }
+
+        private void ApplyTint()
+        {
+            int n = _colTint.Count;
+            for (int i = 0; i < n; i++)
+            {
+                float xi = _colX[i], wsum = 1f; Color acc = _colTint[i];
+                for (int j = i - 1; j >= 0; j--) { float d = xi - _colX[j]; if (d >= TintFeather) break; float w = 1f - d / TintFeather; acc += _colTint[j] * w; wsum += w; }
+                for (int j = i + 1; j < n; j++) { float d = _colX[j] - xi; if (d >= TintFeather) break; float w = 1f - d / TintFeather; acc += _colTint[j] * w; wsum += w; }
+                Color s = acc / wsum;
+                int v = i * 4;
+                for (int k = 0; k < 4 && v + k < _colors.Count; k++) _colors[v + k] = _baseColors[v + k] * s;
+                if (_backStartIdx >= 0) { int bv = _backStartIdx + i * 4; for (int k = 0; k < 4 && bv + k < _colors.Count; k++) _colors[bv + k] = _baseColors[bv + k] * s; }
+            }
             _mesh.SetColors(_colors);
         }
 
@@ -210,6 +233,9 @@ namespace RoadBuilderGame
                 }
             }
 
+            _backStartIdx = backing ? backStart : -1;
+            _colTint.Clear(); _colX.Clear();
+            for (int i = 0; i < g.Count; i++) { _colTint.Add(Color.white); _colX.Add(_verts[i * 4].x); }
             _baseColors.Clear(); _baseColors.AddRange(_colors);      // untinted copy for TintRange (section C surfaces)
             _mesh.Clear();
             _mesh.SetVertices(_verts);

@@ -95,7 +95,7 @@ namespace RoadBuilderGame
             var m = GUI.matrix; GUI.matrix = Matrix4x4.identity;
             float u = Mathf.Max(1f, Mathf.Min(Screen.width, Screen.height) / 520f);            // pixels per dp on a 411 dp short-side phone
             float cs = Mathf.Min(Screen.width / 1920f, Screen.height / 1080f);                  // the UI canvas scale: PAUSE sits at (40, 128) in a 214 x 80 box
-            float bw = 70f * u, bh = 36f * u;
+            float bw = Mathf.Min(70f * u, 200f * cs), bh = Mathf.Min(36f * u, 68f * cs);   // never bigger than the PAUSE plate (portrait scales the canvas down)
             float bx = _g.CheatPlaying ? safe.xMin + 40f * cs : safe.xMin + 12f * u;
             float by = _g.CheatPlaying ? Screen.height - safe.yMax + 220f * cs : Screen.height - safe.yMin - bh - 12f * u;
             if (_chip == null) { _chip = new GUIStyle(_btn) { fontSize = 14, fontStyle = FontStyle.Bold }; _chipBg = Solid(new Color(0.12f, 0.15f, 0.24f, 0.55f)); _chip.normal.background = _chipBg; _chip.hover.background = _chipBg; _chip.normal.textColor = new Color(1f, 1f, 1f, 0.8f); _chip.hover.textColor = Color.white; if (_uiFont != null) _chip.font = _uiFont; }

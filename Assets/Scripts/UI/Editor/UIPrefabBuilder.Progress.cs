@@ -33,6 +33,7 @@ namespace RoadBuilderGame.UI.Editor
             Place(subtitle.rectTransform, TC, TC, new Vector2(0, -176), new Vector2(1100, 44));
 
             var s = root.GetComponent<ProgressHubScreen>();
+            Port(subtitle.rectTransform, TC, TC, new Vector2(0, -196), 1.2f);
             for (int i = 0; i < 8; i++)
             {
                 var tb = ArtButton(tabsGroup, "Tab" + i, SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "", 26,
@@ -40,6 +41,8 @@ namespace RoadBuilderGame.UI.Editor
                 tb.label = Label(tb.rt, "Label", "", TextStyle.Button, ColorToken.TextPrimary, 26);
                 tb.label.enableAutoSizing = true; tb.label.fontSizeMin = 14; tb.label.fontSizeMax = 26; tb.label.textWrappingMode = TextWrappingModes.NoWrap;
                 Stretch(tb.label.rectTransform, 16, 14, 16, 12);
+                // Portrait: two rows of four big tabs.
+                Port(tb.rt, TC, TC, new Vector2((i % 4 - 1.5f) * 300f, -270f - (i / 4) * 110f), 1.3f);
                 string row = "tabs.Array.data[" + i + "]";
                 Ref(s, row + ".button", tb.button); Ref(s, row + ".image", tb.image); Ref(s, row + ".label", tb.label);
             }
@@ -59,6 +62,9 @@ namespace RoadBuilderGame.UI.Editor
                 Place(d.rectTransform, new Vector2(0, 0.5f), new Vector2(0, 0.5f), new Vector2(600, 0), new Vector2(720, 76));
                 var btn = ArtButton(rr, "ActionButton", SpriteSlot.ButtonArcade, SpriteSlot.ButtonArcadePressed, SpriteSlot.ButtonArcadeDisabled, "GO", 28,
                     ColorToken.TextOnAccent, new Vector2(1, 0.5f), new Vector2(1, 0.5f), new Vector2(-12, 0), new Vector2(230, 76), 0f, new Vector4(36, 14, 18, 12), manualSprite: true);
+                // Portrait: the board fills the screen height and the seven rows share it equally (anchor bands are fractions of the board height).
+                float band = 0.94f / Rows, top = 0.97f - i * band;
+                PortS(rr, new Vector2(0.5f, top - band + 0.012f), new Vector2(0.5f, top - 0.012f), C, Vector2.zero, new Vector2(1600f, 0f));
                 string row = "rows.Array.data[" + i + "]";
                 Ref(s, row + ".root", rr.gameObject); Ref(s, row + ".title", t); Ref(s, row + ".detail", d);
                 Ref(s, row + ".button", btn.button); Ref(s, row + ".buttonLabel", btn.label); Ref(s, row + ".buttonImage", btn.image);
@@ -71,6 +77,13 @@ namespace RoadBuilderGame.UI.Editor
                 BC, BC, new Vector2(-640, 14), new Vector2(230, 80), 0f, new Vector4(24, 20, 24, 18));
             var next = ArtButton(c, "NextButton", SpriteSlot.ButtonPlate, SpriteSlot.ButtonPlatePressed, SpriteSlot.ButtonPlate, "NEXT >", 28, ColorToken.TextPrimary,
                 BC, BC, new Vector2(640, 14), new Vector2(230, 80), 0f, new Vector4(24, 20, 24, 18));
+
+            // Portrait: the board runs from under the tabs down to just above the pager; the pager sits directly under it, above the cheat chip.
+            PortS(board.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 1f), TC, new Vector2(0, -500f), new Vector2(1780f, -(500f + 330f)));
+            Port(footer.rectTransform, BC, BC, new Vector2(0, 238), 1.2f);
+            Port(prev.rt, BC, BC, new Vector2(-380, 110), 1.3f);
+            Port(next.rt, BC, BC, new Vector2(380, 110), 1.3f);
+            PortraitDone(c);
 
             Ref(s, "coinsText", coinsText); Ref(s, "gemsText", gems); Ref(s, "scrapText", scrap); Ref(s, "titleText", title);
             Ref(s, "subtitleText", subtitle); Ref(s, "footerText", footer);

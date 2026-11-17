@@ -1615,7 +1615,7 @@ namespace RoadBuilderGame
             if (endless) { _worldCtx = BuildWorldContext(ladder); _stage.BeginEndless(rec, _worldCtx); }
             else { _worldCtx = default; _stage.Begin(rec); }
             _hazardWorldId = HazardWorlds.Resolve(_selWorldId, IsCountrysideWorld(), _stageOn); _announcer.Reset(); _hitStop.Release();
-            _eater.Configure(EaterVariantSO.ForWorld(_hazardWorldId));
+            _eater.Configure(EaterVariantSO.ForWorld(_hazardWorldId), _hazardWorldId);
             _eater.Begin(_startX, rec.runSeed ^ 0x00E47E8u);
             _boss.Begin(rec.runSeed ^ 0x00B055u);
         }

@@ -182,24 +182,24 @@ def buggy(c):
     c.lamp(22.4, 9.2, 23.9, 10.4, HEAD, rad=4)
     c.tube([(3.0, 12.5), (3.0, 9.3)], 0.6, STEEL, in_sil=False)
 
-# ================================================================== semi-truck cab (listed as pickup) (41 x 26)
+# ================================================================== pickup truck (41 x 26), v5: real pickup, cab + open bed, 2 wheels at one ground line
 @design("vehicle-pickup", wheel_kind="truck", accent="#3A78C9")
 def pickup(c):
-    c.rect(1.0, 17.2, 40.0, 20.4, DSTEEL, rad=3)                                       # chassis rails
-    c.rect(2.5, 15.6, 15.5, 17.4, STEEL, rad=3)                                        # fifth wheel plate
-    for x in (21.6, 24.2):                                                              # exhaust stacks
-        c.rect(x - 0.7, 1.0, x + 0.7, 9.5, T("#F2F5F8", "#B7C4D0", "#59636D"), rad=3)
-    prof = [(20.5, 17.4, 5), (20.5, 6.0, 8), (23.0, 4.6, 8), (30.0, 4.4, 10), (32.5, 9.8, 8), (39.0, 10.8, 12), (40.0, 12.4, 10), (40.0, 17.4, 5)]
-    cov, body = c.body(prof, T("#8FBFFF", "#3A78C9", "#1B467F"), rim=3.2, split=(0.5, 0.9))
-    c.pane([(24.0, 9.8, 0), (24.0, 6.2, 3), (29.2, 6.2, 3), (31.4, 9.8, 0)], "#1B467F", streak=[(25.0, 9.2), (27.0, 6.8)])
-    sill(c, cov, 14.4, "#1B467F", 0.45)
-    c.line([(21.0, 12.4), (39.5, 12.4)], 1.4, "#FFFFFF", clip=cov, opacity=0.9)
-    c.line([(24.0, 11.2), (24.0, 17.0)], 1.3, "#1B467F", clip=cov, opacity=0.85)
-    c.rect(37.6, 12.9, 40.0, 16.8, T("#C9D2DA", "#8A939B", "#3B434D"), rad=3)           # grille
-    c.lamp(38.6, 10.8, 39.9, 12.0, HEAD, rad=4)
-    c.rect(7.0, 14.8, 17.0, 17.4, DSTEEL, rad=2)
-    c.arches(cov, "#1B467F", extra=0.5)
-    c.gloss(cov, 27, 5.4, 9, 1.6, 0.3)
+    BL, BD = T("#8FBFFF", "#3A78C9", "#1B467F"), "#1B467F"
+    prof = [(1.0, 19.6, 4), (1.0, 10.0, 3), (18.4, 10.0, 3), (19.6, 11.0, 2), (20.2, 5.2, 6), (22.4, 2.4, 8), (29.0, 2.4, 8), (32.4, 9.4, 6),
+            (38.6, 10.4, 10), (40.0, 12.4, 8), (40.0, 19.6, 4)]
+    cov, body = c.body(prof, BL, rim=3.2, split=(0.5, 0.9))
+    c.rect(2.0, 10.6, 18.2, 14.4, T("#59636D", "#3B434D", "#252B36"), rad=2)          # open bed: inner dark floor and far wall
+    c.rect(2.0, 10.6, 18.2, 11.8, T("#C9D2DA", "#8A939B", "#59636D"), rad=1)           # bed rail highlight
+    c.pane([(22.0, 9.0, 0), (22.8, 4.4, 3), (28.4, 4.4, 3), (31.0, 9.0, 0)], BD, streak=[(23.6, 8.2), (26.0, 5.2)])
+    sill(c, cov, 17.0, BD, 0.45)
+    c.line([(19.8, 14.8), (39.5, 14.8)], 1.3, "#FFFFFF", clip=cov, opacity=0.9)
+    c.line([(26.2, 9.6), (26.2, 17.0)], 1.2, BD, clip=cov, opacity=0.85)
+    c.rect(37.8, 13.2, 40.0, 17.4, T("#C9D2DA", "#8A939B", "#3B434D"), rad=3)           # grille / bumper
+    c.lamp(38.6, 10.9, 39.9, 12.2, HEAD, rad=4)
+    c.lamp(1.05, 12.4, 2.2, 14.0, TAIL, rad=3)
+    c.arches(cov, BD, extra=0.5)
+    c.gloss(cov, 26, 3.0, 7, 1.1, 0.3)
 
 # ================================================================== city bus (47 x 23)
 @design("vehicle-bus", wheel_kind="truck", accent="#1FA59B")
@@ -267,22 +267,33 @@ def camper(c):
     c.lamp(34.8, 12.6, 35.9, 14.0, HEAD, rad=4); c.lamp(1.05, 12.6, 2.1, 14.2, TAIL, rad=4)
     c.gloss(cov, 15, 3.8, 18, 1.4, 0.3)
 
-# ================================================================== box trailer (listed as semi-truck) (50 x 26)
+# ================================================================== semi truck (50 x 26), v5: tractor cab (right) + box trailer, one sprite
 @design("vehicle-semi-truck", wheel_kind="truck", accent="#3A78C9")
 def semi(c):
-    prof = [(1.0, 20.6, 4), (1.0, 3.0, 8), (4.0, 1.0, 6), (46.0, 1.0, 6), (49.0, 3.0, 8), (49.0, 20.6, 4)]
-    cov, body = c.body(prof, T("#FFFFFF", "#E8EEF4", "#A0AEBE"), rim=3.2, split=(0.55, 0.92))
-    band(c, cov, 13.0, 15.6, "#3A78C9", 1.0)
-    band(c, cov, 13.0, 13.7, "#8FBFFF", 1.0)
-    for x in (10.0, 20.0, 30.0, 40.0):
-        c.line([(x, 1.5), (x, 20.4)], 1.0, "#A0AEBE", clip=cov, opacity=0.7)
-    c.rect(1.0, 3.0, 3.6, 20.0, T("#C9D2DA", "#8A939B", "#59636D"), rad=2)             # rear door frame
-    c.rect(2.0, 9.0, 2.8, 14.0, DSTEEL, rad=1)
-    c.rect(1.0, 20.4, 49.0, 23.2, DSTEEL, rad=3)                                        # frame
-    c.rect(39.2, 20.4, 40.8, 22.4, DSTEEL, rad=1)                                       # landing leg (jockey wheel below)
-    c.lamp(1.05, 17.6, 2.3, 19.4, TAIL, rad=3)
+    BL, BD = T("#8FBFFF", "#3A78C9", "#1B467F"), "#1B467F"
+    c.rect(1.0, 19.2, 49.0, 21.2, DSTEEL, rad=2)                                        # chassis rail under both
+    c.rect(33.0, 17.4, 35.6, 20.0, STEEL, rad=2)                                        # fifth wheel
+    for x in (34.6, 36.4):                                                               # exhaust stacks behind the cab
+        c.rect(x - 0.6, 2.0, x + 0.6, 12.0, T("#F2F5F8", "#B7C4D0", "#59636D"), rad=3)
+    prof = [(1.0, 19.4, 3), (1.0, 3.0, 5), (3.0, 1.0, 4), (32.0, 1.0, 4), (32.0, 19.4, 3)]
+    cov, body = c.body(prof, T("#FFFFFF", "#E8EEF4", "#A0AEBE"), rim=3.0, split=(0.55, 0.92))   # trailer
+    band(c, cov, 11.6, 14.2, "#3A78C9", 1.0); band(c, cov, 11.6, 12.3, "#8FBFFF", 1.0)
+    for x in (9.0, 17.0, 25.0):
+        c.line([(x, 1.6), (x, 19.0)], 1.0, "#A0AEBE", clip=cov, opacity=0.7)
+    c.rect(1.0, 3.0, 3.2, 19.0, T("#C9D2DA", "#8A939B", "#59636D"), rad=2)             # rear door frame
+    c.lamp(1.05, 15.6, 2.3, 17.4, TAIL, rad=3)
     c.arches(cov, "#A0AEBE", extra=0.5)
-    c.gloss(cov, 25, 2.2, 40, 0.9, 0.35)
+    cab = [(34.6, 19.4, 3), (34.6, 6.2, 6), (36.4, 4.6, 6), (42.0, 4.4, 8), (44.4, 9.6, 6), (48.0, 10.6, 8), (49.0, 12.4, 6), (49.0, 19.4, 3)]
+    cov2, b2 = c.body(cab, BL, rim=3.0, split=(0.5, 0.9))
+    c.pane([(37.0, 9.4, 0), (37.4, 6.2, 3), (41.6, 6.2, 3), (43.6, 9.4, 0)], BD, streak=[(38.2, 8.8), (40.0, 6.8)])
+    sill(c, cov2, 16.4, BD, 0.45)
+    c.line([(35.0, 12.6), (48.6, 12.6)], 1.3, "#FFFFFF", clip=cov2, opacity=0.9)
+    c.line([(40.2, 10.0), (40.2, 18.0)], 1.2, BD, clip=cov2, opacity=0.85)
+    c.rect(47.0, 13.4, 49.0, 18.0, T("#C9D2DA", "#8A939B", "#3B434D"), rad=3)           # grille
+    c.lamp(47.6, 10.9, 48.9, 12.1, HEAD, rad=4)
+    c.arches(cov2, BD, extra=0.5)
+    c.gloss(cov2, 40, 5.2, 4, 1.0, 0.3)
+    c.gloss(cov, 17, 2.2, 13, 0.9, 0.35)
 
 # ================================================================== tractor (26 x 20)
 @design("vehicle-tractor", wheel_kind="tractor", accent="#6B4426")

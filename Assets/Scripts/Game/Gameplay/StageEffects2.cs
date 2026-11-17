@@ -46,7 +46,7 @@ namespace RoadBuilderGame
 
         private struct Ovl { public object Owner; public Color C; public float Target, Cur; }
         private readonly Ovl[] _ovl = new Ovl[OvlSlots];
-        private SpriteRenderer _ovlSr, _fogSr, _cursor;
+        private SpriteRenderer _ovlSr, _fogSr, _fogFillSr, _cursor;
         private object _fogOwner; private float _fogVis, _fogTarget, _fogCur;
 
         public float Time { get; private set; }
@@ -94,7 +94,7 @@ namespace RoadBuilderGame
             if (_ramp != null) return _ramp;
             var t = new Texture2D(64, 1, TextureFormat.RGBA32, false) { filterMode = FilterMode.Bilinear, wrapMode = TextureWrapMode.Clamp };
             var px = new Color32[64];
-            for (int x = 0; x < 64; x++) px[x] = new Color32(255, 255, 255, (byte)(255 * Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(x / 12f))));
+            for (int x = 0; x < 64; x++) px[x] = new Color32(255, 255, 255, (byte)(255 * Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(x / 63f))));
             t.SetPixels32(px); t.Apply(false, true);
             return _ramp = Sprite.Create(t, new Rect(0, 0, 64, 1), new Vector2(0f, 0.5f), 64f);
         }
@@ -125,7 +125,7 @@ namespace RoadBuilderGame
                 var p = _pool[i];
                 if (p.Live) continue;
                 p.Live = true; p.Owner = owner; p.X = x; p.Y = y; p.W = w; p.H = h; p.Rot = 0f; p.A = 0f; p.Life = 0f; p.State = 0; p.Color = c; p.Circle = circle; p.Solid = solid;
-                p.Sr.sprite = circle ? Circle() : Square();
+                p.Sr.sprite = circle ? Circle() : Square(); p.Sr.sortingOrder = 30;
                 p.Go.SetActive(true);
                 p.Rb.simulated = solid; p.Col.enabled = solid;
                 Sync(p);
@@ -206,6 +206,7 @@ namespace RoadBuilderGame
             return x;
         }
 
+        public void SetOrder(FxProp p, int order) { if (p != null) p.Sr.sortingOrder = order; }
         public void SetSprite(FxProp p, Sprite s) { if (p != null && s != null) p.Sr.sprite = s; }
 
         private static Sprite MakeSprite(Func<int, int, Color32> px)
@@ -247,6 +248,29 @@ namespace RoadBuilderGame
 
         /// <summary>Soft vertical beam: bright core, feathered sides.</summary>
         public static Sprite BeamArt() { return _beamArt != null ? _beamArt : _beamArt = MakeSprite((x, y) => { float d = Mathf.Abs(x - 15.5f) / 15.5f; byte a = (byte)(255 * Mathf.Clamp01(1.2f - d * 1.2f)); byte v = (byte)(255 - 60 * d); return new Color32(v, v, v, a); }); }
+
+        private static Sprite _boulderArt;
+        /// <summary>Rock sprite for the Rolling Boulder (own procedural art, Assets/Resources/StageFx/boulder.png); a plain circle if the file is missing.</summary>
+        public static Sprite BoulderArt() { if (_boulderArt == null) _boulderArt = Resources.Load<Sprite>("StageFx/boulder"); return _boulderArt != null ? _boulderArt : Circle(); }
+
+        /// <summary>Half the road collider thickness (RoadBuilder.roadThickness 0.38 m): road samples are the spine, tyres and rocks rest this far above it.</summary>
+        public const float RoadSurfaceLift = 0.19f;
+
+        /// <summary>Centre y of a circle of radius r resting on the drawn road at x (the highest of five surface samples across its width), so a ball sits exactly on the surface even on a slope. False when there is no road under it.</summary>
+        public bool TryRestY(float x, float r, out float y)
+        {
+            y = 0f; bool any = false; float best = float.MinValue; var rd = Road; if (rd == null) return false;
+            for (int k = -2; k <= 2; k++)
+            {
+                float dx = k * 0.4f * r;
+                if (rd.TryGetRoadYAtX(x + dx, out float g)) { any = true; float c = g + RoadSurfaceLift + Mathf.Sqrt(Mathf.Max(0f, r * r - dx * dx)); if (c > best) best = c; }
+            }
+            if (any) y = best; return any;
+        }
+
+        /// <summary>Small dust puff through the shared particle manager (no-op if there is none).</summary>
+        public void Dust(float x, float y, int n) { Burst(x, y, new Color(0.78f, 0.7f, 0.58f, 0.8f), n); }
+        public void Burst(float x, float y, Color c, int n) { if (ParticleManager.Instance != null) ParticleManager.Instance.SpawnBurst(new Vector2(x, y), c, n); }
 
         // ------------------------------------------------------------------ queries
         public float GroundY(float x)
@@ -330,6 +354,8 @@ namespace RoadBuilderGame
             _ovlSr = a.AddComponent<SpriteRenderer>(); _ovlSr.sprite = Square(); _ovlSr.sortingOrder = 390; _ovlSr.enabled = false;
             var b = new GameObject("StageFog"); b.transform.SetParent(cam.transform, false); b.transform.localPosition = new Vector3(0f, 0f, 5f);
             _fogSr = b.AddComponent<SpriteRenderer>(); _fogSr.sprite = Ramp(); _fogSr.sortingOrder = 380; _fogSr.enabled = false;
+            var f = new GameObject("StageFogFill"); f.transform.SetParent(cam.transform, false); f.transform.localPosition = new Vector3(0f, 0f, 5f);
+            _fogFillSr = f.AddComponent<SpriteRenderer>(); _fogFillSr.sprite = Square(); _fogFillSr.sortingOrder = 380; _fogFillSr.enabled = false;
         }
 
         // ------------------------------------------------------------------ per frame
@@ -382,27 +408,41 @@ namespace RoadBuilderGame
             _fogCur += (_fogTarget - _fogCur) * k;
             bool fogOn = _fogOwner != null && (_fogTarget > 0f || _fogCur > 0.004f);
             if (_fogTarget <= 0f && _fogCur < 0.004f) { _fogOwner = null; _fogCur = 0f; }
-            if (!any && !fogOn) { if (_ovlSr != null) { _ovlSr.enabled = false; _fogSr.enabled = false; } return; }
+            if (!any && !fogOn) { FogReach = 0f; FogAmount = 0f; if (_ovlSr != null) { _ovlSr.enabled = false; _fogSr.enabled = false; _fogFillSr.enabled = false; } return; }
             EnsureOverlay(cam);
             float h = cam.orthographicSize * 2f + 2f, w = h * cam.aspect + 2f;
             if (any) { _ovlSr.enabled = true; bc.a = best; _ovlSr.color = bc; _ovlSr.transform.localScale = new Vector3(w, h, 1f); } else _ovlSr.enabled = false;
             if (fogOn)
             {
+                // A whiteout: clear around the car (FogNearM), a smooth white ramp, then (almost) opaque white to the right edge of the screen at every aspect.
+                // The rule says 30 m; a phone shows only 15..25 m ahead, so the full-white edge sits at min(visibility, 62 % of what is on screen).
                 float carLocal = car != null && car.Body != null ? car.Body.position.x - cam.transform.position.x : 0f;
-                float pulse = 1f + 0.08f * Mathf.Sin(Time * 1.7f);
-                _fogSr.enabled = true; _fogSr.color = new Color(0.95f, 0.97f, 1f, Mathf.Clamp01(_fogCur * pulse));
-                _fogSr.transform.localPosition = new Vector3(carLocal + _fogVis * 0.1f, 0f, 5f);
-                _fogSr.transform.localScale = new Vector3(60f, h, 1f);
+                float rightLocal = h * cam.aspect * 0.5f - 1f + 1.2f;              // right screen edge (+ margin) in camera space
+                float onScreen = Mathf.Max(6f, rightLocal - carLocal);
+                float far = Mathf.Clamp(Mathf.Min(Mathf.Max(6f, _fogVis), onScreen * 0.62f), FogNearM + 3f, 40f);
+                float pulse = 1f + 0.05f * Mathf.Sin(Time * 1.7f);
+                float a = Mathf.Clamp01(_fogCur * pulse);
+                var col = new Color(0.95f, 0.97f, 1f, a);
+                float x0 = carLocal + FogNearM, rampLen = far - FogNearM, fillStart = carLocal + far, fillLen = Mathf.Max(1f, w * 0.5f + 2f - fillStart);
+                _fogSr.enabled = true; _fogSr.color = col; _fogSr.transform.localPosition = new Vector3(x0, 0f, 5f); _fogSr.transform.localScale = new Vector3(rampLen, h, 1f);
+                _fogFillSr.enabled = true; _fogFillSr.color = col; _fogFillSr.transform.localPosition = new Vector3(fillStart + fillLen * 0.5f, 0f, 5f); _fogFillSr.transform.localScale = new Vector3(fillLen, h, 1f);
+                FogReach = far; FogAmount = a;
             }
-            else _fogSr.enabled = false;
+            else { _fogSr.enabled = false; _fogFillSr.enabled = false; FogReach = 0f; FogAmount = 0f; }
         }
+
+        /// <summary>Metres around the car that stay fully clear in a whiteout.</summary>
+        public const float FogNearM = 3.5f;
+        /// <summary>Distance ahead of the car where the whiteout is at full strength (0 when no fog) and the current fog strength 0..1; read by the marker line.</summary>
+        public float FogReach { get; private set; }
+        public float FogAmount { get; private set; }
 
         // ------------------------------------------------------------------ pause and reset
         public void SetPaused(bool paused)
         {
             _paused = paused;
             if (_root != null) _root.gameObject.SetActive(!paused);
-            if (_ovlSr != null && paused) { _ovlSr.enabled = false; _fogSr.enabled = false; }
+            if (_ovlSr != null && paused) { _ovlSr.enabled = false; _fogSr.enabled = false; _fogFillSr.enabled = false; }
             _tapOn = false;
         }
 
@@ -412,7 +452,8 @@ namespace RoadBuilderGame
             if (_pool != null) for (int i = 0; i < PoolSize; i++) Free(_pool[i]);
             for (int i = 0; i < OvlSlots; i++) _ovl[i] = default;
             _fogOwner = null; _fogCur = _fogTarget = 0f;
-            if (_ovlSr != null) { _ovlSr.enabled = false; _fogSr.enabled = false; }
+            if (_ovlSr != null) { _ovlSr.enabled = false; _fogSr.enabled = false; _fogFillSr.enabled = false; }
+            FogReach = 0f; FogAmount = 0f;
             if (_cursor != null) _cursor.enabled = false;
             HopEnabled = false; _hitCd = 0f; _hopCd = 0f; _tapOn = false; _paused = false; Time = 0f; LastGroundY = 0f;
             if (_root != null) _root.gameObject.SetActive(true);
@@ -497,9 +538,65 @@ namespace RoadBuilderGame
     /// <summary>Pure channel events (Ice Age, Elastic Road, Sticky Road, Mirror Road, Whiteout): the data does the work, this adds the tint, fog and one start line.</summary>
     public sealed class ChannelFxBehaviour : Fx2Behaviour
     {
-        private readonly float _fogVis, _fogAlpha; private readonly bool _fog;
+        private const int Posts = 12; private const float PostGap = 3f;
+        private readonly bool _fog; private readonly FxProp[] _post = new FxProp[Posts]; private float _acc;
         public ChannelFxBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h, StageEffectKind k, Color c, float a, bool fog = false) : base(d, fx, h, k, c, a) { _fog = fog; }
-        protected override void Begin() { if (_fog) W.SetFog(this, SA, Mathf.Clamp(SB > 0f ? SB : 0.9f, 0.3f, 1f)); }
+        protected override void Begin() { if (_fog) { W.SetFog(this, SA, Mathf.Clamp(SB > 0f ? SB : 0.9f, 0.3f, 1f)); Banner("WHITEOUT! VISIBILITY " + Mathf.RoundToInt(SA > 0f ? SA : 30f) + " M"); } _acc = 0f; }
+        protected override void End() { for (int i = 0; i < Posts; i++) { W.Free(_post[i]); _post[i] = null; } }
+        protected override void Respawned() { for (int i = 0; i < Posts; i++) { W.Free(_post[i]); _post[i] = null; } }
+
+        /// <summary>Whiteout fairness: roadside marker posts (drawn above the fog) stand on the road every 3 m from the car out to the screen edge, so the player can still see where the
+        /// road runs and where to draw. They only exist over drawn road, so a gap or the end of the road is still readable. 20 Hz, pooled.</summary>
+        protected override void Step(float dt, float distanceM)
+        {
+            if (!_fog) return;
+            _acc += dt; if (_acc < 0.05f) return; _acc = 0f;
+            float amt = W.FogAmount; float cx = Car.Body.position.x, reach = W.ViewCenterX + 40f;
+            var cam = W.Host.Cam != null ? W.Host.Cam() : null; if (cam != null) reach = cam.transform.position.x + cam.orthographicSize * cam.aspect + 1f;
+            int first = Mathf.CeilToInt((cx + StageWorld2.FogNearM - 1f) / PostGap);
+            for (int k = 0; k < Posts; k++)
+            {
+                float x = (first + k) * PostGap; ref FxProp p = ref _post[k];
+                bool want = amt > 0.05f && x < reach && W.HasRoad(x);
+                if (!want) { if (p != null) { W.Free(p); p = null; } continue; }
+                float y = W.GroundY(x) + StageWorld2.RoadSurfaceLift + 0.42f;
+                if (p == null || !p.Live) { p = W.Spawn(this, x, y, 0.16f, 0.84f, Color.white); if (p == null) continue; W.SetOrder(p, 395); }
+                float fade = Mathf.Clamp01((x - cx - 1.5f) / 3f);                // posts grow in just ahead of the clear zone
+                p.X = x; p.Y = y; p.Color = new Color(1f, 0.62f, 0.2f, 0.95f * fade * Mathf.Clamp01(amt * 1.5f));
+            }
+        }
+    }
+
+    /// <summary>Elastic Road: the bounciness channel does the physics; this draws it. Pink spring pads ride the road ahead in a travelling wave (squash and stretch), and every landing sends a pink shock burst and a squash pulse through the pads.</summary>
+    public sealed class ElasticRoadBehaviour : Fx2Behaviour
+    {
+        private const int Pads = 9; private const float Gap = 5f;
+        private readonly FxProp[] _pad = new FxProp[Pads]; private bool _wasGround; private float _kick;
+        public ElasticRoadBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h) : base(d, fx, h, StageEffectKind.ElasticRoad, new Color(1f, 0.6f, 0.85f), 0.06f) { }
+        protected override void Begin() { _wasGround = true; _kick = 0f; Banner("BOUNCY ROAD!"); }
+        protected override void End() { for (int i = 0; i < Pads; i++) { W.Free(_pad[i]); _pad[i] = null; } }
+        protected override void Respawned() { for (int i = 0; i < Pads; i++) { W.Free(_pad[i]); _pad[i] = null; } }
+        protected override void Step(float dt, float distanceM)
+        {
+            var b = Car.Body; float cx = b.position.x;
+            bool g = Car.IsGrounded;
+            if (g && !_wasGround) { _kick = 1f; W.Burst(cx, W.GroundY(cx) + 0.3f, new Color(1f, 0.55f, 0.85f, 0.9f), 12); }
+            _wasGround = g; if (_kick > 0f) _kick = Mathf.Max(0f, _kick - dt * 1.6f);
+            float reach = W.ViewCenterX + 18f; var cam = W.Host.Cam != null ? W.Host.Cam() : null; if (cam != null) reach = cam.transform.position.x + cam.orthographicSize * cam.aspect + 1f;
+            int first = Mathf.FloorToInt((cx - 6f) / Gap);
+            for (int k = 0; k < Pads; k++)
+            {
+                float x = (first + k) * Gap; ref FxProp p = ref _pad[k];
+                bool want = x < reach && W.HasRoad(x);
+                if (!want) { if (p != null) { W.Free(p); p = null; } continue; }
+                float y = W.GroundY(x) + StageWorld2.RoadSurfaceLift;
+                if (p == null || !p.Live) { p = W.Spawn(this, x, y, 1.6f, 0.3f, Color.white, true); if (p == null) continue; }
+                float ph = Mathf.Sin(T * 6.5f - x * 0.8f), near = Mathf.Clamp01(1f - Mathf.Abs(x - cx) / 14f);
+                float sq = 0.35f * ph + _kick * 0.6f * Mathf.Exp(-Mathf.Abs(x - cx) * 0.18f) * Mathf.Sin(T * 22f);      // + stretch, - squash
+                p.X = x; p.Y = y + 0.12f * (1f + sq); p.W = 1.7f * (1f - 0.35f * sq); p.H = 0.34f * (1f + 1.3f * sq);
+                p.Color = new Color(1f, 0.55f + 0.2f * ph, 0.85f, 0.35f + 0.4f * near);
+            }
+        }
     }
 
     /// <summary>Gravity Inversion: calm gap, 1 s warning, then the gravity multiplier flips for the window; the rise is capped so it stays survivable.</summary>
@@ -588,14 +685,17 @@ namespace RoadBuilderGame
         }
     }
 
-    /// <summary>Magnetic Chaos: steel pylons float ahead and pull the car toward them (acceleration folded into the car's wind channel); touching one costs a heart.</summary>
+    /// <summary>Magnetic Chaos: steel pylons float ahead and pull the car toward them (acceleration folded into the car's wind channel); touching one costs a heart.
+    /// Each pylon shows its field (a faint aura of the pull radius) and, when the car is inside 1.6x the radius, five spark dots flowing along an arc from the car into the pylon.</summary>
     public sealed class MagneticChaosBehaviour : Fx2Behaviour
     {
-        private readonly FxProp[] _p = new FxProp[3]; private float _nextX;
+        private const int Dots = 5;
+        private readonly FxProp[] _p = new FxProp[3], _aura = new FxProp[3]; private readonly FxProp[,] _dot = new FxProp[3, Dots]; private float _nextX;
         public MagneticChaosBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h) : base(d, fx, h, StageEffectKind.MagneticPylons, new Color(0.6f, 0.7f, 0.9f), 0.04f) { }
         protected override void Begin() { _nextX = Car != null && Car.Body != null ? Car.Body.position.x + 30f : 0f; }
-        protected override void End() { Fx.SetCur(this, StageEffectKind.MagneticPylons, 0f, 0f); }
-        protected override void Respawned() { for (int i = 0; i < 3; i++) { W.Free(_p[i]); _p[i] = null; } _nextX = Car.Body.position.x + 30f; Fx.SetCur(this, StageEffectKind.MagneticPylons, 0f, 0f); }
+        protected override void End() { for (int i = 0; i < 3; i++) FreePylon(i); Fx.SetCur(this, StageEffectKind.MagneticPylons, 0f, 0f); }
+        protected override void Respawned() { for (int i = 0; i < 3; i++) FreePylon(i); _nextX = Car.Body.position.x + 30f; Fx.SetCur(this, StageEffectKind.MagneticPylons, 0f, 0f); }
+        private void FreePylon(int i) { W.Free(_p[i]); _p[i] = null; W.Free(_aura[i]); _aura[i] = null; for (int k = 0; k < Dots; k++) { W.Free(_dot[i, k]); _dot[i, k] = null; } }
         protected override void Step(float dt, float distanceM)
         {
             var b = Car.Body; Vector2 c = b.position; float radius = Mathf.Max(4f, SB), peak = SA;
@@ -612,13 +712,35 @@ namespace RoadBuilderGame
             for (int i = 0; i < 3; i++)
             {
                 var p = _p[i]; if (p == null || !p.Live) continue;
-                if (c.x - p.X > 10f) { W.Free(p); _p[i] = null; continue; }
+                if (c.x - p.X > 10f) { FreePylon(i); continue; }
                 float dx = p.X - c.x, dy = p.Y - c.y, d = Mathf.Sqrt(dx * dx + dy * dy);
-                p.Color = d < radius ? new Color(1f, 0.55f, 0.5f) : new Color(0.65f, 0.72f, 0.85f);
-                if (d < radius && d > 0.05f && Hold <= 0f) { float k = peak * (1f - d / radius); ax += dx / d * k; ay += dy / d * k; }
-                if (Hold <= 0f && W.Overlaps(p)) { W.Hit("MAGNET SLAM!"); W.Free(p); _p[i] = null; }
+                bool inField = d < radius;
+                p.Color = inField ? new Color(1f, 0.55f, 0.5f) : new Color(0.65f, 0.72f, 0.85f);
+                p.W = p.H = 1.1f * (1f + 0.06f * Mathf.Sin(T * 9f + i));
+                if (inField && d > 0.05f && Hold <= 0f) { float k = peak * (1f - d / radius); ax += dx / d * k; ay += dy / d * k; }
+                DrawField(i, p, c, d, radius, inField);
+                if (Hold <= 0f && W.Overlaps(p)) { W.Hit("MAGNET SLAM!"); FreePylon(i); }
             }
             Fx.SetCur(this, StageEffectKind.MagneticPylons, ax, ay);
+        }
+
+        private void DrawField(int i, FxProp p, Vector2 c, float d, float radius, bool inField)
+        {
+            if (_aura[i] == null || !_aura[i].Live) { _aura[i] = W.Spawn(this, p.X, p.Y, radius * 2f, radius * 2f, Color.white, true); W.SetOrder(_aura[i], 28); }
+            var a = _aura[i]; if (a != null) { a.X = p.X; a.Y = p.Y; a.W = a.H = radius * 2f * (1f + 0.03f * Mathf.Sin(T * 4f + i)); a.Color = inField ? new Color(1f, 0.45f, 0.4f, 0.16f) : new Color(0.6f, 0.75f, 1f, 0.08f); }
+            bool show = d < radius * 1.6f && d > 0.8f;
+            float strength = Mathf.Clamp01(1.15f - d / (radius * 1.6f));
+            Vector2 pp = new Vector2(p.X, p.Y), perp = new Vector2(-(pp.y - c.y), pp.x - c.x) / Mathf.Max(0.1f, d);
+            for (int k = 0; k < Dots; k++)
+            {
+                ref FxProp q = ref _dot[i, k];
+                if (!show) { if (q != null) { W.Free(q); q = null; } continue; }
+                if (q == null || !q.Live) { q = W.Spawn(this, 0f, 0f, 0.26f, 0.26f, Color.white, true); if (q == null) continue; W.SetOrder(q, 29); }
+                float t = (T * 0.9f + k / (float)Dots) % 1f, arc = Mathf.Sin(t * Mathf.PI) * d * 0.14f * (k % 2 == 0 ? 1f : -1f);
+                q.X = Mathf.Lerp(c.x, pp.x, t) + perp.x * arc; q.Y = Mathf.Lerp(c.y, pp.y, t) + perp.y * arc;
+                q.W = q.H = 0.14f + 0.2f * t;
+                q.Color = new Color(1f, 0.7f + 0.2f * t, 0.5f, strength * (0.35f + 0.65f * t));
+            }
         }
     }
 
@@ -942,7 +1064,7 @@ namespace RoadBuilderGame
     /// <summary>Rolling Boulder: a marked drop, a crater where it lands, then it rolls back toward the car along the road (into the crater it just made). Damage on contact.</summary>
     public sealed class RollingBoulderBehaviour : Fx2Behaviour
     {
-        private FxProp _b, _mark; private int _st; private float _tm, _vy, _x;
+        private FxProp _b, _mark; private int _st; private float _tm, _vy, _x, _dustT;
         public RollingBoulderBehaviour(StageEventDefinition d, StageEffectState fx, StageEffectHooks h) : base(d, fx, h, StageEffectKind.RollingBoulder, new Color(0.7f, 0.55f, 0.4f), 0.03f) { }
         protected override void Begin() { _st = 0; _tm = 3f; }
         protected override void Respawned() { W.Free(_b); W.Free(_mark); _b = _mark = null; _st = 0; _tm = 3f; }
@@ -964,25 +1086,30 @@ namespace RoadBuilderGame
                 _tm -= dt; if (_mark != null) _mark.Color = new Color(1f, 0.3f, 0.2f, 0.4f + 0.4f * Mathf.Sin(T * 18f));
                 if (_tm <= 0f)
                 {
-                    W.Free(_mark); _mark = null; _b = W.Spawn(this, _x, W.GroundY(_x) + 10f, 2.2f, 2.2f, new Color(0.55f, 0.45f, 0.35f), true); _vy = 0f; _st = 2;
+                    W.Free(_mark); _mark = null; _b = W.Spawn(this, _x, W.GroundY(_x) + 10f, 2.2f, 2.2f, Color.white, false); if (_b != null) { W.SetSprite(_b, StageWorld2.BoulderArt()); _b.A = 0f; } _vy = 0f; _st = 2;
                 }
             }
             else if (_b == null || !_b.Live) { _st = 0; _tm = Mathf.Max(4f, SB); }
             else
             {
-                float r = _b.W * 0.5f; var road = W.Road; bool on = road != null && road.TryGetRoadYAtX(_b.X, out float gy) && _b.Y - r <= gy + 0.05f;
+                float r = _b.W * 0.5f * 0.9f; var road = W.Road;           // 0.9: the rock art fills 90 % of its square, outline included
                 if (_st == 2)
                 {
-                    _vy -= 20f * dt; _b.Y += _vy * dt;
-                    if (road != null && road.TryGetRoadYAtX(_b.X, out float g2) && _b.Y - r <= g2) { _b.Y = g2 + r; if (!road.IsRangeProtected(_b.X - 1.6f, _b.X + 1.6f)) road.CutRange(_b.X - 1.6f, _b.X + 1.6f); _st = 3; }
+                    _vy -= 20f * dt; _b.Y += _vy * dt; _b.Rot += 90f * dt;
+                    if (W.TryRestY(_b.X, r, out float rest) && _b.Y <= rest)
+                    {
+                        _b.Y = rest; if (!road.IsRangeProtected(_b.X - 1.6f, _b.X + 1.6f)) road.CutRange(_b.X - 1.6f, _b.X + 1.6f);
+                        W.Dust(_b.X, rest - r + 0.2f, 14); _st = 3; _dustT = 0f;
+                    }
                     else if (_b.Y < body.position.y - 16f) { W.Free(_b); _b = null; }
                 }
                 else
                 {
-                    _b.X -= Mathf.Max(2f, SA) * dt; _b.Rot += 240f * dt;
-                    if (road != null && road.TryGetRoadYAtX(_b.X, out float g3)) _b.Y = g3 + r; else { _vy -= 20f * dt; _b.Y += _vy * dt; }
+                    float dx = Mathf.Max(2f, SA) * dt; _b.X -= dx; _b.Rot += dx / r * Mathf.Rad2Deg;      // rolls without slipping: turn = distance / radius, counter-clockwise going left
+                    if (W.TryRestY(_b.X, r, out float rest3)) { _b.Y = rest3; _dustT += dt; if (_dustT > 0.2f) { _dustT = 0f; W.Dust(_b.X + r * 0.7f, rest3 - r + 0.15f, 3); } }
+                    else { _vy -= 20f * dt; _b.Y += _vy * dt; }
                     if (_b.Y < body.position.y - 16f || cx - _b.X > 12f) { W.Free(_b); _b = null; }
-                    else if (Hold <= 0f && W.Overlaps(_b)) { W.Hit("BOULDER!"); W.Free(_b); _b = null; }
+                    else if (Hold <= 0f && W.Overlaps(_b)) { W.Hit("BOULDER!"); W.Dust(_b.X, _b.Y, 10); W.Free(_b); _b = null; }
                 }
             }
         }
@@ -1134,7 +1261,7 @@ namespace RoadBuilderGame
             { StageEffectKind.RoadCollapse, (d, f, h) => new RoadCollapseBehaviour(d, f, h) },
             { StageEffectKind.IceAge, (d, f, h) => new ChannelFxBehaviour(d, f, h, StageEffectKind.IceAge, new Color(0.65f, 0.85f, 1f), 0.09f) },
             { StageEffectKind.MagneticPylons, (d, f, h) => new MagneticChaosBehaviour(d, f, h) },
-            { StageEffectKind.ElasticRoad, (d, f, h) => new ChannelFxBehaviour(d, f, h, StageEffectKind.ElasticRoad, new Color(1f, 0.6f, 0.85f), 0.06f) },
+            { StageEffectKind.ElasticRoad, (d, f, h) => new ElasticRoadBehaviour(d, f, h) },
             { StageEffectKind.RoadFade, (d, f, h) => new RoadFadeBehaviour(d, f, h) },
             { StageEffectKind.GhostDouble, (d, f, h) => new DoubleVehicleBehaviour(d, f, h) },
             { StageEffectKind.FallingPlatforms, (d, f, h) => new FallingPlatformsBehaviour(d, f, h) },

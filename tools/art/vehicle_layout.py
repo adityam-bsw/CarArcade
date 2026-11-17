@@ -15,11 +15,11 @@ LAYOUT = {
     "vehicle-race-car":     dict(gb=10.0, wheels=[(7.5, 3.7), (27.5, 3.3)]),
     "vehicle-dune-buggy":   dict(gb=14.5, wheels=[(6.0, 4.0), (19.7, 4.0)]),
     "vehicle-monster-truck": dict(gb=28.5, wheels=[(8.6, 7.5), (31.0, 7.5)]),
-    "vehicle-pickup":       dict(gb=24.5, wheels=[(6.5, 3.6), (13.0, 3.6), (35.0, 3.6)]),
+    "vehicle-pickup":       dict(gb=24.5, wheels=[(8.8, 4.2), (31.4, 4.2)]),   # v5: 2 wheels, one ground line
     "vehicle-bus":          dict(gb=21.5, wheels=[(11.0, 4.5), (36.0, 4.5)]),
     "vehicle-fire-truck":   dict(gb=21.5, wheels=[(10.5, 4.5), (35.0, 4.5)]),
     "vehicle-camper":       dict(gb=19.5, wheels=[(8.4, 4.0), (28.3, 4.0)]),
-    "vehicle-semi-truck":   dict(gb=24.5, wheels=[(8.0, 3.6), (14.5, 3.6), (40.0, 2.4, "noarch")]),
+    "vehicle-semi-truck":   dict(gb=24.5, wheels=[(7.0, 3.8), (14.0, 3.8), (41.0, 3.8)]),   # v5: tandem under trailer + steer wheel under cab, one ground line
     "vehicle-tractor":      dict(gb=19.0, wheels=[(6.2, 5.2), (20.0, 3.2)]),
     "vehicle-scooter":      dict(gb=10.5, wheels=[(3.7, 2.6), (13.8, 2.6)]),
     "vehicle-golf-cart":    dict(gb=18.0, wheels=[(7.4, 4.2), (24.8, 4.2)]),

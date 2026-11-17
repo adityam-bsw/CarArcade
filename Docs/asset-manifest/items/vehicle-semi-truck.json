@@ -22,6 +22,12 @@
    "from": "have",
    "to": "have",
    "note": "inspector (smooth restyle, status unchanged, smooth_status=ready): smooth restyle reviewed and imported"
+  },
+  {
+   "date": "2026-11-17",
+   "from": "have",
+   "to": "have",
+   "note": "inspector: smooth wheel layout v5 imported (tractor + trailer, 3 equal wheels); see reviews/vehicles-v5-pickup-semi.md"
   }
  ],
  "smooth_status": "ready",

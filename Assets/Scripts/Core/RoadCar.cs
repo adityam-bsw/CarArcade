@@ -91,9 +91,38 @@ namespace RoadBuilderGame
         public void BoostKick(float speed)
         {
             if (Body == null) return;
+            // The speed step goes to the WHOLE rig: chassis AND wheels get the same linear step and the wheels' spin is set to the rolling rate of the new speed, so the tyres do not
+            // slip (the slip impulse below the centre of mass was what pitched the nose of the pickup, monster truck and tractor). The wheels' drive target is eased too
+            // (DriveTarget) and the chassis spin is damped for a moment (StepKick).
             var v = Body.linearVelocity;
-            if (v.x < speed) Body.linearVelocity = new Vector2(speed, v.y);
+            if (v.x >= speed) return;
+            float dv = speed - v.x;
+            Body.linearVelocity = new Vector2(speed, v.y);
+            if (_wheels != null)
+                for (int i = 0; i < _wheels.Length; i++)
+                    if (_wheels[i] != null)
+                    {
+                        var wv = _wheels[i].linearVelocity; _wheels[i].linearVelocity = new Vector2(wv.x + dv, wv.y);
+                        _wheels[i].angularVelocity = -(wv.x + dv) / Mathf.Max(0.25f * Scale, _baseRadii[i] * Scale) * Mathf.Rad2Deg;
+                    }
+            if (_driveInit) _driveTarget = Mathf.Max(_driveTarget, speed);
+            _stabilizeLeft = KickStabilize;
         }
+
+        private float _stabilizeLeft;
+        private const float KickStabilize = 0.45f;      // seconds of extra pitch damping after a boost kick
+
+        private void StepKick()
+        {
+            if (_stabilizeLeft <= 0f) return;
+            _stabilizeLeft -= Time.fixedDeltaTime;
+            Body.angularVelocity *= 0.6f;
+        }
+
+        // Eased drive speed: the wheel motors chase this, not TargetSpeed directly, so a boost (or its end) is a ramp instead of a torque step that pitches the chassis.
+        private float _driveTarget; private bool _driveInit;
+        private const float DriveRiseAccel = 9f, DriveFallAccel = 4f, DriveReverseAccel = 30f;       // m/s^2; reversing (Reverse Drive event) stays snappy
+        private float DriveTarget => _driveInit ? _driveTarget : TargetSpeed;
 
         // ---- Stage-event hooks (Gravity Shift, Wind Canyon, Tiny/Giant, Fragile). Plain data in, nothing about events in here.
         /// <summary>Extra acceleration in m/s^2 applied every physics step (wind). Zero is free.</summary>
@@ -447,11 +476,15 @@ namespace RoadBuilderGame
         }
 
         /// <summary>Wheel spin (deg/s) that rolls wheel i at TargetSpeed; the 0.25 floor scales with the car (a Tiny wheel is smaller than 0.25 m).</summary>
-        private float WheelTargetDeg(int i) => -TargetSpeed / Mathf.Max(0.25f * Scale, _baseRadii[i] * Scale) * Mathf.Rad2Deg;
+        private float WheelTargetDeg(int i) => -DriveTarget / Mathf.Max(0.25f * Scale, _baseRadii[i] * Scale) * Mathf.Rad2Deg;
 
         void FixedUpdate()
         {
             if (_wheels == null || Body == null) return;
+            if (!_driveInit) { _driveTarget = TargetSpeed; _driveInit = true; }
+            else _driveTarget = Mathf.MoveTowards(_driveTarget, TargetSpeed, (TargetSpeed < 0f || _driveTarget < 0f ? DriveReverseAccel : TargetSpeed > _driveTarget ? DriveRiseAccel : DriveFallAccel) * Time.fixedDeltaTime);
+
+            StepKick();
 
             if (WindAccel.x != 0f || WindAccel.y != 0f)
             {
